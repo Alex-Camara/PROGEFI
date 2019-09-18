@@ -1,0 +1,92 @@
+// Import Bulma's core
+@import "~bulma/sass/utilities/_all";
+@import url("https://fonts.googleapis.com/css?family=Nunito");
+
+// Set your colors
+//$primary: #73ab84;
+//$secondary: #E2C044;
+//$red: #A8201A
+$primary: #388E3C;
+$primary-invert: findColorInvert($primary);
+$primary-light: #99d19c;
+$secondary: #69F0AE;
+$secondary-invert: findColorInvert($secondary);
+$accent: #FF9100;
+$accent-invert: findColorInvert($accent);
+$menu-background: #f5f5f5;
+$twitter: #4099ff;
+$twitter-invert: findColorInvert($twitter);
+
+// Setup $colors to use as bulma classes (e.g. 'is-twitter')
+$colors: (
+  "white": (
+    $white,
+    $black
+  ),
+  "black": (
+    $black,
+    $white
+  ),
+  "light": (
+    $light,
+    $light-invert
+  ),
+  "dark": (
+    $dark,
+    $dark-invert
+  ),
+  "primary": (
+    $primary,
+    $primary-invert
+  ),
+  "secondary": (
+    $secondary,
+    $secondary-invert
+  ),
+  "accent": (
+    $accent,
+    $accent-invert
+  ),
+  "info": (
+    $info,
+    $info-invert
+  ),
+  "success": (
+    $success,
+    $success-invert
+  ),
+  "warning": (
+    $warning,
+    $warning-invert
+  ),
+  "danger": (
+    $danger,
+    $danger-invert
+  ),
+  "twitter": (
+    $twitter,
+    $twitter-invert
+  )
+);
+
+// Links
+$link: $primary;
+$link-invert: $primary-invert;
+$link-focus-border: $primary;
+
+//menu
+$menu-item-hover-background-color: $secondary;
+
+//navBar
+$navbar-background-color: #ffffff;
+$navbar-item-color: #000501;
+
+//dropdowns
+$dropdown-item-active-background-color: $primary-light;
+
+//tipografía
+$body-family: 'Nunito', sans-serif;
+
+// Import Bulma and Buefy styles
+@import "~bulma";
+@import "~buefy/src/scss/buefy";

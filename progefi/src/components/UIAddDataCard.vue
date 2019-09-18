@@ -1,0 +1,109 @@
+<template>
+  <!-- --------AddDataCard Component----- -->
+  <div id="addDataCard-component">
+    <!-- --------AddDataCard Component Header----- -->
+    <div id="addDataCard-component-header">
+      <div id="addDataCard-return-button">
+        <b-button type="is-text" v-on:click="showDataCards">
+          <b-icon icon="arrow-left-thick"></b-icon>
+        </b-button>
+      </div>
+
+      <div id="addDataCard-component-title">
+        <nav class="breadcrumb has-bullet-separator is-medium">
+          <ul>
+            <li>
+              <b-button rounded class="is-primary" v-on:click="showDataCards">Fichas de fotocolecta</b-button>
+            </li>
+            <li>
+              <b-button rounded class="is-secondary">Agregar ficha</b-button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+    <!-- --------AddDataCard Component Content----- -->
+    <div id="addDataCard-component-content">
+      <div>
+        <b-steps
+          size="is-small"
+          type="is-secondary"
+          :has-navigation="false"
+          v-model="currentActiveStep"
+        >
+          <b-step-item label="Subir fotografía" icon="image">
+            <UIAddDataCard1></UIAddDataCard1>
+          </b-step-item>
+          <b-step-item label="Datos generales">
+            <UIAddDataCard2></UIAddDataCard2>
+          </b-step-item>
+          <b-step-item label="Datos geográficos"></b-step-item>
+          <b-step-item label="Datos taxonómicos"></b-step-item>
+          <b-step-item label="Validación"></b-step-item>
+        </b-steps>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import UIAddDataCard1 from "./UIAddDataCard/UIAddDataCard1.vue";
+import UIAddDataCard2 from "./UIAddDataCard/UIAddDataCard2.vue";
+import store from "../store.js";
+import router from "../router.js";
+
+export default {
+  name: "UIAddDataCard",
+  components: {
+    UIAddDataCard1,
+    UIAddDataCard2
+  },
+  data() {
+    return {};
+  },
+  created() {
+    store.commit("datacard/changeActiveStep", 0);
+    store.commit("datacard/addImageFile", null);
+  },
+  methods: {
+    showDataCards() {
+      router.push({ name: "UIShowDataCards" });
+    }
+  },
+  computed: {
+    currentActiveStep: function() {
+      return store.state.datacard.activeStep;
+    }
+  }
+};
+</script>
+
+<style lang="scss">
+#addDataCard-component {
+  display: grid;
+  grid-template-rows: 10% 90%;
+  height: 100%;
+}
+
+#addDataCard-component-header {
+  grid-row: 1 / 2;
+  display: grid;
+  grid-template-columns: 5% 95%;
+  justify-items: center;
+  align-content: center;
+}
+
+#addDataCard-component-content {
+  grid-row: 2 / 3;
+  margin-top: 40px;
+}
+
+#addDataCard-return-button {
+  grid-column: 1 / 2;
+}
+
+#addDataCard-component-title {
+  grid-column: 2 / 3;
+}
+</style> 
