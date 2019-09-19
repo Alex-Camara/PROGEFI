@@ -50,8 +50,8 @@
 <script>
 import UIAddDataCard1 from "./UIAddDataCard/UIAddDataCard1.vue";
 import UIAddDataCard2 from "./UIAddDataCard/UIAddDataCard2.vue";
-import store from "../store.js";
-import router from "../router.js";
+import store from "../store/store.js";
+import router from "../router/router.js";
 
 export default {
   name: "UIAddDataCard",

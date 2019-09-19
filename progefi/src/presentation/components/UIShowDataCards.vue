@@ -98,7 +98,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "./sass/mystyles.scss";
+@import "../style/style.scss";
 
 #showDataCards-content-container {
   display: grid;
