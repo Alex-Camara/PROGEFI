@@ -1,6 +1,6 @@
 <template>
   <div id="main-container">
-    <div id="main-header">
+    <div id="main-header" class="sticky">
       <UINavBar></UINavBar>
     </div>
     <div id="main-menu">
@@ -29,13 +29,12 @@ export default {
 </script>
 
 <style lang="scss">
-
 #main-container {
   display: grid;
   width: 100%;
-  height: 715px;
+  height: 900px;
   grid-template-columns: 1fr 6fr;
-  grid-template-rows: 1fr 18fr 0.75fr;
+  grid-template-rows: 1.5fr 18fr 0.75fr;
   grid-gap: 3px;
 }
 
@@ -52,6 +51,7 @@ export default {
 #main-content {
   grid-row: 2 / 3;
   grid-column: 2 / -1;
+  z-index: 0;
 }
 
 #main-footer {
@@ -59,10 +59,19 @@ export default {
   grid-row: 3 / 4;
 }
 
+.sticky {
+  background-color: #f8f6f6;
+  position: fixed;
+  width: 100%;
+
+  z-index: 1;
+  top: 0;
+  left: 0;
+}
+
 /* ------------PARA OCULTAR EL SCROLLBAR-------------*/
 ::-webkit-scrollbar {
   width: 0px; /* Remove scrollbar space */
 }
 /* ---------------------------------------------------*/
-
 </style>

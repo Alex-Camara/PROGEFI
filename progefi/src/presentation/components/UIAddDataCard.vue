@@ -30,7 +30,7 @@
           size="is-small"
           type="is-secondary"
           :has-navigation="false"
-          v-model="currentActiveStep"
+          v-model="activeStep"
         >
           <b-step-item label="Subir fotografía" icon="image">
             <UIAddDataCard1></UIAddDataCard1>
@@ -50,6 +50,7 @@
 <script>
 import UIAddDataCard1 from "./UIAddDataCard/UIAddDataCard1.vue";
 import UIAddDataCard2 from "./UIAddDataCard/UIAddDataCard2.vue";
+import { mapState } from "vuex";
 import store from "../store/store.js";
 import router from "../router/router.js";
 
@@ -63,8 +64,8 @@ export default {
     return {};
   },
   created() {
-    store.commit("datacard/changeActiveStep", 0);
-    store.commit("datacard/addImageFile", null);
+    console.log('me creo')
+    store.dispatch("datacard/resetPhotoCollect")
   },
   methods: {
     showDataCards() {
@@ -72,9 +73,9 @@ export default {
     }
   },
   computed: {
-    currentActiveStep: function() {
-      return store.state.datacard.activeStep;
-    }
+    ...mapState("datacard", {
+      activeStep: state => state.activeStep
+    })
   }
 };
 </script>

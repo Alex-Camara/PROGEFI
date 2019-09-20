@@ -11,7 +11,9 @@ const installVueDevtools = vueCliPlugIn.installVueDevtools;
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
-const { ipcMain } = require('electron')
+const {
+  ipcMain
+} = require('electron')
 
 //---------CONEXIÓN A LA BASE DE DATOS-----------------
 
@@ -28,8 +30,8 @@ let db = new sqlite3.Database(
 let sql = `SELECT photocollectDataCardId 
 FROM photocollectDataCard`;
 
-function getDatabase(){
-  db.serialize(function() {
+function getDatabase() {
+  db.serialize(function () {
     db.all(sql, [], (err, rows) => {
       if (err) {
         throw err;
@@ -46,9 +48,13 @@ function getDatabase(){
 let win;
 
 // Scheme must be registered before the app is ready
-protocol.registerSchemesAsPrivileged([
-  { scheme: "app", privileges: { secure: true, standard: true } }
-]);
+protocol.registerSchemesAsPrivileged([{
+  scheme: "app",
+  privileges: {
+    secure: true,
+    standard: true
+  }
+}]);
 
 function createWindow() {
   // Create the browser window.
@@ -125,7 +131,19 @@ if (isDevelopment) {
   }
 }
 
-ipcMain.on('saveImageFile', (event, file) => {
+ipcMain.on('savePhotoCollect', (event, file) => {
   console.log(file.name)
-})
+  console.log('copiando archivo...')
+  const fs = require('fs');
+  const path = require("path");
 
+  var fileName = file.name
+  var fileExtension = fileName.substring(fileName.lastIndexOf('.')+1, fileName.length) || fileName;
+  var photocollectsFolderPath = path.resolve(".") + '/src/bussiness/photocollects/' +'photocollect.' + fileExtension;
+
+  fs.copyFile( file.path, photocollectsFolderPath, (err) => {
+    if (err) throw err;
+    console.log('la fototocolecta ha sido copiada');
+    event.reply('savePhotoCollectSuccess', photocollectsFolderPath);
+  });
+})

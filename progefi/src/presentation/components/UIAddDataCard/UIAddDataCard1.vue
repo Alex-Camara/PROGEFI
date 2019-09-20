@@ -5,11 +5,11 @@
     <div id="addDataCard1-left-side" class="box has-background-light">
       <!-- --------AddDataCard1 Component Header----- -->
       <div id="addDataCard1-component-header">
-        <p class="subtitle is-5">Sube un archivo</p>
+        <p class="subtitle is-5">Sube el archivo de la fotocolecta</p>
       </div>
 
       <!-- --------AddDataCard1 Component Content----- -->
-      <div id="addDataCard1-component-content" @change="saveFile()">
+      <div id="addDataCard1-component-content" @change="setPhotoCollect()">
         <b-field class="file">
           <b-upload v-model="file" accept="image/*">
             <a class="button is-secondary">
@@ -17,13 +17,13 @@
               <span>Selecciona para subir un archivo</span>
             </a>
           </b-upload>
-          <span class="file-name" v-if="imageFile">{{ imageFile.name }}</span>
+          <span class="file-name" v-if="photoCollect">{{ photoCollect.name }}</span>
         </b-field>
       </div>
 
       <!-- --------AddDataCard1 Bottom Buttons----- -->
-      <div id="addDataCard1-next-button" v-on:click="changeStep()">
-        <b-button type="is-accent" :disabled="!imageFile">Siguiente</b-button>
+      <div id="addDataCard1-next-button" @click="changeStep">
+        <button class="button" type="is-accent" :disabled="!photoCollect.url">Siguiente</button>
       </div>
     </div>
 
@@ -31,52 +31,34 @@
     <div id="addDataCard1-right-side" class="box has-background-secondary">
       <!-- --------addDataCard1-component-image----- -->
       <div id="addDataCard1-component-image">
-        <img id="uploadedImage" />
+        <img id="uploadedImage" :src="photoCollect.url"/>
       </div>
     </div>
   </div>
 </template>
 
-<script>
+<script>  
 import store from "../../store/store.js";
 
 import { mapState } from "vuex";
-import { mapGetters } from "vuex";
 
 export default {
   data() {
     return {
-      file: null,
-      src: "vacio"
+      file: null
     };
   },
   computed: {
     ...mapState("datacard", {
-      imageFile: state => state.imageFile
+      photoCollect: state => state.photoCollect
     })
   },
   methods: {
     changeStep() {
       store.commit("datacard/changeActiveStep", 1);
     },
-    saveFile() {
-      console.log("Guardando la imagen...");
-      store.commit("datacard/addImageFile", this.file);
-      this.loadPreviewImage();
-    },
-    loadPreviewImage() {
-      var preview = document.querySelector("img");
-      var reader = new FileReader();
-
-      reader.onloadend = function() {
-        preview.src = reader.result;
-      };
-
-      if (this.imageFile) {
-        reader.readAsDataURL(this.imageFile);
-      } else {
-        this.imageURL = "";
-      }
+    setPhotoCollect() {
+      store.dispatch("datacard/setPhotoCollect", this.file);
     }
   }
 };
@@ -86,7 +68,7 @@ export default {
 #addDataCard1-component {
   display: grid;
   grid-template-columns: 50% 50%;
-  height: 400px;
+  height: 100%;
   width: 100%;
   align-items: start;
   margin-top: 10px;
@@ -105,9 +87,9 @@ export default {
   grid-column: 2 / 3;
   height: 100%;
   align-items: center;
-  margin-left: 10px;
   justify-content: center;
   align-items: center;
+  margin-left: 10px;
 }
 
 #addDataCard1-component-header {

@@ -97,7 +97,7 @@ export default {
   padding-right: 10px;
   padding-top: 10px;
   height: 600px;
-  background-color: $menu-background;
+  //background-color: $menu-background;
 }
 
 
