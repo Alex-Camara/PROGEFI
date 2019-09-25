@@ -64,7 +64,6 @@ export default {
     return {};
   },
   created() {
-    console.log('me creo')
     store.dispatch("datacard/resetPhotoCollect")
   },
   methods: {

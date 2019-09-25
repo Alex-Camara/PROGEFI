@@ -37,7 +37,6 @@
   },
   resolveLoader: {
     modules: [
-      'C:\\Users\\arcam\\Documents\\Github\\PROGEFI\\progefi\\node_modules\\@vue\\cli-plugin-eslint\\node_modules',
       'C:\\Users\\arcam\\Documents\\Github\\PROGEFI\\progefi\\node_modules\\@vue\\cli-plugin-babel\\node_modules',
       'node_modules',
       'C:\\Users\\arcam\\Documents\\Github\\PROGEFI\\progefi\\node_modules',
@@ -56,7 +55,7 @@
             loader: 'cache-loader',
             options: {
               cacheDirectory: 'C:\\Users\\arcam\\Documents\\Github\\PROGEFI\\progefi\\node_modules\\.cache\\vue-loader',
-              cacheIdentifier: '6a14ead5'
+              cacheIdentifier: '147d4575'
             }
           },
           /* config.module.rule('vue').use('vue-loader') */
@@ -67,7 +66,7 @@
                 preserveWhitespace: false
               },
               cacheDirectory: 'C:\\Users\\arcam\\Documents\\Github\\PROGEFI\\progefi\\node_modules\\.cache\\vue-loader',
-              cacheIdentifier: '6a14ead5'
+              cacheIdentifier: '147d4575'
             }
           }
         ]
@@ -1053,40 +1052,12 @@
             loader: 'cache-loader',
             options: {
               cacheDirectory: 'C:\\Users\\arcam\\Documents\\Github\\PROGEFI\\progefi\\node_modules\\.cache\\babel-loader',
-              cacheIdentifier: '0af8604a'
+              cacheIdentifier: '4c607146'
             }
           },
           /* config.module.rule('js').use('babel-loader') */
           {
             loader: 'babel-loader'
-          }
-        ]
-      },
-      /* config.module.rule('eslint') */
-      {
-        enforce: 'pre',
-        test: /\.(vue|(j|t)sx?)$/,
-        exclude: [
-          /node_modules/,
-          'C:\\Users\\arcam\\Documents\\Github\\PROGEFI\\progefi\\node_modules\\@vue\\cli-service\\lib'
-        ],
-        use: [
-          /* config.module.rule('eslint').use('eslint-loader') */
-          {
-            loader: 'eslint-loader',
-            options: {
-              extensions: [
-                '.js',
-                '.jsx',
-                '.vue'
-              ],
-              cache: true,
-              cacheIdentifier: '99ef1382',
-              emitWarning: true,
-              emitError: false,
-              eslintPath: 'C:\\Users\\arcam\\Documents\\Github\\PROGEFI\\progefi\\node_modules\\eslint',
-              formatter: function () { /* omitted long function */ }
-            }
           }
         ]
       }
@@ -1158,7 +1129,9 @@
           ]
         }
       ]
-    )
+    ),
+    /* config.plugin('transform-runtime') */
+    {}
   ],
   entry: {
     app: [

@@ -2,7 +2,7 @@
   <!-- --------AddDataCard1 Component----- -->
   <div id="addDataCard1-component">
     <!-- --------AddDataCard1 Left Side----- -->
-    <div id="addDataCard1-left-side" class="box has-background-light">
+    <div id="addDataCard1-left-side" class="box">
       <!-- --------AddDataCard1 Component Header----- -->
       <div id="addDataCard1-component-header">
         <p class="subtitle is-5">Sube el archivo de la fotocolecta</p>

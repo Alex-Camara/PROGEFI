@@ -1,4 +1,4 @@
-"use strict";
+"use strict";  
 
 const electron = require('electron');
 const app = electron.app;
@@ -11,14 +11,13 @@ const installVueDevtools = vueCliPlugIn.installVueDevtools;
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
-const {
-  ipcMain
-} = require('electron')
-
+import "core-js/stable";
+import "regenerator-runtime/runtime";     
+ 
 //---------CONEXIÓN A LA BASE DE DATOS-----------------
 
-const sqlite3 = require("sqlite3").verbose();
-
+/*const sqlite3 = require("sqlite3").verbose();
+  
 let db = new sqlite3.Database(
   "./db/testDatabase.db",
   sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE,
@@ -42,7 +41,7 @@ function getDatabase() {
     });
   });
 }
-
+*/
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win;
@@ -102,10 +101,10 @@ app.on("activate", () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on("ready", async () => {
+app.on("ready", async () => { 
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
-    getDatabase();
+    //getDatabase();
     try {
       await installVueDevtools();
     } catch (e) {
@@ -131,19 +130,5 @@ if (isDevelopment) {
   }
 }
 
-ipcMain.on('savePhotoCollect', (event, file) => {
-  console.log(file.name)
-  console.log('copiando archivo...')
-  const fs = require('fs');
-  const path = require("path");
-
-  var fileName = file.name
-  var fileExtension = fileName.substring(fileName.lastIndexOf('.')+1, fileName.length) || fileName;
-  var photocollectsFolderPath = path.resolve(".") + '/src/bussiness/photocollects/' +'photocollect.' + fileExtension;
-
-  fs.copyFile( file.path, photocollectsFolderPath, (err) => {
-    if (err) throw err;
-    console.log('la fototocolecta ha sido copiada');
-    event.reply('savePhotoCollectSuccess', photocollectsFolderPath);
-  });
-})
+import listener from './listeners.js';
+listener.listen();    

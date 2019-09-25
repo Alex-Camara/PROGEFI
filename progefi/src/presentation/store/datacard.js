@@ -1,6 +1,4 @@
-const {
-    ipcRenderer
-} = require('electron')
+const { ipcRenderer } = require('electron')
 
 const datacard = {
     namespaced: true,
@@ -35,24 +33,21 @@ const datacard = {
                 "path": photoCollect.path,
                 "type": photoCollect.type
             };
-            console.log('nombre 2: ' + state.photoCollect.name)
+
             //Guardar imagen
             ipcRenderer.send('savePhotoCollect', state.photoCollect)
-            console.log('nombre 3: ' + state.photoCollect.name)
+
             //Si se guardó, actualizar la url de la imagen
             ipcRenderer.on('savePhotoCollectSuccess', (event, arg) => {
                 /*state.photoCollect = {
                     path: arg
                 };*/
-                console.log('nombre 4: ' + state.photoCollect.name)
             })
             ipcRenderer.on('savePhotoCollectError', (event, arg) => {
                 console.log('error: ' + arg)
             })
-            console.log('nombre 5: ' + state.photoCollect.name)
         },
         setPhotoCollectNull(state) {
-            console.log('entró a null')
             state.photoCollect = {
                 name: null,
                 path: null,
