@@ -1,4 +1,7 @@
-const { ipcRenderer } = require('electron')
+const {
+    ipcRenderer
+} = require('electron')
+const fs = require('fs')
 
 const datacard = {
     namespaced: true,
@@ -33,19 +36,6 @@ const datacard = {
                 "path": photoCollect.path,
                 "type": photoCollect.type
             };
-
-            //Guardar imagen
-            ipcRenderer.send('savePhotoCollect', state.photoCollect)
-
-            //Si se guardó, actualizar la url de la imagen
-            ipcRenderer.on('savePhotoCollectSuccess', (event, arg) => {
-                /*state.photoCollect = {
-                    path: arg
-                };*/
-            })
-            ipcRenderer.on('savePhotoCollectError', (event, arg) => {
-                console.log('error: ' + arg)
-            })
         },
         setPhotoCollectNull(state) {
             state.photoCollect = {
@@ -57,11 +47,25 @@ const datacard = {
     },
     actions: {
         setPhotoCollect({
-            commit
+            dispatch,
+            commit,
+            state
         }, photoCollect) {
             if (photoCollect != null) {
                 commit('setPhotoCollect', photoCollect);
-                commit('setPhotoCollectURL', photoCollect);
+                ipcRenderer.send('savePhotoCollect', state.photoCollect)
+
+                //Si se guardó, actualizar la url de la imagen
+                ipcRenderer.on('savePhotoCollectSuccess', (event, arg) => {
+                    try {
+                        var fileReceived = fs.readFileSync(arg)
+                        var imageFile = new File([fileReceived], 'filename')
+                        commit('setPhotoCollectURL', imageFile);
+                        //dispatch('getImageMetadata')
+                    } catch (error) {
+                        throw error;
+                    }
+                })
             }
         },
         resetPhotoCollect({
@@ -69,6 +73,11 @@ const datacard = {
         }) {
             commit("changeActiveStep", 0);
             commit("setPhotoCollectNull");
+        },
+        getImageMetadata({
+            commit
+        }) {
+            ipcRenderer.send('getImageMetadata')
         }
     }
 }

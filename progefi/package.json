@@ -17,6 +17,8 @@
     "@mdi/font": "^4.4.95",
     "buefy": "^0.8.4",
     "core-js": "^3.2.1",
+    "exif": "^0.6.0",
+    "exif-js": "^2.3.0",
     "exiftool-vendored": "^8.22.0",
     "file-loader": "^4.2.0",
     "jimp": "^0.8.4",

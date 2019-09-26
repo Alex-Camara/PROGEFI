@@ -22,6 +22,18 @@ function listen() {
                 console.log(error)
             })
     })
+
+    ipcMain.on('getImageMetadata', (event) => {
+        console.log('inicia el listener')
+        datacardController.getImageMetadata()
+            .then(result => {
+                console.log('result: ' + result.model)
+                //event.reply('savePhotoCollectSuccess');
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    })
 }
 
 export default {

@@ -1,5 +1,5 @@
-"use strict";  
-
+"use strict";
+  
 const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
@@ -8,22 +8,22 @@ const protocol = electron.protocol;
 const vueCliPlugIn = require('vue-cli-plugin-electron-builder/lib');
 const createProtocol = vueCliPlugIn.createProtocol;
 const installVueDevtools = vueCliPlugIn.installVueDevtools;
-
-const isDevelopment = process.env.NODE_ENV !== "production";
-
-import "core-js/stable";
-import "regenerator-runtime/runtime";     
  
-//---------CONEXIÓN A LA BASE DE DATOS-----------------
+const isDevelopment = process.env.NODE_ENV !== "production";
+            
+import "core-js/stable"; 
+import "regenerator-runtime/runtime";
+
+//--------- CONEXIÓN A LA BASE DE DATOS-----------------               
 
 /*const sqlite3 = require("sqlite3").verbose();
-  
+                       
 let db = new sqlite3.Database(
   "./db/testDatabase.db",
   sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE,
   err => {
     console.log("Connected to the test database.");
-  }
+  }      
 );
 
 let sql = `SELECT photocollectDataCardId 
@@ -94,22 +94,22 @@ app.on("activate", () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (win === null) {
-    createWindow();
-  }
+    createWindow();       
+  }                                              
 });
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on("ready", async () => { 
+app.on("ready", async () => {
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
     //getDatabase();
-    try {
+    /*try {
       await installVueDevtools();
     } catch (e) {
-      console.error("Vue Devtools failed to install:", e.toString());
-    }
+      console.error("Vue Devtools failed      to install:", e.toString());
+    }*/      
   }
   createWindow();
   win.setMenu(null);
@@ -131,4 +131,4 @@ if (isDevelopment) {
 }
 
 import listener from './listeners.js';
-listener.listen();    
+listener.listen();

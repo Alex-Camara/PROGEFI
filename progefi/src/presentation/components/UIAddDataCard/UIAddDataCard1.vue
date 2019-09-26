@@ -86,6 +86,7 @@ export default {
 #addDataCard1-right-side {
   grid-column: 2 / 3;
   height: 100%;
+  max-height: 100%;
   align-items: center;
   justify-content: center;
   align-items: center;
@@ -109,8 +110,8 @@ export default {
 }
 
 #uploadedImage {
-  max-height: 100%;
-  max-width: 100%;
+  max-height: 80%;
+  max-width: 80%;
 }
 
 #addDataCard1-next-button {
