@@ -136,7 +136,7 @@ export default {
   align-items: center;
 }
 
-#separator{
+#separator {
   grid-row: 2 / 3;
 }
 
@@ -180,6 +180,7 @@ export default {
 #colector-select {
   grid-row: 2 / 3;
   grid-column: 4 / 5;
+  width: 400px;
 }
 
 #device-select {
@@ -202,7 +203,7 @@ export default {
   grid-column: 4 / 5;
 }
 
-hr.style1{
-	border-top: 1px solid #8c8b8b;
+hr.style1 {
+  border-top: 1px solid #8c8b8b;
 }
 </style>

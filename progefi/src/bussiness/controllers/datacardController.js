@@ -12,26 +12,28 @@ class datacardController {
     var photocollectsFolderPath = path.resolve(".") + '/src/bussiness/photocollects/';
 
     try {
-      //save original file
-      var originalPath = this.saveFile(photoCollect, photocollectsFolderPath)
 
-      //save a duplicate to avoid altering the original file
-      //console.log('leyendo archivo con jimp')
-      //console.log('ruta al archivo original: ' + originalPath)
-      var photoCollectFile = await jimp.read(originalPath)
-      //console.log('archivo jimp: ' + photoCollectFile)
-      var duplicatePath = this.saveDuplicatedFile(photoCollectFile, photocollectsFolderPath)
-      //console.log('duplicate path: ' + duplicatePath)
+      //read image file with jimp library
+      var photoCollectFile = await jimp.read(photoCollect.path)
       var fileExtension = photoCollectFile.getExtension()
 
       //verify if image file is supported
       if ((fileExtension == 'jpeg') || (fileExtension == 'png') || (fileExtension == 'bmp') || (fileExtension == 'tiff')) {
+
+        //save original file
+        this.saveFile(photoCollect, photocollectsFolderPath, fileExtension)
+
+        //console.log('archivo jimp: ' + photoCollectFile)
+        var duplicatePath = this.saveDuplicatedFile(photoCollectFile, photocollectsFolderPath)
+        //console.log('duplicate path: ' + duplicatePath)
+
         return duplicatePath;
       } else {
-        return 'not supported format'
+        console.log('formato no soportado')
+        return 'not-supported-format'
       }
     } catch (error) {
-      return error
+      return 'not-supported-format'
     }
   }
   async saveDuplicatedFile(photoCollectFile, photocollectsFolderPath) {
@@ -50,10 +52,9 @@ class datacardController {
       return error
     }
   }
-  saveFile(photoCollect, photocollectsFolderPath) {
-    var fileName = photoCollect.name
-    var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1, fileName.length) || fileName;
-    var originalPath = photocollectsFolderPath + 'original/' + 'original.' + fileExtension
+  saveFile(photoCollect, photocollectsFolderPath, imageExtension) {
+
+    var originalPath = photocollectsFolderPath + 'original/' + 'original.' + imageExtension
     try {
       fs.copyFileSync(photoCollect.path, originalPath)
 

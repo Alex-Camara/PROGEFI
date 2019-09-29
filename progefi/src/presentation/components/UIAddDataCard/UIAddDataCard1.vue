@@ -17,13 +17,13 @@
               <span>Selecciona para subir un archivo</span>
             </a>
           </b-upload>
-          <span class="file-name" v-if="photoCollect">{{ photoCollect.name }}</span>
+          <span class="file-name" v-if="photoCollect && photoCollect.url != 'not-supported-format'">{{ photoCollect.name }}</span>
         </b-field>
       </div>
 
       <!-- --------AddDataCard1 Bottom Buttons----- -->
       <div id="addDataCard1-next-button" @click="changeStep">
-        <button class="button" type="is-accent" :disabled="!photoCollect.url">Siguiente</button>
+        <button class="button" type="is-accent" :disabled="disableNextButton()">Siguiente</button>
       </div>
     </div>
 
@@ -31,13 +31,17 @@
     <div id="addDataCard1-right-side" class="box has-background-secondary">
       <!-- --------addDataCard1-component-image----- -->
       <div id="addDataCard1-component-image">
-        <img id="uploadedImage" :src="photoCollect.url"/>
+        <img
+          id="uploadedImage"
+          v-if="photoCollect.url != 'not-supported-format'"
+          :src="photoCollect.url"
+        />
       </div>
     </div>
   </div>
 </template>
 
-<script>  
+<script>
 import store from "../../store/store.js";
 
 import { mapState } from "vuex";
@@ -53,7 +57,30 @@ export default {
       photoCollect: state => state.photoCollect
     })
   },
+  watch: {
+    photoCollect(newValue, oldValue) {
+      if (newValue.url == "not-supported-format") {
+        this.file = null;
+        this.openSnackBar("¡Formato no soportado!");
+      }
+    }
+  },
   methods: {
+    disableNextButton(){
+      if((this.photoCollect.url != null) && (this.photoCollect.url != "not-supported-format")){
+        return false
+      } else{
+        return true
+      }
+    },
+    openSnackBar(message) {
+      this.$buefy.snackbar.open({
+        message: message,
+        type: "is-danger",
+        position: "is-bottom",
+        duration: 5000
+      });
+    },
     changeStep() {
       store.commit("datacard/changeActiveStep", 1);
     },

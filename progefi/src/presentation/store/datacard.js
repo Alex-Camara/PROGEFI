@@ -56,14 +56,24 @@ const datacard = {
                 ipcRenderer.send('savePhotoCollect', state.photoCollect)
 
                 //Si se guardó, actualizar la url de la imagen
-                ipcRenderer.on('savePhotoCollectSuccess', (event, arg) => {
+                ipcRenderer.on('photoCollectSaved', (event, arg) => {
                     try {
+                        console.log('valor entrante: ' + arg) 
                         var fileReceived = fs.readFileSync(arg)
                         var imageFile = new File([fileReceived], 'filename')
                         commit('setPhotoCollectURL', imageFile);
                         //dispatch('getImageMetadata')
                     } catch (error) {
                         throw error;
+                    }
+                })
+                
+                ipcRenderer.on('photoCollectNotSaved', (event, arg) => {
+                    console.log('valor entrante erroneo: ' + arg) 
+                    state.photoCollect = {
+                        name: state.photoCollect.name,
+                        path: state.photoCollect.path,
+                        url: arg
                     }
                 })
             }

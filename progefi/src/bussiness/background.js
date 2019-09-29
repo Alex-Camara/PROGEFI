@@ -103,7 +103,7 @@ app.on("activate", () => {
 // Some APIs can only be used after this event occurs.
 app.on("ready", async () => {
   if (isDevelopment && !process.env.IS_TEST) {
-    // Install Vue Devtools
+    // Install Vue Devtools           
     //getDatabase();
     /*try {
       await installVueDevtools();
@@ -111,12 +111,12 @@ app.on("ready", async () => {
       console.error("Vue Devtools failed      to install:", e.toString());
     }*/      
   }
-  createWindow();
+  createWindow(); 
   win.setMenu(null);
 });
 
 // Exit cleanly on request from parent process in development mode.
-if (isDevelopment) {
+if (isDevelopment) {  
   if (process.platform === "win32") {
     process.on("message", data => {
       if (data === "graceful-exit") {

@@ -14,9 +14,14 @@ function listen() {
         datacard = new Datacard();
         datacardController = new DatacardController(datacard);
         datacardController.savePhotoCollect(photocollect)
-            .then(photoCollectPath => {
-                console.log('result: ' + photoCollectPath)
-                event.reply('savePhotoCollectSuccess', photoCollectPath);
+            .then(result => {
+                console.log('result: ' + result)
+                if (result == 'not-supported-format') {
+                    event.reply('photoCollectNotSaved', result);
+                } else {
+                    console.log('result: ' + result)
+                    event.reply('photoCollectSaved', result);
+                }
             })
             .catch(error => {
                 console.log(error)
