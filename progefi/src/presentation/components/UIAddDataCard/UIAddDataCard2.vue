@@ -17,21 +17,33 @@
     <div id="addDataCard2-right-side-component-content">
       <!-- ------- colection select ----- -->
       <b-field id="colection-select" custom-class="is-small is-centered" label="Colección:">
-        <b-dropdown aria-role="list">
+        <b-dropdown aria-role="list" v-model="selectedCollection">
           <button class="button is-secondary" slot="trigger">
-            <span>Colección</span>
+            <p>{{ selectedCollection }}</p>
             <b-icon icon="menu-down"></b-icon>
           </button>
+          <b-dropdown-item
+            aria-role="listitem"
+            v-for="collection in collections"
+            :key="collection.name"
+            :value="collection.name"
+          >{{ collection.name }}</b-dropdown-item>
         </b-dropdown>
       </b-field>
 
       <!-- ------- catalogue select ----- -->
       <b-field id="catalogue-select" custom-class="is-small is-centered" label="Catálogo:">
-        <b-dropdown aria-role="list">
+        <b-dropdown aria-role="list" v-model="selectedCatalogue">
           <button class="button is-secondary" slot="trigger">
-            <span>Catálogo</span>
+            <p>{{ selectedCatalogue }}</p>
             <b-icon icon="menu-down"></b-icon>
           </button>
+          <b-dropdown-item
+            aria-role="listitem"
+            v-for="catalogue in catalogues"
+            :key="catalogue.name"
+            :value="catalogue.name"
+          >{{ catalogue.name }}</b-dropdown-item>
         </b-dropdown>
       </b-field>
 
@@ -108,11 +120,24 @@ import { mapState } from "vuex";
 
 export default {
   data() {
-    return {};
+    return {
+      selectedCollection: "Selecciona una colección",
+      selectedCatalogue: "Selecciona un catálogo"
+    };
+  },
+  created() {
+    store.dispatch("collection/getCollections");
+    store.dispatch("catalogue/getCatalogues");
   },
   computed: {
     ...mapState("datacard", {
       photoCollect: state => state.photoCollect
+    }),
+    ...mapState("catalogue", {
+      catalogues: state => state.catalogues
+    }),
+    ...mapState("collection", {
+      collections: state => state.collections
     })
   },
   methods: {

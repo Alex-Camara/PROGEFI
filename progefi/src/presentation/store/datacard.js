@@ -54,11 +54,12 @@ const datacard = {
             if (photoCollect != null) {
                 commit('setPhotoCollect', photoCollect);
                 ipcRenderer.send('savePhotoCollect', state.photoCollect)
+                console.log('enviado una vez ')
 
                 //Si se guardó, actualizar la url de la imagen
                 ipcRenderer.on('photoCollectSaved', (event, arg) => {
                     try {
-                        console.log('valor entrante: ' + arg) 
+                        console.log('valor entrante: ' + arg)
                         var fileReceived = fs.readFileSync(arg)
                         var imageFile = new File([fileReceived], 'filename')
                         commit('setPhotoCollectURL', imageFile);

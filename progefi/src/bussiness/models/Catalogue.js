@@ -5,7 +5,7 @@ class Catalogue {
         var id = null;
         var name = null;
         var colection = null;
-    }
+    }   
 }
 
 export default Catalogue;
