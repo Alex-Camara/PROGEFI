@@ -7,7 +7,6 @@ class CatalogueDao {
         this.catalogueDaoImp = new CatalogueDaoImp();
     }
     getCatalogues() {
-        console.log('catalogue DAO')
         let catalogues = Promise.resolve(this.catalogueDaoImp.getCatalogues())
         return catalogues;
     }

@@ -15,10 +15,8 @@ const collection = {
     },
     actions: {
         getCollections({commit}) {
-            console.log('recuperando colecciones')
             ipcRenderer.send('getCollections')
             ipcRenderer.on('collections', (event, receivedCollections) => {
-                console.log('recibimos las colecciones' + receivedCollections)
                 commit('setCollections', receivedCollections)
             });
         }

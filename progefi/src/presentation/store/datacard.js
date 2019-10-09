@@ -12,7 +12,8 @@ const datacard = {
             path: null,
             url: null
         },
-        url: null
+        url: null,
+        datacard: {}
     },
     mutations: {
         changeActiveStep(state, activeStep) {
@@ -54,7 +55,6 @@ const datacard = {
             if (photoCollect != null) {
                 commit('setPhotoCollect', photoCollect);
                 ipcRenderer.send('savePhotoCollect', state.photoCollect)
-                console.log('enviado una vez ')
 
                 //Si se guardó, actualizar la url de la imagen
                 ipcRenderer.on('photoCollectSaved', (event, arg) => {
@@ -63,19 +63,19 @@ const datacard = {
                         var fileReceived = fs.readFileSync(arg)
                         var imageFile = new File([fileReceived], 'filename')
                         commit('setPhotoCollectURL', imageFile);
-                        //dispatch('getImageMetadata')
+                        dispatch('getImageMetadata')
                     } catch (error) {
                         throw error;
                     }
                 })
-                
+
                 ipcRenderer.on('photoCollectNotSaved', (event, arg) => {
-                    console.log('valor entrante erroneo: ' + arg) 
-                    state.photoCollect = {
+                    console.log('valor entrante erroneo: ' + arg)
+                    /*state.photoCollect = {
                         name: state.photoCollect.name,
                         path: state.photoCollect.path,
                         url: arg
-                    }
+                    }*/
                 })
             }
         },
@@ -86,9 +86,15 @@ const datacard = {
             commit("setPhotoCollectNull");
         },
         getImageMetadata({
-            commit
+            commit,
+            state
         }) {
             ipcRenderer.send('getImageMetadata')
+            ipcRenderer.on('imageMetadata', (event, arg) => {
+                console.log('valor entrante: ' + arg)
+                state.datacard = arg;
+                console.log('fotocolecta, valor modelo: ' + state.datacard.model)
+            })
         }
     }
 }

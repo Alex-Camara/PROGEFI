@@ -49,11 +49,17 @@
 
       <!-- ------- proyect select ----- -->
       <b-field id="project-select" custom-class="is-small is-centered" label="Proyecto:">
-        <b-dropdown aria-role="list">
+        <b-dropdown aria-role="list" v-model="selectedProject">
           <button class="button is-secondary" slot="trigger">
-            <span>Proyecto</span>
+            <p>{{ selectedProject }}</p>
             <b-icon icon="menu-down"></b-icon>
           </button>
+          <b-dropdown-item
+            aria-role="listitem"
+            v-for="project in projects"
+            :key="project.name"
+            :value="project.name"
+          >{{ project.name }}</b-dropdown-item>
         </b-dropdown>
       </b-field>
 
@@ -69,9 +75,9 @@
 
       <!-- ------- device select ----- -->
       <b-field id="device-select" custom-class="is-small is-centered" label="Dispositivo:">
-        <b-dropdown aria-role="list">
+        <b-dropdown aria-role="list" v-model="selectedDevice">
           <button class="button is-secondary" slot="trigger">
-            <span>Dispositivo</span>
+            <p>{{ selectedDevice }}</p>
             <b-icon icon="menu-down"></b-icon>
           </button>
         </b-dropdown>
@@ -79,9 +85,9 @@
 
       <!-- ------- model select ----- -->
       <b-field id="model-select" custom-class="is-small is-centered" label="Modelo:">
-        <b-dropdown aria-role="list">
+        <b-dropdown aria-role="list" v-model="selectedModel">
           <button class="button is-secondary" slot="trigger">
-            <span>Modelo</span>
+            <p>{{ selectedModel }}</p>
             <b-icon icon="menu-down"></b-icon>
           </button>
         </b-dropdown>
@@ -93,7 +99,12 @@
         custom-class="is-small is-centered"
         label="Fecha de colecta:"
       >
-        <b-datepicker rounded placeholder="Elige una fecha..." icon="calendar-today"></b-datepicker>
+        <b-datepicker
+          v-model="selectedDate"
+          rounded
+          placeholder="Elige una fecha..."
+          icon="calendar-today"
+        ></b-datepicker>
       </b-field>
 
       <!-- ------- collect hour select ----- -->
@@ -102,7 +113,13 @@
         custom-class="is-small is-centered"
         label="Hora de colecta:"
       >
-        <b-timepicker rounded placeholder="Elige una hora..." icon="clock"></b-timepicker>
+        <b-timepicker
+          v-model="selectedHour"
+          rounded
+          placeholder="Elige una hora..."
+          icon="clock"
+          hour-format=24
+        ></b-timepicker>
       </b-field>
     </div>
 
@@ -122,14 +139,19 @@ export default {
   data() {
     return {
       selectedCollection: "Selecciona una colección",
-      selectedCatalogue: "Selecciona un catálogo"
+      selectedCatalogue: "Selecciona un catálogo",
+      selectedProject: "Selecciona un proyecto"
     };
   },
   created() {
     store.dispatch("collection/getCollections");
     store.dispatch("catalogue/getCatalogues");
+    store.dispatch("project/getProjects");
   },
   computed: {
+    ...mapState("datacard", {
+      datacard: state => state.datacard
+    }),
     ...mapState("datacard", {
       photoCollect: state => state.photoCollect
     }),
@@ -138,7 +160,55 @@ export default {
     }),
     ...mapState("collection", {
       collections: state => state.collections
-    })
+    }),
+    ...mapState("project", {
+      projects: state => state.projects
+    }),
+    selectedDevice: function() {
+      if (this.datacard.device == null) {
+        return "Selecciona un dispositivo";
+      } else {
+        return this.datacard.device;
+      }
+    },
+    selectedModel: function() {
+      if (this.datacard.model == null) {
+        return "Selecciona un modelo";
+      } else {
+        return this.datacard.model;
+      }
+    },
+    selectedDate: function() {
+      if (this.datacard.collectDate == null) {
+        return new Date();
+      } else {
+        var formatDate = Date.parse(this.datacard.collectDate, "dd-mm-yyyy");
+        var date = new Date(formatDate);
+        return date;
+      }
+    },
+    selectedHour: function() {
+      if (this.datacard.collectHour == null) {
+        console.log('la fecha establecida esta vacia: '+this.datacard.hourDate )
+        console.log('la fecha establecida esta vacia' )
+        return new Date();
+      } else {
+        var formatDate = Date.parse(this.datacard.collectHour, "HH-mm");
+        var date = new Date(formatDate);
+        /*var date = new Date()
+        date.setHours(17)
+        date.setMinutes(14)*/
+        console.log('la fecha establecida es: ' + date)
+        return date;
+      }
+    } /*,
+    selectedProject: function () { 
+      if (this.projects == null) {
+        return "Selecciona un proyecto";
+      } else {
+        return this.projects[0].name;
+      }
+    }*/
   },
   methods: {
     backwardStep() {

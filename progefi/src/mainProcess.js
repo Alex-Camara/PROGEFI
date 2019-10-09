@@ -1,4 +1,4 @@
-"use strict";  
+"use strict";         
 
 import PresentationProcess from './presentation/presentationProcess'
 import BussinessProcess from './bussiness/bussinessListener'
@@ -6,7 +6,7 @@ import BussinessProcess from './bussiness/bussinessListener'
 const electron = require('electron');
 const app = electron.app;     
 const BrowserWindow = electron.BrowserWindow; 
-const protocol = electron.protocol; 
+const protocol = electron.protocol;   
  
 const vueCliPlugIn = require('vue-cli-plugin-electron-builder/lib');
 //const createProtocol = vueCliPlugIn.createProtocol;
@@ -14,12 +14,12 @@ const vueCliPlugIn = require('vue-cli-plugin-electron-builder/lib');
 
 const isDevelopment = process.env.NODE_ENV !== "production";
                          
-const {
+const { 
     ipcMain
 } = require('electron')      
  
 var presentationProcess = null; 
-
+         
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
   

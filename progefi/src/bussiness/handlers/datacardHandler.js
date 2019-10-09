@@ -7,7 +7,7 @@ const fs = require('fs');
 import Datacard from '../models/Datacard.js';
 
 class DatacardHandler {
-  constructor(datacard) {
+  constructor() {
     this.datacard = new Datacard();
   }
   async savePhotoCollect(photoCollect) {
@@ -69,20 +69,25 @@ class DatacardHandler {
     }
   }
   getImageMetadata() {
-    var metadata = this.extractMetadata().then(result => {
+    var datacardWithMetadata = this.extractMetadata().then(result => {
+      var fullCollectDate = result.exif.CreateDate;
+      var fullSplitCollectDate = this.formatDate(fullCollectDate);
+
+      var collectDate = fullSplitCollectDate[0]
+      var collectHour = fullSplitCollectDate[1]
       var device = result.image.Make;
       var model = result.image.Model;
-      var collectDate = result.exif.CreateDate;
       var latitude = result.gps.GPSLatitude;
       var altitude = result.gps.GPSAltitude;
       var longitude = result.gps.GPSLongitude;
 
-      this.datacard.setMetadata(device, model, latitude, altitude, longitude, collectDate);
+      this.datacard.setMetadata(device, model, latitude, altitude, longitude, collectDate, collectDate+ ' ' +collectHour);
       return this.datacard
     })
-    return metadata
+    return datacardWithMetadata
   }
   extractMetadata() {
+    //se usa la biblioteca exif para extraer los metadatos de la fotocolecta
     var exifImage = require('exif').ExifImage;
     var path = this.datacard.getPhotoCollectPath()
     return new Promise(function (resolve, reject) {
@@ -97,6 +102,11 @@ class DatacardHandler {
         }
       });
     })
+  }
+  formatDate(fullCollectDate) {
+    fullCollectDate = fullCollectDate.split(' ', 2);
+    fullCollectDate[0] = fullCollectDate[0].replace(/:/g, '/');
+    return fullCollectDate;
   }
 }
 export default DatacardHandler;

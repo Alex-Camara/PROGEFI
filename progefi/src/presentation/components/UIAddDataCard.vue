@@ -35,10 +35,10 @@
           <b-step-item label="Subir fotografía" icon="image">
             <UIAddDataCard1></UIAddDataCard1>
           </b-step-item>
-          <b-step-item label="Datos generales">
+          <b-step-item label="Datos generales" icon="file-document-edit">
             <UIAddDataCard2></UIAddDataCard2>
           </b-step-item>
-          <b-step-item label="Datos geográficos"></b-step-item>
+          <b-step-item label="Datos geográficos" icon="earth"></b-step-item>
           <b-step-item label="Datos taxonómicos"></b-step-item>
           <b-step-item label="Validación"></b-step-item>
         </b-steps>
