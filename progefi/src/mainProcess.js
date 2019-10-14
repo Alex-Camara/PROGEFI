@@ -7,11 +7,11 @@ const electron = require('electron');
 const app = electron.app;     
 const BrowserWindow = electron.BrowserWindow; 
 const protocol = electron.protocol;   
- 
+     
 const vueCliPlugIn = require('vue-cli-plugin-electron-builder/lib');
 //const createProtocol = vueCliPlugIn.createProtocol;
 //const installVueDevtools = vueCliPlugIn.installVueDevtools;
-
+           
 const isDevelopment = process.env.NODE_ENV !== "production";
                          
 const { 
@@ -19,14 +19,14 @@ const {
 } = require('electron')      
  
 var presentationProcess = null; 
-         
+          
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
   
 function main() {
               
     // Scheme must be registered before the app is ready
-    protocol.registerSchemesAsPrivileged([{
+    protocol.registerSchemesAsPrivileged([{        
         scheme: "app",
         privileges: {
             secure: true,

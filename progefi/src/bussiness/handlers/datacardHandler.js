@@ -70,19 +70,31 @@ class DatacardHandler {
   }
   getImageMetadata() {
     var datacardWithMetadata = this.extractMetadata().then(result => {
+      //obtener y darle formato a la fecha
       var fullCollectDate = result.exif.CreateDate;
       var fullSplitCollectDate = this.formatDate(fullCollectDate);
 
+      //obtener y darle formato a la latitud
+      var longitudeReference = result.gps.GPSLongitudeRef;
+      var DMSLongitude = result.gps.GPSLongitude;
+      var longitude = this.convertGPSCoordinatesToDecimals(DMSLongitude, longitudeReference)
+
+      //obtener y darle formato a la longitud
+      var latitudeReference = result.gps.GPSLatitudeRef;
+      var DMSLatitude = result.gps.GPSLatitude;
+      var latitude = this.convertGPSCoordinatesToDecimals(DMSLatitude, latitudeReference)
+
+      //obtener los demas parametros
       var collectDate = fullSplitCollectDate[0]
       var collectHour = fullSplitCollectDate[1]
       var device = result.image.Make;
       var model = result.image.Model;
-      var latitude = result.gps.GPSLatitude;
       var altitude = result.gps.GPSAltitude;
-      var longitude = result.gps.GPSLongitude;
 
-      this.datacard.setMetadata(device, model, latitude, altitude, longitude, collectDate, collectDate+ ' ' +collectHour);
+      this.datacard.setMetadata(device, model, latitude, altitude, longitude, collectDate, collectDate + ' ' + collectHour);
       return this.datacard
+    }).catch(error =>{
+      throw error;
     })
     return datacardWithMetadata
   }
@@ -96,6 +108,8 @@ class DatacardHandler {
         image: path
       }, function (error, exifData) {
         if (!error) {
+          console.log('metadatos')
+          console.info(exifData)
           resolve(exifData)
         } else {
           reject(error)
@@ -107,6 +121,19 @@ class DatacardHandler {
     fullCollectDate = fullCollectDate.split(' ', 2);
     fullCollectDate[0] = fullCollectDate[0].replace(/:/g, '/');
     return fullCollectDate;
+  }
+  convertGPSCoordinatesToDecimals(DMSCoordinate, reference) {
+    var degrees = DMSCoordinate[0];
+    var minutes = DMSCoordinate[1];
+    var seconds = DMSCoordinate[2];
+    
+    var decimalCoordinate = degrees + (minutes / 60) + (seconds / 3600);
+
+    if(reference == 'W' || reference == 'S'){
+      return -(decimalCoordinate)
+    } else{
+      return decimalCoordinate;
+    }
   }
 }
 export default DatacardHandler;

@@ -2,7 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import UIShowDataCards from "../components/UIShowDataCards.vue";
 import UIAddDataCard from "../components/UIAddDataCard.vue";
-import UIAddDataCard1 from "../components/UIAddDataCard/UIAddDataCard1";
+import UIUploadImage from "../components/UIAddDataCard/UIUploadImage";
 
 Vue.use(Router);
 
@@ -19,9 +19,9 @@ export default new Router({
       component: UIAddDataCard
     },
     {
-      path: "UIAddDataCard1",
-      name: "UIAddDataCard1",
-      component: UIAddDataCard1
+      path: "UIUploadImage",
+      name: "UIUploadImage",
+      component: UIUploadImage
     }
   ]
 });

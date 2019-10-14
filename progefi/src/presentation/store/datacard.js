@@ -10,23 +10,41 @@ const datacard = {
         photoCollect: {
             name: null,
             path: null,
-            url: null
+            url: null,
+            loading: false,
+            changed: false,
+            hasMetadata: true
         },
-        url: null,
-        datacard: {}
+        datacard: {
+            longitude: -101.433236,
+            latitude: 20.102365,
+            altitude: null
+        }
     },
     mutations: {
-        changeActiveStep(state, activeStep) {
+        setActiveStep(state, activeStep) {
             state.activeStep = activeStep
+        },
+        isLoading(state, status) {
+            state.photoCollect.loading = status;
+        },
+        hasChanged(state, status) {
+            state.photoCollect.changed = status;
+        },
+        hasMetadata(state, status) {
+            state.photoCollect.hasMetadata = status;
         },
         setPhotoCollectURL(state, photoCollect) {
             var reader = new FileReader();
 
-            reader.onloadend = function () {
+            reader.onloadend = () => {
                 state.photoCollect = {
                     name: state.photoCollect.name,
                     path: state.photoCollect.path,
-                    url: reader.result
+                    url: reader.result,
+                    loading: false,
+                    changed: true,
+                    hasMetadata: true
                 }
             };
             reader.readAsDataURL(photoCollect);
@@ -35,15 +53,26 @@ const datacard = {
             state.photoCollect = {
                 "name": photoCollect.name,
                 "path": photoCollect.path,
-                "type": photoCollect.type
+                "type": photoCollect.type,
+                loading: false,
+                changed: false,
+                "hasMetadata": true
             };
         },
         setPhotoCollectNull(state) {
             state.photoCollect = {
                 name: null,
                 path: null,
-                url: null
+                url: null,
+                loading: false,
+                hasMetadata: true
             }
+        },
+        setLongitude(state, longitude) {
+            state.datacard.longitude = longitude
+        },
+        setLatitude(state, latitude) {
+            state.datacard.latitude = latitude
         }
     },
     actions: {
@@ -54,7 +83,9 @@ const datacard = {
         }, photoCollect) {
             if (photoCollect != null) {
                 commit('setPhotoCollect', photoCollect);
+
                 ipcRenderer.send('savePhotoCollect', state.photoCollect)
+                commit("isLoading", true)
 
                 //Si se guardó, actualizar la url de la imagen
                 ipcRenderer.on('photoCollectSaved', (event, arg) => {
@@ -63,26 +94,26 @@ const datacard = {
                         var fileReceived = fs.readFileSync(arg)
                         var imageFile = new File([fileReceived], 'filename')
                         commit('setPhotoCollectURL', imageFile);
-                        dispatch('getImageMetadata')
                     } catch (error) {
+                        commit("isLoading", false)
                         throw error;
                     }
                 })
 
                 ipcRenderer.on('photoCollectNotSaved', (event, arg) => {
-                    console.log('valor entrante erroneo: ' + arg)
-                    /*state.photoCollect = {
+                    state.photoCollect = {
                         name: state.photoCollect.name,
                         path: state.photoCollect.path,
-                        url: arg
-                    }*/
+                        url: arg,
+                        loading: false
+                    }
                 })
             }
         },
         resetPhotoCollect({
             commit
         }) {
-            commit("changeActiveStep", 0);
+            commit("setActiveStep", 0);
             commit("setPhotoCollectNull");
         },
         getImageMetadata({
@@ -91,9 +122,13 @@ const datacard = {
         }) {
             ipcRenderer.send('getImageMetadata')
             ipcRenderer.on('imageMetadata', (event, arg) => {
-                console.log('valor entrante: ' + arg)
                 state.datacard = arg;
-                console.log('fotocolecta, valor modelo: ' + state.datacard.model)
+                commit("hasChanged", false);
+            })
+
+            ipcRenderer.on('imageMetadataFailed', (event, arg) => {
+                commit("hasMetadata", false);
+                commit("hasChanged", false);
             })
         }
     }

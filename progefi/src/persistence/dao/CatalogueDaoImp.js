@@ -7,9 +7,9 @@ class CatalogueDaoImp {
         this.databaseObject = new Database();
         this.database = null;
     }
-    getCatalogues() {
+    getCatalogues(collectionId) {
         let catalogues = new Promise((resolve, reject) => {
-            this.getCataloguesFromDatabase(function (catalogues, err) {
+            this.getCataloguesFromDatabase(collectionId, function (catalogues, err) {
                 if (!err) {
                     resolve(catalogues)
                 } else {
@@ -17,9 +17,9 @@ class CatalogueDaoImp {
                 }
             });
         })
-        return catalogues;
+        return catalogues;     
     }
-    async getCataloguesFromDatabase(callback, err) {
+    async getCataloguesFromDatabase(collectionId, callback) {
         var self = this;
         var catalogues = []
 
@@ -27,10 +27,10 @@ class CatalogueDaoImp {
 
         this.database = this.databaseObject.getDatabase()
 
-        let sqlStatement = 'SELECT id, name, collection_id FROM catalogues';
+        let sqlStatement = 'SELECT id, name, collection_id FROM catalogues WHERE collection_id = ?';
 
         this.database.serialize(() => {
-            this.database.each(sqlStatement, (err, row) => {
+            this.database.each(sqlStatement, collectionId, (err, row) => {
                     if (!err) {
                         catalogues.push(row)
                     } else {

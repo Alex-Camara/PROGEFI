@@ -5,8 +5,8 @@ class CatalogueHandler {
     constructor(){
         this.catalogueDao = new CatalogueDAO()
     }
-    async getCatalogues(result) {
-        let catalogues = await this.catalogueDao.getCatalogues();
+    async getCatalogues(collectionId, result) {
+        let catalogues = await this.catalogueDao.getCatalogues(collectionId);
         result(catalogues);
     }
 }

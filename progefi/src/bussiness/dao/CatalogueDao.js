@@ -6,8 +6,8 @@ class CatalogueDao {
     constructor() {
         this.catalogueDaoImp = new CatalogueDaoImp();
     }
-    getCatalogues() {
-        let catalogues = Promise.resolve(this.catalogueDaoImp.getCatalogues())
+    getCatalogues(collectionId) {
+        let catalogues = Promise.resolve(this.catalogueDaoImp.getCatalogues(collectionId))
         return catalogues;
     }
 }

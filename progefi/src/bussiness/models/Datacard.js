@@ -8,7 +8,7 @@ class Datacard {
         this.model = null;
         this.collectDate = null;
         this.collectHour = null,
-        this.latitud = null;
+        this.latitude = null;
         this.altitude = null;
         this.longitude = null;
     }
@@ -24,10 +24,10 @@ class Datacard {
     getPhotoCollectDuplicatePath() {
         return this.photoCollectDuplicatePath;
     }
-    setMetadata(device, model, latitud, altitude, longitude, collectDate, collectHour){
+    setMetadata(device, model, latitude, altitude, longitude, collectDate, collectHour){
         this.device = device;
         this.model = model;
-        this.latitud = latitud;
+        this.latitude = latitude;
         this.altitude = altitude;
         this.longitude = longitude;
         this.collectDate = collectDate;

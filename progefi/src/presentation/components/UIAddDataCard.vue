@@ -10,7 +10,7 @@
       </div>
 
       <div id="addDataCard-component-title">
-        <nav class="breadcrumb has-bullet-separator is-medium">
+        <!--<nav class="breadcrumb has-bullet-separator is-medium">
           <ul>
             <li>
               <b-button rounded class="is-primary" v-on:click="showDataCards">Fichas de fotocolecta</b-button>
@@ -19,7 +19,8 @@
               <b-button rounded class="is-secondary">Agregar ficha</b-button>
             </li>
           </ul>
-        </nav>
+        </nav>-->
+        <p class="is-size-4">Agregar ficha</p>
       </div>
     </div>
 
@@ -32,13 +33,15 @@
           :has-navigation="false"
           v-model="activeStep"
         >
-          <b-step-item label="Subir fotografía" icon="image">
-            <UIAddDataCard1></UIAddDataCard1>
+          <b-step-item label="Subir fotografía" icon="image" :clickable="false">
+            <UIUploadImage></UIUploadImage>
           </b-step-item>
-          <b-step-item label="Datos generales" icon="file-document-edit">
-            <UIAddDataCard2></UIAddDataCard2>
+          <b-step-item label="Datos generales" icon="file-document-edit" :clickable="false">
+            <UIGeneralData></UIGeneralData>
           </b-step-item>
-          <b-step-item label="Datos geográficos" icon="earth"></b-step-item>
+          <b-step-item label="Datos geográficos" icon="earth" :clickable="false">
+            <UIGeographicalData></UIGeographicalData>
+            </b-step-item>
           <b-step-item label="Datos taxonómicos"></b-step-item>
           <b-step-item label="Validación"></b-step-item>
         </b-steps>
@@ -48,8 +51,9 @@
 </template>
 
 <script>
-import UIAddDataCard1 from "./UIAddDataCard/UIAddDataCard1.vue";
-import UIAddDataCard2 from "./UIAddDataCard/UIAddDataCard2.vue";
+import UIUploadImage from "./UIAddDataCard/UIUploadImage.vue";
+import UIGeneralData from "./UIAddDataCard/UIGeneralData.vue";
+import UIGeographicalData from "./UIAddDataCard/UIGeographicalData.vue";
 import { mapState } from "vuex";
 import store from "../store/store.js";
 import router from "../router/router.js";
@@ -57,8 +61,9 @@ import router from "../router/router.js";
 export default {
   name: "UIAddDataCard",
   components: {
-    UIAddDataCard1,
-    UIAddDataCard2
+    UIUploadImage,
+    UIGeneralData,
+    UIGeographicalData
   },
   data() {
     return {};
@@ -82,7 +87,7 @@ export default {
 <style lang="scss">
 #addDataCard-component {
   display: grid;
-  grid-template-rows: 10% 90%;
+  grid-template-rows: 50px 400px;
   height: 100%;
 }
 
