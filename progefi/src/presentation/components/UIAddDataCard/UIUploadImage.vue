@@ -13,7 +13,7 @@
             animated
             multilined
           >
-            <b-icon icon="information-outline" size="is-small" type="is-primary-light"></b-icon>
+            <font-awesome-icon id="icon_info" icon="info-circle" pull="left" />
           </b-tooltip>Sube el archivo de la fotocolecta
         </p>
       </div>
@@ -112,6 +112,7 @@ export default {
 </script>
 
 <style lang="scss">
+@import "../../style/style.scss";
 #addDataCard1-component {
   display: grid;
   grid-template-columns: 50% 50%;
@@ -119,6 +120,7 @@ export default {
   width: 100%;
   align-items: start;
   margin-top: 10px;
+  //background-color: brown
 }
 
 #addDataCard1-left-side {
@@ -138,11 +140,13 @@ export default {
   justify-content: center;
   align-items: center;
   margin-left: 10px;
+  //background-color:crimson;
 }
 
 #addDataCard1-component-header {
   grid-row: 1 / 2;
   justify-self: center;
+  text-align: center;
 }
 
 #addDataCard1-component-content {
@@ -151,18 +155,32 @@ export default {
 }
 
 #addDataCard1-component-image {
-  justify-content: center;
+  justify-items: center;
+  //margin-left: 60px;
   max-height: 100%;
   max-width: 100%;
+  
 }
 
 #uploadedImage {
-  max-height: 80%;
-  max-width: 80%;
+  max-height: 100%;
+  max-width: 100%;
 }
 
 #addDataCard1-next-button {
   grid-row: 3 / 4;
   justify-self: end;
+}
+
+#icon_info {
+  color: $dark;
+  padding-top: 5px;
+  transition: 0.5s;
+  font-size: 25px;
+}
+
+#icon_info:hover {
+  transform:scale(1.5);
+  transition: 0.5s;
 }
 </style>

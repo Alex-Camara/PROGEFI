@@ -13,14 +13,15 @@
       <hr class="separator" />
       <div v-observe-visibility="visibilityChanged" v-if="photoCollect.changed">
         Extrayendo metadatos de la imagen, espere...
-        <progress class="progress is-small is-accent" max="100"></progress>
+        <progress
+          class="progress is-small is-accent"
+          max="100"
+        ></progress>
       </div>
     </div>
-    
 
     <!-- --------AddDataCard2 Right Side Component Content----- -->
     <div id="generalData_component_content">
-      
       <!-- ------- colection select ----- -->
       <b-field id="colection-select" custom-class="is-small is-centered" label="Colección:">
         <b-select placeholder="Selecciona una colección" v-model="selectedCollection">
@@ -60,21 +61,40 @@
       </b-field>
 
       <!-- ------- device select ----- -->
+      <metadata-helper
+        id="device_helper"
+        v-bind:selectedValue="selectedDevice"
+        v-bind:originalValue="metadataValues.device"
+        v-bind:attribute="'device'"
+        v-if="hasMetadata"
+      ></metadata-helper>
+
       <b-field id="device-select" custom-class="is-small is-centered" label="Dispositivo:">
-        <b-dropdown aria-role="list" v-model="selectedDevice">
-          <button class="button is-secondary" slot="trigger">
-            <p>{{ selectedDevice }}</p>
-            <b-icon icon="menu-down"></b-icon>
-          </button>
-        </b-dropdown>
+        <b-input type="text" v-model="selectedDevice" placeholder="selecciona un dispositivo"></b-input>
       </b-field>
 
       <!-- ------- model select ----- -->
+      <metadata-helper
+        id="model_helper"
+        v-bind:selectedValue="selectedModel"
+        v-bind:originalValue="metadataValues.model"
+        v-bind:attribute="'model'"
+        v-if="hasMetadata"
+      ></metadata-helper>
+
       <b-field id="model-select" custom-class="is-small is-centered" label="Modelo:">
-        <b-input type="text" v-model="selectedModel" placeholder="seleccion un modelo"></b-input>
+        <b-input type="text" v-model="selectedModel" placeholder="selecciona un modelo"></b-input>
       </b-field>
 
       <!-- ------- collect date select ----- -->
+      <metadata-helper
+        id="collectDate_helper"
+        v-bind:selectedValue="getFormattedDate(selectedDate)"
+        v-bind:originalValue="getFormattedDate(metadataValues.collectDate)"
+        v-bind:attribute="'collectDate'"
+        v-if="hasMetadata"
+      ></metadata-helper>
+
       <b-field
         id="collect-date-select"
         custom-class="is-small is-centered"
@@ -89,6 +109,14 @@
       </b-field>
 
       <!-- ------- collect hour select ----- -->
+      <metadata-helper
+        id="collectHour_helper"
+        v-bind:selectedValue="getFormattedHour(selectedHour)"
+        v-bind:originalValue="getFormattedHour(metadataValues.collectHour)"
+        v-bind:attribute="'collectHour'"
+        v-if="hasMetadata"
+      ></metadata-helper>
+
       <b-field
         id="collect-hour-select"
         custom-class="is-small is-centered"
@@ -115,14 +143,27 @@
 <script>
 import store from "../../store/store.js";
 import { mapState } from "vuex";
+import styleColors from "../../style/style.scss";
+
+import metadataHelper from "./metadataHelper.vue";
 
 export default {
+  name: "UIGeneralData",
+  components: {
+    "metadata-helper": metadataHelper
+  },
   data() {
     return {
       photoCollectHasChanged: false,
       selectedCollection: null,
       selectedCatalogue: null,
-      selectedProject: null
+      selectedProject: null,
+      metadataValues: {
+        device: "Apple",
+        model: "iPhone",
+        collectDate: "30/01/17",
+        collectHour: "03:43"
+      }
     };
   },
   created() {
@@ -145,41 +186,49 @@ export default {
     ...mapState("project", {
       projects: state => state.projects
     }),
-    hasMetadata: function(){
+    hasMetadata: function() {
       return this.photoCollect.hasMetadata;
     },
-    selectedDevice: function() {
-      if (this.datacard.device == null) {
-        return "Selecciona un dispositivo";
-      } else {
+    selectedDevice: {
+      get: function() {
         return this.datacard.device;
+      },
+      set: function(newValue) {
+        this.datacard.device = newValue;
       }
     },
-    selectedModel: function() {
-      if (this.datacard.model == null) {
-        return "Selecciona un modelo";
-      } else {
+    selectedModel: {
+      get: function() {
         return this.datacard.model;
+      },
+      set: function(newValue) {
+        this.datacard.model = newValue;
       }
     },
-    selectedDate: function() {
-      if (this.datacard.collectDate == null) {
-        return new Date();
-      } else {
-        var formatDate = Date.parse(this.datacard.collectDate, "dd-mm-yyyy");
-        var date = new Date(formatDate);
-        return date;
+    selectedDate: {
+      get: function() {
+        if (this.datacard.collectDate == null) {
+          return new Date();
+        } else {
+          var formatDate = Date.parse(this.datacard.collectDate, "dd-mm-yyyy");
+          var date = new Date(formatDate);
+          return date;
+        }
+      },
+      set: function(newValue) {
+        this.datacard.collectDate = newValue;
       }
     },
-    selectedHour: function() {
-      if (this.datacard.collectHour == null) {
-        //console.log("la fecha establecida esta vacia");
-        return new Date();
-      } else {
-        var formatDate = Date.parse(this.datacard.collectHour, "HH-mm");
-        var date = new Date(formatDate);
-        //console.log("la fecha establecida es: " + date);
-        return date;
+    selectedHour: {
+      get: function() {
+        if (this.datacard.collectHour == null) {
+          return new Date();
+        } else {
+          return this.getFormattedHour(this.datacard.collectHour);
+        }
+      },
+      set: function(newValue) {
+        this.datacard.collectHour = newValue;
       }
     }
   },
@@ -187,13 +236,19 @@ export default {
     //cuando se seleccione una colección, se recuperarán los catálogos de dicha colección
     selectedCollection(newValue, oldValue) {
       if (newValue != null) {
-        console.log('entro a coleccion')
         store.dispatch("catalogue/getCatalogues", newValue);
       }
     },
     hasMetadata(newValue, oldValue) {
       if (!newValue) {
         this.openSnackBar("¡Esta fotocolecta no contiene metadatos!");
+      } else {
+        this.metadataValues = {
+          device: this.datacard.device,
+          model: this.datacard.model,
+          collectDate: this.datacard.collectDate,
+          collectHour: this.datacard.collectHour
+        };
       }
     }
   },
@@ -212,24 +267,29 @@ export default {
         duration: 5000
       });
     },
-    visibilityChanged(isVisible, entry) {
-      if(this.photoCollect.changed && isVisible){
-        setTimeout(this.getMetaData,1000); 
-        
-      }else{
-        console.log('la imagen no ha cambiado')
-      }
-      
-      //this.$refs.map.mapObject.invalidateSize();
+    getFormattedDate(date) {
+      var moment = require("moment");
+      return moment(date).format("YYYY MM DD");
     },
-    getMetaData(){
-        store.dispatch("datacard/getImageMetadata");
+    getFormattedHour(date) {
+      var formatDate = Date.parse(date, "HH-mm");
+      return new Date(formatDate);
+    },
+    //para obtener de nuevo los metadatos si la imagen ha cambiado
+    visibilityChanged(isVisible, entry) {
+      if (this.photoCollect.changed && isVisible) {
+        setTimeout(this.getMetaData, 1000);
+      }
+    },
+    getMetaData() {
+      store.dispatch("datacard/getImageMetadata");
     }
   }
 };
 </script>
 
 <style lang="scss">
+@import "../../style/style.scss";
 #generalData_component {
   display: grid;
   grid-template-rows: 4% 1% 90% 5%;
@@ -286,9 +346,21 @@ export default {
   width: 400px;
 }
 
+#device_helper {
+  grid-row: 3 / 4;
+  grid-column: 1 / 2;
+  justify-self: end;
+}
+
 #device-select {
   grid-row: 3 / 4;
   grid-column: 2 / 3;
+}
+
+#model_helper {
+  grid-row: 3 / 4;
+  grid-column: 3 / 4;
+  justify-self: end;
 }
 
 #model-select {
@@ -296,9 +368,21 @@ export default {
   grid-column: 4 / 5;
 }
 
+#collectDate_helper {
+  grid-row: 4 / 5;
+  grid-column: 1 / 2;
+  justify-self: end;
+}
+
 #collect-date-select {
   grid-row: 4 / 5;
   grid-column: 2 / 3;
+}
+
+#collectHour_helper {
+  grid-row: 4 / 5;
+  grid-column: 3 / 4;
+  justify-self: end;
 }
 
 #collect-hour-select {

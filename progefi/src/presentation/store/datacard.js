@@ -13,7 +13,7 @@ const datacard = {
             url: null,
             loading: false,
             changed: false,
-            hasMetadata: true
+            hasMetadata: null
         },
         datacard: {
             longitude: -101.433236,
@@ -44,7 +44,7 @@ const datacard = {
                     url: reader.result,
                     loading: false,
                     changed: true,
-                    hasMetadata: true
+                    hasMetadata: null
                 }
             };
             reader.readAsDataURL(photoCollect);
@@ -56,7 +56,7 @@ const datacard = {
                 "type": photoCollect.type,
                 loading: false,
                 changed: false,
-                "hasMetadata": true
+                "hasMetadata": null
             };
         },
         setPhotoCollectNull(state) {
@@ -65,7 +65,7 @@ const datacard = {
                 path: null,
                 url: null,
                 loading: false,
-                hasMetadata: true
+                hasMetadata: null
             }
         },
         setLongitude(state, longitude) {
@@ -123,6 +123,7 @@ const datacard = {
             ipcRenderer.send('getImageMetadata')
             ipcRenderer.on('imageMetadata', (event, arg) => {
                 state.datacard = arg;
+                commit("hasMetadata", true);
                 commit("hasChanged", false);
             })
 

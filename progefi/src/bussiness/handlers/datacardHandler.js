@@ -89,7 +89,7 @@ class DatacardHandler {
       var collectHour = fullSplitCollectDate[1]
       var device = result.image.Make;
       var model = result.image.Model;
-      var altitude = result.gps.GPSAltitude;
+      var altitude = result.gps.GPSAltitude.toFixed(6);
 
       this.datacard.setMetadata(device, model, latitude, altitude, longitude, collectDate, collectDate + ' ' + collectHour);
       return this.datacard
@@ -128,6 +128,7 @@ class DatacardHandler {
     var seconds = DMSCoordinate[2];
     
     var decimalCoordinate = degrees + (minutes / 60) + (seconds / 3600);
+    decimalCoordinate = decimalCoordinate.toFixed(6);
 
     if(reference == 'W' || reference == 'S'){
       return -(decimalCoordinate)

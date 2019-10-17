@@ -87,6 +87,17 @@ $dropdown-item-active-background-color: $primary-light;
 //tipografía
 $body-family: 'Nunito', sans-serif;
 
+//metadata helpers
+$metadata-active: $secondary;
+$metadata-inactive: $accent;
+
+:export {
+  primary: $primary;
+  secondary: $secondary;
+  accent: $accent;
+}
+
+
 // Import Bulma and Buefy styles
 @import "~bulma";
 @import "~buefy/src/scss/buefy";

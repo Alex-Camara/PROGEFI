@@ -11,7 +11,15 @@ import 'leaflet/dist/leaflet.css'
 import VueObserveVisibility from 'vue-observe-visibility'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+import { faClock } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+ 
+library.add(faInfoCircle, faClock)
+ 
+Vue.component('font-awesome-icon', FontAwesomeIcon)
+   
 // this part resolve an issue where the markers would not appear
 delete Icon.Default.prototype._getIconUrl;
 
