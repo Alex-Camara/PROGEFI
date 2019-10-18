@@ -18,7 +18,13 @@ const datacard = {
         datacard: {
             longitude: -101.433236,
             latitude: 20.102365,
-            altitude: null
+            altitude: null,
+            metadataValues: {
+                device: "Apple",
+                model: "iPhone",
+                collectDate: "30/01/17",
+                collectHour: "03:43"
+              }
         }
     },
     mutations: {
@@ -73,6 +79,17 @@ const datacard = {
         },
         setLatitude(state, latitude) {
             state.datacard.latitude = latitude
+        },
+        setMetadataValues(state, metadata){
+            state.datacard.metadataValues = {
+                device: metadata.device,
+                model: metadata.model,
+                collectDate: metadata.collectDate,
+                collectHour: metadata.collectHour,
+                longitude: metadata.longitude,
+                latitude: metadata.latitude,
+                altitude: metadata.altitude
+            }
         }
     },
     actions: {
@@ -125,6 +142,7 @@ const datacard = {
                 state.datacard = arg;
                 commit("hasMetadata", true);
                 commit("hasChanged", false);
+                commit("setMetadataValues", arg);
             })
 
             ipcRenderer.on('imageMetadataFailed', (event, arg) => {

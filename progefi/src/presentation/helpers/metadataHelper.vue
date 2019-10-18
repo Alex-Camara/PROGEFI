@@ -7,19 +7,20 @@
 </template>
 
 <script>
-import store from "../../store/store.js";
+import store from "../store/store.js";
 import { mapState } from "vuex";
-import styleColors from "../../style/style.scss";
+import styleColors from "../style/style.scss";
 
 export default {
   name: "metadataHelper",
-  props: ["originalValue", "selectedValue", "attribute"],
+  props: ["selectedValue", "attribute"],
   data() {
     return {};
   },
   watch: {
     selectedValue(newValue, oldValue) {
       let documentElement = this.$refs.mh_container;
+
       if (documentElement != null) {
         switch (this.attribute) {
           case "collectHour":
@@ -47,6 +48,9 @@ export default {
     ...mapState("datacard", {
       datacard: state => state.datacard
     }),
+    originalValue: function(){
+      return this.datacard.metadataValues[this.attribute]
+    },
     displayValue: {
       get: function() {
         var moment = require("moment");
@@ -63,14 +67,14 @@ export default {
   },
   methods: {
     restoreMetadataValue() {
-      this.datacard[this.attribute] = this.originalValue;
+      this.datacard[this.attribute] = this.datacard.metadataValues[this.attribute];
     }
   }
 };
 </script>
 
 <style lang="scss">
-@import "../../style/style.scss";
+@import "../style/style.scss";
 
 #mh_container {
   margin-top: 33px;

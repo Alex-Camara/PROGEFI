@@ -2,6 +2,7 @@ import DatacardHandler from './handlers/datacardHandler.js'
 import CatalogueHandler from './handlers/catalogueHandler.js'
 import CollectionHandler from './handlers/collectionHandler.js'
 import ProjectHandler from './handlers/projectHandler.js'
+import ClimateTypeHandler from './handlers/climateTypeHandler.js'
 
 const {
     ipcMain
@@ -15,6 +16,7 @@ function listen() {
     var catalogueHandler = new CatalogueHandler();
     var collectionHandler = new CollectionHandler();
     var projectHandler = new ProjectHandler();
+    var climateTypeHandler = new ClimateTypeHandler();
 
     ipcMain.on('savePhotoCollect', (event, photocollect) => {
 
@@ -63,6 +65,13 @@ function listen() {
                 console.log(error)
                 event.reply('imageMetadataFailed');
             })
+    })
+
+    ipcMain.on('getClimateTypes', (event) => {
+        climateTypeHandler.getClimateTypes(function (climateTypes) {
+            event.reply('climateTypes', climateTypes);
+        });
+
     })
 }
 

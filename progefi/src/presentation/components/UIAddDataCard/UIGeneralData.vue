@@ -64,7 +64,6 @@
       <metadata-helper
         id="device_helper"
         v-bind:selectedValue="selectedDevice"
-        v-bind:originalValue="metadataValues.device"
         v-bind:attribute="'device'"
         v-if="hasMetadata"
       ></metadata-helper>
@@ -77,7 +76,6 @@
       <metadata-helper
         id="model_helper"
         v-bind:selectedValue="selectedModel"
-        v-bind:originalValue="metadataValues.model"
         v-bind:attribute="'model'"
         v-if="hasMetadata"
       ></metadata-helper>
@@ -90,7 +88,6 @@
       <metadata-helper
         id="collectDate_helper"
         v-bind:selectedValue="getFormattedDate(selectedDate)"
-        v-bind:originalValue="getFormattedDate(metadataValues.collectDate)"
         v-bind:attribute="'collectDate'"
         v-if="hasMetadata"
       ></metadata-helper>
@@ -112,7 +109,6 @@
       <metadata-helper
         id="collectHour_helper"
         v-bind:selectedValue="getFormattedHour(selectedHour)"
-        v-bind:originalValue="getFormattedHour(metadataValues.collectHour)"
         v-bind:attribute="'collectHour'"
         v-if="hasMetadata"
       ></metadata-helper>
@@ -145,7 +141,7 @@ import store from "../../store/store.js";
 import { mapState } from "vuex";
 import styleColors from "../../style/style.scss";
 
-import metadataHelper from "./metadataHelper.vue";
+import metadataHelper from "../../helpers/metadataHelper.vue";
 
 export default {
   name: "UIGeneralData",
@@ -157,13 +153,7 @@ export default {
       photoCollectHasChanged: false,
       selectedCollection: null,
       selectedCatalogue: null,
-      selectedProject: null,
-      metadataValues: {
-        device: "Apple",
-        model: "iPhone",
-        collectDate: "30/01/17",
-        collectHour: "03:43"
-      }
+      selectedProject: null
     };
   },
   created() {
@@ -242,13 +232,6 @@ export default {
     hasMetadata(newValue, oldValue) {
       if (!newValue) {
         this.openSnackBar("¡Esta fotocolecta no contiene metadatos!");
-      } else {
-        this.metadataValues = {
-          device: this.datacard.device,
-          model: this.datacard.model,
-          collectDate: this.datacard.collectDate,
-          collectHour: this.datacard.collectHour
-        };
       }
     }
   },

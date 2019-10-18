@@ -7,12 +7,22 @@
     </div>
 
     <!-- --------GeographicalData Component Content----- -->
-    <div id="geographicalData_component_content_topFields" class='box has-background-light'>
+    <div id="geographicalData_component_content_topFields" class="box">
+
+      <div id="geographicalData_component_content_topFields_header">
+        <b class="is-size-6">Datos de ubicación:</b>
+      </div>
       <div id="geographicalData_component_content_topFields_coordinates">
         <!-- ------- longitude field ----- -->
+        <metadata-helper
+          id="longitude_helper"
+          v-bind:selectedValue="longitude"
+          v-bind:attribute="'longitude'"
+        ></metadata-helper>
+
         <b-field id="longitude_input" custom-class="is-small is-centered" label="Longitud:">
           <b-input
-            size="is-small"
+           
             v-model="datacard.longitude"
             placeholder="Longitud"
             type="text"
@@ -21,11 +31,18 @@
             pattern="^-?\d+(\.\d{1,12})?$"
           ></b-input>
         </b-field>
-
+        
         <!-- ------- latitude field ----- -->
+        
+        <metadata-helper
+          id="latitude_helper"
+          v-bind:selectedValue="latitude"
+          v-bind:attribute="'latitude'"
+        ></metadata-helper>
+
         <b-field id="latitude_input" custom-class="is-small is-centered" label="Latitud:">
           <b-input
-            size="is-small"
+          
             v-model="datacard.latitude"
             placeholder="Latitud"
             type="text"
@@ -36,9 +53,15 @@
         </b-field>
 
         <!-- ------- altitude field ----- -->
+
+        <metadata-helper
+          id="altitude_helper"
+          v-bind:selectedValue="altitude"
+          v-bind:attribute="'altitude'"
+        ></metadata-helper>
+
         <b-field id="altitude_input" custom-class="is-small is-centered" label="Altitud:">
           <b-input
-            size="is-small"
             v-model="datacard.altitude"
             placeholder="Altitud"
             type="text"
@@ -72,7 +95,11 @@
       </div>
     </div>
 
-    <div id="geographicalData_component_map" v-observe-visibility="visibilityChanged" class='box'>
+    <div
+      id="geographicalData_component_map"
+      v-observe-visibility="visibilityChanged"
+      class="box has-background-light"
+    >
       <v-map
         ref="map"
         id="map"
@@ -85,6 +112,11 @@
         <v-tile-layer :url="url"></v-tile-layer>
         <v-marker :lat-lng.sync="center" :draggable="true"></v-marker>
       </v-map>
+    </div>
+
+    <div id="geographicalData_component_bottom" class="box">
+      <climateType-helper id="climateTypeHelper"></climateType-helper>
+      <vegetationType-helper></vegetationType-helper>
     </div>
 
     <!-- --------GeographicalData Bottom Buttons----- -->
@@ -100,12 +132,18 @@ import store from "../../store/store.js";
 import { mapState } from "vuex";
 import { LMap, LTileLayer, LMarker } from "vue2-leaflet";
 import { OpenStreetMapProvider } from "leaflet-geosearch";
+import metadataHelper from "../../helpers/metadataHelper.vue";
+import climateTypeHelper from "../../helpers/climateTypeHelper.vue";
+import vegetationTypeHelper from "../../helpers/vegetationTypeHelper.vue";
 
 export default {
   components: {
     "v-map": LMap,
     "v-tile-layer": LTileLayer,
-    "v-marker": LMarker
+    "v-marker": LMarker,
+    "metadata-helper": metadataHelper,
+    "climateType-helper": climateTypeHelper,
+    "vegetationType-helper": vegetationTypeHelper
   },
   data() {
     return {
@@ -208,8 +246,8 @@ export default {
 <style lang="scss">
 #geographicalData_component {
   display: grid;
-  grid-template-rows: 10% 15% 70% 5%;
-  height: 100%;
+  grid-template-rows: 5% 12% 45% 33% 5%;
+  height: 1500px;
   width: 100%;
   margin-top: 10px;
   align-items: center;
@@ -218,7 +256,7 @@ export default {
 #geographicalData_component_header {
   grid-row: 1 / 2;
   justify-self: center;
-  height: 100px;
+  height: 90px;
   //margin-top: 30px;
   //margin-bottom: 20px;
 }
@@ -226,27 +264,36 @@ export default {
 #geographicalData_component_content_topFields {
   grid-row: 2 / 3;
   display: grid;
-  //height: 150px;
+  height: 200px;
   grid-template-columns: 25% 25% 25% 25%;
-  grid-template-rows: 50% 50%;
+  grid-template-rows: 10% 45% 45%;
   grid-gap: 5px;
+  //margin-top: 0px;
+  //padding-left: 0px;
   //justify-items: start;
 }
 
-#geographicalData_component_content_topFields_coordinates {
+#geographicalData_component_content_topFields_header{
   grid-row: 1 / 2;
+  grid-column: 1 / -1;
+}
+
+#geographicalData_component_content_topFields_coordinates {
+  grid-row: 2 / 3;
   grid-column: 1 / -1;
   display: grid;
   //height: 450px;
-  grid-template-columns: 33.3% 33.3% 33.3%;
+  grid-template-columns: 14.2% 14.2% 14.2% 14.2% 14.2% 14.2% 14.2%;
   grid-gap: 5px;
-  justify-self: start;
+  justify-items: center;
+  
+  //align-items: center;
   //margin-top: 10px;
   //margin-bottom: 10px;
 }
 
 #geographicalData_component_content_topFields_namedLocation {
-  grid-row: 2 / 3;
+  grid-row: 3 / 4;
   grid-column: 1 / -1;
   display: grid;
   //height: 450px;
@@ -254,39 +301,69 @@ export default {
   grid-gap: 5px;
   //justify-self: space-around;
   justify-content: center;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  //margin-top: 10px;
+  //margin-bottom: 10px;
 }
 
 #geographicalData_component_map {
   grid-row: 3 / 4;
+  height: 550px;
   //grid-column: 1 / -1;
 }
 
-#geographicalData_component_bottomButtons {
+#geographicalData_component_bottom{
   grid-row: 4 / 5;
+  height: 500px;
+  display: grid;
+  //height: 450px;
+  grid-template-rows: 49.5% 1% 49.5%;
+}
+
+#climateTypeHelper{
+  grid-row: 1 / 2;
+  height: 250px;
+}
+
+#geographicalData_component_bottomButtons {
+  grid-row: 5 / 6;
+  justify-self: end;
+  height: 20px;
+}
+
+#longitude_helper{
+  grid-column: 1 / 2;
   justify-self: end;
 }
 
 #longitude_input {
   //grid-row: 1 / 2;
-  grid-column: 1 / 2;
-  justify-self: center;
-  width: 250px;
+  grid-column: 2 / 3;
+  //justify-self: end;
+  //width: 150px;
+}
+
+#latitude_helper{
+  grid-column: 3 / 4;
+  justify-self: end;
 }
 
 #latitude_input {
   //grid-row: 1 / 2;
-  grid-column: 2 / 4;
-  justify-self: center;
-  width: 250px;
+  grid-column: 4 / 5;
+  justify-self: start;
+  //width: 150px;
 }
+
+#altitude_helper{
+  grid-column: 5 / 6;
+  justify-self: end;
+} 
 
 #altitude_input {
   //grid-row: 1 / 2;
-  grid-column: 4 / 5;
-  justify-self: center;
-  width: 250px;
+  grid-column: 6 / 7;
+  justify-self: start;
+  //width: 150px;
 }
 
 #country_select {
