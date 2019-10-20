@@ -29,6 +29,7 @@ class Database {
     return this.database;
   }
   close() {
+    console.log('database closed')
     this.database.close();
   }
 }

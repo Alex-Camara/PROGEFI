@@ -114,9 +114,9 @@
       </v-map>
     </div>
 
-    <div id="geographicalData_component_bottom" class="box">
-      <climateType-helper id="climateTypeHelper"></climateType-helper>
-      <vegetationType-helper></vegetationType-helper>
+    <div id="geographicalData_component_bottom" >
+      <climateType-helper id="climateTypeHelper" class="box"></climateType-helper>
+      <vegetationType-helper id="vegetationTypeHelper" class="box"></vegetationType-helper>
     </div>
 
     <!-- --------GeographicalData Bottom Buttons----- -->
@@ -246,8 +246,8 @@ export default {
 <style lang="scss">
 #geographicalData_component {
   display: grid;
-  grid-template-rows: 5% 12% 45% 33% 5%;
-  height: 1500px;
+  grid-template-rows: 50px 230px 550px 630px 80px;
+  height: 1560px;
   width: 100%;
   margin-top: 10px;
   align-items: center;
@@ -256,7 +256,8 @@ export default {
 #geographicalData_component_header {
   grid-row: 1 / 2;
   justify-self: center;
-  height: 90px;
+  height: 50px;
+  //height: 90px;
   //margin-top: 30px;
   //margin-bottom: 20px;
 }
@@ -264,7 +265,7 @@ export default {
 #geographicalData_component_content_topFields {
   grid-row: 2 / 3;
   display: grid;
-  height: 200px;
+  //height: 200px;
   grid-template-columns: 25% 25% 25% 25%;
   grid-template-rows: 10% 45% 45%;
   grid-gap: 5px;
@@ -307,27 +308,32 @@ export default {
 
 #geographicalData_component_map {
   grid-row: 3 / 4;
-  height: 550px;
+  //height: 550px;
   //grid-column: 1 / -1;
 }
 
 #geographicalData_component_bottom{
   grid-row: 4 / 5;
-  height: 500px;
+  //height: 600px;
   display: grid;
   //height: 450px;
-  grid-template-rows: 49.5% 1% 49.5%;
+  grid-template-rows: 280px 350px;
 }
 
 #climateTypeHelper{
   grid-row: 1 / 2;
-  height: 250px;
+  //height: 200px;
+}
+
+#vegetationTypeHelper{
+  grid-row: 2 / 3;
+  //height: 400px;
 }
 
 #geographicalData_component_bottomButtons {
   grid-row: 5 / 6;
   justify-self: end;
-  height: 20px;
+  //height: 20px;
 }
 
 #longitude_helper{

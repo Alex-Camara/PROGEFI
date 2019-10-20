@@ -71,7 +71,13 @@ function listen() {
         climateTypeHandler.getClimateTypes(function (climateTypes) {
             event.reply('climateTypes', climateTypes);
         });
+    })
 
+    ipcMain.on('getVegetationTypes', (event) => {
+        climateTypeHandler.getVegetationTypes(function (vegetationTypes) {
+            console.log('vegetation: ' + vegetationTypes)
+            event.reply('vegetationTypes', vegetationTypes);
+        });
     })
 }
 

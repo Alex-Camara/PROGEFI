@@ -45,6 +45,59 @@ class ClimateTypeDaoImp {
                 })
         })
     }
+    getVegetationTypes() {
+        let vegetationTypes = new Promise((resolve, reject) => {
+            this.getVegetationTypesFromDatabase(function (vegetationTypes, err) {
+                if (!err) {
+                    resolve(vegetationTypes)
+                } else {
+                    reject(err)
+                }
+            });
+        })
+        return vegetationTypes;
+    }
+    async getVegetationTypesFromDatabase(callback) {
+        var self = this;
+        let vegetationTypes = [];
+        let vegetalFormations = [];
+
+        await this.databaseObject.open();
+
+        this.database = this.databaseObject.getDatabase()
+
+        let sqlStatement1 = 'SELECT * FROM vegetationTypes';
+        let sqlStatement2 = 'SELECT * FROM vegetalFormations';
+
+        this.database.serialize(() => {
+            this.database.each(sqlStatement1, (err, row) => {
+                if (!err) {
+                    vegetationTypes.push(row)
+                    console.info(row)
+                } else {
+                    self.databaseObject.close();
+                    callback(err)
+                }
+            });
+            console.log('termine')
+            this.database.each(sqlStatement2, (err, row) => {
+                    if (!err) {
+                        vegetalFormations.push(row)
+                        console.info(row)
+                    } else {
+                        self.databaseObject.close();
+                        callback(err)
+                    }
+                },
+                function () {
+                    console.log('estoy cerrando')
+                    //self.databaseObject.close();
+                    callback([vegetationTypes, vegetalFormations])
+                })
+        });
+        //this.databaseObject.close();
+
+    }
 }
 
 export default ClimateTypeDaoImp;

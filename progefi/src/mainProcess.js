@@ -16,7 +16,7 @@ const isDevelopment = process.env.NODE_ENV !== "production";
                          
 const { 
     ipcMain
-} = require('electron')      
+} = require('electron')               
  
 var presentationProcess = null; 
           
@@ -32,7 +32,7 @@ function main() {
             secure: true,
             standard: true  
         }
-    }]);
+    }]);     
                    
     function createWindows() {
         presentationProcess = PresentationProcess.createPresentationProcess(BrowserWindow) 
@@ -45,7 +45,7 @@ function main() {
         if (process.platform !== "darwin") {
             app.quit();
         }
-    });
+    }); 
 
     app.on("activate", () => {
         // On macOS it's common to re-create a window in the app when the

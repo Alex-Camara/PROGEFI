@@ -9,6 +9,10 @@ class ClimateTypeHandler {
         let climateTypes = await this.climateTypeDao.getClimateTypes();
         result(climateTypes);
     }
+    async getVegetationTypes(result) {
+        let vegetationTypes = await this.climateTypeDao.getVegetationTypes();
+        result(vegetationTypes);
+    }
 }
 
 export default ClimateTypeHandler;

@@ -1,22 +1,23 @@
 <template>
   <div id="ch_container">
     <div>
-      <b class="is-size-6">Tipo de clima: {{title}}</b>
+      <b class="is-size-6">Tipo de clima: {{selectedTitle}} </b>
+      <img id="vh_checked_icon" src="../assets/checked.png" v-if="selectedTitle" />
       <div>
-        <ul id="list">
+        <ul id="ch_list">
           <li
-            id="bubble"
+            id="bh_bubble"
             v-for="climateType in climateTypes"
             :key="climateType.code"
             :value="climateType.code"
             :style="{'background-color': '#' + climateType.colorCode}"
             v-on:click="showDescription(climateType.code)"
           >
-            <div id="bubble_text">{{climateType.code}}</div>
+            <div id="bh_bubble_text">{{climateType.code}}</div>
           </li>
         </ul>
       </div>
-      <b-message type="is-info" v-text="description"></b-message>
+      <b-message type="is-info" v-text="selectedDescription"></b-message>
     </div>
   </div>
 </template>
@@ -26,11 +27,11 @@ import store from "../store/store.js";
 import { mapState } from "vuex";
 
 export default {
-  name: 'climateTypeHelper',
+  name: "climateTypeHelper",
   data() {
     return {
-      title: null,
-      description: null
+      selectedTitle: "",
+      selectedDescription: ""
     };
   },
   mounted() {
@@ -44,19 +45,19 @@ export default {
   methods: {
     showDescription(climateCode) {
       let climateType = this.climateTypes.find(x => x.code === climateCode);
-      this.description = climateType.description;
-      this.title = climateType.code;
+      this.selectedDescription = climateType.description;
+      this.selectedTitle = climateType.code;
     }
   }
 };
 </script>
 
 <style lang="scss">
-#ch_container{
+#ch_container {
   height: 100%;
 }
 
-#list {
+#ch_list {
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
@@ -64,39 +65,34 @@ export default {
   height: 80px;
 }
 
-li {
-  float: left;
-}
-
-#bubble {
+#bh_bubble {
   height: 30px;
   width: 30px;
   align-self: center;
   border-radius: 50%;
-  display: inline-block;
   line-height: 75px;
-  transition: 0.5s;
+  transition: 0.3s;
 }
 
-#bubble #bubble_text {
+#bh_bubble #bh_bubble_text {
   visibility: hidden;
 }
 
-#bubble:hover {
+#bh_bubble:hover {
   height: 75px;
   width: 75px;
-  transition: 0.5s;
+  transition: 0.3s;
   cursor: pointer;
 }
 
-#bubble_text {
+#bh_bubble_text {
   text-align: center;
   font-size: 0px;
 }
 
-#bubble:hover #bubble_text {
+#bh_bubble:hover #bh_bubble_text {
   visibility: visible;
   font-size: 16px;
-  transition: 0.5s;
+  transition: 0.3s;
 }
 </style>
