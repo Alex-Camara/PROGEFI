@@ -1,5 +1,5 @@
 "use strict";                  
-     
+         
 import PresentationProcess from './presentation/presentationProcess'
 import BussinessProcess from './bussiness/bussinessListener'
  
@@ -11,7 +11,7 @@ const protocol = electron.protocol;
 const vueCliPlugIn = require('vue-cli-plugin-electron-builder/lib');
 //const createProtocol = vueCliPlugIn.createProtocol;
 //const installVueDevtools = vueCliPlugIn.installVueDevtools;
-           
+               
 const isDevelopment = process.env.NODE_ENV !== "production";
                          
 const { 
@@ -46,7 +46,7 @@ function main() {
             app.quit();
         }
     }); 
-
+   
     app.on("activate", () => {
         // On macOS it's common to re-create a window in the app when the
         // dock icon is clicked and there are no other windows open.

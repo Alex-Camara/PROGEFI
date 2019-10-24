@@ -204,7 +204,7 @@ export default {
   align-self: center;
   border-radius: 50%;
   display: inline-block;
-  transition: 0.3s;
+  transition: 0.1s;
 }
 
 #vh_vegetationType_bubble_text {
@@ -218,7 +218,7 @@ export default {
   //align-self: baseline;
   line-height: 12px;
   width: 60px;
-  transition: 0.3s;
+  transition: 0.1s;
   margin-right: 15px;
   margin-left: 15px;
 
@@ -228,7 +228,7 @@ export default {
 #vh_vegetationType_bubble:hover {
   height: 40px;
   width: 40px;
-  transition: 0.3s;
+  transition: 0.1s;
   cursor: pointer;
 }
 
@@ -236,7 +236,7 @@ export default {
   //visibility: visible;
   font-size: 14px;
   //font-weight: bold;
-  transition: 0.3s;
+  transition: 0.1s;
   //text-align: center;
   //display: inline-block;
   //white-space: pre;

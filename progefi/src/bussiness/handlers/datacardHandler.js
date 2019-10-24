@@ -108,8 +108,8 @@ class DatacardHandler {
         image: path
       }, function (error, exifData) {
         if (!error) {
-          //console.log('metadatos')
-          //console.info(exifData)
+          console.log('metadatos')
+          console.info(exifData)
           resolve(exifData)
         } else {
           reject(error)

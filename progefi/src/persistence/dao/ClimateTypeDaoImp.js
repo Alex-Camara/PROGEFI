@@ -73,25 +73,22 @@ class ClimateTypeDaoImp {
             this.database.each(sqlStatement1, (err, row) => {
                 if (!err) {
                     vegetationTypes.push(row)
-                    console.info(row)
+                    //console.info(row)
                 } else {
                     self.databaseObject.close();
                     callback(err)
                 }
             });
-            console.log('termine')
             this.database.each(sqlStatement2, (err, row) => {
                     if (!err) {
                         vegetalFormations.push(row)
-                        console.info(row)
+                        //console.info(row)
                     } else {
                         self.databaseObject.close();
                         callback(err)
                     }
                 },
                 function () {
-                    console.log('estoy cerrando')
-                    //self.databaseObject.close();
                     callback([vegetationTypes, vegetalFormations])
                 })
         });

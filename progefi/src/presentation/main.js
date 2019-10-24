@@ -11,6 +11,7 @@ import 'leaflet/dist/leaflet.css'
 import VueObserveVisibility from 'vue-observe-visibility'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import VueJsonp from 'vue-jsonp'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
@@ -29,7 +30,8 @@ Icon.Default.mergeOptions({
   shadowUrl: require('leaflet/dist/images/marker-shadow.png')
 });
  
-Vue.use(VueAxios, axios)
+Vue.use(VueAxios, axios);
+Vue.use(VueJsonp);
 Vue.use(VueHead);
 Vue.use(VueObserveVisibility);
 

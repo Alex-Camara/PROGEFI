@@ -42,8 +42,12 @@
           <b-step-item label="Datos geográficos" icon="earth" :clickable="false">
             <UIGeographicalData></UIGeographicalData>
             </b-step-item>
-          <b-step-item label="Datos taxonómicos"></b-step-item>
-          <b-step-item label="Validación"></b-step-item>
+          <b-step-item label="Datos taxonómicos" :clickable="false">
+            <UITaxonomicalData></UITaxonomicalData>
+          </b-step-item>
+          <b-step-item label="Validación" :clickable="false">
+            <UIValidateData></UIValidateData>
+          </b-step-item>
         </b-steps>
       </div>
     </div>
@@ -54,6 +58,8 @@
 import UIUploadImage from "./UIAddDataCard/UIUploadImage.vue";
 import UIGeneralData from "./UIAddDataCard/UIGeneralData.vue";
 import UIGeographicalData from "./UIAddDataCard/UIGeographicalData.vue";
+import UITaxonomicalData from "./UIAddDataCard/UITaxonomicalData.vue";
+import UIValidateData from "./UIAddDataCard/UIValidateData.vue";
 import { mapState } from "vuex";
 import store from "../store/store.js";
 import router from "../router/router.js";
@@ -63,7 +69,9 @@ export default {
   components: {
     UIUploadImage,
     UIGeneralData,
-    UIGeographicalData
+    UIGeographicalData,
+    UITaxonomicalData,
+    UIValidateData
   },
   data() {
     return {};

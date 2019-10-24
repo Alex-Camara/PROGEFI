@@ -31,8 +31,6 @@ const climateType = {
         getVegetationTypes({commit}) {
             ipcRenderer.send('getVegetationTypes')
             ipcRenderer.on('vegetationTypes', (event, receivedVegetationTypes) => {
-                console.log('regreso tipos de vegetacion')
-                console.info(receivedVegetationTypes)
                 commit('setVegetationTypes', receivedVegetationTypes[0])
                 commit('setVegetalFormations', receivedVegetationTypes[1])
             });

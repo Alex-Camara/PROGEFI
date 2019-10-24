@@ -25,7 +25,6 @@ function listen() {
                 if (result == 'not-supported-format') {
                     event.reply('photoCollectNotSaved', result);
                 } else {
-                    console.info(result)
                     event.reply('photoCollectSaved', result);
                 }
             })
@@ -36,14 +35,12 @@ function listen() {
 
     ipcMain.on('getCatalogues', (event, collectionId) => {
         catalogueHandler.getCatalogues(collectionId, function (catalogues) {
-            console.log('colection id: ' + collectionId)
             event.reply('catalogues', catalogues);
         });
     })
 
     ipcMain.on('getCollections', (event) => {
         collectionHandler.getCollections(function (collections) {
-            console.info(collections)
             event.reply('collections', collections);
         });
     })
@@ -62,7 +59,6 @@ function listen() {
                 event.reply('imageMetadata', result);
             })
             .catch(error => {
-                console.log(error)
                 event.reply('imageMetadataFailed');
             })
     })
@@ -75,7 +71,6 @@ function listen() {
 
     ipcMain.on('getVegetationTypes', (event) => {
         climateTypeHandler.getVegetationTypes(function (vegetationTypes) {
-            console.log('vegetation: ' + vegetationTypes)
             event.reply('vegetationTypes', vegetationTypes);
         });
     })

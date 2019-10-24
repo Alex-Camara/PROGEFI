@@ -6,6 +6,7 @@ function createPresentationProcess(BrowserWindow) {
         width: 1200,
         height: 800,
         webPreferences: {
+            webSecurity: false,
             nodeIntegration: true
         }
     });

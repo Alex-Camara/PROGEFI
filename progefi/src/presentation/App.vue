@@ -32,9 +32,9 @@ export default {
 #main-container {
   display: grid;
   width: 100%;
-  height: 900px;
+  height: 700px;
   grid-template-columns: 1fr 6fr;
-  grid-template-rows: 1.5fr 18fr 0.75fr;
+  grid-template-rows: 50px 700px 10px;
   grid-gap: 3px;
 }
 
@@ -53,6 +53,7 @@ export default {
   grid-row: 2 / 3;
   grid-column: 2 / -1;
   z-index: 0;
+  //background-color: red;
 }
 
 #main-footer {

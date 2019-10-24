@@ -16,7 +16,7 @@ class Database {
           if (!err) {
             resolve('database-open')
           } else {
-            console.log("error: " + err);
+            //console.log("error: " + err);
             reject(err)
           }
         }
@@ -29,7 +29,7 @@ class Database {
     return this.database;
   }
   close() {
-    console.log('database closed')
+    //console.log('database closed')
     this.database.close();
   }
 }
