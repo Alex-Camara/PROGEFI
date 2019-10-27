@@ -86,13 +86,14 @@ export default {
     };
   },
   mounted() {
-    store.dispatch("climateType/getVegetationTypes");
+    store.dispatch("vegetationType/getVegetationTypes");
+    console.info(this.vegetalFormations)
   },
   computed: {
-    ...mapState("climateType", {
+    ...mapState("vegetationType", {
       vegetationTypes: state => state.vegetationTypes
     }),
-    ...mapState("climateType", {
+    ...mapState("vegetationType", {
       vegetalFormations: state => state.vegetalFormations
     })
   },

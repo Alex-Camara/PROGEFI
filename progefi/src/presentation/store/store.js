@@ -5,6 +5,7 @@ import catalogue from './catalogue';
 import collection from './collection';
 import project from './project';
 import climateType from './climateType';
+import vegetationType from './vegetationType';
 
 Vue.use(Vuex);
 
@@ -14,7 +15,8 @@ const store = new Vuex.Store({
     catalogue: catalogue,
     collection: collection,
     project: project,
-    climateType: climateType
+    climateType: climateType,
+    vegetationType: vegetationType
   }
 })
 

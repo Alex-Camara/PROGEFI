@@ -3,6 +3,7 @@ import CatalogueHandler from './handlers/catalogueHandler.js'
 import CollectionHandler from './handlers/collectionHandler.js'
 import ProjectHandler from './handlers/projectHandler.js'
 import ClimateTypeHandler from './handlers/climateTypeHandler.js'
+import VegetationTypeHandler from './handlers/vegetationTypeHandler.js'
 
 const {
     ipcMain
@@ -10,13 +11,13 @@ const {
 
 function listen() {
     console.log('Empecé a escuchar...')
-    var ExifImage = require('exif').ExifImage;
 
     var datacardHandler = new DatacardHandler();;
     var catalogueHandler = new CatalogueHandler();
     var collectionHandler = new CollectionHandler();
     var projectHandler = new ProjectHandler();
     var climateTypeHandler = new ClimateTypeHandler();
+    var vegetationTypeHandler = new VegetationTypeHandler();
 
     ipcMain.on('savePhotoCollect', (event, photocollect) => {
 
@@ -41,8 +42,9 @@ function listen() {
 
     ipcMain.on('getCollections', (event) => {
         collectionHandler.getCollections(function (collections) {
+            console.log('collecciones en listenes: ' + collections)
             event.reply('collections', collections);
-        });
+        }); 
     })
 
     ipcMain.on('getProjects', (event) => {
@@ -70,7 +72,7 @@ function listen() {
     })
 
     ipcMain.on('getVegetationTypes', (event) => {
-        climateTypeHandler.getVegetationTypes(function (vegetationTypes) {
+        vegetationTypeHandler.getVegetationTypes(function (vegetationTypes) {
             event.reply('vegetationTypes', vegetationTypes);
         });
     })

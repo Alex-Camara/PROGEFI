@@ -15,7 +15,6 @@ const catalogue = {
     },
     actions: {
         getCatalogues({commit, state}, collectionId) {
-            console.log('colecion: ' + collectionId)
             ipcRenderer.send('getCatalogues', collectionId)
             ipcRenderer.on('catalogues', (event, receivedCatalogues) => {
                 commit('setCatalogues', receivedCatalogues)

@@ -11,6 +11,7 @@ class DatacardHandler {
     this.datacard = new Datacard();
   }
   async savePhotoCollect(photoCollect) {
+    const sharp = require('sharp');
     var photocollectsFolderPath = path.resolve(".") + '/src/bussiness/photocollects/';
 
     try {

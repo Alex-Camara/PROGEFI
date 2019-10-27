@@ -17,6 +17,7 @@ const collection = {
         getCollections({commit}) {
             ipcRenderer.send('getCollections')
             ipcRenderer.on('collections', (event, receivedCollections) => {
+                console.log('colecciones recibidas' + receivedCollections[0].name)
                 commit('setCollections', receivedCollections)
             });
         }
