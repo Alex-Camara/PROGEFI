@@ -3,11 +3,11 @@
     <div id="lifeStage_helper_container" class="box">
       <div id="lifeStage_helper_container_header">
         <b class="is-size-6">
-          Etapa: {{ selectedLifeStage }}
+          Etapa: {{ lifeStage }}
           <img
             id="lifeStage_helper_checked_icon"
             src="../assets/checked.png"
-            v-if="selectedLifeStage"
+            v-if="lifeStage"
           />
         </b>
       </div>
@@ -43,13 +43,14 @@
       <div id="lifeStage_helper_addOption_text">
         <p v-text="lifeStages[4].name"></p>
       </div>
-      
-
     </div>
   </div>
 </template>
 
 <script>
+import store from "../store/store.js";
+import { mapState } from "vuex";
+
 export default {
   data() {
     return {
@@ -58,14 +59,28 @@ export default {
         { name: "Juvenil" },
         { name: "Subadulto" },
         { name: "Adulto" },
-        { name: "Otro" , symbol: require('../assets/more.png')}
+        { name: "Otro", symbol: require("../assets/more.png") }
       ],
       selectedLifeStage: ""
     };
   },
+  computed: {
+    ...mapState("datacard", {
+      datacard: state => state.datacard
+    }),
+    lifeStage: {
+      get: function() {
+        return this.datacard.species.lifeStage;
+      },
+      set: function(newValue) {
+        store.commit("datacard/setLifeStage", newValue);
+        return newValue;
+      }
+    }
+  },
   methods: {
     setLifeStage(lifeStage) {
-      this.selectedLifeStage = lifeStage;
+      this.lifeStage = lifeStage;
     },
     addOption() {
       this.$buefy.dialog.prompt({
@@ -137,7 +152,7 @@ export default {
   font-weight: bold;
 }
 
-#lifeStage_helper_young{
+#lifeStage_helper_young {
   grid-row: 2 / 3;
   grid-column: 2 / 3;
   height: 25px;
@@ -166,7 +181,7 @@ export default {
   font-weight: bold;
 }
 
-#lifeStage_helper_youngAdult{
+#lifeStage_helper_youngAdult {
   grid-row: 2 / 3;
   grid-column: 3 / 4;
   height: 30px;
@@ -195,7 +210,7 @@ export default {
   font-weight: bold;
 }
 
-#lifeStage_helper_adult{
+#lifeStage_helper_adult {
   grid-row: 2 / 3;
   grid-column: 4 / 5;
   height: 35px;
@@ -250,5 +265,4 @@ export default {
 #lifeStage_helper_addOption:hover + #lifeStage_helper_addOption_text {
   font-weight: bold;
 }
-
 </style>

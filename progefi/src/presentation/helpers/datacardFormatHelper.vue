@@ -3,15 +3,17 @@
     <div id="datacard" ref="datacard" v-observe-visibility="visibilityChanged">
 
       <grid-layout
+        :responsive="false"
         :layout.sync="layout"
         :col-num="90"
         :row-height="25"
         :is-draggable="true"
         :is-resizable="true"
         :is-mirrored="false"
-        :vertical-compact="true"
+        :vertical-compact="false"
         :margin="[10, 10]"
         :use-css-transforms="true"
+        :preventCollision="true"
       >
         <grid-item
           v-for="item in layout"
@@ -44,8 +46,8 @@ export default {
   data() {
     return {
       datacardFormat: {
-        height: 600,
-        width: 1050,
+        height: 800,
+        width: 1250,
         backgroundColor: "#000000",
         fontColor: "#FFFFFF"
       },
@@ -68,7 +70,7 @@ export default {
       layout: [
         { x: 25, y: 0, w: 90, h: 2, i: "collection",name: 'Colección de vertebrados terrestres Alvar cristhen', style:{'background-color': 'rgb(0, 172, 193, 0.8)', 'font-size': '20px', 'text-align': 'center'} },
         { x: 0, y: 2, w: 30, h: 2, i: "institute",name: 'Instituto de Investigaciones Biológicas de la UV', style:{'background-color':"rgb(0, 151, 167,0.8)" }},
-        { x: 30, y: 2, w: 60, h: 14, i: "photocollect",name: '', style:{'background-color': 'rgb(255, 183, 77,0.8)'} },
+        { x: 30, y: 2, w: 60, h: 16, i: "photocollect",name: '', style:{'background-color': 'rgb(255, 183, 77,0.8)'} },
         {x: 0,y: 4,w: 5,h: 1,i: "lifeStage",name: "Adulto",style: {'background-color': 'rgb(156, 204, 101, 0.8)'}},
         { x: 5, y: 4, w: 6, h: 1, i: "sex", name: 'Hembra',style: {'background-color': "rgb(124, 179, 66,0.8)" }},
         { x: 0, y: 5, w: 6, h: 1, i: "longitude",name: '-19.38', style:{'background-color': "rgb(100, 181, 246,0.8)"} },
@@ -78,7 +80,7 @@ export default {
         { x: 0, y: 7, w: 30, h: 1, i: "space1",name: '', style:{'background-color': "rgb(77, 208, 225,0.8)" }},
         { x: 0, y: 8, w: 6, h: 1, i: "locality",name: 'Xalapa', style:{'background-color': "rgb(25, 118, 210, 0.8)" }},
         { x: 6, y: 8, w: 6, h: 1, i: "municipality",name: 'Xalapa', style:{'background-color': "rgb(41, 121, 255,0.8)" }},
-        { x: 12, y: 8, w: 7, h: 1, i: "state",name: 'Veracruz', style:{'background-color': "rgb(13, 71, 161, 0.8)" }},
+        { x: 12, y: 8, w: 7, h: 1, i: "countryState",name: 'Veracruz', style:{'background-color': "rgb(13, 71, 161, 0.8)" }},
         { x: 19, y: 8, w: 7, h: 1, i: "country",name: 'México', style:{'background-color': "rgb(33, 150, 243,0.8)" }},
         { x: 0, y: 9, w: 30, h: 1, i: "space2",name: '', style:{'background-color': "rgb(77, 208, 225,0.8)" }},
         { x: 0, y: 10, w: 8, h: 1, i: "collectDate",name: '29/01/19', style:{'background-color': "rgb(251, 140, 0, 0.8)" }},
@@ -93,14 +95,15 @@ export default {
         { x: 6, y: 15, w: 15, h: 1, i: "curator",name: 'Cristian Delfín Alfonso', style:{'background-color': "rgb(230, 81, 0, 0.8)" }},
         { x: 78, y: 15, w: 7, h: 1, i: "catalogueTag",name: 'Catálogo:', style:{'background-color': "rgb(251, 140, 0,0.8)" }},
         { x: 85, y: 16, w: 5, h: 1, i: "catalogue",name: 'Aves', style:{'background-color': "rgb(230, 81, 0, 0.8)" }},
-        { x: 30, y: 16, w: 15, h: 1, i: "species",name: 'Myiarchus tuberculifer', style:{'background-color': "rgb(104, 159, 56, 0.8)", 'font-style': 'italic' }}
+        { x: 30, y: 16, w: 35, h: 1, i: "scientificName",name: 'Myiarchus tuberculifer', style:{'background-color': "rgb(104, 159, 56, 0.8)", 'font-style': 'italic' }}
       ],
       originalColors: []
     };
   },
   computed: {
     ...mapState("datacard", {
-      photoCollect: state => state.photoCollect
+      photoCollect: state => state.photoCollect,
+      datacard: state => state.datacard
     })
   },
   watch: {
@@ -117,6 +120,7 @@ export default {
       this.isVisible = isVisible;
       this.setDatacardStyle();
       this.setOriginalColors();
+      this.setValues();
     },
     setDatacardStyle() {
       let datatardDOMElement = this.$refs.datacard;
@@ -130,6 +134,22 @@ export default {
       for (let i = 0; i < this.layout.length; i++) {
         const element = this.layout[i].style['background-color'];
         this.originalColors[i] = element;
+      }
+    },
+    setValues(){
+      var templateDatacardAttributes = ["country", "countryState", "municipality"]
+       var templateDatacardSpeciesAttributes = ["scientificName", "sex", "lifeStage"]
+
+      for (let i = 0; i < templateDatacardAttributes.length; i++) {
+        let datacardAttribute = templateDatacardAttributes[i];
+        var index = this.layout.findIndex(x => x.i == datacardAttribute);
+        this.layout[index].name = this.datacard[datacardAttribute];
+      }
+
+      for (let i = 0; i < templateDatacardSpeciesAttributes.length; i++) {
+        let datacardAttribute = templateDatacardSpeciesAttributes[i];
+        var index = this.layout.findIndex(x => x.i == datacardAttribute);
+        this.layout[index].name = this.datacard.species[datacardAttribute];
       }
     },
     disableColors(){
@@ -149,6 +169,7 @@ export default {
 <style lang="scss">
 #datacard {
   display: grid;
+  transform: scale(1);
 }
 
 </style>

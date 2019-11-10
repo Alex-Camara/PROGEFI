@@ -150,11 +150,7 @@ export default {
       url: "http://{s}.tile.osm.org/{z}/{x}/{y}.png",
       zoom: 5,
       maxZoom: 18,
-      minZoom: 2,
-      country: null,
-      state: null,
-      municipality: null,
-      locality: null
+      minZoom: 2
     };
   },
   mounted() {
@@ -200,6 +196,38 @@ export default {
         this.getAddress();
         return newValue;
       }
+    },
+    country: {
+      get: function(){
+        return this.datacard.country;
+      },
+      set: function(newValue){
+        store.commit("datacard/setCountry", newValue);
+      }
+    },
+    state: {
+      get: function(){
+        return this.datacard.countryState;
+      },
+      set: function(newValue){
+        store.commit("datacard/setCountryState", newValue);
+      }
+    },
+    municipality: {
+      get: function(){
+        return this.datacard.municipality;
+      },
+      set: function(newValue){
+        store.commit("datacard/setMunicipality", newValue);
+      }
+    },
+    locality: {
+      get: function(){
+        return this.datacard.locality;
+      },
+      set: function(newValue){
+        store.commit("datacard/setLocality", newValue);
+      }
     }
   },
   methods: {
@@ -211,6 +239,7 @@ export default {
     },
     getAddress() {
       var self = this;
+      //nominatim es la biblioteca de OpenStreetMaps para obtener direcciones
       let nominatimAPIRequest =
         "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" +
         this.datacard.latitude +
@@ -220,6 +249,7 @@ export default {
       this.axios.get(nominatimAPIRequest).then(response => {
         let address = response.data.address;
 
+        //asumiremos como localidad aquellos poblados que tengan las siguientes propiedades
         let localityProperties = ["city", "town", "village", "hamlet"];
 
         for (let i = 0; i < localityProperties.length; i++) {
@@ -235,6 +265,8 @@ export default {
         self.country = address.country;
       });
     },
+    //debido a un error en leaflet en el cual no puede detectar el tamaño total de renderizado
+    //cada vez que el mapa sea visible se inhabilitará esta opción
     visibilityChanged(isVisible, entry) {
       this.isVisible = isVisible;
       this.$refs.map.mapObject.invalidateSize();

@@ -13,11 +13,7 @@
         :type="enableColorsButtonColor"
         @click="enableColors()"
       ></b-button>
-      <b-modal :active.sync="isDatacardModalActive">
-        <p class="image is-4by3">
-          <img src="/static/img/placeholder-1280x960.png" />
-        </p>
-      </b-modal>
+
       <datacardFormat-helper id="datatardFormat_helper" :colorsEnabled="colorsEnabled"></datacardFormat-helper>
     </div>
 
@@ -33,6 +29,8 @@
 import { mapState } from "vuex";
 import store from "../../store/store.js";
 import datacardFormatHelper from "../../helpers/datacardFormatHelper.vue";
+import domtoimage from "dom-to-image";
+import { saveAs } from "file-saver";
 
 export default {
   components: {
@@ -60,11 +58,24 @@ export default {
         this.enableColorsButtonColor = "is-secondary";
       } else {
         this.colorsEnabled = true;
-        this.enableColorsButtonText = "Deshabilitar colores";
+        this.enableColorsButtonText = "Inhabilitar colores";
         this.enableColorsButtonColor = "is-warning";
       }
     },
-    previsualizeDatacard() {}
+    previsualizeDatacard() {
+      domtoimage
+        .toBlob(document.getElementById("datatardFormat_helper"), {
+          width: 1250,
+          height: 800,
+          style: {
+            'transform': "scale(1.185)",
+            'transform-origin': 'top left'
+          }
+        })
+        .then(function(blob) {
+          window.saveAs(blob, "ficha.png");
+        });
+    }
   },
   computed: {
     ...mapState("datacard", {

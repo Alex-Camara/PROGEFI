@@ -19,12 +19,28 @@ const datacard = {
             longitude: -101.433236,
             latitude: 20.102365,
             altitude: null,
+            country: null,
+            countryState: null,
+            municipality: null,
+            locality: null,
+            species: {
+                scientificName: null,
+                commonName: null,
+                genus: null,
+                order: null,
+                family: null,
+                speciesClass: null,
+                phylum: null,
+                kingdom: null,
+                sex: null,
+                lifeStage: null
+            },
             metadataValues: {
                 device: "Apple",
                 model: "iPhone",
                 collectDate: "30/01/17",
                 collectHour: "03:43"
-              }
+            }
         }
     },
     mutations: {
@@ -80,7 +96,49 @@ const datacard = {
         setLatitude(state, latitude) {
             state.datacard.latitude = latitude
         },
-        setMetadataValues(state, metadata){
+        setCountry(state, country) {
+            state.datacard.country = country
+        },
+        setCountryState(state, countryState) {
+            state.datacard.countryState = countryState
+        },
+        setMunicipality(state, municipality) {
+            state.datacard.municipality = municipality
+        },
+        setLocality(state, locality) {
+            state.datacard.locality = locality
+        },
+        setScientificName(state, scientificName) {
+            state.datacard.species.scientificName = scientificName;
+        },
+        setCommonName(state, commonName) {
+            state.datacard.species.commonName = commonName;
+        },
+        setGenus(state, genus) {
+            state.datacard.species.genus = genus;
+        },
+        setOrder(state, order) {
+            state.datacard.species.order = order;
+        },
+        setFamily(state, family) {
+            state.datacard.species.family = family
+        },
+        setSpeciesClass(state, speciesClass) {
+            state.datacard.species.speciesClass = speciesClass
+        },
+        setPhylum(state, phylum) {
+            state.datacard.species.phylum = phylum
+        },
+        setKingdom(state, kingdom) {
+            state.datacard.species.kingdom = kingdom
+        },
+        setSex(state, sex) {
+            state.datacard.species.sex = sex;
+        },
+        setLifeStage(state, lifeStage) {
+            state.datacard.species.lifeStage = lifeStage;
+        },
+        setMetadataValues(state, metadata) {
             state.datacard.metadataValues = {
                 device: metadata.device,
                 model: metadata.model,

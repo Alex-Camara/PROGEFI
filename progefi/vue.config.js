@@ -22,6 +22,20 @@ module.exports = {
             .set("@", path.join(__dirname, "./src/presentation"))
         config
             .target('electron-main')
+            .externals({
+                'canvas-prebuilt': 'undefined',
+                'canvas': 'undefined',
+                'jsdom/lib/jsdom/utils': JSON.stringify({
+                    Canvas: null
+                }),
+                'jsdom/lib/jsdom/living/generated/utils': JSON.stringify({
+                    implForWrapper: null
+                }),
+                'jsdom': 'null',
+                'xmldom': JSON.stringify({
+                    DOMParser: null
+                })
+            })
     },
     pluginOptions: {
         electronBuilder: {

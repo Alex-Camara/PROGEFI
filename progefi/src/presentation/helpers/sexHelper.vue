@@ -3,11 +3,11 @@
     <div id="sex_helper_container" class="box">
       <div id="sex_helper_container_header">
         <b class="is-size-6">
-          Sexo: {{ selectedSex }}
+          Sexo: {{ sex }}
           <img
             id="sex_helper_checked_icon"
             src="../assets/checked.png"
-            v-if="selectedSex"
+            v-if="sex"
           />
         </b>
       </div>
@@ -16,7 +16,7 @@
         id="sex_helper_male"
         @mouseleave="sexes[0].symbol=require('../assets/male.png')"
         @mouseover="sexes[0].symbol=require('../assets/male_accent.png')"
-        @click="setSex(sexes[0].name)"
+        @click="sex = sexes[0].name"
       >
         <img :src="sexes[0].symbol" />
       </div>
@@ -28,7 +28,7 @@
         id="sex_helper_female"
         @mouseleave="sexes[1].symbol=require('../assets/female.png')"
         @mouseover="sexes[1].symbol=require('../assets/female_accent.png')"
-        @click="setSex(sexes[1].name)"
+        @click="sex = sexes[1].name"
       >
         <img :src="sexes[1].symbol" />
       </div>
@@ -40,7 +40,7 @@
         id="sex_helper_indeterminate"
         @mouseleave="sexes[2].symbol=require('../assets/question.png')"
         @mouseover="sexes[2].symbol=require('../assets/question_accent.png')"
-        @click="setSex(sexes[2].name)"
+        @click="sex = sexes[2].name"
       >
         <img :src="sexes[2].symbol" />
       </div>
@@ -64,6 +64,9 @@
 </template>
 
 <script>
+import store from "../store/store.js";
+import { mapState } from "vuex";
+
 export default {
   data() {
     return {
@@ -72,20 +75,33 @@ export default {
         { name: "Hembra", symbol: require("../assets/female.png") },
         { name: "Indeterminado", symbol: require("../assets/question.png") },
         { name: "Otro", symbol: require("../assets/more.png") }
-      ],
-      selectedSex: ""
+      ]
     };
+  },
+  computed: {
+    ...mapState("datacard", {
+      datacard: state => state.datacard
+    }),
+    sex: {
+      get: function() {
+        return this.datacard.species.sex;
+      },
+      set: function(newValue) {
+        store.commit("datacard/setSex", newValue);
+        return newValue;
+      }
+    }
   },
   methods: {
     setSex(sex) {
-      this.selectedSex = sex;
+      this.sex = sex;
     },
     addOption() {
       this.$buefy.dialog.prompt({
-        type: 'is-secondary',
+        type: "is-secondary",
         message: `Introduce el sexo`,
-        confirmText: 'Agregar',
-        cancelText: 'Cancelar',
+        confirmText: "Agregar",
+        cancelText: "Cancelar",
         inputAttrs: {
           maxlength: 20
         },

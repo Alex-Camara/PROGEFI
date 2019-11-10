@@ -24,7 +24,7 @@ var presentationProcess = null;
 // be closed automatically when the JavaScript object is garbage collected.
   
 function main() {
-              
+                           
     // Scheme must be registered before the app is ready
     protocol.registerSchemesAsPrivileged([{        
         scheme: "app",
@@ -33,7 +33,7 @@ function main() {
             standard: true  
         }
     }]);     
-                   
+                           
     function createWindows() {
         presentationProcess = PresentationProcess.createPresentationProcess(BrowserWindow) 
     }
