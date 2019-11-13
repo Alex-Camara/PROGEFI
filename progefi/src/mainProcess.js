@@ -24,7 +24,7 @@ var presentationProcess = null;
 // be closed automatically when the JavaScript object is garbage collected.
   
 function main() {
-                           
+                                     
     // Scheme must be registered before the app is ready
     protocol.registerSchemesAsPrivileged([{        
         scheme: "app",
@@ -37,7 +37,7 @@ function main() {
     function createWindows() {
         presentationProcess = PresentationProcess.createPresentationProcess(BrowserWindow) 
     }
-                                         
+                                             
     // Quit when all windows are closed.
     app.on("window-all-closed", () => {
         // On macOS it is common for applications and their menu bar

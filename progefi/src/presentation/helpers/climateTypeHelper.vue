@@ -1,7 +1,7 @@
 <template>
   <div id="ch_container">
     <div>
-      <b class="is-size-6">Tipo de clima: {{selectedTitle}} </b>
+      <b class="is-size-6">Tipo de clima: {{selectedTitle}}</b>
       <img id="vh_checked_icon" src="../assets/checked.png" v-if="selectedTitle" />
       <div>
         <ul id="ch_list">
@@ -11,7 +11,9 @@
             :key="climateType.code"
             :value="climateType.code"
             :style="{'background-color': '#' + climateType.colorCode}"
-            v-on:click="showDescription(climateType.code)"
+            v-on:click="selectClimateType(climateType.code)"
+            @mouseover="showDescription(climateType.code)"
+            @mouseleave="showSelectedDescription()"
           >
             <div id="bh_bubble_text">{{climateType.code}}</div>
           </li>
@@ -46,7 +48,21 @@ export default {
     showDescription(climateCode) {
       let climateType = this.climateTypes.find(x => x.code === climateCode);
       this.selectedDescription = climateType.description;
+    },
+    selectClimateType(climateCode) {
+      let climateType = this.climateTypes.find(x => x.code === climateCode);
+      this.selectedDescription = climateType.description;
       this.selectedTitle = climateType.code;
+    },
+    showSelectedDescription() {
+      if (!this.selectedTitle) {
+        this.selectedDescription = "";
+      } else {
+        let climateType = this.climateTypes.find(
+          x => x.code === this.selectedTitle
+        );
+        this.selectedDescription = climateType.description;
+      }
     }
   }
 };

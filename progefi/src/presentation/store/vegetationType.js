@@ -19,7 +19,8 @@ const vegetationType = {
                 if (vegetalFormationIdInArray === undefined) {
                     let vegetalFormation = {
                         id: element.vegetalFormation_id,
-                        name: element.vegetalFormationName
+                        name: element.vegetalFormationName,
+                        imagePath: element.vegetalFormationImagePath
                     }
                     state.vegetalFormations.push(vegetalFormation);
                 }

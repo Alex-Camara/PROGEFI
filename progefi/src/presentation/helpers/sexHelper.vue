@@ -2,62 +2,36 @@
   <div>
     <div id="sex_helper_container" class="box">
       <div id="sex_helper_container_header">
-        <b class="is-size-6">
-          Sexo: {{ sex }}
-          <img
-            id="sex_helper_checked_icon"
-            src="../assets/checked.png"
-            v-if="sex"
-          />
-        </b>
+        <div id="sex_helper_container_header_title">
+          <b class="is-size-6">
+            Sexo: {{ sex }}
+            <img id="sex_helper_checked_icon" src="../assets/checked.png" v-if="sex" />
+          </b>
+        </div>
+
+        <div id="sex_helper_container_header_addOption" v-on:click="addOption()">
+          <b-tooltip label="Agregar otro opción" position="is-top">
+            <img
+              id="sex_helper_container_header_addOption_icon"
+              :src="require('../assets/more.png')"
+            />
+          </b-tooltip>
+        </div>
       </div>
 
-      <div
-        id="sex_helper_male"
-        @mouseleave="sexes[0].symbol=require('../assets/male.png')"
-        @mouseover="sexes[0].symbol=require('../assets/male_accent.png')"
-        @click="sex = sexes[0].name"
-      >
-        <img :src="sexes[0].symbol" />
-      </div>
-      <div id="sex_helper_male_text">
-        <p v-text="sexes[0].name"></p>
-      </div>
-
-      <div
-        id="sex_helper_female"
-        @mouseleave="sexes[1].symbol=require('../assets/female.png')"
-        @mouseover="sexes[1].symbol=require('../assets/female_accent.png')"
-        @click="sex = sexes[1].name"
-      >
-        <img :src="sexes[1].symbol" />
-      </div>
-      <div id="sex_helper_female_text">
-        <p v-text="sexes[1].name"></p>
-      </div>
-
-      <div
-        id="sex_helper_indeterminate"
-        @mouseleave="sexes[2].symbol=require('../assets/question.png')"
-        @mouseover="sexes[2].symbol=require('../assets/question_accent.png')"
-        @click="sex = sexes[2].name"
-      >
-        <img :src="sexes[2].symbol" />
-      </div>
-      <div id="sex_helper_indeterminate_text">
-        <p v-text="sexes[2].name"></p>
-      </div>
-
-      <div
-        id="sex_helper_addOption"
-        @mouseleave="sexes[3].symbol=require('../assets/more.png')"
-        @mouseover="sexes[3].symbol=require('../assets/more_accent.png')"
-        @click="addOption()"
-      >
-        <img :src="sexes[3].symbol" />
-      </div>
-      <div id="sex_helper_addOption_text">
-        <p v-text="sexes[3].name"></p>
+      <div>
+        <ul id="sex_helper_list">
+          <li
+            id="sex_helper_list_item"
+            v-for="sex in sexes"
+            :key="sex.name"
+            :value="sex.name"
+            v-on:click="setSex(sex.name)"
+          >
+            <img id="sex_helper_list_item_icon" :src="sex.iconPath" />
+            <div id="sex_helper_list_item_text">{{sex.name}}</div>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -69,18 +43,17 @@ import { mapState } from "vuex";
 
 export default {
   data() {
-    return {
-      sexes: [
-        { name: "Macho", symbol: require("../assets/male.png") },
-        { name: "Hembra", symbol: require("../assets/female.png") },
-        { name: "Indeterminado", symbol: require("../assets/question.png") },
-        { name: "Otro", symbol: require("../assets/more.png") }
-      ]
-    };
+    return {};
+  },
+  mounted() {
+    store.dispatch("speciesData/getSexes");
   },
   computed: {
     ...mapState("datacard", {
       datacard: state => state.datacard
+    }),
+    ...mapState("speciesData", {
+      sexes: state => state.sexes
     }),
     sex: {
       get: function() {
@@ -94,7 +67,11 @@ export default {
   },
   methods: {
     setSex(sex) {
-      this.sex = sex;
+      if (sex == "Otro") {
+        this.addOption();
+      } else {
+        this.sex = sex;
+      }
     },
     addOption() {
       this.$buefy.dialog.prompt({
@@ -110,6 +87,11 @@ export default {
       });
     }
   }
+  /*
+                receivedSexes.push({
+                    name: "Otro",
+                    iconPath: require("../assets/more.png")
+                }); */
 };
 </script>
 
@@ -118,17 +100,36 @@ export default {
 
 #sex_helper_container {
   display: grid;
-  grid-template-rows: 40px 60px 20px;
-  grid-template-columns: 25% 25% 25% 25%;
-  justify-items: center;
-  align-items: center;
+  grid-template-rows: 40px 80px;
 }
 
 #sex_helper_container_header {
   grid-row: 1 / 2;
-  grid-column: 1 / -1;
-  justify-self: start;
+  display: flex;
+  justify-content: space-between;
+}
+
+#sex_helper_container_header_title {
   align-self: start;
+}
+
+#sex_helper_container_header_addOption {
+  align-self: end;
+}
+
+#sex_helper_container_header_addOption_icon {
+  height: 20px;
+  width: 20px;
+  transition: 0.2s;
+}
+
+#sex_helper_container_header_addOption_icon:hover {
+  height: 25px;
+  width: 25px;
+  transition: 0.2s;
+  cursor: pointer;
+  filter: hue-rotate(180deg);
+  -webkit-filter: hue-rotate(180deg);
 }
 
 #sex_helper_checked_icon {
@@ -137,114 +138,45 @@ export default {
   align-self: center;
 }
 
-#sex_helper_male {
+#sex_helper_list {
   grid-row: 2 / 3;
-  grid-column: 1 / 2;
-  height: 30px;
-  width: 30px;
-  border-radius: 50%;
-  transition: 0.1s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90px;
 }
 
-#sex_helper_male:hover {
-  border-color: $accent;
-  height: 45px;
-  width: 45px;
-  transition: 0.1s;
-  cursor: pointer;
+#sex_helper_list_item {
+  display: grid;
+  grid-template-rows: 50px 10px;
+  height: 90px;
+  width: 120px;
+  line-height: 50px;
+  justify-content: center;
 }
 
-#sex_helper_male:hover + #sex_helper_male_text {
-  font-weight: bold;
-}
-
-#sex_helper_male_text {
-  grid-row: 3 / 4;
-  grid-column: 1 / 2;
-  text-align: center;
+#sex_helper_list_item_icon {
+  height: 40px;
   width: 40px;
-  font-size: 14px;
+  transition: 0.2s;
+  justify-self: center;
 }
 
-#sex_helper_female {
-  grid-row: 2 / 3;
-  grid-column: 2 / 3;
-  height: 30px;
-  width: 30px;
-  border-radius: 50%;
-  transition: 0.1s;
-}
-
-#sex_helper_female:hover {
-  border-color: $accent;
-  height: 45px;
-  width: 45px;
-  transition: 0.1s;
-  cursor: pointer;
-}
-
-#sex_helper_female:hover + #sex_helper_female_text {
-  font-weight: bold;
-}
-
-#sex_helper_female_text {
-  grid-row: 3 / 4;
-  grid-column: 2 / 3;
+#sex_helper_list_item_text {
   text-align: center;
-  width: 50px;
   font-size: 14px;
 }
 
-#sex_helper_indeterminate {
-  grid-row: 2 / 3;
-  grid-column: 3 / 4;
-  height: 30px;
-  width: 30px;
-  border-radius: 50%;
-  transition: 0.1s;
-}
-
-#sex_helper_indeterminate_text {
-  grid-row: 3 / 4;
-  grid-column: 3 / 4;
-  font-size: 14px;
-}
-
-#sex_helper_indeterminate:hover {
-  border-color: $accent;
+#sex_helper_list_item_icon:hover {
   height: 45px;
   width: 45px;
-  transition: 0.1s;
+  transition: 0.2s;
   cursor: pointer;
+  filter: hue-rotate(180deg);
+  -webkit-filter: hue-rotate(180deg);
 }
 
-#sex_helper_indeterminate:hover + #sex_helper_indeterminate_text {
-  font-weight: bold;
-}
-
-#sex_helper_addOption {
-  grid-row: 2 / 3;
-  grid-column: 4 / 5;
-  height: 30px;
-  width: 30px;
-  border-radius: 50%;
-  transition: 0.1s;
-}
-
-#sex_helper_addOption:hover {
-  height: 45px;
-  width: 45px;
-  transition: 0.1s;
-  cursor: pointer;
-}
-
-#sex_helper_addOption_text {
-  grid-row: 3 / 4;
-  grid-column: 4 / 5;
-  font-size: 14px;
-}
-
-#sex_helper_addOption:hover + #sex_helper_addOption_text {
+#sex_helper_list_item_icon:hover + #sex_helper_list_item_text {
   font-weight: bold;
 }
 </style>

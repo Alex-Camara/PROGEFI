@@ -84,14 +84,15 @@ export default {
   },
   methods: {
     disableNextButton() {
-      if (
+      /*if (
         this.photoCollect.url != null &&
         this.photoCollect.url != "not-supported-format"
       ) {
         return false;
       } else {
         return true;
-      }
+      }*/
+      return false
     },
     openSnackBar(message) {
       this.$buefy.snackbar.open({

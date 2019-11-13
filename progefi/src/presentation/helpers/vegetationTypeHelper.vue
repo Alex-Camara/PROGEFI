@@ -1,45 +1,54 @@
 <template>
   <div id="vh_container">
-    <div>
-      <b class="is-size-6">Tipo de vegetación: {{ selectedVegetationType }} </b>
+    <div id="vh_container_header">
+      <b class="is-size-6">Tipo de vegetación: {{ selectedVegetationType }}</b>
       <img id="vh_checked_icon" src="../assets/checked.png" v-if="selectedVegetationType" />
-      <div>
-        <p class="is-size-6">Formación vegetal: {{ selectedVegetalFormation }}</p>
-        <ul id="vh_vegetalFormation_list">
-          <li
-            v-for="(vegetalFormation, index) in vegetalFormations"
-            :key="vegetalFormation.id"
-            :value="vegetalFormations.id"
-            v-on:click="showVegetationTypes(vegetalFormation)"
-          >
-            <div id="vh_list_element">
-              <div id="vh_vegetalFormation_bubble">
-                <img :src="getImage(index)" />
-              </div>
-              <div id="vh_vegetalFormation_bubble_text">{{vegetalFormation.name}}</div>
-            </div>
-          </li>
-        </ul>
+      <p class="is-size-6">Formación vegetal: {{ selectedVegetalFormation }}</p>
+    </div>
+
+    <div id="vh_container_vegetalFormation_element">
+      <div id="previous_button" v-on:click="slideRight()">
+        <img id="previous_button_icon" :src="require('../assets/left_arrow.png')" />
       </div>
 
-      <div class="box">
-        <ul id="vh_vegetationType_list">
-          <li
-            v-for="(vegetationType, index) in selectedVegetationTypes"
-            :key="vegetationType.id"
-            :value="vegetationType.id"
-          >
-            <div id="vh_list_element">
-              <div
-                id="vh_vegetationType_bubble"
-                :style="{'background-color': getColorCode(index)}"
-                v-on:click="setSelectedVegetationType(vegetationType)"
-              ></div>
-              <div id="vh_vegetationType_bubble_text">{{vegetationType.name}}</div>
+      <ul id="vh_vegetalFormation_list">
+        <li
+          v-for="(vegetalFormation) in vegetalFormations"
+          :key="vegetalFormation.id"
+          :value="vegetalFormations.id"
+          v-on:click="showVegetationTypes(vegetalFormation)"
+        >
+          <div id="vh_vegetalFormation_list_element">
+            <div id="vh_vegetalFormation_bubble">
+              <img :src="vegetalFormation.imagePath" />
             </div>
-          </li>
-        </ul>
+            <div id="vh_vegetalFormation_bubble_text">{{vegetalFormation.name}}</div>
+          </div>
+        </li>
+      </ul>
+
+      <div id="next_button" v-on:click="slideLeft()">
+        <img id="next_button_icon" :src="require('../assets/right_arrow.png')" />
       </div>
+    </div>
+
+    <div id="vh_container_vegetationType_element" class="box">
+      <ul id="vh_vegetationType_list">
+        <li
+          v-for="(vegetationType, index) in selectedVegetationTypes"
+          :key="vegetationType.id"
+          :value="vegetationType.id"
+        >
+          <div id="vh_vegetationType_list_element">
+            <div
+              id="vh_vegetationType_bubble"
+              :style="{'background-color': getColorCode(index)}"
+              v-on:click="setSelectedVegetationType(vegetationType)"
+            ></div>
+            <div id="vh_vegetationType_bubble_text">{{vegetationType.name}}</div>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -52,20 +61,6 @@ export default {
   name: "vegetationTypeHelper",
   data() {
     return {
-      vegetalFormationImages: [
-        { imageSource: require("../assets/trees.png") },
-        { imageSource: require("../assets/trees.png") },
-        { imageSource: require("../assets/palm-tree.png") },
-        { imageSource: require("../assets/palm-tree.png") },
-        { imageSource: require("../assets/mangrove.png") },
-        { imageSource: require("../assets/bush.png") },
-        { imageSource: require("../assets/reed-bed.png") },
-        { imageSource: require("../assets/grass.png") },
-        { imageSource: require("../assets/cactus.png") },
-        { imageSource: require("../assets/grass-2.png") },
-        { imageSource: require("../assets/grass-3.png") },
-        { imageSource: require("../assets/trees.png") }
-      ],
       vegetationTypesColors: [
         { colorCode: "#26A69A" },
         { colorCode: "#80CBC4" },
@@ -82,12 +77,12 @@ export default {
       ],
       selectedVegetationTypes: [],
       selectedVegetalFormation: null,
-      selectedVegetationType: null
+      selectedVegetationType: null,
+      scroll: 0
     };
   },
   mounted() {
     store.dispatch("vegetationType/getVegetationTypes");
-    console.info(this.vegetalFormations)
   },
   computed: {
     ...mapState("vegetationType", {
@@ -98,23 +93,34 @@ export default {
     })
   },
   methods: {
-    getImage(index) {
-      return this.vegetalFormationImages[index].imageSource;
-    },
     showVegetationTypes(vegetalFormation) {
       this.selectedVegetalFormation = vegetalFormation.name;
       this.selectedVegetationTypes = this.vegetationTypes.filter(
         vegetationType =>
           vegetationType.vegetalFormation_id == vegetalFormation.id
       );
-      console.log("result arrya: " + this.selectedVegetationTypes);
     },
-    setSelectedVegetationType(vegetationType){
+    setSelectedVegetationType(vegetationType) {
       this.selectedVegetationType = vegetationType.name;
     },
     getColorCode(index) {
-      console.log('color: ' + this.vegetationTypesColors[index].colorCode)
       return this.vegetationTypesColors[index].colorCode;
+    },
+    slideLeft() {
+      if (this.scroll < 1000) {
+        this.scroll += 500;
+      }
+      document
+        .getElementById("vh_vegetalFormation_list")
+        .scroll({ left: this.scroll, behavior: "smooth" });
+    },
+    slideRight() {
+      if (this.scroll > 0) {
+        this.scroll -= 500;
+      }
+      document
+        .getElementById("vh_vegetalFormation_list")
+        .scroll({ left: this.scroll, behavior: "smooth" });
     }
   }
 };
@@ -133,78 +139,131 @@ export default {
   align-self: center;
 }
 
-#vh_vegetalFormation_list {
+#vh_container_vegetalFormation_element {
   grid-row: 1 / 2;
-  display: flex;
+  display: grid;
+  grid-template-columns: 60px 950px 60px;
+  //background-color: red;
+}
+
+#vh_vegetalFormation_list {
+  grid-column: 2 / 3;
+  display: grid;
+  grid-template-columns: 120px;
+  grid-auto-flow: column;
+  grid-gap: 10px;
+  overflow-x: scroll;
+  scroll-snap-type: x proximity;
   justify-content: space-between;
   height: 120px;
   align-items: center;
-  padding-top: 20px;
-  padding-right: 60px;
-  padding-left: 60px;
+}
+
+#previous_button {
+  grid-column: 1 / 2;
+  align-self: center;
+  justify-self: start;
+}
+
+#previous_button_icon {
+  width: 40px;
+  height: 40px;
+  transition: 0.2s;
+}
+
+#previous_button_icon:hover {
+  width: 45px;
+  height: 45px;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+#next_button {
+  grid-column: 3 / 4;
+  align-self: center;
+  justify-self: end;
+}
+
+#next_button_icon {
+  width: 40px;
+  height: 40px;
+  transition: 0.2s;
+}
+
+#next_button_icon:hover {
+  width: 45px;
+  height: 45px;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+#vh_vegetalFormation_list_element {
+  display: grid;
+  grid-template-rows: 50px 16px;
+  grid-template-columns: 120px;
+  line-height: 16px;
 }
 
 #vh_vegetalFormation_bubble {
-  height: 40px;
-  width: 40px;
+  height: 45px;
+  width: 45px;
   align-self: center;
+  justify-self: center;
   border-radius: 50%;
   display: inline-block;
-  transition: 0.3s;
-}
-
-#vh_vegetalFormation_bubble + #vh_vegetalFormation_bubble_text {
-  visibility: hidden;
+  transition: 0.2s;
 }
 
 #vh_vegetalFormation_bubble:hover {
   height: 50px;
   width: 50px;
-  transition: 0.3s;
+  transition: 0.2s;
   cursor: pointer;
 }
 
 #vh_vegetalFormation_bubble_text {
-  grid-row: 2 / 3;
-  text-align: start;
-  font-size: 0px;
-  justify-self: start;
-  justify-self: start;
-  align-self: baseline;
-  line-height: 12px;
-  width: 40px;
-  transition: 0.3s;
-  white-space: pre;
+  text-align: center;
+  font-size: 10px;
+  color: gray;
+  transition: 0.2s;
 }
 
 #vh_vegetalFormation_bubble:hover + #vh_vegetalFormation_bubble_text {
-  visibility: visible;
-  font-size: 14px;
-  transition: 0.3s;
-  text-align: center;
-  padding-top: 10px;
-  padding-right: 60px;
-  white-space: pre;
-  width: 60px;
+  font-weight: bold;
+  font-size: 12px;
+  transition: 0.2s;
+}
+
+#vh_container_vegetationType_element {
+  grid-row: 3 / 4;
+  display: grid;
 }
 
 #vh_vegetationType_list {
-  grid-row: 3 / 4;
-  display: flex;
+  display: grid;
+  grid-template-columns: 100px;
+  grid-auto-flow: column;
+  grid-gap: 10px;
+  overflow-x: scroll;
+  scroll-snap-type: x proximity;
   justify-content: center;
   align-content: center;
   height: 100px;
 }
 
+#vh_vegetationType_list_element {
+  display: grid;
+  grid-template-rows: 40px 16px;
+  grid-template-columns: 100px;
+  line-height: 25px;
+}
+
 #vh_vegetationType_bubble {
   height: 30px;
   width: 30px;
-  margin-top: 5px;
-  margin-right: 30px;
-  margin-left: 30px;
   align-self: center;
+  justify-self: center;
   border-radius: 50%;
-  display: inline-block;
   transition: 0.1s;
 }
 
@@ -212,18 +271,8 @@ export default {
   grid-row: 4 / 5;
   text-align: center;
   font-size: 10px;
-  //font-weight: bold;
-  justify-self: start;
-  //background-color: red;
-  justify-self: start;
-  //align-self: baseline;
-  line-height: 12px;
-  width: 60px;
+  line-height: 10px;
   transition: 0.1s;
-  margin-right: 15px;
-  margin-left: 15px;
-
-  //white-space: pre;
 }
 
 #vh_vegetationType_bubble:hover {
@@ -234,16 +283,17 @@ export default {
 }
 
 #vh_vegetationType_bubble:hover + #vh_vegetationType_bubble_text {
-  //visibility: visible;
-  font-size: 14px;
-  //font-weight: bold;
+  font-size: 12px;
+  font-weight: bold;
   transition: 0.1s;
-  //text-align: center;
-  //display: inline-block;
-  //white-space: pre;
-  width: 80px;
-  margin-right: 10px;
-  margin-left: 10px;
-  line-height: 16px;
+}
+
+@media screen and (max-width: 1200px) {
+  #vh_container_vegetalFormation_element {
+    grid-row: 1 / 2;
+    display: grid;
+    grid-template-columns: 60px 760px 60px;
+    //background-color: red;
+  }
 }
 </style>

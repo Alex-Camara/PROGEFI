@@ -73,12 +73,12 @@ const datacard = {
         },
         setPhotoCollect(state, photoCollect) {
             state.photoCollect = {
-                "name": photoCollect.name,
-                "path": photoCollect.path,
-                "type": photoCollect.type,
+                name: photoCollect.name,
+                path: photoCollect.path,
+                type: photoCollect.type,
                 loading: false,
                 changed: false,
-                "hasMetadata": null
+                hasMetadata: null
             };
         },
         setPhotoCollectNull(state) {

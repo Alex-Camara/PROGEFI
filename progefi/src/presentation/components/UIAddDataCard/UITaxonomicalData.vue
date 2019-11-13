@@ -19,7 +19,7 @@
         <b-autocomplete
           rounded
           v-model="scientificName"
-          
+          :open-on-focus="true"
           :data="scientificNames"
           v-on:keyup.native="getSpeciesByScientificName($event)"
           @select="option => setFields(option)"

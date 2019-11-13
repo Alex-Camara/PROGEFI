@@ -6,6 +6,7 @@ import collection from './collection';
 import project from './project';
 import climateType from './climateType';
 import vegetationType from './vegetationType';
+import speciesData from './speciesData';
 
 Vue.use(Vuex);
 
@@ -16,7 +17,8 @@ const store = new Vuex.Store({
     collection: collection,
     project: project,
     climateType: climateType,
-    vegetationType: vegetationType
+    vegetationType: vegetationType,
+    speciesData: speciesData
   }
 })
 
