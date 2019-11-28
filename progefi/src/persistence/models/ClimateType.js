@@ -7,7 +7,7 @@ Model.knex(Knex(KnexConfig.development));
 
 class ClimateType extends Model {
     static get tableName() {
-        return 'climateTypes';
+        return 'climateType';
     }
 }
 module.exports = ClimateType;

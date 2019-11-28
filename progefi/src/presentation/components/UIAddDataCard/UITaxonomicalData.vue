@@ -29,37 +29,37 @@
 
       <!-- ------- common name field ----- -->
       <b-field id="common_name_input" custom-class="is-small" label="Nombre común:">
-        <b-input rounded  v-model="commonName"></b-input>
+        <b-input rounded v-model="commonName"></b-input>
       </b-field>
 
       <!-- ------- genus field ----- -->
       <b-field id="genus_input" custom-class="is-small" label="Género:">
-        <b-input rounded v-model="genus" ></b-input>
+        <b-input rounded v-model="genus"></b-input>
       </b-field>
 
       <!-- ------- familiy field ----- -->
       <b-field id="family_input" custom-class="is-small" label="Familia:">
-        <b-input rounded v-model="family" ></b-input>
+        <b-input rounded v-model="family"></b-input>
       </b-field>
 
       <!-- ------- order field ----- -->
       <b-field id="order_input" custom-class="is-small" label="Orden:">
-        <b-input rounded v-model="order" ></b-input>
+        <b-input rounded v-model="order"></b-input>
       </b-field>
 
       <!-- ------- class field ----- -->
       <b-field id="class_input" custom-class="is-small" label="Clase:">
-        <b-input rounded v-model="speciesClass" ></b-input>
+        <b-input rounded v-model="speciesClass"></b-input>
       </b-field>
 
       <!-- ------- phylum field ----- -->
       <b-field id="phylum_input" custom-class="is-small" label="Filo:">
-        <b-input rounded v-model="phylum" ></b-input>
+        <b-input rounded v-model="phylum"></b-input>
       </b-field>
 
       <!-- ------- kingdom field ----- -->
       <b-field id="kingdom_input" custom-class="is-small" label="Reino:">
-        <b-input rounded v-model="kingdom" ></b-input>
+        <b-input rounded v-model="kingdom"></b-input>
       </b-field>
     </div>
 
@@ -71,10 +71,9 @@
         <b class="is-size-6">Datos de observación:</b>
       </div>
 
-        <sex-helper id="sex_helper"></sex-helper>
-    
-        <life-stage-helper id="lifeStage_helper"></life-stage-helper>
-      
+      <sex-helper id="sex_helper"></sex-helper>
+
+      <life-stage-helper id="lifeStage_helper"></life-stage-helper>
     </div>
 
     <!-- --------TaxonomicalData Bottom Buttons----- -->
@@ -103,8 +102,8 @@ export default {
     };
   },
   computed: {
-    ...mapState("datacard", {
-      datacard: state => state.datacard
+    ...mapState("speciesData", {
+      speciesDataState: state => state
     }),
     scientificNames: {
       get: function() {
@@ -115,73 +114,73 @@ export default {
     },
     scientificName: {
       get: function() {
-        return this.datacard.species.scientificName;
+        return this.speciesDataState.scientificName;
       },
       set: function(newValue) {
-        store.commit("datacard/setScientificName", newValue);
+        store.commit("speciesData/setScientificName", newValue);
         return newValue;
       }
     },
     commonName: {
       get: function() {
-        return this.datacard.species.commonName;
+        return this.speciesDataState.commonName;
       },
       set: function(newValue) {
-        store.commit("datacard/setCommonName", newValue);
+        store.commit("speciesData/setCommonName", newValue);
         return newValue;
       }
     },
     genus: {
       get: function() {
-        return this.datacard.species.genus;
+        return this.speciesDataState.genus;
       },
       set: function(newValue) {
-        store.commit("datacard/setGenus", newValue);
+        store.commit("speciesData/setGenus", newValue);
         return newValue;
       }
     },
     order: {
       get: function() {
-        return this.datacard.species.order;
+        return this.speciesDataState.order;
       },
       set: function(newValue) {
-        store.commit("datacard/setOrder", newValue);
+        store.commit("speciesData/setOrder", newValue);
         return newValue;
       }
     },
     family: {
       get: function() {
-        return this.datacard.species.family;
+        return this.speciesDataState.family;
       },
       set: function(newValue) {
-        store.commit("datacard/setFamily", newValue);
+        store.commit("speciesData/setFamily", newValue);
         return newValue;
       }
     },
     speciesClass: {
       get: function() {
-        return this.datacard.species.speciesClass;
+        return this.speciesDataState.speciesClass;
       },
       set: function(newValue) {
-        store.commit("datacard/setSpeciesClass", newValue);
+        store.commit("speciesData/setSpeciesClass", newValue);
         return newValue;
       }
     },
     phylum: {
       get: function() {
-        return this.datacard.species.phylum;
+        return this.speciesDataState.phylum;
       },
       set: function(newValue) {
-        store.commit("datacard/setPhylum", newValue);
+        store.commit("speciesData/setPhylum", newValue);
         return newValue;
       }
     },
     kingdom: {
       get: function() {
-        return this.datacard.species.kingdom;
+        return this.speciesDataState.kingdom;
       },
       set: function(newValue) {
-        store.commit("datacard/setKingdom", newValue);
+        store.commit("speciesData/setKingdom", newValue);
         return newValue;
       }
     }
@@ -210,42 +209,43 @@ export default {
         classification = selectedSpecies.classification;
       }
 
-      this.kingdom = classification.find(
-        x => x.rank == "Kingdom"
-      ).name;
-      this.phylum = classification.find(
-        x => x.rank == "Phylum"
-      ).name;
-      this.speciesClass = classification.find(
-        x => x.rank == "Class"
-      ).name;
-      this.order = classification.find(
-        x => x.rank == "Order"
-      ).name;
-      this.family = classification.find(
-        x => x.rank == "Family"
-      ).name;
-      this.genus = classification.find(
-        x => x.rank == "Genus"
-      ).name;
+      this.kingdom = classification.find(x => x.rank == "Kingdom").name;
+      this.phylum = classification.find(x => x.rank == "Phylum").name;
+      this.speciesClass = classification.find(x => x.rank == "Class").name;
+      this.order = classification.find(x => x.rank == "Order").name;
+      this.family = classification.find(x => x.rank == "Family").name;
+      this.genus = classification.find(x => x.rank == "Genus").name;
     },
     getSpeciesByScientificName(event) {
+      let self = this;
       if (
         event.key != "Enter" &&
         event.key != "Tab" &&
+        event.key != "Space" &&
         this.scientificName != null
       ) {
-        let scientificNameRequest = this.scientificName.trim();
-        scientificNameRequest = scientificNameRequest.replace(/ /g, "+");
-        let gbifAPIRequest =
-          "http://webservice.catalogueoflife.org/col/webservice?format=json&response=full&rank=species&name=" +
-          scientificNameRequest;
-        this.waiting = true;
+        if (navigator.onLine) {
+          let scientificNameRequest = this.scientificName.trim();
+          scientificNameRequest = scientificNameRequest.replace(/ /g, "+");
+          let gbifAPIRequest =
+            "http://webservice.catalogueoflife.org/col/webservice?format=json&response=full&rank=species&name=" +
+            scientificNameRequest;
+          self.waiting = true;
 
-        this.axios.get(gbifAPIRequest).then(response => {
-          this.waiting = false;
-          this.theCatalogueOfLifeData = response.data.results;
-        });
+          self.axios
+            .get(gbifAPIRequest)
+            .then(response => {
+              self.waiting = false;
+              self.theCatalogueOfLifeData = response.data.results;
+            })
+            .catch(error => {
+              self.waiting = false;
+              self.theCatalogueOfLifeData = "";
+            });
+        } else {
+          self.waiting = false;
+          self.theCatalogueOfLifeData = "";
+        }
       }
     }
   }

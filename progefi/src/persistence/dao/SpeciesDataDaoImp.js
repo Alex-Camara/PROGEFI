@@ -12,7 +12,6 @@ class SpeciesDataDaoImp {
 
         for (let i = 0; i < sexes.length; i++) {
             sexes[i].iconPath = fullPath + sexes[i].iconPath;
-            sexes[i].selectedIconPath = fullPath + sexes[i].selectedIconPath;
         }
 
         return sexes;

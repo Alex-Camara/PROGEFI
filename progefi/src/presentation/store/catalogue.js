@@ -5,12 +5,17 @@ const {
 const catalogue = {
     namespaced: true,
     state: {
-        catalogues: [
-        ]
+        catalogues: [],
+        catalogue: {
+            name: null
+        }
     },
     mutations:{
         setCatalogues(state, catalogues){
             state.catalogues = catalogues;
+        },
+        setCatalogue(state, catalogue){
+            state.catalogue = catalogue;
         }
     },
     actions: {

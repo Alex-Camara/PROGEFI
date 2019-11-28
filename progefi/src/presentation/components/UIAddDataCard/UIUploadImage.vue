@@ -46,8 +46,8 @@
       <div id="addDataCard1-component-image">
         <img
           id="uploadedImage"
-          v-if="photoCollect.url != 'not-supported-format'"
-          :src="photoCollect.url"
+          v-if="photoCollect.photoCollectPath != 'not-supported-format'"
+          :src="photoCollect.photoCollectPath"
         />
       </div>
       <div v-if="photoCollect.loading">
@@ -72,6 +72,9 @@ export default {
   computed: {
     ...mapState("datacard", {
       photoCollect: state => state.photoCollect
+    }),
+    ...mapState("datacard", {
+      photoCollectPath: state => state.photoCollect.photoCollectPath
     })
   },
   watch: {

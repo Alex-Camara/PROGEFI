@@ -5,6 +5,9 @@ import ProjectHandler from './handlers/projectHandler.js'
 import ClimateTypeHandler from './handlers/climateTypeHandler.js'
 import VegetationTypeHandler from './handlers/vegetationTypeHandler.js'
 import SpeciesDataHandler from './handlers/speciesDataHandler.js'
+import DeviceHandler from './handlers/deviceHandler.js'
+import CollectorHandler from './handlers/collectorHandler.js'
+import CuratorHandler from './handlers/curatorHandler.js'
 
 const {
     ipcMain
@@ -20,6 +23,9 @@ function listen() {
     var climateTypeHandler = new ClimateTypeHandler();
     var vegetationTypeHandler = new VegetationTypeHandler();
     var speciesDataHandler = new SpeciesDataHandler();
+    var deviceHandler = new DeviceHandler();
+    var collectorHandler = new CollectorHandler();
+    var curatorHandler = new CuratorHandler();
 
     ipcMain.on('savePhotoCollect', (event, photocollect) => {
 
@@ -44,7 +50,6 @@ function listen() {
 
     ipcMain.on('getCollections', (event) => {
         collectionHandler.getCollections(function (collections) {
-            console.log('collecciones en listenes: ' + collections)
             event.reply('collections', collections);
         });
     })
@@ -52,6 +57,31 @@ function listen() {
     ipcMain.on('getProjects', (event) => {
         projectHandler.getProjects(function (projects) {
             event.reply('projects', projects);
+        });
+    })
+
+    ipcMain.on('getCollectors', (event, selectedCollector) => {
+        collectorHandler.getCollectors(selectedCollector, function (collectors) {
+            event.reply('collectors', collectors);
+        });
+    })
+
+    ipcMain.on('getCurators', (event, selectedCurator) => {
+        curatorHandler.getCurators(selectedCurator, function (curators) {
+            console.info(curators)
+            event.reply('curators', curators);
+        });
+    })
+
+    ipcMain.on('getDevices', (event) => {
+        deviceHandler.getDevices(function (devices) {
+            event.reply('devices', devices);
+        });
+    })
+
+    ipcMain.on('getModels', (event, deviceId) => {
+        deviceHandler.getModels(deviceId, function (models) {
+            event.reply('models', models);
         });
     })
 
@@ -63,6 +93,7 @@ function listen() {
                 event.reply('imageMetadata', result);
             })
             .catch(error => {
+                console.log('falló recolección de metadatos...')
                 event.reply('imageMetadataFailed');
             })
     })

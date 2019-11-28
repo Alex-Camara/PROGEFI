@@ -20,15 +20,19 @@
       </div>
     </div>
 
+    <div id="generalData_component_template_selection">
+      <template-helper></template-helper>
+    </div>
+
     <!-- --------AddDataCard2 Right Side Component Content----- -->
-    <div id="generalData_component_content">
+    <div id="generalData_component_content" class="box">
       <!-- ------- colection select ----- -->
       <b-field id="colection-select" custom-class="is-small is-centered" label="Colección:">
         <b-select placeholder="Selecciona una colección" v-model="selectedCollection">
           <option
-            v-for="collection in collections"
+            v-for="collection in collectionState.collections"
             :key="collection.name"
-            :value="collection.id"
+            :value="collection"
           >{{ collection.name }}</option>
         </b-select>
       </b-field>
@@ -37,9 +41,9 @@
       <b-field id="catalogue-select" custom-class="is-small is-centered" label="Catálogo:">
         <b-select placeholder="Selecciona un catálogo" v-model="selectedCatalogue">
           <option
-            v-for="catalogue in catalogues"
+            v-for="catalogue in catalogueState.catalogues"
             :key="catalogue.name"
-            :value="catalogue.name"
+            :value="catalogue"
           >{{ catalogue.name }}</option>
         </b-select>
       </b-field>
@@ -48,16 +52,22 @@
       <b-field id="project-select" custom-class="is-small is-centered" label="Proyecto:">
         <b-select placeholder="Selecciona un proyecto" v-model="selectedProject">
           <option
-            v-for="project in projects"
+            v-for="project in projectState.projects"
             :key="project.name"
-            :value="project.name"
+            :value="project"
           >{{ project.name }}</option>
         </b-select>
       </b-field>
 
-      <!-- ------- colector select ----- -->
-      <b-field id="colector-select" custom-class="is-small is-centered" label="Colector:">
-        <b-select placeholder="selecciona un colector"></b-select>
+      <!-- ------- collector select ----- -->
+      <b-field id="collector-select" custom-class="is-small is-centered" label="Colector:">
+        <b-autocomplete
+          :expanded="true"
+          placeholder="Selecciona un collector"
+          v-model="selectedCollector"
+          :open-on-focus="true"
+          :data="collectorsName"
+        ></b-autocomplete>
       </b-field>
 
       <!-- ------- device select ----- -->
@@ -65,11 +75,17 @@
         id="device_helper"
         v-bind:selectedValue="selectedDevice"
         v-bind:attribute="'device'"
-        v-if="hasMetadata"
+        v-if="metadataState.device"
       ></metadata-helper>
 
       <b-field id="device-select" custom-class="is-small is-centered" label="Dispositivo:">
-        <b-input type="text" v-model="selectedDevice" placeholder="selecciona un dispositivo"></b-input>
+        <b-autocomplete
+          placeholder="Selecciona un dispositivo"
+          v-model="selectedDevice"
+          :open-on-focus="true"
+          :data="getDevicesName()"
+          @select="option => getModels(option)"
+        ></b-autocomplete>
       </b-field>
 
       <!-- ------- model select ----- -->
@@ -77,19 +93,24 @@
         id="model_helper"
         v-bind:selectedValue="selectedModel"
         v-bind:attribute="'model'"
-        v-if="hasMetadata"
+        v-if="metadataState.model"
       ></metadata-helper>
 
       <b-field id="model-select" custom-class="is-small is-centered" label="Modelo:">
-        <b-input type="text" v-model="selectedModel" placeholder="selecciona un modelo"></b-input>
+        <b-autocomplete
+          placeholder="Selecciona un modelo"
+          v-model="selectedModel"
+          :open-on-focus="true"
+          :data="getModelsName()"
+        ></b-autocomplete>
       </b-field>
 
       <!-- ------- collect date select ----- -->
       <metadata-helper
         id="collectDate_helper"
-        v-bind:selectedValue="getFormattedDate(selectedDate)"
-        v-bind:attribute="'collectDate'"
-        v-if="hasMetadata"
+        v-bind:selectedValue="datacard.formattedDate"
+        v-bind:attribute="'formattedDate'"
+        v-if="metadataState.collectDate"
       ></metadata-helper>
 
       <b-field
@@ -108,9 +129,9 @@
       <!-- ------- collect hour select ----- -->
       <metadata-helper
         id="collectHour_helper"
-        v-bind:selectedValue="getFormattedHour(selectedHour)"
-        v-bind:attribute="'collectHour'"
-        v-if="hasMetadata"
+        v-bind:selectedValue="datacard.formattedHour"
+        v-bind:attribute="'formattedHour'"
+        v-if="metadataState.collectHour"
       ></metadata-helper>
 
       <b-field
@@ -121,6 +142,7 @@
         <b-timepicker
           v-model="selectedHour"
           rounded
+          editable
           placeholder="Elige una hora..."
           icon="clock"
           hour-format="24"
@@ -138,97 +160,148 @@
 
 <script>
 import store from "../../store/store.js";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import styleColors from "../../style/style.scss";
 
 import metadataHelper from "../../helpers/metadataHelper.vue";
+import templateHelper from "../../helpers/templateHelper.vue";
 
 export default {
   name: "UIGeneralData",
   components: {
-    "metadata-helper": metadataHelper
+    "metadata-helper": metadataHelper,
+    "template-helper": templateHelper
   },
   data() {
     return {
-      photoCollectHasChanged: false,
-      selectedCollection: null,
-      selectedCatalogue: null,
-      selectedProject: null
+      photoCollectHasChanged: false
     };
   },
-  created() {
+  mounted() {
     store.dispatch("collection/getCollections");
     store.dispatch("project/getProjects");
+    store.dispatch("device/getDevices");
   },
   computed: {
     ...mapState("datacard", {
-      datacard: state => state.datacard
-    }),
-    ...mapState("datacard", {
+      datacard: state => state.datacard,
       photoCollect: state => state.photoCollect
     }),
+    ...mapState("metadata", {
+      metadataState: state => state
+    }),
     ...mapState("catalogue", {
-      catalogues: state => state.catalogues
+      catalogueState: state => state
     }),
     ...mapState("collection", {
-      collections: state => state.collections
+      collectionState: state => state
     }),
     ...mapState("project", {
-      projects: state => state.projects
+      projectState: state => state
+    }),
+    ...mapState("collector", {
+      collectorState: state => state
+    }),
+    ...mapState("device", {
+      deviceState: state => state
     }),
     hasMetadata: function() {
-      return this.photoCollect.hasMetadata;
+      return this.metadataState.hasMetadata;
+    },
+    ...mapGetters("collector", ["collectorsName"]),
+    selectedCollection: {
+      get: function() {
+        return this.collectionState.collection;
+      },
+      set: function(newValue) {
+        store.dispatch("collection/setCollection", newValue);
+        store.dispatch("catalogue/getCatalogues", newValue.id);
+      }
+    },
+    selectedCatalogue: {
+      get: function() {
+        return this.catalogueState.catalogue;
+      },
+      set: function(newValue) {
+        store.commit("catalogue/setCatalogue", newValue);
+      }
+    },
+    selectedProject: {
+      get: function() {
+        return this.projectState.project;
+      },
+      set: function(newValue) {
+        store.commit("project/setProject", newValue);
+      }
+    },
+    selectedCollector: {
+      get: function() {
+        return this.collectorState.collector.name;
+      },
+      set: function(newValue) {
+        let collector = this.collectorState.collectors.find(
+          x => x.name == newValue
+        );
+        if (collector) {
+          store.dispatch("collector/getCollectors", collector);
+        } else {
+          store.dispatch("collector/getCollectors", newValue);
+        }
+      }
     },
     selectedDevice: {
       get: function() {
-        return this.datacard.device;
+        return this.deviceState.device.name;
       },
       set: function(newValue) {
-        this.datacard.device = newValue;
+        newValue = { id: null, name: newValue };
+        let device = this.deviceState.devices.find(
+          x => x.name == newValue.name
+        );
+        if (device) {
+          console.log("entró" + newValue);
+          store.commit("device/setDevice", device);
+        } else {
+          console.log("no entró" + newValue);
+          store.commit("device/setDevice", newValue);
+        }
       }
     },
     selectedModel: {
       get: function() {
-        return this.datacard.model;
+        return this.deviceState.model.name;
       },
       set: function(newValue) {
-        this.datacard.model = newValue;
+        newValue = { id: null, name: newValue };
+        let model = this.deviceState.models.find(x => x.name == newValue);
+        if (model) {
+          store.commit("device/setModel", model);
+        } else {
+          store.commit("device/setModel", newValue);
+        }
       }
     },
     selectedDate: {
       get: function() {
         if (this.datacard.collectDate == null) {
-          return new Date();
-        } else {
-          var formatDate = Date.parse(this.datacard.collectDate, "dd-mm-yyyy");
-          var date = new Date(formatDate);
-          return date;
+          store.commit("datacard/setCollectDate", new Date());
         }
+        return this.datacard.collectDate;
       },
       set: function(newValue) {
-        this.datacard.collectDate = newValue;
+        store.commit("datacard/setCollectDate", newValue);
       }
     },
     selectedHour: {
       get: function() {
-        if (this.datacard.collectHour == null) {
-          return new Date();
-        } else {
-          return this.getFormattedHour(this.datacard.collectHour);
-        }
+        return this.datacard.collectDate;
       },
       set: function(newValue) {
-        this.datacard.collectHour = newValue;
+        store.commit("datacard/setCollectHour", newValue);
       }
     }
   },
   watch: {
-    //cuando se seleccione una colección, se recuperarán los catálogos de dicha colección
-    selectedCollection(newValue, oldValue) {
-      if (newValue != null) {
-        store.dispatch("catalogue/getCatalogues", newValue);
-      }
-    },
     hasMetadata(newValue, oldValue) {
       if (!newValue) {
         this.openSnackBar("¡Esta fotocolecta no contiene metadatos!");
@@ -265,7 +338,38 @@ export default {
       }
     },
     getMetaData() {
-      store.dispatch("datacard/getImageMetadata");
+      store.dispatch("metadata/getImageMetadata");
+    },
+    getDevicesName() {
+      let devicesName = [];
+      for (let i = 0; i < this.deviceState.devices.length; i++) {
+        devicesName.push(this.deviceState.devices[i].name);
+      }
+      return devicesName;
+    },
+    getModelsName() {
+      let modelsName = [];
+      for (let i = 0; i < this.deviceState.models.length; i++) {
+        modelsName.push(this.deviceState.models[i].name);
+      }
+      return modelsName;
+    },
+    getCollectorsName() {
+      let collectors = this.collectorState.collectors;
+      let collectorsName = [];
+      for (let i = 0; i < collectors.length; i++) {
+        collectorsName.push(collectors[i].name);
+      }
+      return collectorsName;
+    },
+    getModels(selectedDevice) {
+      if (selectedDevice == null) {
+        selectedDevice = this.selectedDevice;
+      }
+      var selectedDevice = this.deviceState.devices.find(
+        x => x.name == selectedDevice
+      );
+      store.dispatch("device/getModels", selectedDevice.id);
     }
   }
 };
@@ -275,9 +379,9 @@ export default {
 @import "../../style/style.scss";
 #generalData_component {
   display: grid;
-  grid-template-rows: 4% 1% 90% 5%;
-  height: 100%;
-  width: 100%;
+  grid-template-rows: 50px 10px 550px 630px 80px;
+  height: 1260px;
+  //width: 100%;
   margin-top: 10px;
   align-items: center;
 }
@@ -291,42 +395,48 @@ export default {
   justify-self: center;
 }
 
-#generalData_component_bottomButtons {
-  grid-row: 4 / 5;
-  justify-self: end;
+#generalData_component_template_selection {
+  grid-row: 3 / 4;
 }
 
 #generalData_component_content {
-  grid-row: 3 / 4;
+  grid-row: 4 / 5;
   display: grid;
-  height: 400px;
+  //height: 400px;
   grid-template-columns: 20% 20% 20% 20% 20%;
   grid-template-rows: 25% 25% 25% 25%;
   grid-gap: 5px;
   justify-items: start;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  //margin-top: 20px;
+  //margin-bottom: 20px;
+}
+
+#generalData_component_bottomButtons {
+  grid-row: 5 / 6;
+  justify-self: end;
 }
 
 #colection-select {
   grid-row: 1 / 2;
-  grid-column: 2 / 3;
+  grid-column: 1 / 3;
+  //max-width: 250px;
 }
 
 #catalogue-select {
   grid-row: 1 / 2;
   grid-column: 4 / 5;
+  //max-width: 250px;
 }
 
 #project-select {
   grid-row: 2 / 3;
-  grid-column: 2 / 3;
+  grid-column: 1 / 3;
 }
 
-#colector-select {
+#collector-select {
   grid-row: 2 / 3;
-  grid-column: 4 / 5;
-  width: 400px;
+  grid-column: 4 / 6;
+  //max-width: 500px;
 }
 
 #device_helper {
@@ -338,6 +448,7 @@ export default {
 #device-select {
   grid-row: 3 / 4;
   grid-column: 2 / 3;
+  //max-width: 250px;
 }
 
 #model_helper {
@@ -349,6 +460,7 @@ export default {
 #model-select {
   grid-row: 3 / 4;
   grid-column: 4 / 5;
+  //max-width: 250px;
 }
 
 #collectDate_helper {
@@ -360,6 +472,7 @@ export default {
 #collect-date-select {
   grid-row: 4 / 5;
   grid-column: 2 / 3;
+  //max-width: 250px;
 }
 
 #collectHour_helper {
@@ -371,9 +484,10 @@ export default {
 #collect-hour-select {
   grid-row: 4 / 5;
   grid-column: 4 / 5;
+  //max-width: 250px;
 }
 
-hr.style1 {
+/*hr.style1 {
   border-top: 1px solid #8c8b8b;
-}
+}*/
 </style>

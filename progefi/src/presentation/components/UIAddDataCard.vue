@@ -10,16 +10,6 @@
       </div>
 
       <div id="addDataCard-component-title">
-        <!--<nav class="breadcrumb has-bullet-separator is-medium">
-          <ul>
-            <li>
-              <b-button rounded class="is-primary" v-on:click="showDataCards">Fichas de fotocolecta</b-button>
-            </li>
-            <li>
-              <b-button rounded class="is-secondary">Agregar ficha</b-button>
-            </li>
-          </ul>
-        </nav>-->
         <p class="is-size-4">Agregar ficha</p>
       </div>
     </div>
@@ -27,25 +17,20 @@
     <!-- --------AddDataCard Component Content----- -->
     <div id="addDataCard-component-content">
       <div>
-        <b-steps
-          size="is-small"
-          type="is-secondary"
-          :has-navigation="false"
-          v-model="activeStep"
-        >
-          <b-step-item label="Subir fotografía" icon="image" :clickable="false">
+        <b-steps size="is-small" type="is-secondary" :has-navigation="false" v-model="activeStep">
+          <b-step-item label="Subir fotografía" icon="image" :clickable="true">
             <UIUploadImage></UIUploadImage>
           </b-step-item>
-          <b-step-item label="Datos generales" icon="file-document-edit" :clickable="false">
+          <b-step-item label="Datos generales" icon="file-document-edit" :clickable="true">
             <UIGeneralData></UIGeneralData>
           </b-step-item>
-          <b-step-item label="Datos geográficos" icon="earth" :clickable="false">
+          <b-step-item label="Datos geográficos" icon="earth" :clickable="true">
             <UIGeographicalData></UIGeographicalData>
-            </b-step-item>
-          <b-step-item label="Datos taxonómicos" :clickable="false">
+          </b-step-item>
+          <b-step-item label="Datos taxonómicos" :clickable="true">
             <UITaxonomicalData></UITaxonomicalData>
           </b-step-item>
-          <b-step-item label="Validación" :clickable="false">
+          <b-step-item label="Validación" :clickable="true">
             <UIValidateData></UIValidateData>
           </b-step-item>
         </b-steps>
@@ -77,17 +62,50 @@ export default {
     return {};
   },
   created() {
-    store.dispatch("datacard/resetPhotoCollect")
+    store.dispatch("datacard/resetPhotoCollect");
+    store.commit("metadata/resetMetadata");
+    window.addEventListener("online", () => {
+      this.showNotification("Hay conexión a Internet", "is-primary");
+    });
+    window.addEventListener("offline", () => {
+      this.showNotification("No hay conexión a Internet", "is-warning");
+    });
+  },
+  mounted() {
+    this.showInternetStatus();
   },
   methods: {
     showDataCards() {
       router.push({ name: "UIShowDataCards" });
+    },
+    showInternetStatus() {
+      if (!navigator.onLine) {
+        this.showNotification("No hay conexión a Internet", "is-warning");
+      }
+    },
+    showNotification(message, type) {
+      this.$buefy.notification.open({
+        duration: 5000,
+        message: message,
+        position: "is-top-right",
+        type: type,
+        hasIcon: true
+      });
     }
   },
   computed: {
     ...mapState("datacard", {
-      activeStep: state => state.activeStep
-    })
+      datacardState: state => state
+    }),
+    activeStep: {
+      get: function() {
+        return this.datacardState.activeStep;
+      },
+      set: function(newValue) {
+        store.commit("datacard/setActiveStep", newValue);
+        return newValue;
+      }
+    }
   }
 };
 </script>

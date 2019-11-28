@@ -7,16 +7,16 @@ Model.knex(Knex(KnexConfig.development));
 
 class VegetationType extends Model {
     static get tableName() {
-        return 'vegetationTypes';
+        return 'vegetationType';
     }
 
     static get relationMappings () {
       return {
         vegetalFormation: {
           relation: Model.BelongsToOneRelation,
-          modelClass: VegetalFormations,
+          modelClass: VegetalFormation,
           join: {
-            from: 'catalogue.vegetalFormation_id',
+            from: 'vegetalFormationId',
             to: 'vegetalFormation.id'
           }
         }

@@ -1,8 +1,9 @@
 <template>
   <div id="vh_container">
     <div id="vh_container_header">
-      <b class="is-size-6">Tipo de vegetación: {{ selectedVegetationType }}</b>
-      <img id="vh_checked_icon" src="../assets/checked.png" v-if="selectedVegetationType" />
+      <b class="is-size-6">Tipo de vegetación:</b>
+      <b class="is-size-6" v-if="selectedVegetationType.name">{{ selectedVegetationType.name }}</b>
+      <img id="vh_checked_icon" src="../assets/checked.png" v-if="selectedVegetationType.name" />
       <p class="is-size-6">Formación vegetal: {{ selectedVegetalFormation }}</p>
     </div>
 
@@ -13,7 +14,7 @@
 
       <ul id="vh_vegetalFormation_list">
         <li
-          v-for="(vegetalFormation) in vegetalFormations"
+          v-for="vegetalFormation in vegetalFormations"
           :key="vegetalFormation.id"
           :value="vegetalFormations.id"
           v-on:click="showVegetationTypes(vegetalFormation)"
@@ -77,7 +78,6 @@ export default {
       ],
       selectedVegetationTypes: [],
       selectedVegetalFormation: null,
-      selectedVegetationType: null,
       scroll: 0
     };
   },
@@ -86,22 +86,30 @@ export default {
   },
   computed: {
     ...mapState("vegetationType", {
-      vegetationTypes: state => state.vegetationTypes
-    }),
-    ...mapState("vegetationType", {
+      vegetationTypeState: state => state,
       vegetalFormations: state => state.vegetalFormations
-    })
+    }),
+    selectedVegetationType: {
+      get: function() {
+        return this.vegetationTypeState.vegetationType;
+      },
+      set: function(newValue) {
+        console.info(newValue);
+        store.commit("vegetationType/setVegetationType", newValue);
+        return newValue;
+      }
+    }
   },
   methods: {
     showVegetationTypes(vegetalFormation) {
       this.selectedVegetalFormation = vegetalFormation.name;
-      this.selectedVegetationTypes = this.vegetationTypes.filter(
+      this.selectedVegetationTypes = this.vegetationTypeState.vegetationTypes.filter(
         vegetationType =>
-          vegetationType.vegetalFormation_id == vegetalFormation.id
+          vegetationType.vegetalFormationId == vegetalFormation.id
       );
     },
     setSelectedVegetationType(vegetationType) {
-      this.selectedVegetationType = vegetationType.name;
+      this.selectedVegetationType = vegetationType;
     },
     getColorCode(index) {
       return this.vegetationTypesColors[index].colorCode;
@@ -142,7 +150,7 @@ export default {
 #vh_container_vegetalFormation_element {
   grid-row: 1 / 2;
   display: grid;
-  grid-template-columns: 60px 950px 60px;
+  grid-template-columns: 60px 930px 60px;
   //background-color: red;
 }
 

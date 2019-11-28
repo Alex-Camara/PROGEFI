@@ -10,6 +10,7 @@
 import store from "../store/store.js";
 import { mapState } from "vuex";
 import styleColors from "../style/style.scss";
+import moment from "moment";
 
 export default {
   name: "metadataHelper",
@@ -23,15 +24,16 @@ export default {
 
       if (documentElement != null) {
         switch (this.attribute) {
-          case "collectHour":
-            var moment = require("moment");
-            if (moment(newValue).format("HH:mm") == moment(this.originalValue).format("HH:mm")) {
-              
+          /*case "collectHour":
+            if (
+              moment(newValue).format("HH:mm") ==
+              moment(this.originalValue).format("HH:mm")
+            ) {
               documentElement.style.backgroundColor = styleColors.secondary;
             } else {
               documentElement.style.backgroundColor = styleColors.accent;
             }
-            break;
+            break;*/
           default:
             if (newValue == this.originalValue) {
               documentElement.style.backgroundColor = styleColors.secondary;
@@ -46,19 +48,17 @@ export default {
   },
   computed: {
     ...mapState("datacard", {
-      datacard: state => state.datacard
+      datacardState: state => state.datacard
     }),
-    originalValue: function(){
-      return this.datacard.metadataValues[this.attribute]
+    ...mapState("metadata", {
+      metadataState: state => state
+    }),
+    originalValue: function() {
+      return this.metadataState[this.attribute];
     },
     displayValue: {
       get: function() {
-        var moment = require("moment");
-        if (this.attribute == "collectHour") {
-          return moment(this.originalValue).format("HH:mm");
-        } else {
-          return this.originalValue;
-        }
+        return this.originalValue;
       },
       set: function(newValue) {
         this.displayValue = newValue;
@@ -67,7 +67,45 @@ export default {
   },
   methods: {
     restoreMetadataValue() {
-      this.datacard[this.attribute] = this.datacard.metadataValues[this.attribute];
+      switch (this.attribute) {
+        case "device":
+        case "model":
+          store.commit("device/restoreMetadataValue", {
+            attribute: this.attribute,
+            metadataValue: this.metadataState[this.attribute]
+          });
+          break;
+
+        case "latitude":
+        case "longitude":
+        case "altitude":
+          store.commit("coordinate/restoreMetadataValue", {
+            attribute: this.attribute,
+            metadataValue: this.metadataState[this.attribute]
+          });
+          break;
+
+        case "formattedHour":
+          store.commit(
+            "datacard/setCollectHour",
+            this.metadataState.collectHour
+          );
+          break;
+
+        case "formattedDate":
+          store.commit(
+            "datacard/setCollectDate",
+            this.metadataState.collectDate
+          );
+          break;
+
+        default:
+          store.commit("datacard/restoreMetadataValue", {
+            attribute: this.attribute,
+            metadataValue: this.metadataState[this.attribute]
+          });
+          break;
+      }
     }
   }
 };
@@ -96,6 +134,7 @@ export default {
   width: 145px;
   height: 30px;
   background: $secondary;
+  cursor: pointer;
 }
 
 #mh_container:hover #mh_container_text {

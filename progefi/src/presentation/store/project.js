@@ -5,13 +5,17 @@ const {
 const project = {
     namespaced: true,
     state: {
-        projects: [{
-            "name": 'Selecciona un proyecto'
-        }]
+        projects: [],
+        project: {
+            name: null
+        }
     },
     mutations: {
         setProjects(state, projects) {
             state.projects = projects;
+        },
+        setProject(state, project) {
+            state.project = project;
         }
     },
     actions: {

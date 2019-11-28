@@ -6,19 +6,25 @@ const vegetationType = {
     namespaced: true,
     state: {
         vegetationTypes: [],
-        vegetalFormations: []
+        vegetalFormations: [],
+        vegetationType: {
+            name: null
+        }
     },
     mutations: {
         setVegetationTypes(state, vegetationTypes) {
             state.vegetationTypes = vegetationTypes;
         },
+        setVegetationType(state, vegetationType) {
+            state.vegetationType = vegetationType;
+        },
         setVegetalFormations(state, vegetationTypes) {
             for (let i = 0; i < vegetationTypes.length; i++) {
                 let element = vegetationTypes[i];
-                var vegetalFormationIdInArray = state.vegetalFormations.find(x => x.id === element.vegetalFormation_id);
+                var vegetalFormationIdInArray = state.vegetalFormations.find(x => x.id === element.vegetalFormationId);
                 if (vegetalFormationIdInArray === undefined) {
                     let vegetalFormation = {
-                        id: element.vegetalFormation_id,
+                        id: element.vegetalFormationId,
                         name: element.vegetalFormationName,
                         imagePath: element.vegetalFormationImagePath
                     }

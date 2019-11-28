@@ -2,6 +2,7 @@ const {
     ipcRenderer
 } = require('electron')
 const fs = require('fs')
+var moment = require('moment');
 
 const datacard = {
     namespaced: true,
@@ -13,34 +14,13 @@ const datacard = {
             url: null,
             loading: false,
             changed: false,
-            hasMetadata: null
+            photoCollectPath: null
         },
         datacard: {
-            longitude: -101.433236,
-            latitude: 20.102365,
-            altitude: null,
-            country: null,
-            countryState: null,
-            municipality: null,
-            locality: null,
-            species: {
-                scientificName: null,
-                commonName: null,
-                genus: null,
-                order: null,
-                family: null,
-                speciesClass: null,
-                phylum: null,
-                kingdom: null,
-                sex: null,
-                lifeStage: null
-            },
-            metadataValues: {
-                device: "Apple",
-                model: "iPhone",
-                collectDate: "30/01/17",
-                collectHour: "03:43"
-            }
+            collectDate: null,
+            collectHour: null,
+            formattedDate: null,
+            formattedHour: null
         }
     },
     mutations: {
@@ -56,20 +36,8 @@ const datacard = {
         hasMetadata(state, status) {
             state.photoCollect.hasMetadata = status;
         },
-        setPhotoCollectURL(state, photoCollect) {
-            var reader = new FileReader();
-
-            reader.onloadend = () => {
-                state.photoCollect = {
-                    name: state.photoCollect.name,
-                    path: state.photoCollect.path,
-                    url: reader.result,
-                    loading: false,
-                    changed: true,
-                    hasMetadata: null
-                }
-            };
-            reader.readAsDataURL(photoCollect);
+        setPhotoCollectURL(state, photoCollectPath) {
+            state.photoCollect.photoCollectPath = photoCollectPath;
         },
         setPhotoCollect(state, photoCollect) {
             state.photoCollect = {
@@ -77,8 +45,7 @@ const datacard = {
                 path: photoCollect.path,
                 type: photoCollect.type,
                 loading: false,
-                changed: false,
-                hasMetadata: null
+                changed: false
             };
         },
         setPhotoCollectNull(state) {
@@ -86,76 +53,30 @@ const datacard = {
                 name: null,
                 path: null,
                 url: null,
-                loading: false,
-                hasMetadata: null
+                loading: false
             }
         },
-        setLongitude(state, longitude) {
-            state.datacard.longitude = longitude
+        setCollectDate(state, collectDate) {
+            state.datacard.collectDate = collectDate
+            state.datacard.formattedDate = moment(collectDate).format('DD/MM/YYYY');
+            state.datacard.formattedHour = moment(collectDate).format('HH:mm');
         },
-        setLatitude(state, latitude) {
-            state.datacard.latitude = latitude
+        setCollectHour(state, collectHour) {
+            let collectDate = moment(state.datacard.collectDate);
+            collectHour = moment(collectHour).format('HH:mm');
+            state.datacard.formattedHour = collectHour;
+            collectHour = collectHour.split(':', 2);
+            let hour = collectHour[0];
+            let minutes = collectHour[1];
+            collectDate = collectDate.set({ h: hour, m: minutes })
+            state.datacard.collectDate = moment(collectDate).toDate();
         },
-        setCountry(state, country) {
-            state.datacard.country = country
-        },
-        setCountryState(state, countryState) {
-            state.datacard.countryState = countryState
-        },
-        setMunicipality(state, municipality) {
-            state.datacard.municipality = municipality
-        },
-        setLocality(state, locality) {
-            state.datacard.locality = locality
-        },
-        setScientificName(state, scientificName) {
-            state.datacard.species.scientificName = scientificName;
-        },
-        setCommonName(state, commonName) {
-            state.datacard.species.commonName = commonName;
-        },
-        setGenus(state, genus) {
-            state.datacard.species.genus = genus;
-        },
-        setOrder(state, order) {
-            state.datacard.species.order = order;
-        },
-        setFamily(state, family) {
-            state.datacard.species.family = family
-        },
-        setSpeciesClass(state, speciesClass) {
-            state.datacard.species.speciesClass = speciesClass
-        },
-        setPhylum(state, phylum) {
-            state.datacard.species.phylum = phylum
-        },
-        setKingdom(state, kingdom) {
-            state.datacard.species.kingdom = kingdom
-        },
-        setSex(state, sex) {
-            state.datacard.species.sex = sex;
-        },
-        setLifeStage(state, lifeStage) {
-            state.datacard.species.lifeStage = lifeStage;
-        },
-        setMetadataValues(state, metadata) {
-            state.datacard.metadataValues = {
-                device: metadata.device,
-                model: metadata.model,
-                collectDate: metadata.collectDate,
-                collectHour: metadata.collectHour,
-                longitude: metadata.longitude,
-                latitude: metadata.latitude,
-                altitude: metadata.altitude
-            }
+        restoreMetadataValue(state, { attribute, metadataValue }) {
+            state[attribute] = metadataValue;
         }
     },
     actions: {
-        setPhotoCollect({
-            dispatch,
-            commit,
-            state
-        }, photoCollect) {
+        setPhotoCollect({ commit, state }, photoCollect) {
             if (photoCollect != null) {
                 commit('setPhotoCollect', photoCollect);
 
@@ -164,49 +85,33 @@ const datacard = {
 
                 //Si se guardó, actualizar la url de la imagen
                 ipcRenderer.on('photoCollectSaved', (event, arg) => {
-                    try {
-                        console.log('valor entrante: ' + arg)
-                        var fileReceived = fs.readFileSync(arg)
-                        var imageFile = new File([fileReceived], 'filename')
-                        commit('setPhotoCollectURL', imageFile);
-                    } catch (error) {
-                        commit("isLoading", false)
-                        throw error;
-                    }
+                    commit('setPhotoCollectURL', arg);
+                    commit("isLoading", false)
+                    commit("hasChanged", true)
                 })
 
                 ipcRenderer.on('photoCollectNotSaved', (event, arg) => {
-                    state.photoCollect = {
-                        name: state.photoCollect.name,
-                        path: state.photoCollect.path,
-                        url: arg,
-                        loading: false
-                    }
+                    commit('setPhotoCollectURL', arg);
+                    commit("isLoading", false)
+                    commit("hasChanged", false)
                 })
             }
         },
-        resetPhotoCollect({
-            commit
-        }) {
+        resetPhotoCollect({ commit }) {
             commit("setActiveStep", 0);
             commit("setPhotoCollectNull");
         },
-        getImageMetadata({
-            commit,
-            state
-        }) {
-            ipcRenderer.send('getImageMetadata')
-            ipcRenderer.on('imageMetadata', (event, arg) => {
-                state.datacard = arg;
-                commit("hasMetadata", true);
-                commit("hasChanged", false);
-                commit("setMetadataValues", arg);
-            })
+        restoreMetadataValue({ commit }, { attribute, metadataValue }) {
+            switch (attribute) {
+                case "collectHour":
+                    commit("setCollect", 0);
+                    break;
 
-            ipcRenderer.on('imageMetadataFailed', (event, arg) => {
-                commit("hasMetadata", false);
-                commit("hasChanged", false);
-            })
+                default:
+                    commit("setActiveStep", 0);
+                    break;
+            }
+
         }
     }
 }

@@ -1,17 +1,18 @@
 <template>
   <div id="ch_container">
     <div>
-      <b class="is-size-6">Tipo de clima: {{selectedTitle}}</b>
-      <img id="vh_checked_icon" src="../assets/checked.png" v-if="selectedTitle" />
+      <b class="is-size-6">Tipo de clima:</b>
+      <b class="is-size-6" v-if="selectedClimateType.code">{{selectedClimateType.code}}</b>
+      <img id="vh_checked_icon" src="../assets/checked.png" v-if="selectedClimateType.code" />
       <div>
         <ul id="ch_list">
           <li
             id="bh_bubble"
-            v-for="climateType in climateTypes"
+            v-for="climateType in climateTypeState.climateTypes"
             :key="climateType.code"
             :value="climateType.code"
             :style="{'background-color': '#' + climateType.colorCode}"
-            v-on:click="selectClimateType(climateType.code)"
+            v-on:click="setClimateType(climateType)"
             @mouseover="showDescription(climateType.code)"
             @mouseleave="showSelectedDescription()"
           >
@@ -41,27 +42,33 @@ export default {
   },
   computed: {
     ...mapState("climateType", {
-      climateTypes: state => state.climateTypes
-    })
+      climateTypeState: state => state
+    }),
+    selectedClimateType: {
+      get: function() {
+        return this.climateTypeState.climateType;
+      },
+      set: function(newValue) {
+        store.commit("climateType/setClimateType", newValue);
+        return newValue;
+      }
+    }
   },
   methods: {
     showDescription(climateCode) {
-      let climateType = this.climateTypes.find(x => x.code === climateCode);
+      let climateType = this.climateTypeState.climateTypes.find(
+        x => x.code === climateCode
+      );
       this.selectedDescription = climateType.description;
     },
-    selectClimateType(climateCode) {
-      let climateType = this.climateTypes.find(x => x.code === climateCode);
-      this.selectedDescription = climateType.description;
-      this.selectedTitle = climateType.code;
+    setClimateType(climateType) {
+      this.selectedClimateType = climateType;
     },
     showSelectedDescription() {
-      if (!this.selectedTitle) {
+      if (!this.selectedClimateType) {
         this.selectedDescription = "";
       } else {
-        let climateType = this.climateTypes.find(
-          x => x.code === this.selectedTitle
-        );
-        this.selectedDescription = climateType.description;
+        this.selectedDescription = this.selectedClimateType.description;
       }
     }
   }
@@ -87,7 +94,7 @@ export default {
   align-self: center;
   border-radius: 50%;
   line-height: 75px;
-  transition: 0.3s;
+  transition: 0.5s;
 }
 
 #bh_bubble #bh_bubble_text {
@@ -97,7 +104,7 @@ export default {
 #bh_bubble:hover {
   height: 75px;
   width: 75px;
-  transition: 0.3s;
+  transition: 0.5s;
   cursor: pointer;
 }
 
@@ -109,6 +116,6 @@ export default {
 #bh_bubble:hover #bh_bubble_text {
   visibility: visible;
   font-size: 16px;
-  transition: 0.3s;
+  transition: 0.5s;
 }
 </style>

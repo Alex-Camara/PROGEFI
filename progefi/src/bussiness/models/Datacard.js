@@ -3,7 +3,7 @@
 class Datacard {
     constructor() {
         this.photoCollectPath = null;
-        this.photoCollectDuplicatePath = null;
+        this.photoCollectDuplicatePath = '';
         this.device = null;
         this.model = null;
         this.collectDate = null;

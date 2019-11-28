@@ -5,18 +5,28 @@ const {
 const climateType = {
     namespaced: true,
     state: {
-        climateTypes: []
+        climateTypes: [],
+        climateType: {
+            code: null
+        }
     },
-    mutations:{
-        setClimateTypes(state, climatesTypes){
-            state.climateTypes = climatesTypes;
+    mutations: {
+        setClimateTypes(state, climateTypes) {
+            state.climateTypes = climateTypes;
+        },
+        setClimateType(state, climateType) {
+            console.log(climateType)
+            console.log(climateType)
+            state.climateType = climateType;
         }
     },
     actions: {
-        getClimateTypes({commit}) {
+        getClimateTypes({
+            commit
+        }) {
             ipcRenderer.send('getClimateTypes')
-            ipcRenderer.on('climateTypes', (event, receivedClimatesTypes) => {
-                commit('setClimateTypes', receivedClimatesTypes)
+            ipcRenderer.on('climateTypes', (event, receivedClimateTypes) => {
+                commit('setClimateTypes', receivedClimateTypes)
             });
         }
     }

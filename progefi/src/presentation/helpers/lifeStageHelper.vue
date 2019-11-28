@@ -3,18 +3,13 @@
     <div id="lifeStage_helper_container" class="box">
       <div id="lifeStage_helper_container_header">
         <div id="lifeStage_helper_container_header_title">
-          <b class="is-size-6">
-            Etapa: {{ lifeStage }}
-            <img
-              id="lifeStage_helper_checked_icon"
-              src="../assets/checked.png"
-              v-if="lifeStage"
-            />
-          </b>
+          <b class="is-size-6">Etapa: </b>
+          <b class="is-size-6" v-if="lifeStage">{{ lifeStage }}</b>
+          <img id="lifeStage_helper_checked_icon" src="../assets/checked.png" v-if="lifeStage" />
         </div>
 
         <div id="lifeStage_helper_container_header_addOption" v-on:click="addOption()">
-          <b-tooltip label="Agregar otro opción" position="is-top">
+          <b-tooltip label="Agregar otra opción" position="is-top">
             <img
               id="lifeStage_helper_container_header_addOption_icon"
               :src="require('../assets/more.png')"
@@ -27,10 +22,10 @@
         <ul id="lifeStage_helper_list">
           <li
             id="lifeStage_helper_list_item"
-            v-for="lifeStage in lifeStages"
+            v-for="lifeStage in speciesDataState.lifeStages"
             :key="lifeStage.name"
             :value="lifeStage.name"
-            v-on:click="setLifeStage(lifeStage.name)"
+            v-on:click="setLifeStage(lifeStage)"
           >
             <div id="lifeStage_helper_list_item_icon"></div>
             <div id="lifeStage_helper_list_item_text">{{lifeStage.name}}</div>
@@ -52,18 +47,15 @@ export default {
     };
   },
   computed: {
-    ...mapState("datacard", {
-      datacard: state => state.datacard
-    }),
     ...mapState("speciesData", {
-      lifeStages: state => state.lifeStages
+      speciesDataState: state => state
     }),
     lifeStage: {
       get: function() {
-        return this.datacard.species.lifeStage;
+        return this.speciesDataState.lifeStage.name;
       },
       set: function(newValue) {
-        store.commit("datacard/setLifeStage", newValue);
+        store.commit("speciesData/setLifeStage", newValue);
         return newValue;
       }
     }
@@ -85,7 +77,7 @@ export default {
           maxlength: 20
         },
         trapFocus: true,
-        onConfirm: value => this.setLifeStage(value)
+        onConfirm: value => this.setLifeStage({name: value})
       });
     }
   }

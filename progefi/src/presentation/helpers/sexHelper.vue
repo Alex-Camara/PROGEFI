@@ -3,14 +3,13 @@
     <div id="sex_helper_container" class="box">
       <div id="sex_helper_container_header">
         <div id="sex_helper_container_header_title">
-          <b class="is-size-6">
-            Sexo: {{ sex }}
-            <img id="sex_helper_checked_icon" src="../assets/checked.png" v-if="sex" />
-          </b>
+          <b class="is-size-6">Sexo: </b>
+          <b class="is-size-6" v-if="sex">{{ sex }}</b>
+          <img id="sex_helper_checked_icon" src="../assets/checked.png" v-if="sex" />
         </div>
 
         <div id="sex_helper_container_header_addOption" v-on:click="addOption()">
-          <b-tooltip label="Agregar otro opción" position="is-top">
+          <b-tooltip label="Agregar otra opción" position="is-top">
             <img
               id="sex_helper_container_header_addOption_icon"
               :src="require('../assets/more.png')"
@@ -23,10 +22,10 @@
         <ul id="sex_helper_list">
           <li
             id="sex_helper_list_item"
-            v-for="sex in sexes"
+            v-for="sex in speciesDataState.sexes"
             :key="sex.name"
             :value="sex.name"
-            v-on:click="setSex(sex.name)"
+            v-on:click="setSex(sex)"
           >
             <img id="sex_helper_list_item_icon" :src="sex.iconPath" />
             <div id="sex_helper_list_item_text">{{sex.name}}</div>
@@ -49,18 +48,15 @@ export default {
     store.dispatch("speciesData/getSexes");
   },
   computed: {
-    ...mapState("datacard", {
-      datacard: state => state.datacard
-    }),
     ...mapState("speciesData", {
-      sexes: state => state.sexes
+      speciesDataState: state => state
     }),
     sex: {
       get: function() {
-        return this.datacard.species.sex;
+        return this.speciesDataState.sex.name;
       },
       set: function(newValue) {
-        store.commit("datacard/setSex", newValue);
+        store.commit("speciesData/setSex", newValue);
         return newValue;
       }
     }
@@ -83,15 +79,10 @@ export default {
           maxlength: 20
         },
         trapFocus: true,
-        onConfirm: value => this.setSex(value)
+        onConfirm: value => this.setSex({name: value})
       });
     }
   }
-  /*
-                receivedSexes.push({
-                    name: "Otro",
-                    iconPath: require("../assets/more.png")
-                }); */
 };
 </script>
 

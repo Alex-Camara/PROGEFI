@@ -17,12 +17,12 @@
           id="longitude_helper"
           v-bind:selectedValue="longitude"
           v-bind:attribute="'longitude'"
+          v-if="metadataState.longitude"
         ></metadata-helper>
 
         <b-field id="longitude_input" custom-class="is-small is-centered" label="Longitud:">
           <b-input
-            
-            v-model="datacard.longitude"
+            v-model="longitude"
             placeholder="Longitud"
             type="text"
             required
@@ -37,12 +37,12 @@
           id="latitude_helper"
           v-bind:selectedValue="latitude"
           v-bind:attribute="'latitude'"
+          v-if="metadataState.latitude"
         ></metadata-helper>
 
         <b-field id="latitude_input" custom-class="is-small is-centered" label="Latitud:">
           <b-input
-            
-            v-model="datacard.latitude"
+            v-model="latitude"
             placeholder="Latitud"
             type="text"
             required
@@ -57,18 +57,23 @@
           id="altitude_helper"
           v-bind:selectedValue="altitude"
           v-bind:attribute="'altitude'"
+          v-if="metadataState.altitude"
         ></metadata-helper>
 
-        <b-field id="altitude_input" custom-class="is-small is-centered" label="Altitud:">
-          <b-input
-            
-            v-model="datacard.altitude"
-            placeholder="Altitud"
-            type="text"
-            required
-            validation-message="Caracteres no permitidos"
-            pattern="^\d+(\.\d{1,13})?$"
-          ></b-input>
+        <b-field id="altitude_input">
+          <b-field custom-class="is-small is-centered" label="Altitud:">
+            <b-input
+              v-model="altitude"
+              placeholder="Altitud"
+              type="text"
+              required
+              validation-message="Caracteres no permitidos"
+              pattern="^\d+(\.\d{1,13})?$"
+            ></b-input>
+          </b-field>
+          <p id="altitude_input_message" class="control">
+            <span class="button is-static">msnm</span>
+          </p>
         </b-field>
       </div>
 
@@ -107,7 +112,7 @@
         :min-zoom="minZoom"
         :zoom="zoom"
         :center="center"
-        :options="{zoomControl: true}"
+        :options="{zoomControl: true, attributionControl: false}"
       >
         <v-tile-layer :url="url"></v-tile-layer>
         <v-marker :lat-lng.sync="center" :draggable="true"></v-marker>
@@ -158,32 +163,43 @@ export default {
     this.center = { lat: this.latitude, lng: this.longitude };
   },
   computed: {
-    ...mapState("datacard", {
-      datacard: state => state.datacard
+    ...mapState("metadata", {
+      metadataState: state => state
+    }),
+    ...mapState("location", {
+      locationState: state => state
+    }),
+    ...mapState("coordinate", {
+      coordinateState: state => state
     }),
     longitude: {
       get: function() {
-        return this.datacard.longitude;
+        return this.coordinateState.longitude;
       },
       set: function(newValue) {
-        store.commit("datacard/setLongitude", newValue);
+        newValue = this.trimCoordinate(newValue);
+        store.dispatch("coordinate/setLongitude", newValue);
         return newValue;
       }
     },
     latitude: {
       get: function() {
-        return this.datacard.latitude;
+        return this.coordinateState.latitude;
       },
       set: function(newValue) {
-        store.commit("datacard/setLatitude", newValue);
+        newValue = this.trimCoordinate(newValue);
+        store.dispatch("coordinate/setLatitude", newValue);
         return newValue;
       }
     },
-    altitude: function() {
-      if (this.datacard.altitude != null) {
-        return this.datacard.altitude;
-      } else {
-        return "Altitude:";
+    altitude: {
+      get: function() {
+        return this.coordinateState.altitude;
+      },
+      set: function(newValue) {
+        newValue = this.trimCoordinate(newValue);
+        store.commit("coordinate/setAltitude", newValue);
+        return newValue;
       }
     },
     center: {
@@ -198,36 +214,39 @@ export default {
       }
     },
     country: {
-      get: function(){
-        return this.datacard.country;
+      get: function() {
+        return this.locationState.country;
       },
-      set: function(newValue){
-        store.commit("datacard/setCountry", newValue);
+      set: function(newValue) {
+        store.commit("location/setCountry", newValue);
       }
     },
     state: {
-      get: function(){
-        return this.datacard.countryState;
+      get: function() {
+        return this.locationState.countryState;
       },
-      set: function(newValue){
-        store.commit("datacard/setCountryState", newValue);
+      set: function(newValue) {
+        store.commit("location/setCountryState", newValue);
       }
     },
     municipality: {
-      get: function(){
-        return this.datacard.municipality;
+      get: function() {
+        return this.locationState.municipality;
       },
-      set: function(newValue){
-        store.commit("datacard/setMunicipality", newValue);
+      set: function(newValue) {
+        store.commit("location/setMunicipality", newValue);
       }
     },
     locality: {
-      get: function(){
-        return this.datacard.locality;
+      get: function() {
+        return this.locationState.locality;
       },
-      set: function(newValue){
-        store.commit("datacard/setLocality", newValue);
+      set: function(newValue) {
+        store.commit("location/setLocality", newValue);
       }
+    },
+    internetConnection() {
+      return navigator.onLine;
     }
   },
   methods: {
@@ -238,38 +257,75 @@ export default {
       store.commit("datacard/setActiveStep", 3);
     },
     getAddress() {
-      var self = this;
-      //nominatim es la biblioteca de OpenStreetMaps para obtener direcciones
-      let nominatimAPIRequest =
-        "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" +
-        this.datacard.latitude +
-        "&lon=" +
-        this.datacard.longitude;
+      if (this.internetConnection) {
+        //nominatim es la biblioteca de OpenStreetMaps para obtener direcciones
+        let nominatimAPIRequest =
+          "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" +
+          this.coordinateState.latitude +
+          "&lon=" +
+          this.coordinateState.longitude;
 
-      this.axios.get(nominatimAPIRequest).then(response => {
-        let address = response.data.address;
+        this.axios
+          .get(nominatimAPIRequest)
+          .then(response => {
+            let address = response.data.address;
 
-        //asumiremos como localidad aquellos poblados que tengan las siguientes propiedades
-        let localityProperties = ["city", "town", "village", "hamlet"];
+            this.locality = this.getLocality(address);
+            this.municipality = address.county;
+            this.state = address.state;
+            this.country = address.country;
+          })
+          .catch(error => {
+            this.locality = "";
+            this.municipality = "";
+            this.state = "";
+            this.country = "";
+            //this.latitude = '';
+            //this.longitude = '';
+          });
+      } else {
+        this.openToastMessage("Sin conexión a internet", "is-warning");
+      }
+    },
+    getLocality(address) {
+      //asumiremos como localidad aquellos poblados que tengan las siguientes propiedades
+      let localityProperties = ["city", "town", "village", "hamlet"];
 
-        for (let i = 0; i < localityProperties.length; i++) {
-          if (address.hasOwnProperty(localityProperties[i])) {
-            self.locality = address[localityProperties[i]];
-            break;
-          } else {
-            self.locality = "";
-          }
+      for (let i = 0; i < localityProperties.length; i++) {
+        if (address.hasOwnProperty(localityProperties[i])) {
+          return address[localityProperties[i]];
         }
-        self.municipality = address.county;
-        self.state = address.state;
-        self.country = address.country;
-      });
+      }
+      return "";
     },
     //debido a un error en leaflet en el cual no puede detectar el tamaño total de renderizado
     //cada vez que el mapa sea visible se inhabilitará esta opción
     visibilityChanged(isVisible, entry) {
       this.isVisible = isVisible;
       this.$refs.map.mapObject.invalidateSize();
+    },
+    openToastMessage(message, type) {
+      this.$buefy.toast.open({
+        duration: 5000,
+        message: message,
+        position: "is-bottom",
+        type: type
+      });
+    },
+    trimCoordinate(coordinate) {
+      coordinate = coordinate.toString();
+      let splittedCoordinate = coordinate.split(".");
+      if (splittedCoordinate.length > 1) {
+        let decimalLength = splittedCoordinate[1].length;
+        if (decimalLength > 6) {
+          coordinate = parseFloat(coordinate).toFixed(6);
+          return coordinate;
+        } else {
+          return coordinate;
+        }
+      } else {
+        return coordinate;
+      }
     }
   }
 };
@@ -372,6 +428,10 @@ export default {
 #altitude_input {
   grid-column: 6 / 7;
   justify-self: start;
+}
+
+#altitude_input_message {
+  margin-top: 24px;
 }
 
 #country_select {

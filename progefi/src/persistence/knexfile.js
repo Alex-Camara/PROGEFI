@@ -1,3 +1,5 @@
+// Update with your config settings.
+
 const path = require("path");
 
 module.exports = {
@@ -5,8 +7,8 @@ module.exports = {
     client: 'sqlite3',
     useNullAsDefault: true,
     connection: {
-      filename: path.resolve('.') + '/src/persistence/testDatabase.db'
+      filename: path.resolve('.') + '/progefiDB.db'
     }
   }
-
 };
+

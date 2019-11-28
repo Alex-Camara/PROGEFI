@@ -9,6 +9,7 @@ import Datacard from '../models/Datacard.js';
 class DatacardHandler {
   constructor() {
     this.datacard = new Datacard();
+    this.lastLoadedFilePath = null;
   }
   async savePhotoCollect(photoCollect) {
     const sharp = require('sharp');
@@ -41,9 +42,9 @@ class DatacardHandler {
   }
   async saveDuplicatedFile(photoCollectFile, photocollectsFolderPath) {
     try {
-      var duplicatePath = photocollectsFolderPath + 'duplicate/' + 'duplicate.' + 'png'
+      this.deleteDuplicates(photocollectsFolderPath);
+      var duplicatePath = photocollectsFolderPath + 'duplicate/' + 'duplicate_' + +new Date().getTime() + '.png'
       //console.log('entró a saveduplicate, ruta duplicada : ' + photoCollectFile)
-
       await photoCollectFile.write(duplicatePath)
       //console.log('copio archivo : ')
 
@@ -53,6 +54,21 @@ class DatacardHandler {
       return duplicatePath;
     } catch (error) {
       return error
+    }
+  }
+  deleteDuplicates(photocollectsFolderPath){
+    try {
+      var directory = photocollectsFolderPath + 'duplicate';
+      fs.readdir(directory, (err, files) => {
+        if (err) throw err;
+        for (let i = 0; i < files.length; i++) {
+          const element = files[i];
+          fs.unlinkSync(directory + '/' + element);
+        }
+      })
+
+    } catch (err) {
+      console.error(err)
     }
   }
   saveFile(photoCollect, photocollectsFolderPath, imageExtension) {
@@ -74,27 +90,34 @@ class DatacardHandler {
       //obtener y darle formato a la fecha
       var fullCollectDate = result.exif.CreateDate;
       var fullSplitCollectDate = this.formatDate(fullCollectDate);
+      var longitude = null;
+      var latitude = null;
+      var altitude = null;
 
-      //obtener y darle formato a la latitud
-      var longitudeReference = result.gps.GPSLongitudeRef;
-      var DMSLongitude = result.gps.GPSLongitude;
-      var longitude = this.convertGPSCoordinatesToDecimals(DMSLongitude, longitudeReference)
+      if (result.gps.hasOwnProperty('GPSLongitudeRef') && result.gps.hasOwnProperty('GPSLatitudeRef') || result.gps.hasOwnProperty('GPSAltitudeRef')) {
+        //obtener y darle formato a la latitud
+        var longitudeReference = result.gps.GPSLongitudeRef;
+        var DMSLongitude = result.gps.GPSLongitude;
+        var longitude = this.convertGPSCoordinatesToDecimals(DMSLongitude, longitudeReference)
 
-      //obtener y darle formato a la longitud
-      var latitudeReference = result.gps.GPSLatitudeRef;
-      var DMSLatitude = result.gps.GPSLatitude;
-      var latitude = this.convertGPSCoordinatesToDecimals(DMSLatitude, latitudeReference)
+        //obtener y darle formato a la longitud
+        var latitudeReference = result.gps.GPSLatitudeRef;
+        var DMSLatitude = result.gps.GPSLatitude;
+        var latitude = this.convertGPSCoordinatesToDecimals(DMSLatitude, latitudeReference)
+
+        var altitude = result.gps.GPSAltitude.toFixed(6);
+      }
 
       //obtener los demas parametros
       var collectDate = fullSplitCollectDate[0]
       var collectHour = fullSplitCollectDate[1]
       var device = result.image.Make;
       var model = result.image.Model;
-      var altitude = result.gps.GPSAltitude.toFixed(6);
 
       this.datacard.setMetadata(device, model, latitude, altitude, longitude, collectDate, collectDate + ' ' + collectHour);
       return this.datacard
-    }).catch(error =>{
+    }).catch(error => {
+      console.log(error)
       throw error;
     })
     return datacardWithMetadata
@@ -113,6 +136,7 @@ class DatacardHandler {
           console.info(exifData)
           resolve(exifData)
         } else {
+          console.log('error en extracción de metadatos ' + error)
           reject(error)
         }
       });
@@ -120,20 +144,20 @@ class DatacardHandler {
   }
   formatDate(fullCollectDate) {
     fullCollectDate = fullCollectDate.split(' ', 2);
-    fullCollectDate[0] = fullCollectDate[0].replace(/:/g, '/');
+    fullCollectDate[0] = fullCollectDate[0].replace(/:/g, '-');
     return fullCollectDate;
   }
   convertGPSCoordinatesToDecimals(DMSCoordinate, reference) {
     var degrees = DMSCoordinate[0];
     var minutes = DMSCoordinate[1];
     var seconds = DMSCoordinate[2];
-    
+
     var decimalCoordinate = degrees + (minutes / 60) + (seconds / 3600);
     decimalCoordinate = decimalCoordinate.toFixed(6);
 
-    if(reference == 'W' || reference == 'S'){
+    if (reference == 'W' || reference == 'S') {
       return -(decimalCoordinate)
-    } else{
+    } else {
       return decimalCoordinate;
     }
   }

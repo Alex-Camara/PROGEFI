@@ -6,8 +6,8 @@ const VegetationType = require('../models/VegetationType')
 class VegetationTypeDaoImp {
     async getVegetationTypes() {
         const vegetationTypes = await VegetationType.query()
-            .select('vegetationTypes.*', 'vegetalFormations.name as vegetalFormationName', 'vegetalFormations.imagePath as vegetalFormationImagePath')
-            .join('vegetalFormations', 'vegetationTypes.vegetalFormation_id', 'vegetalFormations.id');
+            .select('vegetationType.*', 'vegetalFormation.name as vegetalFormationName', 'vegetalFormation.imagePath as vegetalFormationImagePath')
+            .join('vegetalFormation', 'vegetationType.vegetalFormationId', 'vegetalFormation.id');
 
         var resourcesPath = "/src/persistence/resources/";
         var fullPath = require('path').resolve(__dirname, '..') + resourcesPath;
