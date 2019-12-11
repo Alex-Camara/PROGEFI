@@ -8,7 +8,12 @@ const collection = {
         collections: [],
         institutes: [],
         collection: {
-            name: null
+            name: null,
+            required: true,
+            valid: {
+                isValid: false,
+                message: "campo requerido"
+              }
         },
         institute: {
             imagePath: null
@@ -19,6 +24,9 @@ const collection = {
             state.collections = collections;
         },
         setCollection(state, collection) {
+            //debugger;
+            collection.required = state.collection.required;
+            collection.valid = { isValid: true, message: null }
             state.collection = collection;
         },
         setInstitutes(state, collections) {
@@ -46,14 +54,19 @@ const collection = {
         },
     },
     actions: {
-        getCollections({ commit }) {
+        getCollections({
+            commit
+        }) {
             ipcRenderer.send('getCollections');
             ipcRenderer.on('collections', (event, receivedCollections) => {
                 commit('setCollections', receivedCollections);
                 commit('setInstitutes', receivedCollections);
             });
         },
-        setCollection({ commit }, collection) {
+        setCollection({
+            commit, dispatch
+        }, collection) {
+            //dispatch('getCollections');
             commit('setCollection', collection);
             commit('setInstitute', collection);
         }

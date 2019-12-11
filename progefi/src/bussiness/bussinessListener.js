@@ -8,6 +8,7 @@ import SpeciesDataHandler from './handlers/speciesDataHandler.js'
 import DeviceHandler from './handlers/deviceHandler.js'
 import CollectorHandler from './handlers/collectorHandler.js'
 import CuratorHandler from './handlers/curatorHandler.js'
+import TemplateHandler from './handlers/templateHandler.js'
 
 const {
     ipcMain
@@ -26,6 +27,7 @@ function listen() {
     var deviceHandler = new DeviceHandler();
     var collectorHandler = new CollectorHandler();
     var curatorHandler = new CuratorHandler();
+    var templateHandler = new TemplateHandler();
 
     ipcMain.on('savePhotoCollect', (event, photocollect) => {
 
@@ -40,6 +42,19 @@ function listen() {
             .catch(error => {
                 console.log(error)
             })
+    })
+
+    ipcMain.on('getTemplates', (event) => {
+        templateHandler.getTemplateNames(function (templates) {
+            event.reply('templates', templates);
+        });
+    })
+
+    ipcMain.on('getTemplate', (event, templateId) => {
+        templateHandler.getTemplate(templateId, function (template) {
+            event.reply('template', template);
+            ipcMain.removeListener('getTemplate', event)
+        });
     })
 
     ipcMain.on('getCatalogues', (event, collectionId) => {

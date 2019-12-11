@@ -23,25 +23,11 @@ export default {
       let documentElement = this.$refs.mh_container;
 
       if (documentElement != null) {
-        switch (this.attribute) {
-          /*case "collectHour":
-            if (
-              moment(newValue).format("HH:mm") ==
-              moment(this.originalValue).format("HH:mm")
-            ) {
-              documentElement.style.backgroundColor = styleColors.secondary;
-            } else {
-              documentElement.style.backgroundColor = styleColors.accent;
-            }
-            break;*/
-          default:
-            if (newValue == this.originalValue) {
-              documentElement.style.backgroundColor = styleColors.secondary;
-            } else {
-              documentElement.style.backgroundColor = styleColors.accent;
-            }
-
-            break;
+        //debugger;
+        if (newValue == this.originalValue) {
+          documentElement.style.backgroundColor = styleColors.secondary;
+        } else {
+          documentElement.style.backgroundColor = styleColors.accent;
         }
       }
     }
@@ -69,24 +55,37 @@ export default {
     restoreMetadataValue() {
       switch (this.attribute) {
         case "device":
+          store.dispatch("device/setDevice", {
+            name: this.metadataState[this.attribute]
+          });
+          break;
         case "model":
-          store.commit("device/restoreMetadataValue", {
-            attribute: this.attribute,
-            metadataValue: this.metadataState[this.attribute]
+          store.dispatch("device/setModel", {
+            name: this.metadataState[this.attribute]
           });
           break;
 
         case "latitude":
+          store.dispatch(
+            "coordinate/setLatitude",
+            this.metadataState[this.attribute]
+          );
+          break;
         case "longitude":
+          store.dispatch(
+            "coordinate/setLongitude",
+            this.metadataState[this.attribute]
+          );
+          break;
         case "altitude":
-          store.commit("coordinate/restoreMetadataValue", {
-            attribute: this.attribute,
-            metadataValue: this.metadataState[this.attribute]
-          });
+          store.dispatch(
+            "coordinate/setAltitude",
+            this.metadataState[this.attribute]
+          );
           break;
 
         case "formattedHour":
-          store.commit(
+          store.dispatch(
             "datacard/setCollectHour",
             this.metadataState.collectHour
           );

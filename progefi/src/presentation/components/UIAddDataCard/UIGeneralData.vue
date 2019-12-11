@@ -2,7 +2,7 @@
   <!-- --------GeneralData Component----- -->
 
   <!-- --------GeneralData Title----- -->
-  <div id="generalData_component" class="box">
+  <div id="generalData_component" class="box" @click="closeAutocompletes()">
     <!-- --------AddDataCard2 right Side Component Header----- -->
     <div id="generalData_component_header">
       <p class="subtitle is-5">Datos generales</p>
@@ -27,7 +27,10 @@
     <!-- --------AddDataCard2 Right Side Component Content----- -->
     <div id="generalData_component_content" class="box">
       <!-- ------- colection select ----- -->
-      <b-field id="colection-select" custom-class="is-small is-centered" label="Colección:">
+      <b-field id="colection-select" custom-class="is-small is-centered">
+        <template slot="label">
+          <required-field-helper :name="'Colección:'" :valid="collectionState.collection.valid"></required-field-helper>
+        </template>
         <b-select placeholder="Selecciona una colección" v-model="selectedCollection">
           <option
             v-for="collection in collectionState.collections"
@@ -38,7 +41,10 @@
       </b-field>
 
       <!-- ------- catalogue select ----- -->
-      <b-field id="catalogue-select" custom-class="is-small is-centered" label="Catálogo:">
+      <b-field id="catalogue-select" custom-class="is-small is-centered">
+        <template slot="label">
+          <required-field-helper :name="'Catálogo:'" :valid="catalogueState.catalogue.valid"></required-field-helper>
+        </template>
         <b-select placeholder="Selecciona un catálogo" v-model="selectedCatalogue">
           <option
             v-for="catalogue in catalogueState.catalogues"
@@ -49,7 +55,10 @@
       </b-field>
 
       <!-- ------- proyect select ----- -->
-      <b-field id="project-select" custom-class="is-small is-centered" label="Proyecto:">
+      <b-field id="project-select" custom-class="is-small is-centered">
+        <template slot="label">
+          <required-field-helper :name="'Proyecto:'" :valid="projectState.project.valid"></required-field-helper>
+        </template>
         <b-select placeholder="Selecciona un proyecto" v-model="selectedProject">
           <option
             v-for="project in projectState.projects"
@@ -60,14 +69,31 @@
       </b-field>
 
       <!-- ------- collector select ----- -->
-      <b-field id="collector-select" custom-class="is-small is-centered" label="Colector:">
-        <b-autocomplete
-          :expanded="true"
-          placeholder="Selecciona un collector"
+      <b-field id="collector_select_field" custom-class="is-small is-centered">
+        <template slot="label">
+          <required-field-helper :name="'Colector:'" :valid="collectorState.collector.valid"></required-field-helper>
+        </template>
+        <input
+          id="collector_select"
+          placeholder="Selecciona un colector"
+          class="input"
           v-model="selectedCollector"
-          :open-on-focus="true"
-          :data="collectorsName"
-        ></b-autocomplete>
+          @focus="autocompleteCollectorStatus =true"
+          @click.stop="autocompleteCollectorStatus =true"
+        />
+        <div
+          id="autocomplete_box"
+          v-if="autocompleteCollectorStatus && collectorState.collectors.length > 0"
+        >
+          <ul id="autocomplete_list">
+            <li
+              v-for="collector in collectorState.collectors"
+              :key="collector.name"
+              :value="collector"
+              @click="setCollector($event, collector)"
+            >{{collector.name}}</li>
+          </ul>
+        </div>
       </b-field>
 
       <!-- ------- device select ----- -->
@@ -78,14 +104,28 @@
         v-if="metadataState.device"
       ></metadata-helper>
 
-      <b-field id="device-select" custom-class="is-small is-centered" label="Dispositivo:">
-        <b-autocomplete
+      <b-field id="device_select_field" custom-class="is-small is-centered">
+        <template slot="label">
+          <required-field-helper :name="'Dispositivo:'" :valid="deviceState.device.valid"></required-field-helper>
+        </template>
+        <input
+          id="device_select"
           placeholder="Selecciona un dispositivo"
+          class="input"
           v-model="selectedDevice"
-          :open-on-focus="true"
-          :data="getDevicesName()"
-          @select="option => getModels(option)"
-        ></b-autocomplete>
+          @focus="autocompleteDeviceStatus =true"
+          @click.stop="autocompleteDeviceStatus =true"
+        />
+        <div id="autocomplete_box" v-if="autocompleteDeviceStatus">
+          <ul id="autocomplete_list">
+            <li
+              v-for="device in deviceState.devices"
+              :key="device.name"
+              :value="device"
+              @click="setDevice($event, device)"
+            >{{device.name}}</li>
+          </ul>
+        </div>
       </b-field>
 
       <!-- ------- model select ----- -->
@@ -96,49 +136,63 @@
         v-if="metadataState.model"
       ></metadata-helper>
 
-      <b-field id="model-select" custom-class="is-small is-centered" label="Modelo:">
-        <b-autocomplete
+      <b-field id="model_select_field" custom-class="is-small is-centered">
+        <template slot="label">
+          <required-field-helper :name="'Modelo:'" :valid="deviceState.model.valid"></required-field-helper>
+        </template>
+        <input
+          id="model_select"
           placeholder="Selecciona un modelo"
+          class="input"
           v-model="selectedModel"
-          :open-on-focus="true"
-          :data="getModelsName()"
-        ></b-autocomplete>
+          @focus="autocompleteModelStatus =true"
+          @click.stop="autocompleteModelStatus =true"
+        />
+        <div id="autocomplete_box" v-if="autocompleteModelStatus">
+          <ul id="autocomplete_list">
+            <li
+              v-for="model in deviceState.models"
+              :key="model.name"
+              :value="model"
+              @click="setModel($event, model)"
+            >{{model.name}}</li>
+          </ul>
+        </div>
       </b-field>
 
       <!-- ------- collect date select ----- -->
       <metadata-helper
         id="collectDate_helper"
-        v-bind:selectedValue="datacard.formattedDate"
+        v-bind:selectedValue="datacard.collectDate.formattedDate"
         v-bind:attribute="'formattedDate'"
         v-if="metadataState.collectDate"
       ></metadata-helper>
 
-      <b-field
-        id="collect-date-select"
-        custom-class="is-small is-centered"
-        label="Fecha de colecta:"
-      >
+      <b-field id="collect-date-select" custom-class="is-small is-centered">
+        <template slot="label">
+          <required-field-helper :name="'Fecha de colecta:'" :valid="datacard.collectDate.valid"></required-field-helper>
+        </template>
         <b-datepicker
           v-model="selectedDate"
           rounded
           placeholder="Elige una fecha..."
           icon="calendar-today"
+          :max-date="maxDate"
         ></b-datepicker>
       </b-field>
 
       <!-- ------- collect hour select ----- -->
       <metadata-helper
         id="collectHour_helper"
-        v-bind:selectedValue="datacard.formattedHour"
+        v-bind:selectedValue="datacard.collectDate.formattedHour"
         v-bind:attribute="'formattedHour'"
         v-if="metadataState.collectHour"
       ></metadata-helper>
 
-      <b-field
-        id="collect-hour-select"
-        custom-class="is-small is-centered"
-        label="Hora de colecta:"
-      >
+      <b-field id="collect-hour-select" custom-class="is-small is-centered">
+        <template slot="label">
+          <required-field-helper :name="'Hora de colecta:'" :valid="datacard.collectDate.valid"></required-field-helper>
+        </template>
         <b-timepicker
           v-model="selectedHour"
           rounded
@@ -153,7 +207,11 @@
     <!-- --------AddDataCard2 Bottom Buttons----- -->
     <div id="generalData_component_bottomButtons">
       <b-button type="is-light" v-on:click="backwardStep()">Anterior</b-button>
-      <b-button type="is-accent" v-on:click="forwardStep()">Siguiente</b-button>
+      <b-button
+        type="is-accent"
+        v-on:click="forwardStep()"
+        :disabled="disableNextButton()"
+      >Siguiente</b-button>
     </div>
   </div>
 </template>
@@ -165,22 +223,29 @@ import styleColors from "../../style/style.scss";
 
 import metadataHelper from "../../helpers/metadataHelper.vue";
 import templateHelper from "../../helpers/templateHelper.vue";
+import requiredFieldHelper from "../../helpers/requiredFieldHelper.vue";
 
 export default {
   name: "UIGeneralData",
   components: {
     "metadata-helper": metadataHelper,
-    "template-helper": templateHelper
+    "template-helper": templateHelper,
+    "required-field-helper": requiredFieldHelper
   },
   data() {
     return {
-      photoCollectHasChanged: false
+      photoCollectHasChanged: false,
+      maxDate: new Date(),
+      autocompleteDeviceStatus: false,
+      autocompleteCollectorStatus: false,
+      autocompleteModelStatus: false
     };
   },
   mounted() {
     store.dispatch("collection/getCollections");
     store.dispatch("project/getProjects");
     store.dispatch("device/getDevices");
+    store.dispatch("template/getTemplates");
   },
   computed: {
     ...mapState("datacard", {
@@ -200,15 +265,19 @@ export default {
       projectState: state => state
     }),
     ...mapState("collector", {
-      collectorState: state => state
+      collectorState: state => state,
+      isCollectorValid: state => state.collector.valid
     }),
     ...mapState("device", {
-      deviceState: state => state
+      deviceState: state => state,
+      isDeviceValid: state => state.device.valid,
+      isModelValid: state => state.model.valid
     }),
     hasMetadata: function() {
       return this.metadataState.hasMetadata;
     },
     ...mapGetters("collector", ["collectorsName"]),
+    ...mapGetters("collection", ["collectionIsRequired"]),
     selectedCollection: {
       get: function() {
         return this.collectionState.collection;
@@ -236,57 +305,84 @@ export default {
     },
     selectedCollector: {
       get: function() {
-        return this.collectorState.collector.name;
+        let collector = this.collectorState.collector;
+        if (
+          !collector.valid.isValid ||
+          collector.valid.message == "temporary error"
+        ) {
+          this.addShakeEffect("collector_select");
+        }
+        return collector.name;
       },
       set: function(newValue) {
-        let collector = this.collectorState.collectors.find(
-          x => x.name == newValue
-        );
-        if (collector) {
-          store.dispatch("collector/getCollectors", collector);
+        //cuando el valor a establecer sea un objeto
+        if (newValue.hasOwnProperty("id")) {
+          store.dispatch("collector/setCollector", newValue);
         } else {
-          store.dispatch("collector/getCollectors", newValue);
+          //cuando el valor a establecer sea un primitivo
+          store.dispatch("collector/setCollector", { name: newValue });
         }
       }
     },
     selectedDevice: {
       get: function() {
-        return this.deviceState.device.name;
+        let device = this.deviceState.device;
+        if (
+          !device.valid.isValid ||
+          device.valid.message == "temporary error"
+        ) {
+          this.addShakeEffect("device_select");
+        }
+        return device.name;
       },
       set: function(newValue) {
-        newValue = { id: null, name: newValue };
-        let device = this.deviceState.devices.find(
-          x => x.name == newValue.name
-        );
-        if (device) {
-          console.log("entró" + newValue);
-          store.commit("device/setDevice", device);
+        if (newValue.hasOwnProperty("id")) {
+          // store.dispatch("device/getModels", newValue.id);
+          store.dispatch("device/setDevice", newValue);
         } else {
-          console.log("no entró" + newValue);
-          store.commit("device/setDevice", newValue);
+          newValue = { id: null, name: newValue };
+          let foundDevice = this.deviceState.devices.find(
+            x => x.name == newValue.name
+          );
+          if (foundDevice) {
+            //this.getModels(foundDevice);
+            store.dispatch("device/setDevice", foundDevice);
+          } else {
+            store.dispatch("device/setDevice", newValue);
+          }
         }
       }
     },
     selectedModel: {
       get: function() {
-        return this.deviceState.model.name;
+        let model = this.deviceState.model;
+        if (!model.valid.isValid || model.valid.message == "temporary error") {
+          this.addShakeEffect("model_select");
+        }
+        return model.name;
       },
       set: function(newValue) {
-        newValue = { id: null, name: newValue };
-        let model = this.deviceState.models.find(x => x.name == newValue);
-        if (model) {
-          store.commit("device/setModel", model);
+        if (newValue.hasOwnProperty("id")) {
+          store.dispatch("device/setModel", newValue);
         } else {
-          store.commit("device/setModel", newValue);
+          newValue = { id: null, name: newValue };
+          let foundModel = this.deviceState.models.find(
+            x => x.name == newValue.name
+          );
+          if (foundModel) {
+            store.dispatch("device/setModel", foundModel);
+          } else {
+            store.dispatch("device/setModel", newValue);
+          }
         }
       }
     },
     selectedDate: {
       get: function() {
-        if (this.datacard.collectDate == null) {
+        if (this.datacard.collectDate.value == null) {
           store.commit("datacard/setCollectDate", new Date());
         }
-        return this.datacard.collectDate;
+        return this.datacard.collectDate.value;
       },
       set: function(newValue) {
         store.commit("datacard/setCollectDate", newValue);
@@ -294,10 +390,10 @@ export default {
     },
     selectedHour: {
       get: function() {
-        return this.datacard.collectDate;
+        return this.datacard.collectDate.value;
       },
       set: function(newValue) {
-        store.commit("datacard/setCollectHour", newValue);
+        store.commit("datacard/setCollectDate", newValue);
       }
     }
   },
@@ -309,6 +405,31 @@ export default {
     }
   },
   methods: {
+    addShakeEffect(elemenId) {
+      let element = document.getElementById(elemenId);
+      if (element != null) {
+        element.classList.remove("shake_field");
+        void element.offsetWidth; // trigger a DOM reflow
+        element.classList.add("shake_field");
+      }
+    },
+    closeAutocompletes() {
+      this.autocompleteDeviceStatus = false;
+      this.autocompleteCollectorStatus = false;
+      this.autocompleteModelStatus = false;
+    },
+    setDevice(event, device) {
+      this.selectedDevice = device;
+      this.autocompleteDeviceStatus = false;
+    },
+    setModel(event, model) {
+      this.selectedModel = model;
+      this.autocompleteModelStatus = false;
+    },
+    setCollector(event, collector) {
+      this.selectedCollector = collector;
+      this.autocompleteCollectorStatus = false;
+    },
     backwardStep() {
       store.commit("datacard/setActiveStep", 0);
     },
@@ -323,14 +444,6 @@ export default {
         duration: 5000
       });
     },
-    getFormattedDate(date) {
-      var moment = require("moment");
-      return moment(date).format("YYYY MM DD");
-    },
-    getFormattedHour(date) {
-      var formatDate = Date.parse(date, "HH-mm");
-      return new Date(formatDate);
-    },
     //para obtener de nuevo los metadatos si la imagen ha cambiado
     visibilityChanged(isVisible, entry) {
       if (this.photoCollect.changed && isVisible) {
@@ -341,14 +454,14 @@ export default {
       store.dispatch("metadata/getImageMetadata");
     },
     getDevicesName() {
-      let devicesName = [];
+      let devicesName = ["No disponible (N/A)"];
       for (let i = 0; i < this.deviceState.devices.length; i++) {
         devicesName.push(this.deviceState.devices[i].name);
       }
       return devicesName;
     },
     getModelsName() {
-      let modelsName = [];
+      let modelsName = ["No disponible (N/A)"];
       for (let i = 0; i < this.deviceState.models.length; i++) {
         modelsName.push(this.deviceState.models[i].name);
       }
@@ -363,13 +476,28 @@ export default {
       return collectorsName;
     },
     getModels(selectedDevice) {
-      if (selectedDevice == null) {
-        selectedDevice = this.selectedDevice;
+      if (foundDevice) {
+        store.dispatch("device/getModels", foundDevice.id);
       }
-      var selectedDevice = this.deviceState.devices.find(
-        x => x.name == selectedDevice
-      );
-      store.dispatch("device/getModels", selectedDevice.id);
+    },
+    validateInput(input) {
+      let longitude = collector.length;
+      let onlyAlphabetAndSpace = /^[a-zA-Z ]*$/.test(collector);
+    },
+    disableNextButton() {
+      if (
+        this.deviceState.device.valid.isValid &&
+        this.deviceState.model.valid.isValid &&
+        this.collectionState.collection.valid.isValid &&
+        this.catalogueState.catalogue.valid.isValid &&
+        this.datacard.collectDate.valid.isValid &&
+        this.projectState.project.valid.isValid &&
+        this.collectorState.collector.valid.isValid
+      ) {
+        return false;
+      } else {
+        return true;
+      }
     }
   }
 };
@@ -379,8 +507,8 @@ export default {
 @import "../../style/style.scss";
 #generalData_component {
   display: grid;
-  grid-template-rows: 50px 10px 550px 630px 80px;
-  height: 1260px;
+  grid-template-rows: 35px 10px 550px 440px 30px;
+  height: 1100px;
   //width: 100%;
   margin-top: 10px;
   align-items: center;
@@ -402,7 +530,7 @@ export default {
 #generalData_component_content {
   grid-row: 4 / 5;
   display: grid;
-  //height: 400px;
+  height: 380px;
   grid-template-columns: 20% 20% 20% 20% 20%;
   grid-template-rows: 25% 25% 25% 25%;
   grid-gap: 5px;
@@ -433,9 +561,11 @@ export default {
   grid-column: 1 / 3;
 }
 
-#collector-select {
+#collector_select_field {
   grid-row: 2 / 3;
   grid-column: 4 / 6;
+  display: flex;
+  flex-direction: column;
   //max-width: 500px;
 }
 
@@ -445,10 +575,36 @@ export default {
   justify-self: end;
 }
 
-#device-select {
+#device_select_field {
   grid-row: 3 / 4;
   grid-column: 2 / 3;
   //max-width: 250px;
+  display: flex;
+  flex-direction: column;
+}
+
+#autocomplete_list {
+  height: 200px;
+  overflow: hidden;
+  overflow-y: scroll;
+  z-index: 1;
+}
+
+#autocomplete_list li {
+  padding: 5px;
+  padding-left: 10px;
+}
+
+#autocomplete_list li:hover {
+  background-color: $secondary;
+  cursor: pointer;
+}
+
+#autocomplete_box {
+  position: relative;
+  z-index: 10;
+  box-shadow: 1px 1px 7px 0px rgba(0, 0, 0, 0.35);
+  background-color: white;
 }
 
 #model_helper {
@@ -457,10 +613,12 @@ export default {
   justify-self: end;
 }
 
-#model-select {
+#model_select_field {
   grid-row: 3 / 4;
   grid-column: 4 / 5;
   //max-width: 250px;
+  display: flex;
+  flex-direction: column;
 }
 
 #collectDate_helper {
@@ -487,7 +645,92 @@ export default {
   //max-width: 250px;
 }
 
+#required_label_field {
+  display: flex;
+  flex-direction: row;
+}
+
+#required_icon {
+  height: 8px;
+  width: 8px;
+  margin-right: 5px;
+  align-self: center;
+  border-radius: 50%;
+  background-color: $accent;
+  transition: 0.1s;
+}
+
+#required_icon:hover {
+  height: 10px;
+  width: 10px;
+  margin-right: 3px;
+  transition: 0.1s;
+  cursor: pointer;
+}
+
+.shake_field {
+  outline-color: red;
+  /* also need animation and -moz-animation */
+  animation: shake 0.5s linear;
+}
+/* also need keyframes and -moz-keyframes */
+@keyframes shake {
+  8%,
+  41% {
+    -webkit-transform: translateX(-10px);
+  }
+  25%,
+  58% {
+    -webkit-transform: translateX(10px);
+  }
+  75% {
+    -webkit-transform: translateX(-5px);
+  }
+  92% {
+    -webkit-transform: translateX(5px);
+  }
+  0%,
+  100% {
+    -webkit-transform: translateX(0);
+  }
+}
+
+.slideIn {
+  animation: menuSlide 0.5s 1;
+  animation-fill-mode: forwards;
+}
+
+.slideOut {
+  animation: menuSlideOut 0.5s 1;
+}
+
+/*Keyframes*/
+
+@keyframes menuSlide {
+  from {
+    transform: translateX(0px);
+    transition-timing-function: ease-in;
+  }
+  to {
+    transform: translateX(300px);
+    transition-timing-function: ease-out;
+  }
+}
+
+@keyframes menuSlideOut {
+  from {
+    transform: translateX(300px);
+    transition-timing-function: ease-in;
+  }
+  to {
+    transform: translateX(0px);
+    transition-timing-function: ease-out;
+  }
+}
+
 /*hr.style1 {
   border-top: 1px solid #8c8b8b;
 }*/
 </style>
+
+250

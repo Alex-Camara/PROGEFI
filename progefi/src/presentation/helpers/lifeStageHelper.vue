@@ -3,8 +3,17 @@
     <div id="lifeStage_helper_container" class="box">
       <div id="lifeStage_helper_container_header">
         <div id="lifeStage_helper_container_header_title">
-          <b class="is-size-6">Etapa: </b>
-          <b class="is-size-6" v-if="lifeStage">{{ lifeStage }}</b>
+          <required-field-helper
+            id="lifeStage_helper_required_field"
+            :name="null"
+            :valid="isLifeStageValid"
+          ></required-field-helper>
+          <b id="lifeStage_helper_container_header_title_value" class="is-size-6">{{title}}</b>
+          <b
+            id="lifeStage_helper_container_header_value"
+            class="is-size-6"
+            v-if="lifeStage"
+          >{{ lifeStage }}</b>
           <img id="lifeStage_helper_checked_icon" src="../assets/checked.png" v-if="lifeStage" />
         </div>
 
@@ -27,7 +36,7 @@
             :value="lifeStage.name"
             v-on:click="setLifeStage(lifeStage)"
           >
-            <div id="lifeStage_helper_list_item_icon"></div>
+            <img id="lifeStage_helper_list_item_icon" :src="lifeStage.iconPath" />
             <div id="lifeStage_helper_list_item_text">{{lifeStage.name}}</div>
           </li>
         </ul>
@@ -39,24 +48,29 @@
 <script>
 import store from "../store/store.js";
 import { mapState } from "vuex";
+import requiredFieldHelper from "../helpers/requiredFieldHelper.vue";
 
 export default {
+  components: {
+    "required-field-helper": requiredFieldHelper
+  },
   data() {
     return {
+      title: "Etapa:",
       selectedLifeStage: ""
     };
   },
   computed: {
     ...mapState("speciesData", {
-      speciesDataState: state => state
+      speciesDataState: state => state,
+      isLifeStageValid: state => state.lifeStage.valid
     }),
     lifeStage: {
       get: function() {
         return this.speciesDataState.lifeStage.name;
       },
       set: function(newValue) {
-        store.commit("speciesData/setLifeStage", newValue);
-        return newValue;
+        store.dispatch("speciesData/setLifeStage", newValue);
       }
     }
   },
@@ -68,16 +82,14 @@ export default {
       this.lifeStage = lifeStage;
     },
     addOption() {
-      this.$buefy.dialog.prompt({
-        type: "is-secondary",
-        message: `Introduce la etapa`,
-        confirmText: "Agregar",
-        cancelText: "Cancelar",
-        inputAttrs: {
-          maxlength: 20
-        },
-        trapFocus: true,
-        onConfirm: value => this.setLifeStage({name: value})
+      store.dispatch("modal/openModal", {
+        title: "Etapas de vida",
+        fieldText: "Ingresa la etapa de vida",
+        mutationName: "speciesData/setLifeStage",
+        valueName: "name",
+        regex: "^[a-zA-Z \\u00C0-\\u00FF]*$",
+        minLimit: 2,
+        maxLimit: 20
       });
     }
   }
@@ -94,17 +106,44 @@ export default {
 
 #lifeStage_helper_container_header {
   grid-row: 1 / 2;
-  grid-column: 1 / -1;
+  //grid-column: 1 / -1;
   display: flex;
   justify-content: space-between;
 }
 
 #lifeStage_helper_container_header_title {
   align-self: start;
+  display: flex;
+}
+
+#lifeStage_helper_required_field {
+  align-self: center;
+}
+
+#lifeStage_helper_container_header_title_value {
+  //color: black;
+  margin-right: 10px;
+}
+
+#lifeStage_helper_container_header_value {
+  color: $primary;
+}
+
+#lifeStage_helper_checked_icon {
+  height: 20px;
+  width: 20px;
+  margin-left: 5px;
+  align-self: center;
 }
 
 #lifeStage_helper_container_header_addOption {
   align-self: end;
+}
+
+#lifeStage_helper_container_header_addOption_icon {
+  height: 20px;
+  width: 20px;
+  transition: 0.2s;
 }
 
 #lifeStage_helper_container_header_addOption_icon {
@@ -120,12 +159,6 @@ export default {
   cursor: pointer;
   filter: hue-rotate(180deg);
   -webkit-filter: hue-rotate(180deg);
-}
-
-#lifeStage_helper_checked_icon {
-  height: 20px;
-  width: 20px;
-  align-self: center;
 }
 
 #lifeStage_helper_list {
@@ -148,8 +181,8 @@ export default {
 #lifeStage_helper_list_item_icon {
   height: 40px;
   width: 40px;
-  border-radius: 50%;
-  background-color: #25b7d3;
+  //border-radius: 50%;
+  //background-color: white;
   transition: 0.2s;
   justify-self: center;
 }
@@ -164,8 +197,8 @@ export default {
   width: 45px;
   transition: 0.2s;
   cursor: pointer;
-  filter: hue-rotate(180deg);
-  -webkit-filter: hue-rotate(180deg);
+  //filter: hue-rotate(180deg);
+  //-webkit-filter: hue-rotate(180deg);
 }
 
 #lifeStage_helper_list_item_icon:hover + #lifeStage_helper_list_item_text {

@@ -20,15 +20,14 @@
           v-if="metadataState.longitude"
         ></metadata-helper>
 
-        <b-field id="longitude_input" custom-class="is-small is-centered" label="Longitud:">
-          <b-input
-            v-model="longitude"
-            placeholder="Longitud"
-            type="text"
-            required
-            validation-message="Caracteres no permitidos"
-            pattern="^-?\d+(\.\d{1,12})?$"
-          ></b-input>
+        <b-field id="longitude_input_field" custom-class="is-small is-centered">
+          <template slot="label">
+            <required-field-helper
+              :name="'Longitud:'"
+              :valid="coordinateState.longitude.valid"
+            ></required-field-helper>
+          </template>
+          <input id="longitude_input" class="input" v-model="longitude" placeholder="Longitud" />
         </b-field>
 
         <!-- ------- latitude field ----- -->
@@ -40,15 +39,14 @@
           v-if="metadataState.latitude"
         ></metadata-helper>
 
-        <b-field id="latitude_input" custom-class="is-small is-centered" label="Latitud:">
-          <b-input
-            v-model="latitude"
-            placeholder="Latitud"
-            type="text"
-            required
-            validation-message="Caracteres no permitidos"
-            pattern="^-?\d+(\.\d{1,12})?$"
-          ></b-input>
+        <b-field id="latitude_input_field" custom-class="is-small is-centered">
+          <template slot="label">
+            <required-field-helper
+              :name="'Latitud:'"
+              :valid="coordinateState.latitude.valid"
+            ></required-field-helper>
+          </template>
+          <input id="latitude_input" class="input" v-model="latitude" placeholder="Latitud" />
         </b-field>
 
         <!-- ------- altitude field ----- -->
@@ -60,16 +58,15 @@
           v-if="metadataState.altitude"
         ></metadata-helper>
 
-        <b-field id="altitude_input">
-          <b-field custom-class="is-small is-centered" label="Altitud:">
-            <b-input
-              v-model="altitude"
-              placeholder="Altitud"
-              type="text"
-              required
-              validation-message="Caracteres no permitidos"
-              pattern="^\d+(\.\d{1,13})?$"
-            ></b-input>
+        <b-field id="altitude_input_field">
+          <b-field custom-class="is-small is-centered">
+            <template slot="label">
+              <required-field-helper
+                :name="'Altitud:'"
+                :valid="coordinateState.altitude.valid"
+              ></required-field-helper>
+            </template>
+            <input id="altitude_input" class="input" v-model="altitude" placeholder="Altitud" />
           </b-field>
           <p id="altitude_input_message" class="control">
             <span class="button is-static">msnm</span>
@@ -79,23 +76,51 @@
 
       <div id="geographicalData_component_content_topFields_namedLocation">
         <!-- ------- country select ----- -->
-        <b-field id="country_select" custom-class="is-small is-centered" label="País:">
-          <b-input size="is-small" type="text" v-model="country"></b-input>
+        <b-field id="country_input_field" custom-class="is-small is-centered" label="País:">
+          <template slot="label">
+            <required-field-helper
+              :name="'País:'"
+              :valid="locationState.country.valid"
+            ></required-field-helper>
+          </template>
+          <input id="country_input" class="input is-small" v-model="country" />
         </b-field>
 
-        <!-- ------- state select ----- -->
-        <b-field id="state_select" custom-class="is-small is-centered" label="Estado:">
-          <b-input size="is-small" type="text" v-model="state"></b-input>
+        <!-- ------- countryState select ----- -->
+        <b-field id="state_input_field" custom-class="is-small is-centered" label="Estado:">
+          <template slot="label">
+            <required-field-helper
+              :name="'Estado:'"
+              :valid="locationState.countryState.valid"
+            ></required-field-helper>
+          </template>
+          <input id="state_input" class="input is-small" v-model="countryState" />
         </b-field>
 
         <!-- ------- municipality select ----- -->
-        <b-field id="municipality_select" custom-class="is-small is-centered" label="Municipio:">
-          <b-input size="is-small" type="text" v-model="municipality"></b-input>
+        <b-field
+          id="municipality_input_field"
+          custom-class="is-small is-centered"
+          label="Municipio:"
+        >
+          <template slot="label">
+            <required-field-helper
+              :name="'Municipio:'"
+              :valid="locationState.municipality.valid"
+            ></required-field-helper>
+          </template>
+          <input id="municipality_input" class="input is-small" v-model="municipality" />
         </b-field>
 
         <!-- ------- locality select ----- -->
-        <b-field id="locality_select" custom-class="is-small is-centered" label="Localidad:">
-          <b-input size="is-small" type="text" v-model="locality"></b-input>
+        <b-field id="locality_input_field" custom-class="is-small is-centered" label="Localidad:">
+          <template slot="label">
+            <required-field-helper
+              :name="'Localidad:'"
+              :valid="locationState.locality.valid"
+            ></required-field-helper>
+          </template>
+          <input id="locality_input" class="input is-small" v-model="locality" />
         </b-field>
       </div>
     </div>
@@ -110,11 +135,12 @@
         id="map"
         :max-zoom="maxZoom"
         :min-zoom="minZoom"
+        :max-bounds="maxBounds"
         :zoom="zoom"
         :center="center"
         :options="{zoomControl: true, attributionControl: false}"
       >
-        <v-tile-layer :url="url"></v-tile-layer>
+        <v-tile-layer :url="url" :noWrap="noWrap"></v-tile-layer>
         <v-marker :lat-lng.sync="center" :draggable="true"></v-marker>
       </v-map>
     </div>
@@ -127,7 +153,7 @@
     <!-- --------GeographicalData Bottom Buttons----- -->
     <div id="geographicalData_component_bottomButtons">
       <b-button type="is-light" v-on:click="backwardStep()">Anterior</b-button>
-      <b-button type="is-accent" v-on:click="forwardStep()">Siguiente</b-button>
+      <b-button type="is-accent" v-on:click="forwardStep()" :disabled="disableNextButton()">Siguiente</b-button>
     </div>
   </div>
 </template>
@@ -140,6 +166,7 @@ import { OpenStreetMapProvider } from "leaflet-geosearch";
 import metadataHelper from "../../helpers/metadataHelper.vue";
 import climateTypeHelper from "../../helpers/climateTypeHelper.vue";
 import vegetationTypeHelper from "../../helpers/vegetationTypeHelper.vue";
+import requiredFieldHelper from "../../helpers/requiredFieldHelper.vue";
 
 export default {
   components: {
@@ -148,14 +175,17 @@ export default {
     "v-marker": LMarker,
     "metadata-helper": metadataHelper,
     "climateType-helper": climateTypeHelper,
-    "vegetationType-helper": vegetationTypeHelper
+    "vegetationType-helper": vegetationTypeHelper,
+    "required-field-helper": requiredFieldHelper
   },
   data() {
     return {
       url: "http://{s}.tile.osm.org/{z}/{x}/{y}.png",
       zoom: 5,
       maxZoom: 18,
-      minZoom: 2
+      minZoom: 2,
+      noWrap: true,
+      maxBounds: [{ lat: -90, lng: -180 }, { lat: 90, lng: 180 }]
     };
   },
   mounted() {
@@ -167,39 +197,76 @@ export default {
       metadataState: state => state
     }),
     ...mapState("location", {
-      locationState: state => state
+      locationState: state => state,
+      isCountryValid: state => state.country.valid,
+      isCountryStateValid: state => state.countryState.valid,
+      isMunicipalityValid: state => state.municipality.valid,
+      isLocalityValid: state => state.locality.valid
     }),
     ...mapState("coordinate", {
-      coordinateState: state => state
+      coordinateState: state => state,
+      isLongitudeValid: state => state.longitude.valid,
+      isLatitudeValid: state => state.latitude.valid,
+      isAltitudeValid: state => state.altitude.valid
+    }),
+    ...mapState("climateType", {
+      isClimateTypeValid: state => state.climateType.valid
+    }),
+    ...mapState("vegetationType", {
+      isVegetationTypeValid: state => state.vegetationType.valid
     }),
     longitude: {
       get: function() {
-        return this.coordinateState.longitude;
+        let longitude = this.coordinateState.longitude;
+
+        if (
+          !longitude.valid.isValid ||
+          longitude.valid.message == "temporary error"
+        ) {
+          this.addShakeEffect("longitude_input");
+        }
+        return longitude.value;
       },
       set: function(newValue) {
         newValue = this.trimCoordinate(newValue);
         store.dispatch("coordinate/setLongitude", newValue);
-        return newValue;
       }
     },
     latitude: {
       get: function() {
-        return this.coordinateState.latitude;
+        let latitude = this.coordinateState.latitude;
+
+        if (
+          !latitude.valid.isValid ||
+          latitude.valid.message == "temporary error"
+        ) {
+          this.addShakeEffect("latitude_input");
+        }
+        return latitude.value;
       },
       set: function(newValue) {
         newValue = this.trimCoordinate(newValue);
         store.dispatch("coordinate/setLatitude", newValue);
-        return newValue;
+        //return newValue;
       }
     },
     altitude: {
       get: function() {
-        return this.coordinateState.altitude;
+        let altitude = this.coordinateState.altitude;
+
+        if (
+          !altitude.valid.isValid ||
+          altitude.valid.message == "temporary error"
+        ) {
+          this.addShakeEffect("altitude_input");
+        }
+        return altitude.value;
       },
       set: function(newValue) {
-        newValue = this.trimCoordinate(newValue);
-        store.commit("coordinate/setAltitude", newValue);
-        return newValue;
+        newValue = newValue.toString();
+        newValue = newValue.trim();
+        //newValue = this.trimCoordinate(newValue);
+        store.dispatch("coordinate/setAltitude", newValue);
       }
     },
     center: {
@@ -215,34 +282,67 @@ export default {
     },
     country: {
       get: function() {
-        return this.locationState.country;
+        let country = this.locationState.country;
+
+        if (
+          !country.valid.isValid ||
+          country.valid.message == "temporary error"
+        ) {
+          this.addShakeEffect("country_input");
+        }
+        return country.name;
       },
       set: function(newValue) {
-        store.commit("location/setCountry", newValue);
+        store.dispatch("location/setCountry", newValue);
       }
     },
-    state: {
+    countryState: {
       get: function() {
-        return this.locationState.countryState;
+        let countryState = this.locationState.countryState;
+
+        if (
+          !countryState.valid.isValid ||
+          countryState.valid.message == "temporary error"
+        ) {
+          this.addShakeEffect("country_state_input");
+        }
+        return countryState.name;
       },
       set: function(newValue) {
-        store.commit("location/setCountryState", newValue);
+        store.dispatch("location/setCountryState", newValue);
       }
     },
     municipality: {
       get: function() {
-        return this.locationState.municipality;
+        let municipality = this.locationState.municipality;
+
+        if (
+          !municipality.valid.isValid ||
+          municipality.valid.message == "temporary error"
+        ) {
+          this.addShakeEffect("municipality_input");
+        }
+        return municipality.name;
       },
       set: function(newValue) {
-        store.commit("location/setMunicipality", newValue);
+        console.log(newValue);
+        store.dispatch("location/setMunicipality", newValue);
       }
     },
     locality: {
       get: function() {
-        return this.locationState.locality;
+        let locality = this.locationState.locality;
+
+        if (
+          !locality.valid.isValid ||
+          locality.valid.message == "temporary error"
+        ) {
+          this.addShakeEffect("locality_input");
+        }
+        return locality.name;
       },
       set: function(newValue) {
-        store.commit("location/setLocality", newValue);
+        store.dispatch("location/setLocality", newValue);
       }
     },
     internetConnection() {
@@ -261,9 +361,9 @@ export default {
         //nominatim es la biblioteca de OpenStreetMaps para obtener direcciones
         let nominatimAPIRequest =
           "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" +
-          this.coordinateState.latitude +
+          this.latitude +
           "&lon=" +
-          this.coordinateState.longitude;
+          this.longitude;
 
         this.axios
           .get(nominatimAPIRequest)
@@ -272,16 +372,14 @@ export default {
 
             this.locality = this.getLocality(address);
             this.municipality = address.county;
-            this.state = address.state;
+            this.countryState = address.state;
             this.country = address.country;
           })
           .catch(error => {
             this.locality = "";
             this.municipality = "";
-            this.state = "";
+            this.countryState = "";
             this.country = "";
-            //this.latitude = '';
-            //this.longitude = '';
           });
       } else {
         this.openToastMessage("Sin conexión a internet", "is-warning");
@@ -312,13 +410,24 @@ export default {
         type: type
       });
     },
+    addShakeEffect(elemenId) {
+      let element = document.getElementById(elemenId);
+      if (element != null) {
+        element.classList.remove("shake_field");
+        void element.offsetWidth; // trigger a DOM reflow
+        element.classList.add("shake_field");
+      }
+    },
     trimCoordinate(coordinate) {
       coordinate = coordinate.toString();
+      coordinate = coordinate.trim();
       let splittedCoordinate = coordinate.split(".");
       if (splittedCoordinate.length > 1) {
-        let decimalLength = splittedCoordinate[1].length;
-        if (decimalLength > 6) {
-          coordinate = parseFloat(coordinate).toFixed(6);
+        let number = splittedCoordinate[0];
+        let decimalNumber = splittedCoordinate[1];
+        if (decimalNumber >= 999999) {
+          decimalNumber = decimalNumber.substring(0, 6);
+          coordinate = number + "." + decimalNumber;
           return coordinate;
         } else {
           return coordinate;
@@ -326,12 +435,30 @@ export default {
       } else {
         return coordinate;
       }
+    },
+    disableNextButton() {
+      if (
+        this.isCountryValid.isValid &&
+         this.isCountryStateValid.isValid &&
+         this.isMunicipalityValid.isValid &&
+         this.isLocalityValid.isValid &&
+         this.isLongitudeValid.isValid &&
+         this.isLatitudeValid.isValid &&
+         this.isAltitudeValid.isValid &&
+         this.isClimateTypeValid.isValid &&
+         this.isVegetationTypeValid.isValid
+      ) {
+        return false;
+      } else {
+        return true;
+      }
     }
   }
 };
 </script>
 
 <style lang="scss">
+
 #geographicalData_component {
   display: grid;
   grid-template-rows: 50px 230px 550px 630px 80px;
@@ -406,7 +533,7 @@ export default {
   justify-self: end;
 }
 
-#longitude_input {
+#longitude_input_field {
   grid-column: 2 / 3;
 }
 
@@ -415,7 +542,7 @@ export default {
   justify-self: end;
 }
 
-#latitude_input {
+#latitude_input_field {
   grid-column: 4 / 5;
   justify-self: start;
 }
@@ -425,7 +552,7 @@ export default {
   justify-self: end;
 }
 
-#altitude_input {
+#altitude_input_field {
   grid-column: 6 / 7;
   justify-self: start;
 }
@@ -434,22 +561,22 @@ export default {
   margin-top: 24px;
 }
 
-#country_select {
+#country_input_field {
   grid-column: 1 / 2;
   justify-self: center;
 }
 
-#state_select {
+#state_input_field {
   grid-column: 2 / 3;
   justify-self: center;
 }
 
-#municipality_select {
+#municipality_input_field {
   grid-column: 3 / 4;
   justify-self: center;
 }
 
-#locality_select {
+#locality_input_field {
   grid-column: 4 / 5;
   justify-self: center;
 }
@@ -463,6 +590,33 @@ export default {
   #map {
     height: 500px;
     width: 900px;
+  }
+}
+
+.shake_field {
+  outline-color: red;
+  /* also need animation and -moz-animation */
+  animation: shake 0.5s linear;
+}
+/* also need keyframes and -moz-keyframes */
+@keyframes shake {
+  8%,
+  41% {
+    -webkit-transform: translateX(-10px);
+  }
+  25%,
+  58% {
+    -webkit-transform: translateX(10px);
+  }
+  75% {
+    -webkit-transform: translateX(-5px);
+  }
+  92% {
+    -webkit-transform: translateX(5px);
+  }
+  0%,
+  100% {
+    -webkit-transform: translateX(0);
   }
 }
 </style>

@@ -1,9 +1,10 @@
 <template>
   <div>
-    <div id="datacard" ref="datacard" v-observe-visibility="visibilityChanged">
+    <div id="datacard" ref="datacard" v-observe-visibility="visibilityChanged" v-if="layout">
       <grid-layout
+      :v-model="layout"
         :responsive="false"
-        :layout.sync="layout"
+        :layout="layout"
         :col-num="90"
         :row-height="1"
         :is-draggable="true"
@@ -13,6 +14,7 @@
         :margin="[2, 2]"
         :use-css-transforms="true"
         :preventCollision="true"
+        :autoSize="true"
       >
         <grid-item
           v-for="item in layout"
@@ -26,7 +28,7 @@
         >
           <img :src="photoCollect.photoCollectPath" v-if="item.i == 'photocollect'" />
           <img :src="collection.institute.imagePath" v-if="item.i == 'instituteLogo'" />
-          {{item.name}}
+          {{item.value}}
         </grid-item>
       </grid-layout>
     </div>
@@ -91,7 +93,7 @@ export default {
   computed: {
     ...mapState("template", {
       template: state => state.template,
-      layout: state => state.template.layout
+      // layout: state => state.template.layout
     }),
     ...mapState("datacard", {
       photoCollect: state => state.photoCollect,
@@ -129,7 +131,15 @@ export default {
     }),
     ...mapState("location", {
       location: state => state
-    })
+    }),
+    layout: {
+      get: function(){
+      return this.template.layout
+      },
+      set: function(newValue){
+        store.state.template.layout = newValue;
+      }
+    }
   },
   watch: {
     colorsEnabled(newValue, oldValue) {
@@ -157,7 +167,6 @@ export default {
       datatardDOMElement.style.width = this.template.width;
     },
     setValues() {
-      console.log("setting values ...");
       var tags = this.template.tags;
       var layout = this.template.layout;
 
@@ -180,7 +189,7 @@ export default {
         fullTag = this.assignBeforeTag(tag);
         fullTag = this.assignTag(storeModule, fullTag, tag);
         fullTag = this.assignAfterTag(fullTag, tag);
-        layout[index].name = fullTag;
+        layout[index].value = fullTag;
       }
     },
     assignBeforeTag(tag) {

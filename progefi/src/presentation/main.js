@@ -4,7 +4,8 @@ import router from "./router/router";
 import store from "./store/store";
 import Buefy from "buefy";
 import '@mdi/font/css/materialdesignicons.css';
-import "./style/style.scss"; //Estilos personalizados
+import 'vue2-animate/dist/vue2-animate.min.css'
+//import "./style/style.scss"; //Estilos personalizados
 import VueHead from 'vue-head'
 import { Icon }  from 'leaflet'
 import 'leaflet/dist/leaflet.css'
@@ -16,6 +17,11 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+import modalHelper from "./helpers/modalHelper.vue";
+
+Vue.component('modal-helper', modalHelper)
  
 library.add(faInfoCircle, faClock)
  
@@ -30,6 +36,7 @@ Icon.Default.mergeOptions({
   shadowUrl: require('leaflet/dist/images/marker-shadow.png')
 });
  
+Vue.use(ElementUI);
 Vue.use(VueAxios, axios);
 Vue.use(VueJsonp);
 Vue.use(VueHead);

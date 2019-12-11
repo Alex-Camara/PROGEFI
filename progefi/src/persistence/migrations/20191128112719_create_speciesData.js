@@ -9,6 +9,7 @@ exports.up = function(knex) {
     .createTable('lifeStage', table => {
         table.increments('id').primary();
         table.string('name');
+        table.string('iconPath');
     })
 };
 

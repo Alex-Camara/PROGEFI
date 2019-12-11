@@ -14,6 +14,7 @@ import template from './template';
 import metadata from './metadata';
 import coordinate from './coordinate';
 import curator from './curator';
+import modal from './modal';
 
 Vue.use(Vuex);
 
@@ -32,7 +33,8 @@ const store = new Vuex.Store({
     template: template,
     metadata: metadata,
     coordinate: coordinate,
-    curator: curator
+    curator: curator,
+    modal: modal
   }
 })
 

@@ -10,17 +10,20 @@
       <router-view></router-view>
     </div>
     <div id="main-footer"></div>
+    <modal-helper></modal-helper>
   </div>
 </template>
 
 <script>
 import UINavBar from "./components/UINavBar.vue";
 import UIMenu from "./components/UIMenu.vue";
+import modalHelper from "./helpers/modalHelper.vue";
 
 export default {
   components: {
     UINavBar,
-    UIMenu
+    UIMenu,
+    "modal-helper": modalHelper
   },
   data() {
     return {};

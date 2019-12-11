@@ -17,7 +17,7 @@ const isDevelopment = process.env.NODE_ENV !== "production";
 const {
     ipcMain
 } = require('electron')
-
+ 
 var presentationProcess = null;
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -51,10 +51,10 @@ function main() {
         // On macOS it's common to re-create a window in the app when the
         // dock icon is clicked and there are no other windows open.
         if (presentationProcess === null) {
-            createWindows();
+            createWindows();           
         }
     });
-
+                         
     // This method will be called when Electron has finished
     // initialization and is ready to create browser windows.
     // Some APIs can only be used after this event occurs.

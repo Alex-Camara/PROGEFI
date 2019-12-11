@@ -84,16 +84,16 @@ const metadata = {
             commit("setLatitude", arg.latitude);
             commit("setAltitude", arg.altitude);
         },
-        setDeviceMetadata({ commit }, arg) {
-            commit('device/setDevice', { name: arg.device }, { root: true })
-            commit('device/setModel', { name: arg.model }, { root: true })
+        setDeviceMetadata({ commit, dispatch }, arg) {
+            dispatch('device/setDevice', { name: arg.device }, { root: true })
+            dispatch('device/setModel', { name: arg.model }, { root: true })
         },
         setDatacardMetadata({ commit, dispatch }, arg) {
             let date = moment(arg.collectDate).format('YYYY-MM-DD[T]HH:mm:ss');
             date = moment(date).toDate();
             commit('datacard/setCollectDate', date, { root: true })
-            commit('datacard/setCollectHour', arg.collectHour, { root: true })
-            commit('coordinate/setAltitude', arg.altitude, { root: true })
+            dispatch('datacard/setCollectHour', arg.collectHour, { root: true })
+            dispatch('coordinate/setAltitude', arg.altitude, { root: true })
             if (arg.latitude != null && arg.longitude != null) {
                 dispatch('coordinate/setLongitude', arg.longitude, { root: true })
                 dispatch('coordinate/setLatitude', arg.latitude, { root: true })

@@ -3,8 +3,9 @@
     <div id="sex_helper_container" class="box">
       <div id="sex_helper_container_header">
         <div id="sex_helper_container_header_title">
-          <b class="is-size-6">Sexo: </b>
-          <b class="is-size-6" v-if="sex">{{ sex }}</b>
+          <required-field-helper id="sex_helper_required_field" :name="null" :valid="isSexValid"></required-field-helper>
+          <b id="sex_helper_container_header_title_value" class="is-size-6" v-text="title"></b>
+          <b id="sex_helper_container_header_value" class="is-size-6" v-if="sex">{{ sex }}</b>
           <img id="sex_helper_checked_icon" src="../assets/checked.png" v-if="sex" />
         </div>
 
@@ -39,47 +40,47 @@
 <script>
 import store from "../store/store.js";
 import { mapState } from "vuex";
+import requiredFieldHelper from "../helpers/requiredFieldHelper.vue";
 
 export default {
+  components: {
+    "required-field-helper": requiredFieldHelper
+  },
   data() {
-    return {};
+    return {
+      title: "Sexo: "
+    };
   },
   mounted() {
     store.dispatch("speciesData/getSexes");
   },
   computed: {
     ...mapState("speciesData", {
-      speciesDataState: state => state
+      speciesDataState: state => state,
+      isSexValid: state => state.sex.valid
     }),
     sex: {
       get: function() {
         return this.speciesDataState.sex.name;
       },
       set: function(newValue) {
-        store.commit("speciesData/setSex", newValue);
-        return newValue;
+        store.dispatch("speciesData/setSex", newValue);
       }
     }
   },
   methods: {
     setSex(sex) {
-      if (sex == "Otro") {
-        this.addOption();
-      } else {
-        this.sex = sex;
-      }
+      this.sex = sex;
     },
     addOption() {
-      this.$buefy.dialog.prompt({
-        type: "is-secondary",
-        message: `Introduce el sexo`,
-        confirmText: "Agregar",
-        cancelText: "Cancelar",
-        inputAttrs: {
-          maxlength: 20
-        },
-        trapFocus: true,
-        onConfirm: value => this.setSex({name: value})
+      store.dispatch("modal/openModal", {
+        title: "Sexo",
+        fieldText: "Ingresa el sexo del espécimen",
+        mutationName: "speciesData/setSex",
+        valueName: "name",
+        regex: "^[a-zA-Z \\u00C0-\\u00FF]*$",
+        minLimit: 2,
+        maxLimit: 20
       });
     }
   }
@@ -102,6 +103,26 @@ export default {
 
 #sex_helper_container_header_title {
   align-self: start;
+  display: flex;
+}
+
+#sex_helper_container_header_title_value {
+  margin-right: 10px;
+}
+
+#sex_helper_container_header_value {
+  color: $primary;
+}
+
+#sex_helper_checked_icon {
+  height: 20px;
+  width: 20px;
+  margin-left: 5px;
+  align-self: center;
+}
+
+#sex_helper_required_field {
+  align-self: center;
 }
 
 #sex_helper_container_header_addOption {
@@ -121,12 +142,6 @@ export default {
   cursor: pointer;
   filter: hue-rotate(180deg);
   -webkit-filter: hue-rotate(180deg);
-}
-
-#sex_helper_checked_icon {
-  height: 20px;
-  width: 20px;
-  align-self: center;
 }
 
 #sex_helper_list {

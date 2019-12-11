@@ -9,10 +9,24 @@
         <div id="template_helper_container_content">
           <div id="template_helper_container_content_select">
             <b-field id="template-select" custom-class="is-small is-centered" label="Plantilla:">
-              <b-select placeholder="Selecciona una plantilla" v-model="selectedTemplate"></b-select>
+              <b-dropdown aria-role="list" v-model="selectedTemplate">
+                <button class="button is-secondary" slot="trigger">
+                  <p>{{ selectedTemplate.name }}</p>
+                  <b-icon icon="menu-down"></b-icon>
+                </button>
+                <b-dropdown-item
+                  aria-role="listitem"
+                  v-for="template in templateState.templates"
+                  :key="template.id"
+                  :value="template"
+                >{{ template.name }}</b-dropdown-item>
+              </b-dropdown>
             </b-field>
           </div>
-          <div id="template_helper_container_content_template_sample"></div>
+          <div id="template_helper_container_content_template_sample">
+            <b id="sample_image_text">Muestra:</b>
+            <img id="sample_image" :src="selectedTemplate.samplePath" />
+          </div>
         </div>
       </div>
     </div>
@@ -20,11 +34,31 @@
 </template>
 
 <script>
+import store from "../store/store.js";
+import { mapState, mapGetters } from "vuex";
+
 export default {
   data() {
-    return {
-      selectedTemplate: null
-    };
+    return {};
+  },
+  computed: {
+    ...mapState("template", {
+      templateState: state => state
+    }),
+    selectedTemplate: {
+      get: function() {
+        return this.templateState.template;
+      },
+      set: function(newValue) {
+        store.commit("template/setTemplate", newValue);
+        return newValue;
+      }
+    }
+  },
+  methods: {
+    setTemplate(template) {
+      store.dispatch("template/getTemplate", template.id);
+    }
   }
 };
 </script>
@@ -32,7 +66,7 @@ export default {
 <style lang="scss">
 #template_helper_container {
   display: grid;
-  grid-template-rows: 40px 400px;
+  grid-template-rows: 40px 460px;
 }
 
 #template_helper_container_header {
@@ -42,6 +76,25 @@ export default {
 #template_helper_container_content {
   grid-row: 2 / 3;
   display: grid;
-  grid-template-rows: 20px 380px;
+  grid-template-columns: 30% 70%;
+}
+
+#template_helper_container_content_template_sample {
+  grid-column: 2 / 3;
+  display: flex;
+  flex-direction: column;
+}
+
+#sample_image {
+  height: 450px;
+}
+
+#sample_image_text {
+  //height: 12px;
+  font-size: 12px;
+}
+
+#template_helper_container_content_select {
+  grid-column: 1 / 2;
 }
 </style>
