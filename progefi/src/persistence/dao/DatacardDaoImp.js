@@ -1,11 +1,13 @@
 'use strict'
 
 const Datacard = require('../models/Datacard')
+const Datacard_has_curators = require('../models/Datacard_has_curators')
 
 class DatacardDaoImp {
   async createDatacard (datacard) {
     const newDatacard = await Datacard.query().insert({
       code: '',
+      validated: datacard.validated,
       datacardPath: datacard.datacardPath,
       collectDate: datacard.collectDate,
       longitude: datacard.longitude,
@@ -47,6 +49,14 @@ class DatacardDaoImp {
       .patch({
         code: datacardCode
       })
+
+    for (let i = 0; i < datacard.curators.length; i++) {
+      await Datacard_has_curators.query().insert({
+        datacardId: newDatacard.id,
+        curatorId: datacard.curators[i].id
+      })
+    }
+
     return createdDatacard
   }
 }

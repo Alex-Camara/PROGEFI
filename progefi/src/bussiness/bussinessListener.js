@@ -90,6 +90,12 @@ function listen () {
     })
   })
 
+  ipcMain.on('createCurator', (event, curator) => {
+    curatorHandler.createCurator(curator, function (createdCurator) {
+      event.reply('curatorCreated', createdCurator)
+    })
+  })
+
   ipcMain.on('getDevices', (event, selectedDevice) => {
     deviceHandler.getDevices(selectedDevice, function (devices) {
       event.reply('devices', devices)

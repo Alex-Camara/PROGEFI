@@ -2,7 +2,7 @@
 
 import PresentationProcess from './presentation/presentationProcess'
 import BussinessProcess from './bussiness/bussinessListener'
-
+   
 const electron = require('electron') 
 const app = electron.app
 const BrowserWindow = electron.BrowserWindow

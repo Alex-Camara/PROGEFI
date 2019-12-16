@@ -9,6 +9,10 @@ class CuratorHandler {
         let curators = await this.curatorDao.getCurators(selectedCurator);
         result(curators);
     }
+    async createCurator(curator, result) {
+        let createdCurator = await this.curatorDao.createCurator(curator);
+        result(createdCurator);
+    }
 }
 
 export default CuratorHandler;

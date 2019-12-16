@@ -90,7 +90,7 @@
     <!-- --------ValidateData Bottom Buttons----- -->
     <div id="validateData_component_bottomButtons">
       <b-button type="is-light" v-on:click="backwardStep()">Anterior</b-button>
-      <b-button type="is-secondary" v-on:click="generateDatacard()">Generar ficha (Sin validar)</b-button>
+      <b-button type="is-secondary" v-text="textInButton" v-on:click="generateDatacard()"></b-button>
     </div>
   </div>
 </template>
@@ -111,7 +111,8 @@ export default {
       colorsEnabled: true,
       isSwitched: "Inhabilitar edición",
       autocompleteCuratorStatus: false,
-      showPreview: true
+      showPreview: true,
+      textInButton: 'Guardar borrador de ficha'
     };
   },
   computed: {
@@ -160,7 +161,13 @@ export default {
   },
   watch: {
     selectedCuratorsNameString(newValue, oldValue) {
-      this.$refs.datacard_helper.setValues();
+      if (newValue == '') {
+        this.$refs.datacard_helper.setValues();
+        this.textInButton = 'Guardar borrador de ficha'
+      } else{
+        this.$refs.datacard_helper.setValues();
+        this.textInButton = 'Generar ficha'
+      }
     }
   },
   methods: {
@@ -206,8 +213,8 @@ export default {
     closeAutocompletes() {
       this.autocompleteCuratorStatus = false;
     },
-    onDatacardCreated(){
-      this.$emit('datacardCreated')
+    onDatacardCreated() {
+      this.$emit("datacardCreated");
     }
   }
 };

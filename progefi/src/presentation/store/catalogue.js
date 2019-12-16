@@ -1,34 +1,33 @@
 const { ipcRenderer } = require('electron')
+import Vue from 'vue'
+import Catalogue from '../models/catalogue'
 
 const catalogue = {
   namespaced: true,
   state: {
     catalogues: [],
-    catalogue: {
-      id: null,
-      name: null,
-      required: true,
-      valid: {
-        isValid: false,
-        message: 'Campo requerido'
-      }
-    }
+    catalogue: new Catalogue()
   },
   mutations: {
     setCatalogues (state, catalogues) {
-      state.catalogues = catalogues
+      Vue.set(state, 'catalogues', catalogues)
     },
     setCatalogue (state, catalogue) {
-      catalogue.required = state.catalogue.required
-      catalogue.valid = { isValid: true, message: null }
-      state.catalogue = catalogue
+      catalogue.setValid({ isValid: true, message: null })
+      Vue.set(state, 'catalogue', catalogue)
     }
   },
   actions: {
-    getCatalogues ({ commit, state }, collectionId) {
+    getCatalogues ({ commit }, collectionId) {
       ipcRenderer.send('getCatalogues', collectionId)
       ipcRenderer.on('catalogues', (event, receivedCatalogues) => {
-        commit('setCatalogues', receivedCatalogues)
+        let newCatalogues = []
+        for (let i = 0; i < receivedCatalogues.length; i++) {
+          let catalogue = new Catalogue()
+          catalogue.setCatalogue(receivedCatalogues[i])
+          newCatalogues.push(catalogue)
+        }
+        commit('setCatalogues', newCatalogues)
       })
     }
   }

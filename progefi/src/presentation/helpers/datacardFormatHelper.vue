@@ -99,7 +99,8 @@ export default {
       marginX: [0, 0],
       marginY: [0, 0],
       isResizable: true,
-      isDraggable: true
+      isDraggable: true,
+      validated: false
     };
   },
   computed: {
@@ -289,6 +290,7 @@ export default {
       let datacard = {};
       datacard.base64 = base64Datacard;
       datacard.code = this.catalogue.catalogue.code;
+      datacard.validated = this.validated;
       datacard.collectDate = this.datacard.collectDate.value;
       datacard.longitude = this.coordinate.longitude.value;
       datacard.latitude = this.coordinate.latitude.value;
@@ -308,6 +310,7 @@ export default {
       datacard.catalogueId = this.catalogue.catalogue.id;
       datacard.collectionId = this.collection.collection.id;
       datacard.projectId = this.project.project.id;
+      datacard.curators = this.curator.selectedCurators;
       let sexId = store.getters["speciesData/getSexId"];
       let lifeStageId = store.getters["speciesData/getLifeStageId"];
       let climateTypeId = store.getters["climateType/getClimateTypeId"];
@@ -349,6 +352,7 @@ export default {
         datacard.deviceId
       );
       datacard.collectorId = await store.dispatch("collector/createCollector");
+      datacard.curators = await store.dispatch("curator/createCurators");
       this.createDatacard(datacard);
     },
     createDatacard(datacard) {

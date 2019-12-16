@@ -1,33 +1,33 @@
 const { ipcRenderer } = require('electron')
+import Vue from 'vue'
+import Project from '../models/project'
 
 const project = {
   namespaced: true,
   state: {
     projects: [],
-    project: {
-      name: null,
-      required: true,
-      valid: {
-        isValid: false,
-        message: "campo requerido"
-      }
-    }
+    project: new Project()
   },
   mutations: {
     setProjects (state, projects) {
-      state.projects = projects
+      Vue.set(state, 'projects', projects)
     },
     setProject (state, project) {
-      project.required = state.project.required;
-      project.valid = { isValid: true, message: null }
-      state.project = project
+      project.setValid({ isValid: true, message: null })
+      Vue.set(state, 'project', project)
     }
   },
   actions: {
     getProjects ({ commit }) {
       ipcRenderer.send('getProjects')
       ipcRenderer.on('projects', (event, receivedProjects) => {
-        commit('setProjects', receivedProjects)
+        let newProjects = []
+        for (let i = 0; i < receivedProjects.length; i++) {
+          let project = new Project()
+          project.setProject(receivedProjects[i])
+          newProjects.push(project)
+        }
+        commit('setProjects', newProjects)
       })
     }
   }

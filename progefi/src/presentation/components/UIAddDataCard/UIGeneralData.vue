@@ -247,7 +247,6 @@ export default {
   mounted() {
     store.dispatch("collection/getCollections");
     store.dispatch("project/getProjects");
-    //store.dispatch("device/getDevices");
     store.dispatch("template/getTemplates");
   },
   computed: {
@@ -430,36 +429,10 @@ export default {
     getMetaData() {
       store.dispatch("metadata/getImageMetadata");
     },
-    getDevicesName() {
-      let devicesName = [];
-      for (let i = 0; i < this.deviceState.devices.length; i++) {
-        devicesName.push(this.deviceState.devices[i].name);
-      }
-      return devicesName;
-    },
-    getModelsName() {
-      let modelsName = [];
-      for (let i = 0; i < this.deviceState.models.length; i++) {
-        modelsName.push(this.deviceState.models[i].name);
-      }
-      return modelsName;
-    },
-    getCollectorsName() {
-      let collectors = this.collectorState.collectors;
-      let collectorsName = [];
-      for (let i = 0; i < collectors.length; i++) {
-        collectorsName.push(collectors[i].name);
-      }
-      return collectorsName;
-    },
     getModels(selectedDevice) {
       if (foundDevice) {
         store.dispatch("device/getModels", foundDevice.id);
       }
-    },
-    validateInput(input) {
-      let longitude = collector.length;
-      let onlyAlphabetAndSpace = /^[a-zA-Z ]*$/.test(collector);
     },
     disableNextButton() {
       if (
@@ -486,7 +459,6 @@ export default {
   display: grid;
   grid-template-rows: 35px 10px 550px 440px 30px;
   height: 1100px;
-  //width: 100%;
   margin-top: 10px;
   align-items: center;
 }
@@ -512,8 +484,6 @@ export default {
   grid-template-rows: 25% 25% 25% 25%;
   grid-gap: 5px;
   justify-items: start;
-  //margin-top: 20px;
-  //margin-bottom: 20px;
 }
 
 #generalData_component_bottomButtons {
@@ -524,13 +494,11 @@ export default {
 #colection-select {
   grid-row: 1 / 2;
   grid-column: 1 / 3;
-  //max-width: 250px;
 }
 
 #catalogue-select {
   grid-row: 1 / 2;
   grid-column: 4 / 5;
-  //max-width: 250px;
 }
 
 #project-select {
@@ -543,7 +511,6 @@ export default {
   grid-column: 4 / 6;
   display: flex;
   flex-direction: column;
-  //max-width: 500px;
 }
 
 #device_helper {
@@ -555,7 +522,6 @@ export default {
 #device_select_field {
   grid-row: 3 / 4;
   grid-column: 2 / 3;
-  //max-width: 250px;
   display: flex;
   flex-direction: column;
 }
@@ -593,7 +559,6 @@ export default {
 #model_select_field {
   grid-row: 3 / 4;
   grid-column: 4 / 5;
-  //max-width: 250px;
   display: flex;
   flex-direction: column;
 }
@@ -607,7 +572,6 @@ export default {
 #collect-date-select {
   grid-row: 4 / 5;
   grid-column: 2 / 3;
-  //max-width: 250px;
 }
 
 #collectHour_helper {
@@ -619,7 +583,6 @@ export default {
 #collect-hour-select {
   grid-row: 4 / 5;
   grid-column: 4 / 5;
-  //max-width: 250px;
 }
 
 #required_label_field {

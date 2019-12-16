@@ -9,6 +9,13 @@ class CuratorDaoImp {
         .limit(10)
         return curators;
     }
+    async createCurator(curator){
+        const createdCurator = await Curator.query().insert({
+            name: curator
+        })
+        console.log(createdCurator)
+        return createdCurator;
+    }
 }
 
 export default CuratorDaoImp;

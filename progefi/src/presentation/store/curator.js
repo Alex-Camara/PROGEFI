@@ -46,7 +46,9 @@ const curator = {
       let filteredCurators = []
       for (let i = 0; i < curators.length; i++) {
         const element = curators[i]
-        let foundCurator = state.selectedCurators.find(x => x.name == element.name)
+        let foundCurator = state.selectedCurators.find(
+          x => x.name == element.name
+        )
         if (!foundCurator) {
           filteredCurators.push(element)
         }
@@ -91,31 +93,69 @@ const curator = {
     },
     addCurator ({ state, commit }) {
       // let curator = state.curator.toLowerCase()
-      let foundCurator = state.selectedCurators.find(function(element){
-        let curatorInCurators = element.name.toString().toLowerCase();
+      let foundCurator = state.selectedCurators.find(function (element) {
+        let curatorInCurators = element.name.toString().toLowerCase()
         let curator = state.curator.name.toString().toLowerCase()
         return curatorInCurators == curator
       })
       //debugger;
       if (!foundCurator) {
         commit('addCurator')
-        commit('setCurator', { name: '', valid: { isValid: false, message: null } })
+        commit('setCurator', {
+          name: '',
+          valid: { isValid: false, message: null }
+        })
         commit('setCurators', [])
       } else {
-        commit('setCurator', { name: '', valid: { isValid: false, message: null } })
+        commit('setCurator', {
+          name: '',
+          valid: { isValid: false, message: null }
+        })
         commit('setCurators', [])
       }
     },
-    validate ({ state, commit, dispatch }, { testValueName, testValue, mutationName, minLimit, maxLimit, regex }) {
+    createCurators ({ state }) {
+      return new Promise((resolve, reject) => {
+        let curators = []
+        for (let i = 0; i < state.selectedCurators.length; i++) {
+          //si el curador ya tiene id, entonces ya existe, solo se regresa el id
+          if (
+            state.selectedCurators[i].hasOwnProperty('id') &&
+            state.selectedCurators[i].id != null
+          ) {
+            curators.push(state.selectedCurators[i])
+          } else {
+            ipcRenderer.send('createCurator', state.selectedCurators[i].name)
+            ipcRenderer.on('curatorCreated', (event, createdCurator) => {
+              curators.push(createdCurator)
+            })
+          }
+        }
+        resolve(curators)
+      })
+    },
+    validate (
+      { state, commit, dispatch },
+      { testValueName, testValue, mutationName, minLimit, maxLimit, regex }
+    ) {
       // si ya se agregaron máximo 2 curadores, la validación falla
       if (state.selectedCurators.length > 1) {
-        state[testValueName].valid = { isValid: false, message: 'temporary error' }
+        state[testValueName].valid = {
+          isValid: false,
+          message: 'temporary error'
+        }
         commit(mutationName, state[testValueName])
         commit('setCurators', [])
         return
       }
       validator
-        .testValidationOne(testValue.name, minLimit, maxLimit, state[testValueName].required, regex)
+        .testValidationOne(
+          testValue.name,
+          minLimit,
+          maxLimit,
+          state[testValueName].required,
+          regex
+        )
         .then(() => {
           //debugger;
           testValue.valid = { isValid: true, message: null }
@@ -138,7 +178,10 @@ const curator = {
             commit(mutationName, testValue)
             commit('setCurators', [])
           } else if (state[testValueName].valid.isValid) {
-            state[testValueName].valid = { isValid: true, message: 'temporary error' }
+            state[testValueName].valid = {
+              isValid: true,
+              message: 'temporary error'
+            }
             commit(mutationName, state[testValueName])
           } else {
             state[testValueName].valid = { isValid: false, message: error }
