@@ -9,6 +9,7 @@ exports.seed = function (knex) {
         acronym: 'UV',
         address: 'Lomas del Estadio S/N, Col. Zona Universitaria C.P. 91000,Xalapa, Veracruz, México',
         researchArea: 'Instituto de Investigaciones Biológicas UV',
+        researchAreaAcronym: 'IIBUV',
         imagePath: 'institute_logos/logo.png'
       }]);
     });

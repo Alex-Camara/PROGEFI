@@ -8,8 +8,7 @@ const datacard = {
     activeStep: 0,
     photoCollect: {
       name: null,
-      path: null,
-      url: null,
+      filePath: null,
       loading: false,
       changed: false,
       photoCollectPath: null
@@ -44,62 +43,65 @@ const datacard = {
     hasMetadata (state, status) {
       state.photoCollect.hasMetadata = status
     },
-    setPhotoCollectURL (state, photoCollectPath) {
+    setPhotoCollectPath (state, { photoCollectPath, loading, changed }) {
       state.photoCollect.photoCollectPath = photoCollectPath
+      state.photoCollect.loading = loading
+      state.photoCollect.changed = changed
+    },
+    setPhotoCollectName (state, name) {
+      state.photoCollect.name = name
     },
     setPhotoCollect (state, photoCollect) {
-      state.photoCollect = {
-        name: photoCollect.name,
-        path: photoCollect.path,
-        type: photoCollect.type,
-        loading: false,
-        changed: false
-      }
-    },
-    setPhotoCollectNull (state) {
-      state.photoCollect = {
-        name: null,
-        path: null,
-        url: null,
-        loading: false
-      }
+      state.photoCollect.name = photoCollect.name
+      state.photoCollect.filePath = photoCollect.path
+      state.photoCollect.type = photoCollect.type
+      state.photoCollect.loading = false
+      state.photoCollect.changed = false
+      state.photoCollect.photoCollectPath = null
     },
     setCollectDate (state, collectDate) {
       state.datacard.collectDate.value = collectDate
       state.datacard.collectDate.required = state.datacard.collectDate.required
       state.datacard.collectDate.valid = { isValid: true, message: null }
-      state.datacard.collectDate.formattedDate = moment(collectDate).format('DD/MM/YYYY')
-      state.datacard.collectDate.formattedHour = moment(collectDate).format('HH:mm')
-    },
-    restoreMetadataValue (state, { attribute, metadataValue }) {
-      state[attribute] = metadataValue
+      state.datacard.collectDate.formattedDate = moment(collectDate).format(
+        'DD/MM/YYYY'
+      )
+      state.datacard.collectDate.formattedHour = moment(collectDate).format(
+        'HH:mm'
+      )
     }
   },
   actions: {
     setPhotoCollect ({ commit, state }, photoCollect) {
       if (photoCollect != null) {
         commit('setPhotoCollect', photoCollect)
+        commit('isLoading', true)
 
         ipcRenderer.send('savePhotoCollect', state.photoCollect)
-        commit('isLoading', true)
 
         // Si se guardó, actualizar la url de la imagen
         ipcRenderer.on('photoCollectSaved', (event, arg) => {
-          commit('setPhotoCollectURL', arg)
-          commit('isLoading', false)
-          commit('hasChanged', true)
+          commit('setPhotoCollectPath', {
+            photoCollectPath: arg,
+            loading: false,
+            changed: true
+          })
         })
 
         ipcRenderer.on('photoCollectNotSaved', (event, arg) => {
-          commit('setPhotoCollectURL', arg)
-          commit('isLoading', false)
-          commit('hasChanged', false)
+          commit('setPhotoCollectPath', {
+            photoCollectPath: arg,
+            loading: false,
+            changed: false
+          })
+          commit('setPhotoCollectName', null)
         })
       }
     },
+    // Método invocado al salir del CU agregar ficha (es un reset de los campos involucrados)
     resetPhotoCollect ({ commit }) {
       commit('setActiveStep', 0)
-      commit('setPhotoCollectNull')
+      commit('setPhotoCollect', { name: null, type: null, path: null })
     },
     setCollectHour ({ state, commit }, collectHour) {
       let collectDate = moment(state.datacard.collectDate.value)
@@ -113,16 +115,13 @@ const datacard = {
       commit('setCollectDate', collectDate)
       // state.datacard.collectDate.value = moment(collectDate).toDate()
     },
-    restoreMetadataValue ({ commit }, { attribute, metadataValue }) {
-      switch (attribute) {
-        case 'collectHour':
-          commit('setCollect', 0)
-          break
-
-        default:
-          commit('setActiveStep', 0)
-          break
-      }
+    createDatacard ({ }, datacard) {
+      return new Promise((resolve, reject) => {
+        ipcRenderer.send('createDatacard', datacard)
+        ipcRenderer.on('datacardCreated', event => {
+          resolve()
+        })
+      })
     }
   }
 }

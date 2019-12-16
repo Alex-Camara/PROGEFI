@@ -10,6 +10,10 @@ class CollectorDao {
         let collectors = Promise.resolve(this.collectorDaoImp.getCollectors(selectedCollector));
         return collectors;
     }
+    createCollector(collector) {
+        let createdCollector = Promise.resolve(this.collectorDaoImp.createCollector(collector));
+        return createdCollector;
+    }
 }
 
 export default CollectorDao;

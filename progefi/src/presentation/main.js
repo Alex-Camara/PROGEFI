@@ -4,7 +4,6 @@ import router from "./router/router";
 import store from "./store/store";
 import Buefy from "buefy";
 import '@mdi/font/css/materialdesignicons.css';
-import 'vue2-animate/dist/vue2-animate.min.css'
 //import "./style/style.scss"; //Estilos personalizados
 import VueHead from 'vue-head'
 import { Icon }  from 'leaflet'
@@ -18,10 +17,11 @@ import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
 import modalHelper from "./helpers/modalHelper.vue";
+import loadingHelper from "./helpers/loadingHelper.vue";
 
 Vue.component('modal-helper', modalHelper)
+Vue.component('loading-helper', loadingHelper)
  
 library.add(faInfoCircle, faClock)
  

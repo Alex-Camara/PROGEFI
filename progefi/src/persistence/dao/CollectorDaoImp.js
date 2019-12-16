@@ -9,6 +9,13 @@ class CollectorDaoImp {
         .limit(10)
         return collectors;
     }
+    async createCollector(collector){
+        const createdCollector = await Collector.query().insert({
+            name: collector.name
+        })
+        console.log(createdCollector)
+        return createdCollector;
+    }
 }
 
 export default CollectorDaoImp;

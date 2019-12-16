@@ -74,14 +74,23 @@
         id="datatardFormat_helper"
         ref="datacard_helper"
         :colorsEnabled="colorsEnabled"
-        v-if="template"
+        :preview="showPreview"
+        v-if="showPreview"
+      ></datacardFormat-helper>
+
+      <datacardFormat-helper
+        id="datatardFormat_helper"
+        ref="datacard_helper"
+        :colorsEnabled="false"
+        :preview="showPreview"
+        v-if="!showPreview"
       ></datacardFormat-helper>
     </div>
 
     <!-- --------ValidateData Bottom Buttons----- -->
     <div id="validateData_component_bottomButtons">
       <b-button type="is-light" v-on:click="backwardStep()">Anterior</b-button>
-      <b-button type="is-secondary" v-on:click="previsualizeDatacard()">Generar ficha (Sin validar)</b-button>
+      <b-button type="is-secondary" v-on:click="generateDatacard()">Generar ficha (Sin validar)</b-button>
     </div>
   </div>
 </template>
@@ -100,11 +109,9 @@ export default {
   data() {
     return {
       colorsEnabled: true,
-      isDatacardModalActive: true,
       isSwitched: "Inhabilitar edición",
-      validate: false,
-      //selectedCurator: null,
-      autocompleteCuratorStatus: false
+      autocompleteCuratorStatus: false,
+      showPreview: true
     };
   },
   computed: {
@@ -170,19 +177,12 @@ export default {
         this.colorsEnabled = true;
       }
     },
-    previsualizeDatacard() {
-      domtoimage
-        .toBlob(document.getElementById("datatardFormat_helper"), {
-          width: 1250,
-          height: 800,
-          style: {
-            transform: "scale(1.185)",
-            "transform-origin": "top left"
-          }
-        })
-        .then(function(blob) {
-          window.saveAs(blob, "ficha.png");
-        });
+    generateDatacard() {
+      if (this.showPreview) {
+        this.showPreview = false;
+      } else {
+        this.showPreview = true;
+      }
     },
     addCurator() {
       store.dispatch("curator/addCurator");
@@ -205,6 +205,9 @@ export default {
     },
     closeAutocompletes() {
       this.autocompleteCuratorStatus = false;
+    },
+    onDatacardCreated(){
+      this.$emit('datacardCreated')
     }
   }
 };

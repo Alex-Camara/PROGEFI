@@ -66,25 +66,6 @@ const coordinate = {
         maxLimit: 180,
         decimalMaxLimit: 999999
       })
-      /* validator
-        .testValidationTwo(longitude.value, -180, 180, 999999, state.longitude.required)
-        .then(() => {
-          longitude.valid = { isValid: true, message: null }
-          commit('setLongitude', longitude)
-        })
-        .catch(error => {
-          if (error == 'Campo requerido') {
-            longitude.valid = { isValid: true, message: null }
-            longitude.value = 0
-            commit('setLongitude', longitude)
-          } else if (error == 'Ingresa un número') {
-            longitude.valid = { isValid: false, message: error }
-            commit('setLongitude', longitude)
-          } else {
-            state.longitude.valid = { isValid: true, message: 'temporary error' }
-            commit('setLongitude', state.longitude)
-          }
-        }) */
     },
     setLatitude ({ dispatch }, latitude) {
       latitude = { value: latitude };
@@ -96,25 +77,6 @@ const coordinate = {
         maxLimit: 180,
         decimalMaxLimit: 999999
       })
-      /*validator
-        .testValidationTwo(latitude.value, -180, 180, 999999, state.latitude.required)
-        .then(() => {
-          latitude.valid = { isValid: true, message: null }
-          commit('setLatitude', latitude)
-        })
-        .catch(error => {
-          if (error == 'Campo requerido') {
-            latitude.valid = { isValid: true, message: null }
-            latitude.value = 0
-            commit('setLatitude', latitude)
-          } else if (error == 'Ingresa un número') {
-            latitude.valid = { isValid: false, message: error }
-            commit('setLatitude', latitude)
-          } else {
-            state.latitude.valid = { isValid: true, message: 'temporary error' }
-            commit('setLatitude', state.latitude)
-          }
-        })*/
     },
     setAltitude ({ dispatch }, altitude) {
       altitude = { value: altitude };
@@ -126,38 +88,8 @@ const coordinate = {
         maxLimit: 8000,
         decimalMaxLimit: 999999
       })
-      /*validator
-        .testValidationTwo(altitude.value, -100, 8000, 999999, state.altitude.required)
-        .then(() => {
-          // debugger
-          altitude.valid = { isValid: true, message: null }
-          commit('setAltitude', altitude)
-        })
-        .catch(error => {
-          // debugger
-          // cuando el campo es requerido y esta vacío
-          if (error == 'Campo requerido') {
-            altitude.valid = { isValid: false, message: error }
-            commit('setAltitude', altitude)
-            // cuando el campo esta vacío, pero no es error porque el campo no es requerido
-          } else if (error == 'Campo vacío') {
-            altitude.valid = { isValid: true, message: 'temporary error' }
-            commit('setAltitude', altitude)
-            // cuando solo se ha ingresado un - para un número negativo
-          } else if (error == 'Ingresa un número') {
-            altitude.valid = { isValid: false, message: error }
-            commit('setAltitude', altitude)
-            // cuando hubo un error y solo se informa, no se refleja en el estado
-          } else if (state.altitude.value == '' && state.altitude.required) {
-            state.altitude.valid = { isValid: false, message: error }
-            commit('setAltitude', state.altitude)
-            // cuando hubo un error y solo se informa, no se refleja en el estado
-          } else {
-            state.altitude.valid = { isValid: true, message: 'temporary error' }
-            commit('setAltitude', state.altitude)
-          }
-        })*/
     },
+    // FIXME el signo de menos es detectado bien la primera vez, pero las siguientes no
     validate ({ state, commit }, { testValueName, testValue, mutationName, minLimit, maxLimit, decimalMaxLimit }) {
       validator
         .testValidationTwo(testValue.value, minLimit, maxLimit, decimalMaxLimit, state[testValueName].required)

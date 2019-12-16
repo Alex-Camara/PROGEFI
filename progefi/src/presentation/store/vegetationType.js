@@ -14,6 +14,15 @@ const vegetationType = {
       }
     }
   },
+  getters:{
+    getVegetationTypeId: state =>{
+      if (state.vegetationType.hasOwnProperty('id') && state.vegetationType.id != null) {
+        return state.vegetationType.id;
+      } else{
+        return state.vegetationType.name;
+      }
+    }
+  },
   mutations: {
     setVegetationTypes (state, vegetationTypes) {
       state.vegetationTypes = vegetationTypes

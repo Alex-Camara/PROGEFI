@@ -13,6 +13,11 @@ const climateType = {
       }
     }
   },
+  getters: {
+    getClimateTypeId: state => {
+      return state.climateType.code
+    }
+  },
   mutations: {
     setClimateTypes (state, climateTypes) {
       state.climateTypes = climateTypes
@@ -45,7 +50,10 @@ const climateType = {
 
       if (foundClimateTypeTag) {
         commit('setRequired', true)
-        commit('setClimateType', { code: null, valid: { isValid: false, message: 'Campo requerido' } })
+        commit('setClimateType', {
+          code: null,
+          valid: { isValid: false, message: 'Campo requerido' }
+        })
       } else {
         commit('setRequired', false)
       }

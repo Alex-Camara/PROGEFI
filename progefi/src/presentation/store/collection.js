@@ -8,6 +8,7 @@ const collection = {
         collections: [],
         institutes: [],
         collection: {
+            id: null,
             name: null,
             required: true,
             valid: {

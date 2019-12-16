@@ -78,6 +78,19 @@ const collector = {
           }
         })
     },
+    createCollector ({ state }) {
+      return new Promise((resolve, reject) => {
+        //si el dispositivo ya tiene id, entonces ya existe, solo se regresa el id
+        if (state.collector.hasOwnProperty('id') && state.collector.id != null) {
+          resolve(state.collector.id)
+        } else{
+          ipcRenderer.send('createCollector', state.collector)
+        ipcRenderer.on('collectorCreated', (event, createdCollectorId) => {
+          resolve(createdCollectorId)
+        })
+        }
+      })
+    },
     setRequiredValues ({ commit }, tags) {
       let foundCollectorTag = tags.filter(obj => {
         return obj.tag === 'collector'

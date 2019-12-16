@@ -6,6 +6,7 @@ exports.up = function (knex) {
             table.string('acronym');
             table.string('address');
             table.string('researchArea');
+            table.string('researchAreaAcronym');
             table.string('description');
             table.string('imagePath');
         })
@@ -20,6 +21,7 @@ exports.up = function (knex) {
         .createTable('catalogue', table => {
             table.increments('id').primary();
             table.string('name');
+            table.string('code');
             table.integer('collectionId')
                 .references('id')
                 .inTable('collection')

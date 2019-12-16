@@ -13,7 +13,7 @@
             animated
             multilined
           >
-            <font-awesome-icon id="icon_info" icon="info-circle" pull="left" />
+            <img id="icon_info" :src="icon" />
           </b-tooltip>Sube el archivo de la fotocolecta
         </p>
       </div>
@@ -60,13 +60,13 @@
 
 <script>
 import store from "../../store/store.js";
-
 import { mapState } from "vuex";
 
 export default {
   data() {
     return {
-      file: null
+      file: null,
+      icon: require("../../assets/question.png")
     };
   },
   computed: {
@@ -78,8 +78,8 @@ export default {
     })
   },
   watch: {
-    photoCollect(newValue, oldValue) {
-      if (newValue.url == "not-supported-format") {
+    photoCollectPath(newValue, oldValue) {
+      if (newValue == "not-supported-format") {
         this.file = null;
         this.openSnackBar("¡Formato no soportado!");
       }
@@ -87,15 +87,15 @@ export default {
   },
   methods: {
     disableNextButton() {
-      /*if (
-        this.photoCollect.url != null &&
-        this.photoCollect.url != "not-supported-format"
+      if (
+        this.photoCollectPath != null &&
+        this.photoCollectPath != "not-supported-format"
       ) {
         return false;
       } else {
         return true;
-      }*/
-      return false
+      }
+      return false;
     },
     openSnackBar(message) {
       this.$buefy.snackbar.open({
@@ -151,6 +151,9 @@ export default {
   grid-row: 1 / 2;
   justify-self: center;
   text-align: center;
+  height: 20px;
+  display: flex;
+  align-items: center;
 }
 
 #addDataCard1-component-content {
@@ -163,7 +166,6 @@ export default {
   //margin-left: 60px;
   max-height: 100%;
   max-width: 100%;
-  
 }
 
 #uploadedImage {
@@ -177,14 +179,16 @@ export default {
 }
 
 #icon_info {
-  color: $dark;
-  padding-top: 5px;
-  transition: 0.5s;
-  font-size: 25px;
+  align-self: center;
+  transition: 0.2s;
+  height: 15px;
+  width: 15px;
+  margin-right: 5px;
 }
 
 #icon_info:hover {
-  transform:scale(1.5);
-  transition: 0.5s;
+  transform: scale(1.5);
+  transition: 0.2s;
+  cursor: pointer;
 }
 </style>

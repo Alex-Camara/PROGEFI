@@ -11,6 +11,7 @@
     </div>
     <div id="main-footer"></div>
     <modal-helper></modal-helper>
+    <loading-helper></loading-helper>
   </div>
 </template>
 
@@ -83,6 +84,10 @@ export default {
 
   z-index: 1;
   top: 50px;
+}
+
+.bordered {
+  border: 0.5px solid black;
 }
 
 @media screen and (max-width: 1200px) {

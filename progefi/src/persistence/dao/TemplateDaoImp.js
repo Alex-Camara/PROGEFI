@@ -13,7 +13,6 @@ class TemplateDaoImp {
 
         for (let i = 0; i < templates.length; i++) {
             templates[i].samplePath = fullPath + templates[i].samplePath
-            console.info(templates[i])
         }
         return templates;
     }

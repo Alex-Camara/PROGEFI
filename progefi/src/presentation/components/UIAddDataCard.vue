@@ -74,6 +74,21 @@ export default {
   mounted() {
     this.showInternetStatus();
   },
+  beforeRouteLeave(to, from, next) {
+    // Si la ruta destino tiene el parametro 'askToLeave',
+    // esta especificando si se quiere preguntar antes de abandonar la ruta actual
+    if (to.params.askToLeave || to.params.askToLeave == undefined) {
+      this.showDialog().then(answer => {
+        if (answer) {
+          next();
+        } else {
+          next(false);
+        }
+      });
+    } else {
+      next();
+    }
+  },
   methods: {
     showDataCards() {
       router.push({ name: "UIShowDataCards" });
@@ -91,6 +106,25 @@ export default {
         type: type,
         hasIcon: true
       });
+    },
+    showDialog() {
+      return new Promise((resolve, reject) => {
+        let f = this.$buefy.dialog.confirm({
+          message: "¿Deseas salir de esta ventana? Tu trabajo no se guardará",
+          confirmText: "Cancelar",
+          cancelText: "Salir",
+          onConfirm: () => {
+            resolve(false);
+          },
+          onCancel: () => {
+            resolve(true);
+          }
+        });
+        console.info(f);
+      });
+    },
+    openToast(message) {
+      this.$buefy.toast.open(message);
     }
   },
   computed: {

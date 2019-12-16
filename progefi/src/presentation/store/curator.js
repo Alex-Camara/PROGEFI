@@ -54,7 +54,6 @@ const curator = {
       state.curators = filteredCurators
     },
     setCurator (state, curator) {
-      //debugger;
       state.curator = null
       state.curator = curator
     },
@@ -68,7 +67,6 @@ const curator = {
   },
   actions: {
     getCurators ({ commit }, curator) {
-      // debugger;
       if (curator != '') {
         ipcRenderer.send('getCurators', curator)
         ipcRenderer.on('curators', (event, receivedCurators) => {
@@ -91,7 +89,7 @@ const curator = {
         regex: regex
       })
     },
-    addCurator ({ state, commit, dispatch }) {
+    addCurator ({ state, commit }) {
       // let curator = state.curator.toLowerCase()
       let foundCurator = state.selectedCurators.find(function(element){
         let curatorInCurators = element.name.toString().toLowerCase();
@@ -102,11 +100,9 @@ const curator = {
       if (!foundCurator) {
         commit('addCurator')
         commit('setCurator', { name: '', valid: { isValid: false, message: null } })
-        //dispatch('setCurator', { name: '' })
         commit('setCurators', [])
       } else {
         commit('setCurator', { name: '', valid: { isValid: false, message: null } })
-        //dispatch('setCurator', { name: '' })
         commit('setCurators', [])
       }
     },

@@ -89,6 +89,22 @@ const speciesData = {
     lifeStages: [],
     sexes: []
   },
+  getters: {
+    getSexId: state =>{
+      if (state.sex.hasOwnProperty('id') && state.sex.id != null) {
+        return state.sex.id;
+      } else{
+        return state.sex.name;
+      }
+    },
+    getLifeStageId: state =>{
+      if (state.lifeStage.hasOwnProperty('id') && state.lifeStage.id != null) {
+        return state.lifeStage.id;
+      } else{
+        return state.lifeStage.name;
+      }
+    }
+  },
   mutations: {
     setScientificName (state, scientificName) {
       scientificName.required = state.scientificName.required

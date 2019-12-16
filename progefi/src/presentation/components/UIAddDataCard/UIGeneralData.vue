@@ -116,7 +116,10 @@
           @focus="autocompleteDeviceStatus =true"
           @click.stop="autocompleteDeviceStatus =true"
         />
-        <div id="autocomplete_box" v-if="autocompleteDeviceStatus">
+        <div
+          id="autocomplete_box"
+          v-if="autocompleteDeviceStatus && deviceState.devices.length > 0"
+        >
           <ul id="autocomplete_list">
             <li
               v-for="device in deviceState.devices"
@@ -148,7 +151,7 @@
           @focus="autocompleteModelStatus =true"
           @click.stop="autocompleteModelStatus =true"
         />
-        <div id="autocomplete_box" v-if="autocompleteModelStatus">
+        <div id="autocomplete_box" v-if="autocompleteModelStatus && deviceState.models.length > 0">
           <ul id="autocomplete_list">
             <li
               v-for="model in deviceState.models"
@@ -244,7 +247,7 @@ export default {
   mounted() {
     store.dispatch("collection/getCollections");
     store.dispatch("project/getProjects");
-    store.dispatch("device/getDevices");
+    //store.dispatch("device/getDevices");
     store.dispatch("template/getTemplates");
   },
   computed: {
@@ -336,21 +339,7 @@ export default {
         return device.name;
       },
       set: function(newValue) {
-        if (newValue.hasOwnProperty("id")) {
-          // store.dispatch("device/getModels", newValue.id);
-          store.dispatch("device/setDevice", newValue);
-        } else {
-          newValue = { id: null, name: newValue };
-          let foundDevice = this.deviceState.devices.find(
-            x => x.name == newValue.name
-          );
-          if (foundDevice) {
-            //this.getModels(foundDevice);
-            store.dispatch("device/setDevice", foundDevice);
-          } else {
-            store.dispatch("device/setDevice", newValue);
-          }
-        }
+        store.dispatch("device/setDevice", newValue);
       }
     },
     selectedModel: {
@@ -362,19 +351,7 @@ export default {
         return model.name;
       },
       set: function(newValue) {
-        if (newValue.hasOwnProperty("id")) {
-          store.dispatch("device/setModel", newValue);
-        } else {
-          newValue = { id: null, name: newValue };
-          let foundModel = this.deviceState.models.find(
-            x => x.name == newValue.name
-          );
-          if (foundModel) {
-            store.dispatch("device/setModel", foundModel);
-          } else {
-            store.dispatch("device/setModel", newValue);
-          }
-        }
+        store.dispatch("device/setModel", newValue);
       }
     },
     selectedDate: {
@@ -454,14 +431,14 @@ export default {
       store.dispatch("metadata/getImageMetadata");
     },
     getDevicesName() {
-      let devicesName = ["No disponible (N/A)"];
+      let devicesName = [];
       for (let i = 0; i < this.deviceState.devices.length; i++) {
         devicesName.push(this.deviceState.devices[i].name);
       }
       return devicesName;
     },
     getModelsName() {
-      let modelsName = ["No disponible (N/A)"];
+      let modelsName = [];
       for (let i = 0; i < this.deviceState.models.length; i++) {
         modelsName.push(this.deviceState.models[i].name);
       }

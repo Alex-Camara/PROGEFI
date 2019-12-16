@@ -5,6 +5,7 @@ const catalogue = {
   state: {
     catalogues: [],
     catalogue: {
+      id: null,
       name: null,
       required: true,
       valid: {

@@ -5,10 +5,10 @@ exports.seed = function(knex) {
     .then(function () {
       // Inserts seed entries
       return knex('catalogue').insert([
-        {name: 'Reptiles', collectionId: 1},
-        {name: 'Mamíferos', collectionId: 1},
-        {name: 'Anfibios', collectionId: 1},
-        {name: 'Aves', collectionId: 1}
+        {code: 'IIBUV-REP', name: 'Reptiles', collectionId: 1},
+        {code: 'IIBUV-MAM', name: 'Mamíferos', collectionId: 1},
+        {code: 'IIBUV-ANF', name: 'Anfibios', collectionId: 1},
+        {code: 'IIBUV-AVE', name: 'Aves', collectionId: 1}
       ]);
     });
 };

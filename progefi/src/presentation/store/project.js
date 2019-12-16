@@ -15,7 +15,6 @@ const project = {
   },
   mutations: {
     setProjects (state, projects) {
-      projects.push({name: 'No aplica (N/A)'})
       state.projects = projects
     },
     setProject (state, project) {

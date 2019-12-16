@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="template_helper_container" class="box">
+    <div id="template_helper_container" class="box has-background-light">
       <div id="template_helper_container_header">
         <div id="template_helper_container_header_title">
           <b class="is-size-6">Plantilla a utilizar:</b>
@@ -50,8 +50,8 @@ export default {
         return this.templateState.template;
       },
       set: function(newValue) {
-        store.commit("template/setTemplate", newValue);
-        return newValue;
+        //debugger;
+        store.dispatch("template/getTemplate", newValue.id);
       }
     }
   },
