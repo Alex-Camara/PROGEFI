@@ -24,12 +24,12 @@
           <li
             id="sex_helper_list_item"
             v-for="sex in speciesDataState.sexes"
-            :key="sex.name"
-            :value="sex.name"
+            :key="sex.getName()"
+            :value="sex.getName()"
             v-on:click="setSex(sex)"
           >
-            <img id="sex_helper_list_item_icon" :src="sex.iconPath" />
-            <div id="sex_helper_list_item_text">{{sex.name}}</div>
+            <img id="sex_helper_list_item_icon" :src="sex.getIconPath()" />
+            <div id="sex_helper_list_item_text">{{sex.getName()}}</div>
           </li>
         </ul>
       </div>
@@ -57,11 +57,13 @@ export default {
   computed: {
     ...mapState("speciesData", {
       speciesDataState: state => state,
-      isSexValid: state => state.sex.valid
+      speciesData: state => state.speciesData,
+      isSexValid: state => state.speciesData.getSexValid()
     }),
     sex: {
       get: function() {
-        return this.speciesDataState.sex.name;
+        let sex = this.speciesData.getSex();
+        return sex.getName();
       },
       set: function(newValue) {
         store.dispatch("speciesData/setSex", newValue);

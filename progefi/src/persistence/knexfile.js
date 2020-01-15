@@ -1,6 +1,6 @@
 // Update with your config settings.
 
-const path = require("path");
+const path = require('path')
 
 module.exports = {
   development: {
@@ -11,5 +11,4 @@ module.exports = {
       filename: path.resolve('.') + './src/persistence/progefiDB.db'
     }
   }
-};
-
+}

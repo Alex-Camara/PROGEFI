@@ -31,7 +31,7 @@
             :style="item.style"
           >
             <img :src="photoCollect.photoCollectPath" v-if="item.i == 'photocollect'" />
-            <img :src="collection.institute.imagePath" v-if="item.i == 'instituteLogo'" />
+            <img :src="collection.getImagePath()" v-if="item.i == 'instituteLogo'" />
             {{item.value}}
           </grid-item>
         </grid-layout>
@@ -111,41 +111,42 @@ export default {
       // layout: state => state.template.layout
     }),
     ...mapState("datacard", {
-      photoCollect: state => state.photoCollect,
       datacard: state => state.datacard
     }),
-    ...mapState("climateType", {
-      climateType: state => state
+    ...mapState("addDatacard", {
+      photoCollect: state => state.photoCollect
     }),
-    ...mapState("coordinate", {
-      coordinate: state => state
+    ...mapState("climateType", {
+      climateType: state => state.climateType
     }),
     ...mapState("vegetationType", {
-      vegetationType: state => state
+      vegetationType: state => state.vegetationType
     }),
     ...mapState("catalogue", {
-      catalogue: state => state
+      catalogue: state => state.catalogue
     }),
     ...mapState("collection", {
-      collection: state => state
+      collection: state => state.collection
     }),
     ...mapState("collector", {
-      collector: state => state
+      collector: state => state.collector
     }),
     ...mapState("curator", {
-      curator: state => state
+      curator: state => state.curator,
+      curatorState: state => state
     }),
     ...mapState("device", {
-      device: state => state
+      device: state => state.device,
+      model: state => state.model
     }),
     ...mapState("speciesData", {
-      speciesData: state => state
+      speciesData: state => state.speciesData
     }),
     ...mapState("project", {
-      project: state => state
+      project: state => state.project
     }),
     ...mapState("location", {
-      location: state => state
+      location: state => state.location
     }),
     layout: {
       get: function() {
@@ -220,7 +221,6 @@ export default {
 
       datatardDOMElement.style.backgroundColor = this.template.backgroundColor;
       datatardDOMElement.style.color = this.template.fontColor;
-      
 
       if (this.preview) {
         // Obtenemos la proporción de las dimensiones de la ficha, dado que por limitaciones del monitor, no podemos mostrar la
@@ -289,27 +289,27 @@ export default {
     async setDatacard(base64Datacard) {
       let datacard = {};
       datacard.base64 = base64Datacard;
-      datacard.code = this.catalogue.catalogue.code;
+      datacard.code = this.catalogue.getCode();
       datacard.validated = this.validated;
-      datacard.collectDate = this.datacard.collectDate.value;
-      datacard.longitude = this.coordinate.longitude.value;
-      datacard.latitude = this.coordinate.latitude.value;
-      datacard.altitude = this.coordinate.altitude.value;
-      datacard.country = this.location.country.name;
-      datacard.countryState = this.location.countryState.name;
-      datacard.municipality = this.location.municipality.name;
-      datacard.locality = this.location.locality.name;
-      datacard.scientificName = this.speciesData.scientificName.name;
-      datacard.commonName = this.speciesData.commonName.name;
-      datacard.genus = this.speciesData.genus.name;
-      datacard.family = this.speciesData.family.name;
-      datacard.order = this.speciesData.order.name;
-      datacard.speciesClass = this.speciesData.speciesClass.name;
-      datacard.phylum = this.speciesData.phylum.name;
-      datacard.kingdom = this.speciesData.kingdom.name;
-      datacard.catalogueId = this.catalogue.catalogue.id;
-      datacard.collectionId = this.collection.collection.id;
-      datacard.projectId = this.project.project.id;
+      datacard.collectDate = this.datacard.getCollectDate();
+      datacard.longitude = this.location.getLongitude();
+      datacard.latitude = this.location.getLatitude();
+      datacard.altitude = this.location.getAltitude();
+      datacard.country = this.location.getCountry();
+      datacard.countryState = this.location.getCountryState();
+      datacard.municipality = this.location.getMunicipality();
+      datacard.locality = this.location.getLocality();
+      datacard.scientificName = this.speciesData.getScientificName();
+      datacard.commonName = this.speciesData.getCommonName();
+      datacard.genus = this.speciesData.getGenus();
+      datacard.family = this.speciesData.getFamily();
+      datacard.order = this.speciesData.getOrder();
+      datacard.speciesClass = this.speciesData.getSpeciesClass();
+      datacard.phylum = this.speciesData.getPhylum();
+      datacard.kingdom = this.speciesData.getKingdom();
+      datacard.catalogueId = this.catalogue.getId();
+      datacard.collectionId = this.collection.getId();
+      datacard.projectId = this.project.getId();
       datacard.curators = this.curator.selectedCurators;
       let sexId = store.getters["speciesData/getSexId"];
       let lifeStageId = store.getters["speciesData/getLifeStageId"];
@@ -391,6 +391,52 @@ export default {
       var tags = this.template.tags;
       var layout = this.template.layout;
 
+      for (let i = 0; i < tags.length; i++) {
+        let model = tags[i].model;
+        let retrieveMethod = tags[i].retrieveMethod;
+
+        let fullTag = null;
+
+        fullTag = this.assignTagBefore(fullTag, tags[i].tagBefore);
+        fullTag = this.assignTag(tags[i].tag, fullTag, model, retrieveMethod);
+        fullTag = this.assignTagAfter(fullTag, tags[i].tagAfter);
+
+        // this.setLayoutValues(fullTag);
+        var index = layout.findIndex(x => x.i == tags[i].tag);
+        layout[index].value = fullTag;
+      }
+    },
+    assignTagBefore(fullTag, tagBefore) {
+      if (tagBefore != null) {
+        return fullTag + tagBefore + " ";
+      } else {
+        return "";
+      }
+    },
+    assignTag(tag, fullTag, model, retrieveMethod) {
+      if (tag == "curator") {
+        return this.curatorState.selectedCuratorsName;
+      } else {
+        return this[model][retrieveMethod]();
+      }
+    },
+    assignTagAfter(fullTag, tagAfter) {
+      if (tagAfter != null) {
+        return fullTag + " " + tagAfter;
+      } else {
+        return fullTag;
+      }
+    }
+    // setLayoutValues(tag, fullTag) {
+    // for (let i = 0; i < this.layout.length; i++) {
+    // var index = layout.findIndex(x => x.i == tag.tag);
+    // this.layout[index].value = fullTag;
+    // }
+    // }
+    /*setValues() {
+      var tags = this.template.tags;
+      var layout = this.template.layout;
+
       for (let i = 0; i < this.storeModules.length; i++) {
         let storeModule = this.storeModules[i];
         for (let j = 0; j < storeModule.allowedTags.length; j++) {
@@ -433,7 +479,7 @@ export default {
       } else {
         return fullTag;
       }
-    }
+    }*/
   }
 };
 </script>

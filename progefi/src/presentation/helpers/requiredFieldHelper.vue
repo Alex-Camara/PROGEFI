@@ -23,10 +23,12 @@ export default {
     };
   },
   watch: {
-    valid(newValue, oldValue) {
-      newValue.isValid
-      //debugger;
-      this.setColor(newValue);
+    valid: {
+      handler(newValue, oldValue) {
+        newValue.isValid;
+        this.setColor(newValue);
+      },
+      deep: true
     }
   },
   mounted() {

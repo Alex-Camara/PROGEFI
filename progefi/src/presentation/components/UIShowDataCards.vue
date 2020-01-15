@@ -91,7 +91,7 @@ export default {
   },
   methods: {
     createDataCard() {
-      this.$router.push({ name: "UIAddDataCard" });
+      this.$router.push({ name: "UICreateDataCard" });
     }
   }
 };

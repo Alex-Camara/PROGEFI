@@ -21,6 +21,21 @@ class Catalogue {
     this.valid.isValid = valid.isValid
     this.valid.message = valid.message
   }
+  isValid(){
+    return this.valid.isValid
+  }
+  getId(){
+    return this.id
+  }
+  getName(){
+    return this.name
+  }
+  getCode(){
+    return this.code
+  }
+  getValid(){
+    return this.valid
+  }
 }
 
 export default Catalogue

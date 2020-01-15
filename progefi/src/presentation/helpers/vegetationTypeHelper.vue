@@ -16,12 +16,12 @@
           <b
             id="vegetationType_helper_container_header_value"
             class="is-size-6"
-            v-if="selectedVegetationType.name "
-          >{{ selectedVegetationType.name }}</b>
+            v-if="selectedVegetationType.getName() "
+          >{{ selectedVegetationType.getName() }}</b>
           <img
             id="vegetationType_helper_checked_icon"
             src="../assets/checked.png"
-            v-if="selectedVegetationType.name "
+            v-if="selectedVegetationType.getName() "
           />
         </div>
 
@@ -47,15 +47,15 @@
         <ul id="vegetationType_helper_vegetalFormation_list">
           <li
             v-for="vegetalFormation in vegetalFormations"
-            :key="vegetalFormation.id"
-            :value="vegetalFormations.id"
+            :key="vegetalFormation.getId()"
+            :value="vegetalFormation.getId()"
             v-on:click="showVegetationTypes(vegetalFormation)"
           >
             <div id="vegetationType_helper_vegetalFormation_list_element">
               <div id="vegetationType_helper_vegetalFormation_bubble">
-                <img :src="vegetalFormation.imagePath" />
+                <img :src="vegetalFormation.getImagePath()" />
               </div>
-              <div id="vegetationType_helper_vegetalFormation_bubble_text">{{vegetalFormation.name}}</div>
+              <div id="vegetationType_helper_vegetalFormation_bubble_text">{{vegetalFormation.getName()}}</div>
             </div>
           </li>
         </ul>
@@ -69,8 +69,8 @@
         <ul id="vegetationType_helper_vegetationType_list">
           <li
             v-for="(vegetationType, index) in selectedVegetationTypes"
-            :key="vegetationType.id"
-            :value="vegetationType.id"
+            :key="vegetationType.getId()"
+            :value="vegetationType.getId()"
           >
             <div id="vegetationType_helper_vegetationType_list_element">
               <div
@@ -78,7 +78,7 @@
                 :style="{'background-color': getColorCode(index)}"
                 v-on:click="setSelectedVegetationType(vegetationType)"
               ></div>
-              <div id="vegetationType_helper_vegetationType_bubble_text">{{vegetationType.name}}</div>
+              <div id="vegetationType_helper_vegetationType_bubble_text">{{vegetationType.getName()}}</div>
             </div>
           </li>
         </ul>
@@ -125,7 +125,7 @@ export default {
     ...mapState("vegetationType", {
       vegetationTypeState: state => state,
       vegetalFormations: state => state.vegetalFormations,
-      isVegetationTypeValid: state => state.vegetationType.valid
+      isVegetationTypeValid: state => state.vegetationType.getValid()
     }),
     selectedVegetationType: {
       get: function() {
@@ -139,10 +139,10 @@ export default {
   },
   methods: {
     showVegetationTypes(vegetalFormation) {
-      this.selectedVegetalFormation = vegetalFormation.name;
+      this.selectedVegetalFormation = vegetalFormation.getName();
       this.selectedVegetationTypes = this.vegetationTypeState.vegetationTypes.filter(
         vegetationType =>
-          vegetationType.vegetalFormationId == vegetalFormation.id
+          vegetationType.vegetalFormation.getId() == vegetalFormation.getId()
       );
     },
     setSelectedVegetationType(vegetationType) {

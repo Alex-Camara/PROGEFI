@@ -12,10 +12,10 @@ exports.up = function (knex) {
     .createTable('tag', table => {
       table.increments('id').primary()
       table.string('tag')
-      table.string('tagValue')
       table.string('tagBefore')
       table.string('tagAfter')
-      table.string('valueName')
+      table.string('model')
+      table.string('retrieveMethod')
       table
         .integer('templateId')
         .references('id')

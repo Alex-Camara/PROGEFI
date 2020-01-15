@@ -32,12 +32,12 @@
           <li
             id="lifeStage_helper_list_item"
             v-for="lifeStage in speciesDataState.lifeStages"
-            :key="lifeStage.name"
-            :value="lifeStage.name"
+            :key="lifeStage.getName()"
+            :value="lifeStage.getName()"
             v-on:click="setLifeStage(lifeStage)"
           >
-            <img id="lifeStage_helper_list_item_icon" :src="lifeStage.iconPath" />
-            <div id="lifeStage_helper_list_item_text">{{lifeStage.name}}</div>
+            <img id="lifeStage_helper_list_item_icon" :src="lifeStage.getIconPath()" />
+            <div id="lifeStage_helper_list_item_text">{{lifeStage.getName()}}</div>
           </li>
         </ul>
       </div>
@@ -63,11 +63,13 @@ export default {
   computed: {
     ...mapState("speciesData", {
       speciesDataState: state => state,
-      isLifeStageValid: state => state.lifeStage.valid
+      speciesData: state => state.speciesData,
+      isLifeStageValid: state => state.speciesData.getLifeStageValid()
     }),
     lifeStage: {
       get: function() {
-        return this.speciesDataState.lifeStage.name;
+        let lifeStage = this.speciesData.getLifeStage();
+        return lifeStage.getName();
       },
       set: function(newValue) {
         store.dispatch("speciesData/setLifeStage", newValue);

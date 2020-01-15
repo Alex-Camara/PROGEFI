@@ -35,11 +35,11 @@
             <li
               id="bh_bubble"
               v-for="climateType in climateTypeState.climateTypes"
-              :key="climateType.code"
-              :value="climateType.code"
-              :style="{'background-color': '#' + climateType.colorCode}"
+              :key="climateType.getCode()"
+              :value="climateType.getCode()"
+              :style="{'background-color': '#' + climateType.getColorCode()}"
               v-on:click="setClimateType(climateType)"
-              @mouseover="showDescription(climateType.code)"
+              @mouseover="showDescription(climateType.getCode())"
               @mouseleave="showSelectedDescription()"
             >
               <div id="bh_bubble_text">{{climateType.code}}</div>
@@ -74,8 +74,8 @@ export default {
   computed: {
     ...mapState("climateType", {
       climateTypeState: state => state,
-      climateTypeCode: state => state.climateType.code,
-      isClimateTypeValid: state => state.climateType.valid
+      climateTypeCode: state => state.climateType.getCode(),
+      isClimateTypeValid: state => state.climateType.getValid()
     }),
     selectedClimateType: {
       get: function() {
@@ -91,7 +91,7 @@ export default {
       let climateType = this.climateTypeState.climateTypes.find(
         x => x.code === climateCode
       );
-      this.selectedDescription = climateType.description;
+      this.selectedDescription = climateType.getDescription();
     },
     setClimateType(climateType) {
       this.selectedClimateType = climateType;
@@ -101,7 +101,7 @@ export default {
       if (!this.selectedClimateType) {
         this.selectedDescription = "";
       } else {
-        this.selectedDescription = this.selectedClimateType.description;
+        this.selectedDescription = this.selectedClimateType.getDescription();
       }
     },
     addOption() {

@@ -23,7 +23,6 @@ export default {
       let documentElement = this.$refs.mh_container;
 
       if (documentElement != null) {
-        //debugger;
         if (newValue == this.originalValue) {
           documentElement.style.backgroundColor = styleColors.secondary;
         } else {
@@ -33,9 +32,9 @@ export default {
     }
   },
   computed: {
-    ...mapState("datacard", {
+    /*...mapState("datacard", {
       datacardState: state => state.datacard
-    }),
+    }),*/
     ...mapState("metadata", {
       metadataState: state => state
     }),
@@ -55,14 +54,13 @@ export default {
     restoreMetadataValue() {
       switch (this.attribute) {
         case "device":
-          store.dispatch("device/setDevice", {
-            name: this.metadataState[this.attribute]
-          });
+          store.dispatch(
+            "device/setDevice",
+            this.metadataState[this.attribute]
+          );
           break;
         case "model":
-          store.dispatch("device/setModel", {
-            name: this.metadataState[this.attribute]
-          });
+          store.dispatch("device/setModel", this.metadataState[this.attribute]);
           break;
 
         case "latitude":
@@ -92,7 +90,8 @@ export default {
           break;
 
         case "formattedDate":
-          store.commit(
+          // debugger;
+          store.dispatch(
             "datacard/setCollectDate",
             this.metadataState.collectDate
           );

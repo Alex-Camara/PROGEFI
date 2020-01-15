@@ -17,6 +17,12 @@ class Project {
     this.valid.isValid = valid.isValid
     this.valid.message = valid.message
   }
+  getId(){
+    return this.id
+  }
+  getName(){
+    return this.name
+  }
 }
 
 export default Project

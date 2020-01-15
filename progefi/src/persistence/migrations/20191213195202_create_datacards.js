@@ -92,5 +92,7 @@ exports.up = function (knex) {
 }
 
 exports.down = function (knex) {
-  return knex.schema.dropTableIfExists('datacard')
+  return knex.schema
+    .dropTableIfExists('datacard')
+    .dropTableIfExists('datacard_has_curators')
 }
