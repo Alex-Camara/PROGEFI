@@ -8,7 +8,9 @@ const collector = {
   namespaced: true,
   state: {
     collectors: [],
-    collector: new Collector()
+    collector: new Collector(),
+    // counter to maintain a global variable for collectors code repetition
+    codeCounter: 0
   },
   getters: {
     collectorsName: state => {
@@ -28,6 +30,9 @@ const collector = {
       Vue.set(state, 'collector', null)
       Vue.set(state, 'collector', collector)
     },
+    setCollectorCode (state, code) {
+      state.collector.setCode(code)
+    },
     resetStore (state) {
       Vue.set(state, 'collector', null)
       Vue.set(state, 'collector', new Collector())
@@ -36,7 +41,7 @@ const collector = {
   },
   actions: {
     getCollectors ({ commit }, collector) {
-      if (collector.name != '') {
+      if (collector.getName() != '') {
         ipcRenderer.send('getCollectors', collector.getName())
         ipcRenderer.on('collectors', (event, receivedCollectors) => {
           let newCollectors = []
@@ -52,18 +57,43 @@ const collector = {
         commit('setCollectors', empty)
       }
     },
-    setCollector ({ dispatch }, collector) {
-      let regex = '^[a-zA-Z \\u00C0-\\u00FF]*$'
-      if (!collector.hasOwnProperty('id')) {
-        let newCollector = new Collector()
-        newCollector.setName(collector)
-        collector = newCollector
+    async setCollector ({ commit, dispatch }, collector) {
+      let foundCollector = await dispatch('checkDuplicateCollector', collector)
+      if (foundCollector || collector.hasOwnProperty('id')) {
+        collector.setValid({ isValid: true, message: null })
+        commit('setCollector', collector)
+        commit('datacard/setCollectorId', collector.getId(), { root: true })
+        commit('datacard/setTempCollectorCode', collector.getCode(), {
+          root: true
+        })
+        dispatch('datacard/setCollectorCode', {}, { root: true })
+      } else {
+        let regex = '^[a-zA-Z \\u00C0-\\u00FF]*$'
+        if (!collector.hasOwnProperty('id')) {
+          let newCollector = new Collector()
+          newCollector.setName(collector)
+          collector = newCollector
+          dispatch('validate', {
+            collector: collector,
+            minLimit: 2,
+            maxLimit: 50,
+            regex: regex
+          })
+        }
       }
-      dispatch('validate', {
-        collector: collector,
-        minLimit: 2,
-        maxLimit: 50,
-        regex: regex
+    },
+    checkDuplicateCollector ({ state }, collector) {
+      return new Promise((resolve, reject) => {
+        let foundCollector = state.collectors.find(function (element) {
+          let collectorInCollectors = element.name.toString().toLowerCase()
+          collector.toString().toLowerCase()
+          return collectorInCollectors == collector
+        })
+        if (foundCollector) {
+          resolve(foundCollector)
+        } else {
+          resolve(null)
+        }
       })
     },
     validate (
@@ -85,6 +115,7 @@ const collector = {
           })
           commit('setCollector', collector)
           dispatch('getCollectors', collector)
+          dispatch('createCollectorCode', collector)
         })
         .catch(error => {
           if (error == 'Campo requerido') {
@@ -126,23 +157,33 @@ const collector = {
         }
       })
     },
-    setRequiredValues ({ state }, tags) {
-      let foundCollectorTag = tags.filter(obj => {
-        return obj.tag === 'collector'
-      })
-      if (foundCollectorTag) {
-        state.collector.setRequired(true)
-        state.collector.setValid({
-          isValid: false,
-          message: 'Campo requerido'
-        })
-      } else {
-        state.collector.setRequired(true)
-        state.collector.setValid({
-          isValid: true,
-          message: null
-        })
+    // Crea el código del colector con base en sus inciales
+    createCollectorCode ({ dispatch }, collector) {
+      let names = collector.getName().split(' ')
+      let code = ''
+      for (let i = 0; i < names.length; i++) {
+        const name = names[i]
+        let firstLetter = name.charAt(0)
+        code = code + firstLetter.toUpperCase()
       }
+      dispatch('verifyDuplicateCode', code)
+    },
+    // Verifica si el código del colector no existe ya en la bd
+    verifyDuplicateCode ({ state, commit, dispatch }, code) {
+      ipcRenderer.send('verifyDuplicateCollectorCode', code)
+      ipcRenderer.on('collectorCodeVerified', (event, isCodeDuplicated) => {
+        if (isCodeDuplicated) {
+          state.codeCounter = state.codeCounter + 1
+          let newCode = code + state.codeCounter
+          dispatch('verifyDuplicateCode', newCode)
+        } else {
+          state.codeCounter = 0
+          commit('setCollectorCode', code)
+          commit('datacard/setCollectorId', null, { root: true })
+          commit('datacard/setTempCollectorCode', code, { root: true })
+          dispatch('datacard/setCollectorCode', {}, { root: true })
+        }
+      })
     }
   }
 }

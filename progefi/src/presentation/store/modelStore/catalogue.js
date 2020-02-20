@@ -31,6 +31,8 @@ const catalogue = {
           newCatalogues.push(catalogue)
         }
         commit('setCatalogues', newCatalogues)
+        //AGREGAR PARA EVITAR FUGAS DE MEMORIA
+        ipcRenderer.removeAllListeners('catalogues');
       })
     }
   }

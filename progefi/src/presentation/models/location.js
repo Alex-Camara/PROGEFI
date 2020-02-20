@@ -1,41 +1,41 @@
 'use strict'
 
-class Project {
+class Location {
   constructor () {
     this.latitude = 20.102365
     this.latitudeValid = {
       isValid: false,
-      message: null
+      message: 'Campo requerido'
     }
     this.longitude = -101.433236
     this.longitudeValid = {
       isValid: false,
-      message: null
+      message: 'Campo requerido'
     }
     this.altitude = null
     this.altitudeValid = {
       isValid: false,
-      message: null
+      message: 'Campo requerido'
     }
     this.country = null
     this.countryValid = {
       isValid: false,
-      message: null
+      message: 'Campo requerido'
     }
     this.countryState = null
     this.countryStateValid = {
       isValid: false,
-      message: null
+      message: 'Campo requerido'
     }
     this.municipality = null
     this.municipalityValid = {
       isValid: false,
-      message: null
+      message: 'Campo requerido'
     }
     this.locality = null
     this.localityValid = {
       isValid: false,
-      message: null
+      message: 'Campo requerido'
     }
   }
   setLongitude (longitude) {
@@ -152,4 +152,4 @@ class Project {
   }
 }
 
-export default Project
+export default Location

@@ -1,27 +1,27 @@
-import Vue from "vue";
-import Router from "vue-router";
-import UIShowDataCards from "../components/UIShowDataCards.vue";
-import UICreateDataCard from "../components/UICreateDataCard.vue";
-import UIUploadImage from "../components/UIAddDataCard/UIUploadImage";
+import Vue from 'vue'
+import Router from 'vue-router'
+import UIShowDataCards from '../views/UIShowDataCards.vue'
+import UICreateDataCard from '../views/UICreateDataCard.vue'
+import UIUploadImage from '../views/UICreateDataCard/UIUploadImage'
 
-Vue.use(Router);
+Vue.use(Router)
 
 export default new Router({
   routes: [
     {
-      path: "UIShowDataCards",
-      name: "UIShowDataCards",
+      path: 'UIShowDataCards',
+      name: 'UIShowDataCards',
       component: UIShowDataCards
     },
     {
-      path: "UICreateDataCard",
-      name: "UICreateDataCard",
+      path: 'UICreateDataCard',
+      name: 'UICreateDataCard',
       component: UICreateDataCard
     },
     {
-      path: "UIUploadImage",
-      name: "UIUploadImage",
+      path: 'UIUploadImage',
+      name: 'UIUploadImage',
       component: UIUploadImage
     }
   ]
-});
+})

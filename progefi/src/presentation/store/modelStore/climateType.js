@@ -22,6 +22,7 @@ const climateType = {
     },
     resetStore (state) {
       Vue.set(state, 'climateType', new ClimateType())
+      Vue.set(state, 'climateTypes', [])
     }
   },
   actions: {
@@ -43,27 +44,11 @@ const climateType = {
         newClimateType.setValid({ isValid: true, message: null })
         newClimateType.setCode(climateType.code)
         commit('setClimateType', newClimateType)
+        commit('datacard/setClimateType', newClimateType.getCode(), { root: true })
       } else {
         climateType.setValid({ isValid: true, message: null })
         commit('setClimateType', climateType)
-      }
-    },
-    setRequiredValues ({ state, commit }, tags) {
-      let foundClimateTypeTag = tags.filter(obj => {
-        return obj.tag === 'climateType'
-      })
-      if (foundClimateTypeTag) {
-        state.climateType.setRequired(true)
-        state.climateType.setValid({
-          isValid: false,
-          message: 'Campo requerido'
-        })
-      } else {
-        state.climateType.setRequired(false)
-        state.climateType.setValid({
-          isValid: true,
-          message: null
-        })
+        commit('datacard/setClimateTypeId', climateType.getCode(), { root: true })
       }
     }
   }

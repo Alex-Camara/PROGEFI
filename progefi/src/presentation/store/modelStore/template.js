@@ -1,23 +1,25 @@
-const { ipcRenderer } = require('electron')
+const {
+  ipcRenderer
+} = require('electron')
+import Vue from 'vue'
+import Template from '../../models/template'
 
 const template = {
   namespaced: true,
   state: {
     templates: [],
-    template: {},
+    template: new Template(),
     fontSizes: [],
     tagColors: []
   },
   mutations: {
-    setTemplates (state, templates) {
-      console.info(templates)
-      state.templates = templates
+    setTemplates(state, templates) {
+      Vue.set(state, 'templates', templates)
     },
-    setTemplate (state, template) {
-      console.info(template)
-      state.template = template
+    setTemplate(state, template) {
+      Vue.set(state, 'template', template)
     },
-    setFontSize (state, template) {
+    setFontSize(state, template) {
       for (let i = 0; i < template.layout.length; i++) {
         const element = template.layout[i].style
         let size = element['font-size']
@@ -25,7 +27,7 @@ const template = {
         //debugger;
       }
     },
-    setTagColors (state, template) {
+    setTagColors(state, template) {
       for (let i = 0; i < template.layout.length; i++) {
         const element = template.layout[i].style
         let tagColor = element['background-color']
@@ -35,31 +37,38 @@ const template = {
     }
   },
   actions: {
-    getTemplates ({ commit, dispatch }) {
+    getTemplates({
+      commit,
+      dispatch
+    }) {
       ipcRenderer.send('getTemplates')
       ipcRenderer.on('templates', (event, receivedTemplates) => {
-        commit('setTemplates', receivedTemplates)
+        let newTemplates = []
+        for (let i = 0; i < receivedTemplates.length; i++) {
+          let template = new Template()
+          template.setTemplate(receivedTemplates[i])
+          newTemplates.push(template)
+        }
+        commit('setTemplates', newTemplates)
         //seleccionar por default la primera plantilla
-        dispatch('getTemplate', receivedTemplates[0].id)
+        dispatch('getTemplate', newTemplates[0])
       })
     },
-    getTemplate ({ commit, dispatch }, templateId) {
-      ipcRenderer.send('getTemplate', templateId)
+    getTemplate({
+      commit
+    }, template) {
+      ipcRenderer.send('getTemplate', template.getId())
       ipcRenderer.on('template', (event, receivedTemplate) => {
-        commit('setTemplate', receivedTemplate)
+        // debugger;
+        // let fullTemplate = new Template()
+        // template.setTemplate(receivedTemplate)
+        template.setTags(receivedTemplate.tags)
+        template.setLayout(receivedTemplate.layout)
         commit('setFontSize', receivedTemplate)
         commit('setTagColors', receivedTemplate)
-        dispatch('setRequiredFields', receivedTemplate.tags)
+        commit('setTemplate', template)
+
       })
-    },
-    setRequiredFields ({ dispatch }, tags) {
-      dispatch('device/setRequiredValues', tags, { root: true })
-      dispatch('collector/setRequiredValues', tags, { root: true })
-      dispatch('coordinate/setRequiredValues', tags, { root: true })
-      dispatch('speciesData/setRequiredValues', tags, { root: true })
-      dispatch('location/setRequiredValues', tags, { root: true })
-      dispatch('climateType/setRequiredValues', tags, { root: true })
-      dispatch('vegetationType/setRequiredValues', tags, { root: true })
     }
   }
 }

@@ -19,6 +19,9 @@ class Collection {
     this.researchArea = collection.instituteResearchArea
     this.imagePath = collection.instituteImagePath
   }
+  setId(collectionId){
+    this.id = collectionId
+  }
   setValid (valid) {
     this.valid.isValid = valid.isValid
     this.valid.message = valid.message

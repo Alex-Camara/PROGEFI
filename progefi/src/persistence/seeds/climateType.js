@@ -3,7 +3,13 @@ exports.seed = function (knex) {
   return knex('climateType').del()
     .then(function () {
       // Inserts seed entries
-      return knex('climateType').insert([{
+      return knex('climateType').insert([
+        {
+          code: 'Indeterminado',
+          colorCode: 'general_icons/question.png',
+          description: 'Indeterminado'
+        },
+        {
           code: '(A)C(fm) ',
           colorCode: 'ECF1CF',
           description: "Semicálido húmedo del grupo C, temperatura media anual mayor de 18ºC, temperatura del mes más frío menor de 18ºC, temperatura del mes más caliente mayor de 22ºC. Precipitación del mes más seco mayor de 40 mm;lluvias entre verano e invierno y porcentaje de lluvia invernal menor al 18% del total anual."

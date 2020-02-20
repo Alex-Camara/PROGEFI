@@ -6,7 +6,9 @@ exports.up = function (knex) {
       table.boolean('validated')
       table.string('datacardPath')
       table.string('photocollectPath')
+      table.string('collectorCode')
       table.date('collectDate')
+      table.date('creationDate')
       table.decimal('longitude')
       table.decimal('latitude')
       table.decimal('altitude')
@@ -25,6 +27,7 @@ exports.up = function (knex) {
       table.string('sex')
       table.string('vegetationType')
       table.string('climateType')
+      table.string('observations')
       table.string('lifeStage')
       table
         .integer('deviceId')

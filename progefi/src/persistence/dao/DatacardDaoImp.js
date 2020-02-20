@@ -6,10 +6,11 @@ const Datacard_has_curators = require('../models/Datacard_has_curators')
 class DatacardDaoImp {
   async createDatacard (datacard) {
     const newDatacard = await Datacard.query().insert({
-      code: '',
+      code: datacard.code,
       validated: datacard.validated,
       datacardPath: datacard.datacardPath,
       collectDate: datacard.collectDate,
+      creationDate: datacard.creationDate,
       longitude: datacard.longitude,
       latitude: datacard.latitude,
       altitude: datacard.altitude,
@@ -29,6 +30,7 @@ class DatacardDaoImp {
       collectionId: datacard.collectionId,
       projectId: datacard.projectId,
       collectorId: datacard.collectorId,
+      collectorCode: datacard.collectorCode,
       sexId: datacard.sexId,
       sex: datacard.sex,
       lifeStageId: datacard.lifeStageId,
@@ -38,17 +40,10 @@ class DatacardDaoImp {
       vegetationType: datacard.vegetationType,
       vegetationTypeId: datacard.vegetationTypeId,
       deviceId: datacard.deviceId,
-      modelId: datacard.modelId
+      modelId: datacard.modelId,
+      observations: datacard.observations
     })
     console.log(newDatacard)
-
-    let datacardCode = datacard.code + '-' + newDatacard.id
-
-    const createdDatacard = await Datacard.query()
-      .findById(newDatacard.id)
-      .patch({
-        code: datacardCode
-      })
 
     for (let i = 0; i < datacard.curators.length; i++) {
       await Datacard_has_curators.query().insert({
@@ -57,7 +52,7 @@ class DatacardDaoImp {
       })
     }
 
-    return createdDatacard
+    return newDatacard
   }
 }
 

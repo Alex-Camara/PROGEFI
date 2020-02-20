@@ -8,8 +8,7 @@ const vegetationType = {
   state: {
     vegetationTypes: [],
     vegetalFormations: [],
-    vegetationType: new VegetationType(),
-    isVegetationTypeRequired: false
+    vegetationType: new VegetationType()
   },
   getters: {
     getVegetationTypeId: state => {
@@ -34,17 +33,6 @@ const vegetationType = {
       vegetationType.setValid({ isValid: true, message: null })
       Vue.set(state, 'vegetationType', vegetationType)
     },
-    setRequired (state, required) {
-      state.isVegetationTypeRequired = required
-      if (required) {
-        state.vegetationType.setValid({
-          isValid: false,
-          message: 'Campo requerido'
-        })
-      } else {
-        state.vegetationType.setValid({ isValid: true, message: null })
-      }
-    },
     resetStore (state) {
       Vue.set(state, 'vegetationType', new VegetationType())
       Vue.set(state, 'vegetationTypes', [])
@@ -59,7 +47,14 @@ const vegetationType = {
       })
     },
     setVegetalFormations ({ commit, dispatch }, vegetationTypes) {
-      let newVegetalFormations = []
+      // Por default ya contiene la opción INDETERMINADO
+      let indeterminateOption = new VegetalFormation()
+      indeterminateOption.setVegetalFormation({
+        vegetalFormationId: 0,
+        vegetalFormationName: 'Indeterminado',
+        vegetalFormationImagePath: require('../../assets/general_icons/question.png')
+      })
+      let newVegetalFormations = [indeterminateOption]
       for (let i = 0; i < vegetationTypes.length; i++) {
         let element = vegetationTypes[i]
         var vegetalFormationIdInArray = newVegetalFormations.find(
@@ -96,20 +91,11 @@ const vegetationType = {
         newVegetationType.setValid({ isValid: true, message: null })
         newVegetationType.setName(vegetationType.name)
         commit('setVegetationType', newVegetationType)
+        commit('datacard/setVegetationType', newVegetationType.getName(), { root: true })
       } else {
         vegetationType.setValid({ isValid: true, message: null })
         commit('setVegetationType', vegetationType)
-      }
-    },
-    setRequiredValues ({ commit }, tags) {
-      let foundVegetationTypeTag = tags.filter(obj => {
-        return obj.tag === 'vegetationType'
-      })
-
-      if (foundVegetationTypeTag) {
-        commit('setRequired', true)
-      } else {
-        commit('setRequired', false)
+        commit('datacard/setVegetationTypeId', vegetationType.getId(), { root: true })
       }
     }
   }

@@ -1,4 +1,4 @@
-'use strict'
+'use strict'           
 
 import PresentationProcess from './presentation/presentationProcess'
 import BussinessProcess from './bussiness/bussinessListener'
@@ -13,12 +13,12 @@ const vueCliPlugIn = require('vue-cli-plugin-electron-builder/lib')
 //const installVueDevtools = vueCliPlugIn.installVueDevtools;
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
-
+   
 var presentationProcess = null
-
+        
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-
+           
 function main () {
   // Scheme must be registered before the app is ready
   protocol.registerSchemesAsPrivileged([
@@ -53,7 +53,7 @@ function main () {
       createWindows()
     }
   })
-
+    
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.

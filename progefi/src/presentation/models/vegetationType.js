@@ -9,7 +9,7 @@ class VegetationType {
     this.required = true
     this.valid = {}
     this.valid.isValid = false
-    this.valid.message = null
+    this.valid.message = 'Campo requerido'
   }
   setVegetationType (vegetationType) {
     this.id = vegetationType.id

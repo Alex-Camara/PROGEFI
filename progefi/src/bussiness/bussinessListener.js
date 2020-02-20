@@ -42,6 +42,12 @@ function listen () {
       })
   })
 
+  ipcMain.on('getDatacards', event => {
+    datacardHandler.getTemplateNames(function (templates) {
+      event.reply('templates', templates)
+    })
+  })
+
   ipcMain.on('getTemplates', event => {
     templateHandler.getTemplateNames(function (templates) {
       event.reply('templates', templates)
@@ -83,6 +89,25 @@ function listen () {
       event.reply('collectorCreated', createdCollector.id)
     })
   })
+
+  ipcMain.on('verifyDuplicateCollectorCode', (event, code) => {
+    collectorHandler.verifyDuplicateCode(code, function (isDuplicated) {
+      event.reply('collectorCodeVerified', isDuplicated)
+    })
+  })
+
+  ipcMain.on(
+    'getDatacardsCountByCollector',
+    (event, collectorCode, catalogueId) => {
+      collectorHandler.getDatacardsCountByCollector(
+        collectorCode,
+        catalogueId,
+        function (count) {
+          event.reply('datacardsCountByCollector', count)
+        }
+      )
+    }
+  )
 
   ipcMain.on('getCurators', (event, selectedCurator) => {
     curatorHandler.getCurators(selectedCurator, function (curators) {

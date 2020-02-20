@@ -111,7 +111,7 @@ const coordinate = {
     },
     // FIXME el signo de menos es detectado bien la primera vez, pero las siguientes no
     validate (
-      { state, commit },
+      { commit },
       {
         oldValue,
         testValue,
@@ -138,6 +138,7 @@ const coordinate = {
             isValid: true,
             message: null
           })
+          commit('datacard/' + mutationName, testValue, { root: true })
         })
         .catch(error => {
           //debugger
@@ -178,39 +179,6 @@ const coordinate = {
             })
           }
         })
-    },
-    setRequiredValues ({ state, commit, dispatch }, tags) {
-      let foundLongitudeTag = tags.filter(obj => {
-        return obj.tag === 'longitude'
-      })
-      let foundLatitudeTag = tags.filter(obj => {
-        return obj.tag === 'latitude'
-      })
-      let foundAltitudeTag = tags.filter(obj => {
-        return obj.tag === 'altitude'
-      })
-
-      /*if (foundLongitudeTag) {
-        commit('setRequiredLongitude', true)
-        dispatch('setLongitude', state.longitude.value)
-      } else {
-        commit('setRequiredLongitude', false)
-        dispatch('setLongitude', state.longitude.value)
-      }
-      if (foundLatitudeTag) {
-        commit('setRequiredLatitude', true)
-        dispatch('setLatitude', state.latitude.value)
-      } else {
-        commit('setRequiredLatitude', false)
-        dispatch('setLatitude', state.latitude.value)
-      }
-      if (foundAltitudeTag) {
-        commit('setRequiredAltitude', true)
-        dispatch('setAltitude', state.altitude.value)
-      } else {
-        commit('setRequiredAltitude', false)
-        dispatch('setAltitude', state.altitude.value)
-      }*/
     }
   }
 }

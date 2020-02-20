@@ -7,37 +7,41 @@ class SpeciesData {
     this.scientificName = null
     this.scientificNameValid = {}
     this.scientificNameValid.isValid = false
-    this.scientificNameValid.message = null
+    this.scientificNameValid.message = 'Campo requerido'
     this.commonName = null
     this.commonNameValid = {}
-    this.commonNameValid.isValid = false
+    this.commonNameValid.isValid = true
     this.commonNameValid.message = null
     this.genus = null
     this.genusValid = {}
-    this.genusValid.isValid = false
+    this.genusValid.isValid = true
     this.genusValid.message = null
     this.order = null
     this.orderValid = {}
-    this.orderValid.isValid = false
+    this.orderValid.isValid = true
     this.orderValid.message = null
     this.family = null
     this.familyValid = {}
-    this.familyValid.isValid = false
+    this.familyValid.isValid = true
     this.familyValid.message = null
     this.speciesClass = null
     this.speciesClassValid = {}
-    this.speciesClassValid.isValid = false
+    this.speciesClassValid.isValid = true
     this.speciesClassValid.message = null
     this.phylum = null
     this.phylumValid = {}
-    this.phylumValid.isValid = false
+    this.phylumValid.isValid = true
     this.phylumValid.message = null
     this.kingdom = null
     this.kingdomValid = {}
-    this.kingdomValid.isValid = false
+    this.kingdomValid.isValid = true
     this.kingdomValid.message = null
     this.sex = new Sex()
     this.lifeStage = new LifeStage()
+    this.observations = null
+  }
+  getObservations () {
+    return this.observations
   }
   getScientificName () {
     return this.scientificName
@@ -83,6 +87,9 @@ class SpeciesData {
   }
   setScientificName (scientificName) {
     this.scientificName = scientificName
+  }
+  setObservations (observations) {
+    this.observations = observations
   }
   setScientificNameValid (valid) {
     this.scientificNameValid.isValid = valid.isValid

@@ -16,7 +16,9 @@ export default {
   name: "metadataHelper",
   props: ["selectedValue", "attribute"],
   data() {
-    return {};
+    return {
+      isMetadata: true
+    };
   },
   watch: {
     selectedValue(newValue, oldValue) {
@@ -25,8 +27,10 @@ export default {
       if (documentElement != null) {
         if (newValue == this.originalValue) {
           documentElement.style.backgroundColor = styleColors.secondary;
+          this.isMetadata = true;
         } else {
           documentElement.style.backgroundColor = styleColors.accent;
+          this.isMetadata = false;
         }
       }
     }

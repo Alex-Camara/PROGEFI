@@ -4,6 +4,7 @@ exports.up = function(knex) {
     .createTable('collector', table => {
         table.increments('id').primary();
         table.string('name');
+        table.string('code');
     })
     .createTable('curator', table => {
         table.increments('id').primary();

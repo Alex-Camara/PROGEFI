@@ -1,39 +1,50 @@
 'use strict'
 
 class Catalogue {
-  constructor () {
+  constructor() {
     this.id = null
     this.name = null
     this.code = null
     this.collectionId = null
+    this.datacardCount = 0
     this.required = true
     this.valid = {}
     this.valid.isValid = false
     this.valid.message = 'Campo requerido'
   }
-  setCatalogue (catalogue) {
+  setCatalogue(catalogue) {
     this.id = catalogue.id
     this.name = catalogue.name
     this.code = catalogue.code
     this.collectionId = catalogue.collectionId
+    this.datacardCount = catalogue.datacardCount
   }
-  setValid (valid) {
+  setId(catalogueId) {
+    this.id = catalogueId
+  }
+  setValid(valid) {
     this.valid.isValid = valid.isValid
     this.valid.message = valid.message
   }
-  isValid(){
+  setDatacardCount(datacardCount) {
+    this.datacardCount = datacardCount
+  }
+  isValid() {
     return this.valid.isValid
   }
-  getId(){
+  getId() {
     return this.id
   }
-  getName(){
+  getName() {
     return this.name
   }
-  getCode(){
+  getCode() {
     return this.code
   }
-  getValid(){
+  getDatacardCount() {
+    return this.datacardCount
+  }
+  getValid() {
     return this.valid
   }
 }

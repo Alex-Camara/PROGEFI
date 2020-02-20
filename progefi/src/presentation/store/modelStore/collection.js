@@ -33,7 +33,7 @@ const collection = {
         commit('setCollections', newCollections)
       })
     },
-    setCollection ({ commit, dispatch }, collection) {
+    setCollection ({ state, commit }, collection) {
       commit('setCollection', collection)
     }
   }

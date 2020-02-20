@@ -17,6 +17,9 @@ class Project {
     this.valid.isValid = valid.isValid
     this.valid.message = valid.message
   }
+  setId(id){
+    this.id = id
+  }
   getId(){
     return this.id
   }

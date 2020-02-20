@@ -94,6 +94,10 @@ const speciesData = {
       state.speciesData.setKingdom(null)
       state.speciesData.setKingdom(kingdom)
     },
+    setObservations (state, observations) {
+      state.speciesData.setObservations(null)
+      state.speciesData.setObservations(observations)
+    },
     setSex (state, sex) {
       state.speciesData.setSex(sex)
     },
@@ -191,7 +195,7 @@ const speciesData = {
       let testValue = genus
       let oldValue = state.speciesData.getGenus()
       let testValueName = 'genus'
-      let minLimit = 5
+      let minLimit = 3
       let maxLimit = 20
       let isRequired = state.requiredValues.genus
       let mutationName = 'setGenus'
@@ -260,7 +264,7 @@ const speciesData = {
       let testValue = speciesClass
       let oldValue = state.speciesData.getSpeciesClass()
       let testValueName = 'speciesClass'
-      let minLimit = 5
+      let minLimit = 3
       let maxLimit = 20
       let isRequired = state.requiredValues.speciesClass
       let mutationName = 'setSpeciesClass'
@@ -346,6 +350,7 @@ const speciesData = {
             isValid: true,
             message: null
           })
+          commit('datacard/' + mutationName, testValue, { root: true })
         })
         .catch(error => {
           // debugger
@@ -383,6 +388,7 @@ const speciesData = {
       if (lifeStage != null && lifeStage.id != null) {
         lifeStage.setValid({ isValid: true, message: null })
         commit('setLifeStage', lifeStage)
+        commit('datacard/setLifeStageId', lifeStage.getId(), { root: true })
       } else {
         let oldLifeStage = state.speciesData.getSex()
         let newLifeStage = new LifeStage()
@@ -400,6 +406,7 @@ const speciesData = {
           .then(() => {
             newLifeStage.setValid({ isValid: true, message: null })
             commit('setLifeStage', newLifeStage)
+            commit('datacard/setLifeStage', lifeStage.getName(), { root: true })
           })
           .catch(error => {
             if (
@@ -431,6 +438,7 @@ const speciesData = {
       if (sex != null && sex.id != null) {
         sex.setValid({ isValid: true, message: null })
         commit('setSex', sex)
+        commit('datacard/setSexId', sex.getId(), { root: true })
       } else {
         let oldSex = state.speciesData.getSex()
         let newSex = new Sex()
@@ -448,6 +456,7 @@ const speciesData = {
           .then(() => {
             newSex.setValid({ isValid: true, message: null })
             commit('setSex', newSex)
+            commit('datacard/setSex', sex.getName(), { root: true })
           })
           .catch(error => {
             if (
@@ -467,39 +476,6 @@ const speciesData = {
               commit('setSex', oldSex)
             }
           })
-      }
-    },
-    setRequiredValues ({ commit, dispatch }, tags) {
-      let localTags = [
-        'scientificName',
-        'commonName',
-        'genus',
-        'family',
-        'order',
-        'phylum',
-        'speciesClass',
-        'kingdom',
-        'sex',
-        'lifeStage'
-      ]
-      for (let i = 0; i < localTags.length; i++) {
-        const element = localTags[i]
-        let foundTag = tags.filter(obj => {
-          return obj.tag === element
-        })
-
-        if (foundTag !== undefined && foundTag.length > 0) {
-          commit('setRequiredValue', { tag: element, required: true })
-        } else {
-          commit('setRequiredValue', { tag: element, required: false })
-        }
-        // asignar el valor inicial de los campos para establecer si son validos
-        let actionName = 'set' + element[0].toUpperCase() + element.slice(1)
-        if (element == 'sex' || element == 'lifeStage') {
-          dispatch(actionName, { name: null })
-        } else {
-          dispatch(actionName, null)
-        }
       }
     }
   }

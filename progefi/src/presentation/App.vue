@@ -16,8 +16,8 @@
 </template>
 
 <script>
-import UINavBar from "./components/UINavBar.vue";
-import UIMenu from "./components/UIMenu.vue";
+import UINavBar from "./views/UINavBar.vue";
+import UIMenu from "./views/UIMenu.vue";
 import modalHelper from "./helpers/modalHelper.vue";
 
 export default {

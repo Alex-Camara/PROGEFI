@@ -1,0 +1,177 @@
+<template>
+  <!-- --------GeneralData Component----- -->
+
+  <!-- --------GeneralData Title----- -->
+  <div id="generalData_component" class="box" @click="closeAutocompletes()">
+    <!-- --------AddDataCard2 right Side Component Header----- -->
+    <div id="generalData_component_header">
+      <p class="subtitle is-5">Datos generales</p>
+    </div>
+
+    <div>
+      <br />
+      <hr class="separator" />
+      <div v-observe-visibility="visibilityChanged" v-if="photoCollect.changed">
+        Extrayendo metadatos de la imagen, espere...
+        <progress
+          class="progress is-small is-accent"
+          max="100"
+        ></progress>
+      </div>
+    </div>
+
+    <div id="generalData_component_template_selection">
+      <select-template></select-template>
+    </div>
+
+    <!-- --------AddDataCard2 Right Side Component Content----- -->
+    <div id="generalData_component_content" class="box">
+      <general-data-form ref="generalDataForm"></general-data-form>
+    </div>
+
+    <!-- --------AddDataCard2 Bottom Buttons----- -->
+    <div id="generalData_component_bottomButtons">
+      <b-button type="is-light" v-on:click="backwardStep()">Anterior</b-button>
+      <b-button
+        type="is-accent"
+        v-on:click="forwardStep()"
+        :disabled="disableNextButton()"
+      >Siguiente</b-button>
+    </div>
+  </div>
+</template>
+
+<script>
+import store from "../../store/store.js";
+import { mapState, mapGetters } from "vuex";
+
+import selectTemplate from "../../components/selectTemplate.vue";
+import generalDataForm from "../../components/generalDataForm.vue";
+
+export default {
+  name: "UIGeneralData",
+  components: {
+    "select-template": selectTemplate,
+    "general-data-form": generalDataForm
+  },
+  data() {
+    return {};
+  },
+  computed: {
+    ...mapState("datacard", {
+      datacardState: state => state
+    }),
+    ...mapState("addDatacard", {
+      photoCollect: state => state.photoCollect
+    }),
+    ...mapState("metadata", {
+      metadataState: state => state
+    }),
+    ...mapState("catalogue", {
+      catalogueState: state => state
+    }),
+    ...mapState("collection", {
+      collectionState: state => state
+    }),
+    ...mapState("project", {
+      projectState: state => state
+    }),
+    ...mapState("collector", {
+      collectorState: state => state
+    }),
+    ...mapState("device", {
+      deviceState: state => state,
+      isDeviceValid: state => state.device.valid,
+      isModelValid: state => state.model.valid
+    }),
+    hasMetadata: function() {
+      return this.metadataState.hasMetadata;
+    }
+  },
+  watch: {
+    hasMetadata(newValue, oldValue) {
+      if (!newValue) {
+        this.openSnackBar("¡Esta fotocolecta no contiene metadatos!");
+      }
+    }
+  },
+  methods: {
+    backwardStep() {
+      store.commit("addDatacard/setActiveStep", 0);
+    },
+    forwardStep() {
+      store.commit("addDatacard/setActiveStep", 2);
+    },
+    openSnackBar(message) {
+      this.$buefy.snackbar.open({
+        message: message,
+        type: "is-danger",
+        position: "is-bottom",
+        duration: 5000
+      });
+    },
+    //para obtener de nuevo los metadatos si la imagen ha cambiado
+    visibilityChanged(isVisible, entry) {
+      if (this.photoCollect.changed && isVisible) {
+        setTimeout(this.getMetaData, 1000);
+      }
+    },
+    getMetaData() {
+      store.dispatch("metadata/getImageMetadata");
+    },
+    closeAutocompletes() {
+      this.$refs.generalDataForm.closeAutocompletes();
+    },
+    disableNextButton() {
+      if (
+        this.deviceState.device.valid.isValid &&
+        this.deviceState.model.valid.isValid &&
+        this.collectionState.collection.isValid() &&
+        this.catalogueState.catalogue.isValid() &&
+        this.datacardState.datacard.isCollectDateValid() &&
+        this.projectState.project.valid.isValid &&
+        this.collectorState.collector.isValid()
+      ) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+  }
+};
+</script>
+
+<style lang="scss">
+@import "../../style/style.scss";
+#generalData_component {
+  display: grid;
+  grid-template-rows: 35px 10px 550px 440px 30px;
+  height: 1100px;
+  margin-top: 10px;
+  align-items: center;
+}
+
+#separator {
+  grid-row: 2 / 3;
+}
+
+#generalData_component_header {
+  grid-row: 1 / 2;
+  justify-self: center;
+}
+
+#generalData_component_template_selection {
+  grid-row: 3 / 4;
+}
+
+#generalData_component_content {
+  grid-row: 4 / 5;
+}
+
+#generalData_component_bottomButtons {
+  grid-row: 5 / 6;
+  justify-self: end;
+}
+</style>
+
+250

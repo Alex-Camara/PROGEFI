@@ -44,9 +44,6 @@ const location = {
       state.location.setLocality(null)
       state.location.setLocality(locality)
     },
-    setRequiredValue (state, { tag, required }) {
-      state.requiredValues[tag] = required
-    },
     resetStore (state) {
       Vue.set(state, 'location', new Location())
     }
@@ -166,6 +163,7 @@ const location = {
             isValid: true,
             message: null
           })
+          commit('datacard/' + mutationName, testValue, { root: true })
         })
         .catch(error => {
           if (
@@ -197,21 +195,6 @@ const location = {
             })
           }
         })
-    },
-    setRequiredValues ({ commit }, tags) {
-      let localTags = ['country', 'countryState', 'municipality', 'locality']
-      for (let i = 0; i < localTags.length; i++) {
-        const element = localTags[i]
-        let foundTag = tags.filter(obj => {
-          return obj.tag === element
-        })
-
-        /*if (foundTag.length > 0) {
-          commit('setRequiredValue', { tag: element, required: true })
-        } else {
-          commit('setRequiredValue', { tag: element, required: false })
-        }*/
-      }
     }
   }
 }

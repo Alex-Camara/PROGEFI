@@ -4,6 +4,8 @@ class Collector {
   constructor () {
     this.id = null
     this.name = null
+    this.code = null
+    this.createdDatacards = 0
     this.required = true
     this.valid = {}
     this.valid.isValid = false
@@ -12,9 +14,17 @@ class Collector {
   setCollector (collector) {
     this.id = collector.id
     this.name = collector.name
+    this.code = collector.code
+    this.createdDatacards = collector.createdDatacards
+  }
+  setId (id) {
+    this.id = id
   }
   setName (name) {
     this.name = name
+  }
+  setCode (code) {
+    this.code = code
   }
   setValid (valid) {
     this.valid.isValid = valid.isValid
@@ -23,14 +33,17 @@ class Collector {
   setRequired (isRequired) {
     this.required = isRequired
   }
-  getId(){
-      return this.id
+  getId () {
+    return this.id
   }
-  getName(){
-      return this.name
+  getName () {
+    return this.name
   }
-  getValid(){
-      return this.valid
+  getCode () {
+    return this.code
+  }
+  getValid () {
+    return this.valid
   }
   isValid () {
     return this.valid.isValid
@@ -38,8 +51,8 @@ class Collector {
   isRequired () {
     return this.required
   }
-  getErrorMessage(){
-      return this.valid.message
+  getErrorMessage () {
+    return this.valid.message
   }
 }
 

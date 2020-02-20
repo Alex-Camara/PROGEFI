@@ -24,12 +24,6 @@ const device = {
       Vue.set(state, 'device', null)
       Vue.set(state, 'device', device)
     },
-    setRequiredDevice (state, required) {
-      state.device.required = required
-    },
-    setRequiredModel (state, required) {
-      state.model.required = required
-    },
     setModel (state, model) {
       Vue.set(state, 'model', null)
       Vue.set(state, 'model', model)
@@ -194,25 +188,6 @@ const device = {
           })
         }
       })
-    },
-    setRequiredValues ({ state, commit }, tags) {
-      let foundDeviceTag = tags.filter(obj => {
-        return obj.tag === 'device'
-      })
-      let foundModelTag = tags.filter(obj => {
-        return obj.tag === 'model'
-      })
-
-      if (foundDeviceTag) {
-        commit('setRequiredDevice', true)
-      } else {
-        commit('setRequiredDevice', false)
-      }
-      if (foundModelTag) {
-        commit('setRequiredModel', true)
-      } else {
-        commit('setRequiredModel', false)
-      }
     }
   }
 }

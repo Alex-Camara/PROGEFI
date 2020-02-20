@@ -5,20 +5,18 @@ import store from "./store/store";
 import Buefy from "buefy";
 import '@mdi/font/css/materialdesignicons.css';
 //import "./style/style.scss"; //Estilos personalizados
-import VueHead from 'vue-head'
 import { Icon }  from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import VueObserveVisibility from 'vue-observe-visibility'
 import axios from 'axios'
-import VueAxios from 'vue-axios'
-import VueJsonp from 'vue-jsonp'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import ElementUI from 'element-ui';
 import modalHelper from "./helpers/modalHelper.vue";
 import loadingHelper from "./helpers/loadingHelper.vue";
+// import ElementUI from 'element-ui';
+// import 'element-ui/lib/theme-chalk/index.css';
 
 Vue.component('modal-helper', modalHelper)
 Vue.component('loading-helper', loadingHelper)
@@ -36,15 +34,16 @@ Icon.Default.mergeOptions({
   shadowUrl: require('leaflet/dist/images/marker-shadow.png')
 });
  
-Vue.use(ElementUI);
-Vue.use(VueAxios, axios);
-Vue.use(VueJsonp);
-Vue.use(VueHead);
+// Vue.use(ElementUI);
+// Vue.use(VueAxios, axios);
+// Vue.use(VueJsonp);
+// Vue.use(VueHead);
 Vue.use(VueObserveVisibility);
 
 Vue.use(Buefy, {
   defaultIconPack: 'mdi'
 });
+// Vue.use(ElementUI)
 Vue.config.productionTip = false;
 
 new Vue({
