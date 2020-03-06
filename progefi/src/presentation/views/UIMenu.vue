@@ -23,14 +23,16 @@ export default {
     return {
       items: [
         {
-          name: "",
+          name: "UIShowCollections",
+          params: "",
           title: "Colecciones",
           classObject: {
             "is-active": false
           }
         },
         {
-          name: "",
+          name: "UIShowCatalogues",
+          params: { selectedCatalogue: null },
           title: "Catálogos",
           classObject: {
             "is-active": false
@@ -38,21 +40,16 @@ export default {
         },
         {
           name: "UIShowDataCards",
+          params: { selectedCatalogue: null },
           title: "Fichas de fotocolecta",
           classObject: {
             "is-active": false
           }
         },
         {
-          name: "",
-          title: "Investigadores",
-          classObject: {
-            "is-active": false
-          }
-        },
-        {
-          name: "",
-          title: "Formatos",
+          name: "UIShowTemplates",
+          params: "",
+          title: "Plantillas",
           classObject: {
             "is-active": false
           }
@@ -83,7 +80,14 @@ export default {
       menuItem.classObject = {
         "is-active": true
       };
-      this.$router.push({ name: menuItem.name });
+      // debugger;
+      if (this.$router.currentRoute.name != menuItem.name) {
+        this.$router.push({ name: menuItem.name, params: menuItem.params });
+      } else {
+        this.$router.push({ params: menuItem.params });
+        // this.$router.go()
+        // debugger;
+      }
     }
   }
 };
@@ -99,6 +103,4 @@ export default {
   height: 600px;
   //background-color: $menu-background;
 }
-
-
 </style>

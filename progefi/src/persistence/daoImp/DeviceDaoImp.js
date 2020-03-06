@@ -20,7 +20,6 @@ class DeviceDaoImp {
   }
   async getModel(modelId) {
     const model = await Model.query().where('id', modelId)
-    console.info(model)
     let device = await Device.query()
       .where('id', model[0].deviceId)
 
@@ -32,7 +31,6 @@ class DeviceDaoImp {
     const createdDevice = await Device.query().insert({
       name: device.name
     })
-    console.log(createdDevice)
     return createdDevice
   }
   async createModel(model) {
@@ -40,7 +38,6 @@ class DeviceDaoImp {
       name: model.name,
       deviceId: model.deviceId
     })
-    console.log(createdModel)
     return createdModel
   }
 }

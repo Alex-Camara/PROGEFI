@@ -14,6 +14,14 @@ class CatalogueDao {
         let catalogue = Promise.resolve(this.catalogueDaoImp.getCatalogue(catalogueId))
         return catalogue;
     }
+    getAllCatalogues(){
+        let catalogues = Promise.resolve(this.catalogueDaoImp.getAllCatalogues())
+        return catalogues;
+    }
+    createdCatalogue(catalogue){
+        let createdCatalogue = Promise.resolve(this.catalogueDaoImp.createCatalogue(catalogue))
+        return createdCatalogue;
+    }
 }
 
 export default CatalogueDao;

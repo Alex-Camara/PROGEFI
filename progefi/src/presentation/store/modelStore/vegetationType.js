@@ -42,7 +42,7 @@ const vegetationType = {
   actions: {
     getVegetationTypes ({ dispatch }) {
       ipcRenderer.send('getVegetationTypes')
-      ipcRenderer.on('vegetationTypes', (event, receivedVegetationTypes) => {
+      ipcRenderer.once('vegetationTypes', (event, receivedVegetationTypes) => {
         dispatch('setVegetalFormations', receivedVegetationTypes)
       })
     },
@@ -91,11 +91,11 @@ const vegetationType = {
         newVegetationType.setValid({ isValid: true, message: null })
         newVegetationType.setName(vegetationType.name)
         commit('setVegetationType', newVegetationType)
-        commit('datacard/setVegetationType', newVegetationType.getName(), { root: true })
+        commit('datacard/setVegetationType', newVegetationType, { root: true })
       } else {
         vegetationType.setValid({ isValid: true, message: null })
         commit('setVegetationType', vegetationType)
-        commit('datacard/setVegetationTypeId', vegetationType.getId(), { root: true })
+        commit('datacard/setVegetationType', vegetationType, { root: true })
       }
     }
   }

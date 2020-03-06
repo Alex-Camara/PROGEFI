@@ -72,7 +72,7 @@ const curator = {
     getCurators ({ commit }, curator) {
       if (curator != '') {
         ipcRenderer.send('getCurators', curator)
-        ipcRenderer.on('curators', (event, receivedCurators) => {
+        ipcRenderer.once('curators', (event, receivedCurators) => {
           let newCurators = []
           for (let i = 0; i < receivedCurators.length; i++) {
             let newCurator = new Curator()
@@ -138,7 +138,7 @@ const curator = {
               'createCurator',
               state.selectedCurators[i].getName()
             )
-            ipcRenderer.on('curatorCreated', (event, createdCurator) => {
+            ipcRenderer.once('curatorCreated', (event, createdCurator) => {
               let newCurator = new Curator()
               newCurator.setCurator(createdCurator)
               curators.push(createdCurator)

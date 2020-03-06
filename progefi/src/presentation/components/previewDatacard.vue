@@ -56,43 +56,43 @@ export default {
   data() {
     return {
       originalColors: [],
-      storeModules: [
-        {
-          name: "datacard",
-          allowedTags: ["collectDate", "collectHour"]
-        },
-        {
-          name: "coordinate",
-          allowedTags: ["latitude", "longitude", "altitude"]
-        },
-        { name: "catalogue", allowedTags: ["catalogue"] },
-        { name: "collection", allowedTags: ["collection", "institute"] },
-        { name: "vegetationType", allowedTags: ["vegetationType"] },
-        { name: "climateType", allowedTags: ["climateType"] },
-        { name: "collector", allowedTags: ["collector"] },
-        { name: "curator", allowedTags: ["curator"] },
-        { name: "device", allowedTags: ["device", "model"] },
-        {
-          name: "location",
-          allowedTags: ["country", "countryState", "municipality", "locality"]
-        },
-        { name: "project", allowedTags: ["project"] },
-        {
-          name: "speciesData",
-          allowedTags: [
-            "scientificName",
-            "commonName",
-            "genus",
-            "order",
-            "family",
-            "speciesClass",
-            "phylum",
-            "kingdom",
-            "sex",
-            "lifeStage"
-          ]
-        }
-      ],
+      // storeModules: [
+      // {
+      // name: "datacard",
+      // allowedTags: ["collectDate", "collectHour"]
+      // },
+      // {
+      // name: "coordinate",
+      // allowedTags: ["latitude", "longitude", "altitude"]
+      // },
+      // { name: "catalogue", allowedTags: ["catalogue"] },
+      // { name: "collection", allowedTags: ["collection", "institute"] },
+      // { name: "vegetationType", allowedTags: ["vegetationType"] },
+      // { name: "climateType", allowedTags: ["climateType"] },
+      // { name: "collector", allowedTags: ["collector"] },
+      // { name: "curator", allowedTags: ["curator"] },
+      // { name: "device", allowedTags: ["device", "model"] },
+      // {
+      // name: "location",
+      // allowedTags: ["country", "countryState", "municipality", "locality"]
+      // },
+      // { name: "project", allowedTags: ["project"] },
+      // {
+      // name: "speciesData",
+      // allowedTags: [
+      // "scientificName",
+      // "commonName",
+      // "genus",
+      // "order",
+      // "family",
+      // "speciesClass",
+      // "phylum",
+      // "kingdom",
+      // "sex",
+      // "lifeStage"
+      // ]
+      // }
+      // ],
       percentageRatio: null,
       width: null,
       columnHeight: null,
@@ -174,10 +174,11 @@ export default {
   },
   methods: {
     visibilityChanged(isVisible, entry) {
-      console.info(this.datacard);
+      // console.info(this.datacard);
       if (isVisible) {
         this.setDatacardStyle();
         this.setValues();
+        // debugger;
       }
     },
     // Método para ajustar el tamaño del texto segun se requiera
@@ -242,8 +243,7 @@ export default {
           //el timeout da tiempo de renderizar los cambios al DOM
           setTimeout(async function() {
             //se obtiene el archivo de la fotocolecta y se asignan los datos a la ficha
-            let base64 = await self.generateDatacard();
-            self.setDatacard(base64);
+            self.setDatacard();
           }, 3000);
         });
       }
@@ -287,37 +287,70 @@ export default {
         resolve();
       });
     },
-    async setDatacard(base64Datacard) {
-      this.datacard.setBase64(base64Datacard);
+    async setDatacard() {
+      // this.datacard.setBase64(base64Datacard);
       let deviceId = await store.dispatch("device/createDevice");
-      let modelId = await store.dispatch("device/createModel", deviceId);
-      let collectorId = await store.dispatch("collector/createCollector");
+      let createdModel = await store.dispatch("device/createModel", deviceId);
+      let createdCollector = await store.dispatch("collector/createCollector");
       let curators = await store.dispatch("curator/createCurators");
 
-      this.datacard.setModelId(modelId);
-      this.datacard.setCollectorId(collectorId);
+      this.datacard.setModel(createdModel);
+      this.datacard.setCollector(createdCollector);
       this.datacard.setCurators(curators);
+      // this.datacard.setDatacardPath(this.photoCollect.photoCollectPath);
+      if (
+        this.datacard.getPhotocollectPath() ==
+        this.photoCollect.photoCollectPath
+      ) {
+        this.datacard.setPhotocollectPath("do-not-save");
+      } else {
+        this.datacard.setPhotocollectPath(this.photoCollect.photoCollectPath);
+      }
 
       if (curators.length > 0) {
         this.datacard.validate();
+        let base64 = await this.generateDatacard();
+        this.datacard.base64 = base64;
       } else {
         this.datacard.invalidate();
       }
-      this.datacard.setCreationDate()
-      this.createDatacard(this.datacard);
+
+      if (this.datacard.getCreationDate() == null) {
+        // debugger;
+        this.datacard.setCreationDate();
+        this.createDatacard(this.datacard);
+      } else {
+        // debugger;
+        this.datacard.setCreationDate();
+        this.updateDatacard(this.datacard);
+      }
     },
     createDatacard(datacard) {
       store.dispatch("datacard/createDatacard", datacard).then(() => {
+        this.$store.dispatch(
+          "loading/setLoadingMessage",
+          "Creando ficha de fotocolecta..."
+        );
         store.dispatch("loading/setActive", false, { root: true });
-        this.openToast();
+        this.openToast("¡Ficha de fotocolecta creada!");
         this.$router.push({
           name: "UIShowDataCards",
-          params: { askToLeave: false }
+          params: { askToLeave: false, reloadDatacards: true }
         });
       });
     },
-    openToast() {
-      this.$buefy.toast.open("¡Ficha de fotocolecta creada!");
+    updateDatacard(datacard) {
+      store.dispatch("datacard/updateDatacard", datacard).then(() => {
+        store.dispatch("loading/setActive", false, { root: true });
+        this.openToast("¡Ficha de fotocolecta validada!");
+        this.$router.push({
+          name: "UIShowDataCards",
+          params: { askToLeave: false, selectedCatalogue: this.catalogue }
+        });
+      });
+    },
+    openToast(message) {
+      this.$buefy.toast.open(message);
     },
     generateDatacard() {
       return new Promise((resolve, reject) => {
@@ -368,7 +401,11 @@ export default {
       if (tag == "curator") {
         return this.curatorState.selectedCuratorsName;
       } else {
-        return this[model][retrieveMethod]();
+        try {
+          return this[model][retrieveMethod]();
+        } catch (err) {
+          debugger;
+        }
       }
     },
     assignTagAfter(fullTag, tagAfter) {

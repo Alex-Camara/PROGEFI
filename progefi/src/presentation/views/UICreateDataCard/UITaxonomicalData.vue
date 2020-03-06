@@ -56,19 +56,16 @@ export default {
   },
   computed: {
     ...mapState("speciesData", {
-      speciesDataState: state => state,
-      speciesData: state => state.speciesData,
-      isScientificNameValid: state =>
-        state.speciesData.getScientificNameValid(),
-      isCommonNameValid: state => state.speciesData.getCommonNameValid(),
-      isGenusValid: state => state.speciesData.getGenusValid(),
-      isFamilyValid: state => state.speciesData.getFamilyValid(),
-      isOrderValid: state => state.speciesData.getOrderValid(),
-      isPhylumValid: state => state.speciesData.getPhylumValid(),
-      isSpeciesClassValid: state => state.speciesData.getSpeciesClassValid(),
-      isKingdomValid: state => state.speciesData.getKingdomValid(),
-      isLifeStageValid: state => state.speciesData.getLifeStageValid(),
-      isSexValid: state => state.speciesData.getSexValid()
+      isScientificNameValid: state => state.datacard.getScientificNameValid(),
+      isCommonNameValid: state => state.datacard.getCommonNameValid(),
+      isGenusValid: state => state.datacard.getGenusValid(),
+      isFamilyValid: state => state.datacard.getFamilyValid(),
+      isOrderValid: state => state.datacard.getOrderValid(),
+      isPhylumValid: state => state.datacard.getPhylumValid(),
+      isSpeciesClassValid: state => state.datacard.getSpeciesClassValid(),
+      isKingdomValid: state => state.datacard.getKingdomValid(),
+      isLifeStageValid: state => state.datacard.getLifeStageValid(),
+      isSexValid: state => state.datacard.getSexValid()
     })
   },
   methods: {

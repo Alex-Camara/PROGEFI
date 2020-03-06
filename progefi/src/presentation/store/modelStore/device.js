@@ -40,7 +40,7 @@ const device = {
       return new Promise((resolve, reject) => {
         if (device != '') {
           ipcRenderer.send('getDevices', device)
-          ipcRenderer.on('devices', (event, receivedDevices) => {
+          ipcRenderer.once('devices', (event, receivedDevices) => {
             let newDevices = []
             for (let i = 0; i < receivedDevices.length; i++) {
               let newDevice = new Device()
@@ -59,7 +59,7 @@ const device = {
     },
     getModels ({ commit }, deviceId) {
       ipcRenderer.send('getModels', deviceId)
-      ipcRenderer.on('models', (event, receivedModels) => {
+      ipcRenderer.once('models', (event, receivedModels) => {
         let newModels = []
         for (let i = 0; i < receivedModels.length; i++) {
           let newModel = new Model()
@@ -169,7 +169,7 @@ const device = {
           resolve(state.device.getId())
         } else {
           ipcRenderer.send('createDevice', state.device)
-          ipcRenderer.on('deviceCreated', (event, createdDeviceId) => {
+          ipcRenderer.once('deviceCreated', (event, createdDeviceId) => {
             resolve(createdDeviceId)
           })
         }
@@ -179,12 +179,12 @@ const device = {
       return new Promise((resolve, reject) => {
         //si el modelo ya tiene id, entonces ya existe, solo se regresa el id
         if (state.model.getId() != null) {
-          resolve(state.model.getId())
+          resolve(state.model)
         } else {
           state.model.setDeviceId(deviceId)
           ipcRenderer.send('createModel', state.model)
-          ipcRenderer.on('modelCreated', (event, createdModelId) => {
-            resolve(createdModelId)
+          ipcRenderer.once('modelCreated', (event, createdModel) => {
+            resolve(createdModel)
           })
         }
       })

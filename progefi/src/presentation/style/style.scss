@@ -18,56 +18,30 @@ $twitter: #4099ff;
 $twitter-invert: findColorInvert($twitter);
 
 // Setup $colors to use as bulma classes (e.g. 'is-twitter')
-$colors: (
-  "white": (
-    $white,
-    $black
-  ),
-  "black": (
-    $black,
-    $white
-  ),
-  "light": (
-    $light,
-    $light-invert
-  ),
-  "dark": (
-    $dark,
-    $dark-invert
-  ),
-  "primary": (
-    $primary,
-    $primary-invert
-  ),
-  "secondary": (
-    $secondary,
-    $secondary-invert
-  ),
-  "accent": (
-    $accent,
-    $accent-invert
-  ),
-  "info": (
-    $info,
-    $info-invert
-  ),
-  "success": (
-    $success,
-    $success-invert
-  ),
-  "warning": (
-    $warning,
-    $warning-invert
-  ),
-  "danger": (
-    $danger,
-    $danger-invert
-  ),
-  "twitter": (
-    $twitter,
-    $twitter-invert
-  )
-);
+$colors: ("white": ($white,
+    $black),
+  "black": ($black,
+    $white),
+  "light": ($light,
+    $light-invert),
+  "dark": ($dark,
+    $dark-invert),
+  "primary": ($primary,
+    $primary-invert),
+  "secondary": ($secondary,
+    $secondary-invert),
+  "accent": ($accent,
+    $accent-invert),
+  "info": ($info,
+    $info-invert),
+  "success": ($success,
+    $success-invert),
+  "warning": ($warning,
+    $warning-invert),
+  "danger": ($danger,
+    $danger-invert),
+  "twitter": ($twitter,
+    $twitter-invert));
 
 // Links
 $link: $primary;
@@ -85,7 +59,8 @@ $navbar-item-color: #000501;
 $dropdown-item-active-background-color: $primary-light;
 
 //tipografía
-$body-family: 'Nunito', sans-serif;
+$body-family: 'Nunito',
+sans-serif;
 
 //metadata helpers
 $metadata-active: $secondary;
@@ -97,6 +72,11 @@ $metadata-inactive: $accent;
   accent: $accent;
 }
 
+@import "./table.scss";
+@import "./float_button.scss";
+@import "./text.scss";
+@import "./shake_field.scss";
+@import "./icon.scss";
 
 // Import Bulma and Buefy styles
 @import "~bulma";

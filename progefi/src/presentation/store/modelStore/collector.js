@@ -43,7 +43,7 @@ const collector = {
     getCollectors ({ commit }, collector) {
       if (collector.getName() != '') {
         ipcRenderer.send('getCollectors', collector.getName())
-        ipcRenderer.on('collectors', (event, receivedCollectors) => {
+        ipcRenderer.once('collectors', (event, receivedCollectors) => {
           let newCollectors = []
           for (let i = 0; i < receivedCollectors.length; i++) {
             let newCollector = new Collector()
@@ -62,7 +62,8 @@ const collector = {
       if (foundCollector || collector.hasOwnProperty('id')) {
         collector.setValid({ isValid: true, message: null })
         commit('setCollector', collector)
-        commit('datacard/setCollectorId', collector.getId(), { root: true })
+        // commit('datacard/setCollectorId', collector.getId(), { root: true })
+        commit('datacard/setCollector', collector, { root: true })
         commit('datacard/setTempCollectorCode', collector.getCode(), {
           root: true
         })
@@ -148,11 +149,11 @@ const collector = {
       return new Promise((resolve, reject) => {
         //si el dispositivo ya tiene id, entonces ya existe, solo se regresa el id
         if (state.collector.getId() != null) {
-          resolve(state.collector.getId())
+          resolve(state.collector)
         } else {
           ipcRenderer.send('createCollector', state.collector)
-          ipcRenderer.on('collectorCreated', (event, createdCollectorId) => {
-            resolve(createdCollectorId)
+          ipcRenderer.once('collectorCreated', (event, createdCollector) => {
+            resolve(createdCollector)
           })
         }
       })
@@ -171,7 +172,7 @@ const collector = {
     // Verifica si el código del colector no existe ya en la bd
     verifyDuplicateCode ({ state, commit, dispatch }, code) {
       ipcRenderer.send('verifyDuplicateCollectorCode', code)
-      ipcRenderer.on('collectorCodeVerified', (event, isCodeDuplicated) => {
+      ipcRenderer.once('collectorCodeVerified', (event, isCodeDuplicated) => {
         if (isCodeDuplicated) {
           state.codeCounter = state.codeCounter + 1
           let newCode = code + state.codeCounter

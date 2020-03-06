@@ -1,30 +1,31 @@
 <template>
   <!-- --------AddDataCard Component----- -->
-  <div id="addDataCard-component">
+  <div id="create_datacard_component">
     <!-- --------AddDataCard Component Header----- -->
-    <div id="addDataCard-component-header">
-      <div id="addDataCard-return-button">
-        <b-button type="is-text" v-on:click="showDataCards">
-          <b-icon icon="arrow-left-thick"></b-icon>
-        </b-button>
-      </div>
+    <div id="create_datacard_component_header">
+      <!-- <div id="create_datacard_return_button"> -->
+      <!-- <button id="add_datacard_return_button" class="button is-accent" @click="showDatacards()"> -->
+      <!-- <img id="add_datacard_return_icon" :src="require('../assets/back.png')" /> -->
+      <!-- Regresar -->
+      <!-- </button> -->
+      <!-- </div> -->
 
-      <div id="addDataCard-component-title">
-        <p class="is-size-4">Agregar ficha</p>
+      <div id="create_datacard_component_title">
+        <p class="is-size-4">{{title}}</p>
       </div>
     </div>
 
     <!-- --------AddDataCard Component Content----- -->
-    <div id="addDataCard-component-content">
+    <div id="create_datacard_component_content">
       <div>
         <b-steps size="is-small" type="is-secondary" :has-navigation="false" v-model="activeStep">
-          <b-step-item label="Subir fotografía" icon="image" :clickable="true">
+          <b-step-item label="Subir fotografía" :clickable="true">
             <UIUploadImage></UIUploadImage>
           </b-step-item>
-          <b-step-item label="Datos generales" icon="file-document-edit" :clickable="true">
-            <UIGeneralData></UIGeneralData>
+          <b-step-item label="Datos generales" :clickable="true">
+            <UIGeneralData :catalogue="catalogue" :disableFields="disableGeneralDataFields"></UIGeneralData>
           </b-step-item>
-          <b-step-item label="Datos geográficos" icon="earth" :clickable="true">
+          <b-step-item label="Datos geográficos" :clickable="true">
             <UIGeographicalData></UIGeographicalData>
           </b-step-item>
           <b-step-item label="Datos taxonómicos" :clickable="true">
@@ -51,6 +52,7 @@ import router from "../router/router.js";
 
 export default {
   name: "UICreateDataCard",
+  props: ["datacardDraft", "catalogue"],
   components: {
     UIUploadImage,
     UIGeneralData,
@@ -59,7 +61,9 @@ export default {
     UIValidateData
   },
   data() {
-    return {};
+    return {
+      disableGeneralDataFields: false
+    };
   },
   created() {
     store.dispatch("addDatacard/resetAddDatacard");
@@ -72,10 +76,16 @@ export default {
     });
   },
   mounted() {
+    console.info(this.catalogue);
     this.showInternetStatus();
+    if (this.datacardDraft) {
+      this.setDatacard(this.datacardDraft);
+    } else if (this.catalogue) {
+      // this.setCatalogue(this.catalogue);
+    }
   },
   beforeDestroy() {
-    this.resetStore();
+    this.resetStore(this.datacard);
   },
   beforeRouteLeave(to, from, next) {
     // Si la ruta destino tiene el parametro 'askToLeave',
@@ -92,11 +102,140 @@ export default {
       next();
     }
   },
+  computed: {
+    title: function() {
+      if (!this.datacardDraft) {
+        return "Agregar ficha";
+      } else {
+        return "Continuar borrador de ficha";
+      }
+    },
+    ...mapState("addDatacard", {
+      addDatacardState: state => state
+    }),
+    activeStep: {
+      get: function() {
+        return this.addDatacardState.activeStep;
+      },
+      set: function(newValue) {
+        store.commit("addDatacard/setActiveStep", newValue);
+        return newValue;
+      }
+    }
+  },
   methods: {
+    setCatalogue(catalogue) {
+      this.$store.dispatch(
+        "collection/setCollection",
+        catalogue.getCollection()
+      );
+      this.$store.dispatch(
+        "catalogue/getCatalogues",
+        catalogue.getCollection().getId()
+      );
+      this.$store.dispatch("catalogue/setCatalogue", catalogue);
+      // debugger;
+    },
+    // Sí se va a continuar un borrador de ficha, se cargan sus datos
+    async setDatacard(datacardDraft) {
+      this.disableGeneralDataFields = true;
+      this.$store.commit("datacard/setDatacard", datacardDraft);
+      let photocollectPath = datacardDraft.getDatacardPath() + "/original.png";
+      await this.$store.dispatch(
+        "addDatacard/setPhotocollectFilePath",
+        photocollectPath
+      );
+      this.$store.dispatch(
+        "catalogue/getCatalogues",
+        datacardDraft
+          .getCatalogue()
+          .getCollection()
+          .getId()
+      );
+      this.$store.dispatch(
+        "catalogue/setCatalogue",
+        datacardDraft.getCatalogue()
+      );
+      this.$store.dispatch(
+        "collection/setCollection",
+        datacardDraft.getCatalogue().getCollection()
+      );
+      this.$store.dispatch(
+        "datacard/setCollectDate",
+        datacardDraft.getCollectDate()
+      );
+      this.$store.dispatch("project/setProject", datacardDraft.getProject());
+      this.$store.dispatch(
+        "collector/setCollector",
+        datacardDraft.getCollector()
+      );
+      this.$store.dispatch("device/setModel", datacardDraft.getModel());
+      this.$store.dispatch(
+        "device/setDevice",
+        datacardDraft.getModel().getDevice()
+      );
+
+      this.$store.dispatch(
+        "coordinate/setAltitude",
+        datacardDraft.getAltitude()
+      );
+      this.$store.dispatch(
+        "coordinate/setLatitude",
+        datacardDraft.getLatitude()
+      );
+      this.$store.dispatch(
+        "coordinate/setLongitude",
+        datacardDraft.getLongitude()
+      );
+      this.$store.dispatch("location/setCountry", datacardDraft.getCountry());
+      this.$store.dispatch(
+        "location/setCountryState",
+        datacardDraft.getCountryState()
+      );
+      this.$store.dispatch(
+        "location/setMunicipality",
+        datacardDraft.getMunicipality()
+      );
+      this.$store.dispatch("location/setLocality", datacardDraft.getLocality());
+      this.$store.dispatch(
+        "climateType/setClimateType",
+        datacardDraft.getClimateType()
+      );
+      this.$store.dispatch(
+        "vegetationType/setVegetationType",
+        datacardDraft.getVegetationType()
+      );
+
+      this.$store.dispatch(
+        "speciesData/setScientificName",
+        datacardDraft.getScientificName()
+      );
+      this.$store.dispatch("speciesData/setGenus", datacardDraft.getGenus());
+      this.$store.dispatch(
+        "speciesData/setCommonName",
+        datacardDraft.getCommonName()
+      );
+      this.$store.dispatch("speciesData/setOrder", datacardDraft.getOrder());
+      this.$store.dispatch("speciesData/setFamily", datacardDraft.getFamily());
+      this.$store.dispatch(
+        "speciesData/setSpeciesClass",
+        datacardDraft.getSpeciesClass()
+      );
+      this.$store.dispatch("speciesData/setPhylum", datacardDraft.getPhylum());
+      this.$store.dispatch(
+        "speciesData/setKingdom",
+        datacardDraft.getKingdom()
+      );
+      this.$store.dispatch("speciesData/setSex", datacardDraft.getSex());
+      this.$store.dispatch(
+        "speciesData/setLifeStage",
+        datacardDraft.getLifeStage()
+      );
+    },
     resetStore() {
       store.dispatch("resetStore");
     },
-    showDataCards() {
+    showDatacards() {
       router.push({ name: "UIShowDataCards" });
     },
     showInternetStatus() {
@@ -132,49 +271,50 @@ export default {
     openToast(message) {
       this.$buefy.toast.open(message);
     }
-  },
-  computed: {
-    ...mapState("addDatacard", {
-      addDatacardState: state => state
-    }),
-    activeStep: {
-      get: function() {
-        return this.addDatacardState.activeStep;
-      },
-      set: function(newValue) {
-        store.commit("addDatacard/setActiveStep", newValue);
-        return newValue;
-      }
-    }
   }
 };
 </script>
 
 <style lang="scss">
-#addDataCard-component {
+#create_datacard_component {
   display: grid;
-  grid-template-rows: 50px 400px;
+  grid-template-rows: 70px 400px;
   height: 100%;
 }
 
-#addDataCard-component-header {
+#create_datacard_component_header {
   grid-row: 1 / 2;
   display: grid;
-  grid-template-columns: 5% 95%;
-  justify-items: center;
-  align-content: center;
+  grid-template-columns: 20% 60% 20%;
+  // justify-items: center;
+  // align-content: center;
 }
 
-#addDataCard-component-content {
+#create_datacard_component_content {
   grid-row: 2 / 3;
   margin-top: 40px;
 }
 
-#addDataCard-return-button {
+#create_datacard_return_button {
   grid-column: 1 / 2;
+  justify-self: start;
+  align-self: center;
+  margin-left: 20px;
 }
 
-#addDataCard-component-title {
+#create_datacard_component_title {
+  // margin-top: 20px;
   grid-column: 2 / 3;
+  justify-self: center;
+  align-self: center;
+}
+
+#add_datacard_return_button {
+  color: black;
+}
+#add_datacard_return_icon {
+  height: 15px;
+  width: 15px;
+  margin-right: 10px;
 }
 </style> 

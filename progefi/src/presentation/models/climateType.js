@@ -1,7 +1,7 @@
 'use strict'
 
 class ClimateType {
-  constructor () {
+  constructor() {
     this.id = null
     this.code = null
     this.colorCode = null
@@ -11,35 +11,39 @@ class ClimateType {
     this.valid.isValid = false
     this.valid.message = 'Campo requerido'
   }
-  setClimateType (climateType) {
+  setClimateType(climateType) {
+    // return new Promise((resolve, reject) => {
     this.id = climateType.id
     this.code = climateType.code
     this.colorCode = climateType.colorCode
     this.description = climateType.description
+    // debugger;
+    // resolve()
+    // });
   }
-  setCode (code) {
+  setCode(code) {
     this.code = code
   }
-  setRequired (isRequired) {
+  setRequired(isRequired) {
     this.required = isRequired
   }
-  setValid (valid) {
+  setValid(valid) {
     this.valid.isValid = valid.isValid
     this.valid.message = valid.message
   }
-  getCode(){
+  getCode() {
     return this.code
   }
-  getDescription(){
+  getDescription() {
     return this.description
   }
-  getColorCode(){
+  getColorCode() {
     return this.colorCode
   }
-  isValid(){
+  isValid() {
     return this.valid.isValid
   }
-  getValid(){
+  getValid() {
     return this.valid
   }
 }

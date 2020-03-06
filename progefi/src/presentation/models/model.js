@@ -1,52 +1,66 @@
 'use strict'
+import Device from './device'
 
 class Model {
-  constructor () {
+  constructor() {
     this.id = null
     this.name = null
     this.deviceId = null
+    this.device = new Device()
     this.required = true
     this.valid = {}
     this.valid.isValid = false
     this.valid.message = 'Campo requerido'
   }
-  setModel (model) {
+  setModel(model) {
     this.id = model.id
     this.name = model.name
     this.deviceId = model.deviceId
+    if (model.hasOwnProperty('device')) {
+      let newDevice = new Device()
+      newDevice.setDevice(model.device[0])
+      this.device = newDevice;
+    }
+    // debugger;
   }
-  setName (name) {
+  setName(name) {
     this.name = name
   }
-  setValid (valid) {
+  setValid(valid) {
     this.valid.isValid = valid.isValid
     this.valid.message = valid.message
   }
-  setRequired (isRequired) {
+  setRequired(isRequired) {
     this.required = isRequired
   }
-  getId () {
+  setDevice(device) {
+    this.device = device
+  }
+  getId() {
     return this.id
   }
-  getDeviceId () {
+  getDeviceId() {
     return this.deviceId
   }
-  setDeviceId (deviceId) {
+  setDeviceId(deviceId) {
     this.deviceId = deviceId
   }
-  getName () {
+  getName() {
     return this.name
   }
-  getValid () {
+  getValid() {
     return this.valid
   }
-  isValid () {
+  getDevice() {
+    return this.device
+  }
+  isValid() {
     return this.valid.isValid
   }
-  isRequired () {
+  isRequired() {
     return this.required
   }
-  getErrorMessage () {
+  getErrorMessage() {
     return this.valid.message
   }
 }

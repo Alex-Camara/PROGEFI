@@ -1,10 +1,11 @@
 'use strict'
 
 class Collection {
-  constructor () {
+  constructor() {
     this.id = null
     this.name = null
     this.instituteId = null
+    this.instituteName = null
     this.researchArea = null
     this.imagePath = null
     this.required = true
@@ -12,37 +13,41 @@ class Collection {
     this.valid.isValid = false
     this.valid.message = 'Campo requerido'
   }
-  setCollection (collection) {
+  setCollection(collection) {
     this.id = collection.id
     this.name = collection.name
     this.instituteId = collection.instituteId
     this.researchArea = collection.instituteResearchArea
     this.imagePath = collection.instituteImagePath
+    this.instituteName = collection.instituteName
   }
-  setId(collectionId){
+  setId(collectionId) {
     this.id = collectionId
   }
-  setValid (valid) {
+  setValid(valid) {
     this.valid.isValid = valid.isValid
     this.valid.message = valid.message
   }
-  isValid(){
+  isValid() {
     return this.valid.isValid
   }
-  getId(){
+  getId() {
     return this.id
   }
-  getName(){
+  getName() {
     return this.name
   }
-  getValid(){
+  getValid() {
     return this.valid
   }
-  getImagePath(){
+  getImagePath() {
     return this.imagePath
   }
-  getResearchArea(){
+  getResearchArea() {
     return this.researchArea
+  }
+  getInstituteName(){
+    return this.instituteName
   }
 }
 

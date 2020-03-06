@@ -1,10 +1,10 @@
 <template>
   <!-- --------AddDataCard1 Component----- -->
-  <div id="addDataCard1-component">
+  <div id="add_datacard_component">
     <!-- --------AddDataCard1 Left Side----- -->
-    <div id="addDataCard1-left-side" class="box">
+    <div id="add_datacard_left_side" class="box">
       <!-- --------AddDataCard1 Component Header----- -->
-      <div id="addDataCard1-component-header">
+      <div id="add_datacard_component_header">
         <p class="subtitle is-5">
           <b-tooltip
             label="Los formatos permitidos son: jpeg, png, bmp y tiff."
@@ -19,7 +19,7 @@
       </div>
 
       <!-- --------AddDataCard1 Component Content----- -->
-      <div id="addDataCard1-component-content" @change="setPhotoCollect()">
+      <div id="add_datacard_component_content">
         <b-field class="file">
           <b-upload v-model="file" accept="image/*">
             <a class="button is-secondary">
@@ -35,17 +35,17 @@
       </div>
 
       <!-- --------AddDataCard1 Bottom Buttons----- -->
-      <div id="addDataCard1-next-button" @click="forwardStep()">
+      <div id="add_datacard_next_button" @click="forwardStep()">
         <button class="button" type="is-accent" :disabled="disableNextButton()">Siguiente</button>
       </div>
     </div>
 
     <!-- --------AddDataCard1 Right Side----- -->
-    <div id="addDataCard1-right-side" class="box has-background-light">
-      <!-- --------addDataCard1-component-image----- -->
-      <div id="addDataCard1-component-image">
+    <div id="add_datacard_right_side" class="box has-background-light">
+      <!-- --------add_datacard_component_image----- -->
+      <div id="add_datacard_component_image">
         <img
-          id="uploadedImage"
+          id="uploaded_image"
           v-if="photoCollect.photoCollectPath != 'not-supported-format'"
           :src="photoCollect.photoCollectPath"
         />
@@ -65,17 +65,24 @@ import { mapState } from "vuex";
 export default {
   data() {
     return {
-      file: null,
+      // file: null,
       icon: require("../../assets/question.png")
     };
   },
   computed: {
     ...mapState("addDatacard", {
-      photoCollect: state => state.photoCollect
+      photoCollect: state => state.photoCollect,
+      photoCollectPath: state => state.photoCollect.photoCollectPath,
+      file: state => state.photoCollect.filePath
     }),
-    ...mapState("addDatacard", {
-      photoCollectPath: state => state.photoCollect.photoCollectPath
-    })
+    file: {
+      get: function() {
+        return this.photoCollect.fileObject;
+      },
+      set: function(newValue) {
+        store.dispatch("addDatacard/setPhotoCollect", newValue);
+      }
+    }
   },
   watch: {
     photoCollectPath(newValue, oldValue) {
@@ -117,7 +124,7 @@ export default {
 
 <style lang="scss">
 @import "../../style/style.scss";
-#addDataCard1-component {
+#add_datacard_component {
   display: grid;
   grid-template-columns: 50% 50%;
   height: 100%;
@@ -127,7 +134,7 @@ export default {
   //background-color: brown
 }
 
-#addDataCard1-left-side {
+#add_datacard_left_side {
   grid-column: 1 / 2;
   display: grid;
   grid-template-rows: 10% 80% 10%;
@@ -136,7 +143,7 @@ export default {
   margin-right: 10px;
 }
 
-#addDataCard1-right-side {
+#add_datacard_right_side {
   grid-column: 2 / 3;
   height: 100%;
   max-height: 100%;
@@ -147,7 +154,7 @@ export default {
   //background-color:crimson;
 }
 
-#addDataCard1-component-header {
+#add_datacard_component_header {
   grid-row: 1 / 2;
   justify-self: center;
   text-align: center;
@@ -156,24 +163,24 @@ export default {
   align-items: center;
 }
 
-#addDataCard1-component-content {
+#add_datacard_component_content {
   grid-row: 2 / 3;
   justify-self: center;
 }
 
-#addDataCard1-component-image {
+#add_datacard_component_image {
   justify-items: center;
   //margin-left: 60px;
   max-height: 100%;
   max-width: 100%;
 }
 
-#uploadedImage {
+#uploaded_image {
   max-height: 100%;
   max-width: 100%;
 }
 
-#addDataCard1-next-button {
+#add_datacard_next_button {
   grid-row: 3 / 4;
   justify-self: end;
 }

@@ -13,6 +13,7 @@
             id="colection_select"
             placeholder="Selecciona una colección"
             v-model="selectedCollection"
+            :disabled="disableFields"
           >
             <option
               v-for="collection in collectionState.collections"
@@ -28,13 +29,18 @@
           <required-field-helper :name="'Catálogo:'" :valid="catalogueState.catalogue.getValid()"></required-field-helper>
         </template>
         <div class="select">
-        <select id="catalogue_select" placeholder="Selecciona un catálogo" v-model="selectedCatalogue">
-          <option
-            v-for="catalogue in catalogueState.catalogues"
-            :key="catalogue.getName()"
-            :value="catalogue"
-          >{{ catalogue.getName() }}</option>
-        </select>
+          <select
+            id="catalogue_select"
+            placeholder="Selecciona un catálogo"
+            v-model="selectedCatalogue"
+            :disabled="disableFields"
+          >
+            <option
+              v-for="catalogue in catalogueState.catalogues"
+              :key="catalogue.getId()"
+              :value="catalogue"
+            >{{ catalogue.getName() }}</option>
+          </select>
         </div>
       </b-field>
 
@@ -44,13 +50,17 @@
           <required-field-helper :name="'Proyecto:'" :valid="projectState.project.valid"></required-field-helper>
         </template>
         <div class="select">
-        <select id="project_select" placeholder="Selecciona un proyecto" v-model="selectedProject">
-          <option
-            v-for="project in projectState.projects"
-            :key="project.name"
-            :value="project"
-          >{{ project.name }}</option>
-        </select>
+          <select
+            id="project_select"
+            placeholder="Selecciona un proyecto"
+            v-model="selectedProject"
+          >
+            <option
+              v-for="project in projectState.projects"
+              :key="project.name"
+              :value="project"
+            >{{ project.name }}</option>
+          </select>
         </div>
       </b-field>
 
@@ -66,7 +76,7 @@
           v-model="selectedCollector"
           @focus="autocompleteCollectorStatus =true"
           @click.stop="autocompleteCollectorStatus =true"
-          :disabled="collectorFieldDisabled"
+          :disabled="catalogueState.catalogue.id == null || disableFields"
         />
         <div
           id="autocomplete_box"
@@ -209,6 +219,7 @@ import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
 import metadataHelper from "../helpers/metadataHelper.vue";
 import requiredFieldHelper from "../helpers/requiredFieldHelper.vue";
 export default {
+  props: ["catalogue", "disableFields"],
   components: {
     "metadata-helper": metadataHelper,
     "required-field-helper": requiredFieldHelper
@@ -225,6 +236,11 @@ export default {
   mounted() {
     this.$store.dispatch("collection/getCollections");
     this.$store.dispatch("project/getProjects");
+    if (this.catalogue) {
+      this.selectedCollection = this.catalogue.getCollection();
+      this.selectedCatalogue = this.catalogue;
+    }
+    // debugger;
   },
   computed: {
     ...mapState("datacard", {
@@ -264,8 +280,8 @@ export default {
       },
       set: function(newValue) {
         this.$store.commit("catalogue/resetStore");
-
         this.$store.dispatch("collection/setCollection", newValue);
+        // debugger;
         this.$store.dispatch("catalogue/getCatalogues", newValue.id);
       }
     },
@@ -273,13 +289,18 @@ export default {
       get: function() {
         return this.catalogueState.catalogue;
       },
-      set: function(catalogue) {
+      set: function(newValue) {
+        //Por alguna razón, al asignar el catálogo desde mounted, el valor
+        //de catalogue se asigna a undefined
+        if (newValue == undefined) {
+          newValue = this.selectedCatalogue;
+        }
         this.collectorFieldDisabled = false;
-        this.$store.commit("catalogue/setCatalogue", catalogue);
-        this.$store.commit("datacard/setCatalogueId", catalogue.getId());
+        this.$store.dispatch("catalogue/setCatalogue", newValue);
+        this.$store.commit("datacard/setCatalogue", newValue);
         this.$store.dispatch("datacard/setDatacardCode", {
-          catalogueCode: catalogue.getCode(),
-          datacardCountInCatalogue: catalogue.getDatacardCount()
+          catalogueCode: newValue.getCode(),
+          datacardCountInCatalogue: newValue.getDatacardCount()
         });
         this.$store.dispatch("datacard/setCollectorCode");
       }
@@ -290,7 +311,7 @@ export default {
       },
       set: function(project) {
         this.$store.commit("project/setProject", project);
-        this.$store.commit("datacard/setProjectId", project.getId());
+        this.$store.commit("datacard/setProject", project);
       }
     },
     selectedCollector: {
@@ -338,7 +359,7 @@ export default {
     selectedDate: {
       get: function() {
         // if (this.datacardState.datacard.getCollectDate() == null) {
-          // this.$store.dispatch("datacard/setCollectDate", new Date());
+        // this.$store.dispatch("datacard/setCollectDate", new Date());
         // }
         return this.datacardState.datacard.getCollectDate();
       },

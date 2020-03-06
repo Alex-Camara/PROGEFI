@@ -63,12 +63,12 @@ export default {
   computed: {
     ...mapState("speciesData", {
       speciesDataState: state => state,
-      speciesData: state => state.speciesData,
-      isLifeStageValid: state => state.speciesData.getLifeStageValid()
+      datacard: state => state.datacard,
+      isLifeStageValid: state => state.datacard.getLifeStageValid()
     }),
     lifeStage: {
       get: function() {
-        let lifeStage = this.speciesData.getLifeStage();
+        let lifeStage = this.datacard.getLifeStage();
         return lifeStage.getName();
       },
       set: function(newValue) {

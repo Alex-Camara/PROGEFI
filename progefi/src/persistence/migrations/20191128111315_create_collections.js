@@ -22,6 +22,7 @@ exports.up = function (knex) {
             table.increments('id').primary();
             table.string('name');
             table.string('code');
+            table.string('description');
             table.integer('collectionId')
                 .references('id')
                 .inTable('collection')

@@ -11,6 +11,7 @@ class Collection extends Model {
     }
 
     static get relationMappings () {
+      const Catalogue = require('./Catalogue');
         return {
           catalogues: {
             relation: Model.HasManyRelation,

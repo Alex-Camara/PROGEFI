@@ -1,0 +1,50 @@
+.float_button {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    bottom: 40px;
+    right: 40px;
+    background-color: $accent;
+    color: $white;
+    border-radius: 50px;
+    text-align: center;
+    box-shadow: 2px 2px 3px #999;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.2s;
+    padding-top: 20px;
+}
+
+.float_button:hover {
+    transition: 0.2s;
+    background-color: $secondary;
+    width: 70px;
+    height: 70px;
+    bottom: 35px;
+    right: 35px;
+    padding-top: 23.3px;
+}
+
+.float_button:active {
+    transition: 0.2s;
+    background-color: $primary;
+    width: 70px;
+    height: 70px;
+    bottom: 35px;
+    right: 35px;
+    padding-top: 23.3px;
+}
+
+.float_button_icon {
+    width: 20px;
+    height: 20px;
+}
+
+.float_button:hover+.float_button_icon {
+    transition: 0.2s;
+    width: 80px;
+    height: 80px;
+    margin-top: 90px;
+}

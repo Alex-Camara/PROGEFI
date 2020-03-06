@@ -40,23 +40,31 @@ export default {
     "select-vegetation-type": selectVegetationType,
     "select-location": selectLocation
   },
+  created() {
+    // this.$store.commit("location/setDatacard", this.datacardState.datacard);
+    // this.$store.commit("coordinate/setDatacard", this.datacardState.datacard);
+    // debugger;
+  },
   computed: {
     ...mapState("location", {
-      isCountryValid: state => state.location.getCountryValid(),
-      isCountryStateValid: state => state.location.getCountryStateValid(),
-      isMunicipalityValid: state => state.location.getMunicipalityValid(),
-      isLocalityValid: state => state.location.getLocalityValid()
+      isCountryValid: state => state.datacard.getCountryValid(),
+      isCountryStateValid: state => state.datacard.getCountryStateValid(),
+      isMunicipalityValid: state => state.datacard.getMunicipalityValid(),
+      isLocalityValid: state => state.datacard.getLocalityValid()
     }),
     ...mapState("coordinate", {
-      isLongitudeValid: state => state.location.getLongitudeValid(),
-      isLatitudeValid: state => state.location.getLatitudeValid(),
-      isAltitudeValid: state => state.location.getAltitudeValid()
+      isLongitudeValid: state => state.datacard.getLongitudeValid(),
+      isLatitudeValid: state => state.datacard.getLatitudeValid(),
+      isAltitudeValid: state => state.datacard.getAltitudeValid()
     }),
     ...mapState("climateType", {
       isClimateTypeValid: state => state.climateType.valid
     }),
     ...mapState("vegetationType", {
       isVegetationTypeValid: state => state.vegetationType.valid
+    }),
+    ...mapState("datacard", {
+      datacardState: state => state
     })
   },
   methods: {

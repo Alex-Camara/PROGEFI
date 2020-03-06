@@ -11,6 +11,7 @@ class Catalogue extends Model {
     }
 
     static get relationMappings () {
+      const Collection = require('./Collection');
         return {
           collection: {
             relation: Model.BelongsToOneRelation,

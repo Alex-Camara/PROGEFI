@@ -26,7 +26,11 @@
 
     <!-- --------AddDataCard2 Right Side Component Content----- -->
     <div id="generalData_component_content" class="box">
-      <general-data-form ref="generalDataForm"></general-data-form>
+      <general-data-form
+        ref="generalDataForm"
+        :catalogue="catalogue"
+        :disableFields="disableFields"
+      ></general-data-form>
     </div>
 
     <!-- --------AddDataCard2 Bottom Buttons----- -->
@@ -49,6 +53,7 @@ import selectTemplate from "../../components/selectTemplate.vue";
 import generalDataForm from "../../components/generalDataForm.vue";
 
 export default {
+  props: ["catalogue", "disableFields"],
   name: "UIGeneralData",
   components: {
     "select-template": selectTemplate,
@@ -56,6 +61,9 @@ export default {
   },
   data() {
     return {};
+  },
+  mounted() {
+    // console.info(this.catalogue);
   },
   computed: {
     ...mapState("datacard", {

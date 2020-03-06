@@ -23,7 +23,6 @@ class CollectorDaoImp {
       .where('collectorId', collectorCode)
       .where('catalogueId', catalogueId)
 
-    console.info(countResult)
     return countResult[0].count
   }
   async createCollector(collector) {
@@ -31,12 +30,12 @@ class CollectorDaoImp {
       name: collector.name,
       code: collector.code
     })
-    console.log(createdCollector)
+    // console.log(createdCollector)
     return createdCollector
   }
   async verifyDuplicateCode(code) {
     const isDuplicated = await Collector.query().where('code', code)
-    console.log(isDuplicated)
+    // console.log(isDuplicated)
     return isDuplicated
   }
 }

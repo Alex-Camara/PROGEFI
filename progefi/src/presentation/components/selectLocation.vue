@@ -161,30 +161,34 @@ export default {
   mounted() {
     //inicializar el marcador del mapa en el centro de México
     this.center = { lat: this.latitude, lng: this.longitude };
-    this.$store.commit("location/setLocation", this.locationObject);
-    this.$store.commit("coordinate/setLocation", this.locationObject);
+    this.$store.commit("location/setDatacard", this.datacardState.datacard);
+    this.$store.commit("coordinate/setDatacard", this.datacardState.datacard);
   },
   computed: {
     ...mapState("metadata", {
       metadataState: state => state
     }),
+    ...mapState("datacard", {
+      datacardState: state => state
+    }),
     ...mapState("location", {
       locationState: state => state,
-      location: state => state.location,
-      isCountryValid: state => state.location.getCountryValid(),
-      isCountryStateValid: state => state.location.getCountryStateValid(),
-      isMunicipalityValid: state => state.location.getMunicipalityValid(),
-      isLocalityValid: state => state.location.getLocalityValid()
+      // location: state => state.location,
+      datacard: state => state.datacard,
+      isCountryValid: state => state.datacard.getCountryValid(),
+      isCountryStateValid: state => state.datacard.getCountryStateValid(),
+      isMunicipalityValid: state => state.datacard.getMunicipalityValid(),
+      isLocalityValid: state => state.datacard.getLocalityValid()
     }),
     ...mapState("coordinate", {
       coordinateState: state => state,
-      isLongitudeValid: state => state.location.getLongitudeValid(),
-      isLatitudeValid: state => state.location.getLatitudeValid(),
-      isAltitudeValid: state => state.location.getAltitudeValid()
+      isLongitudeValid: state => state.datacard.getLongitudeValid(),
+      isLatitudeValid: state => state.datacard.getLatitudeValid(),
+      isAltitudeValid: state => state.datacard.getAltitudeValid()
     }),
     longitude: {
       get: function() {
-        let longitude = this.location.getLongitude();
+        let longitude = this.datacard.getLongitude();
 
         if (this.isLocalityValid.message == "temporary error") {
           this.addShakeEffect("longitude_input");
@@ -198,7 +202,7 @@ export default {
     },
     latitude: {
       get: function() {
-        let latitude = this.location.getLatitude();
+        let latitude = this.datacard.getLatitude();
 
         if (this.isLatitudeValid.message == "temporary error") {
           this.addShakeEffect("latitude_input");
@@ -213,7 +217,7 @@ export default {
     },
     altitude: {
       get: function() {
-        let altitude = this.location.getAltitude();
+        let altitude = this.datacard.getAltitude();
 
         if (this.isAltitudeValid.message == "temporary error") {
           this.addShakeEffect("altitude_input");
@@ -239,7 +243,7 @@ export default {
     },
     country: {
       get: function() {
-        let country = this.location.getCountry();
+        let country = this.datacard.getCountry();
         if (this.isCountryValid.message == "temporary error") {
           this.addShakeEffect("country_input");
         }
@@ -251,7 +255,7 @@ export default {
     },
     countryState: {
       get: function() {
-        let countryState = this.location.getCountryState();
+        let countryState = this.datacard.getCountryState();
 
         if (this.isCountryStateValid.message == "temporary error") {
           this.addShakeEffect("country_state_input");
@@ -264,7 +268,7 @@ export default {
     },
     municipality: {
       get: function() {
-        let municipality = this.location.getMunicipality();
+        let municipality = this.datacard.getMunicipality();
 
         if (this.isMunicipalityValid.message == "temporary error") {
           this.addShakeEffect("municipality_input");
@@ -277,7 +281,7 @@ export default {
     },
     locality: {
       get: function() {
-        let locality = this.location.getLocality();
+        let locality = this.datacard.getLocality();
 
         if (this.isLocalityValid.message == "temporary error") {
           this.addShakeEffect("locality_input");
@@ -348,7 +352,7 @@ export default {
       }
     },
     trimCoordinate(coordinate) {
-      coordinate = "" + coordinate
+      coordinate = "" + coordinate;
       coordinate = coordinate.trim();
       let splittedCoordinate = coordinate.split(".");
       if (splittedCoordinate.length > 1) {

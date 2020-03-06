@@ -5,7 +5,7 @@
       <div class="modal-content">
         <div class="cp-spinner cp-flip"></div>
         <div>
-          <p id="loading_text">Generando ficha de fotocolecta...</p>
+          <p id="loading_text">{{loadingMessage}}</p>
         </div>
       </div>
     </div>
@@ -18,7 +18,8 @@ import { mapState } from "vuex";
 
 export default {
   data() {
-    return {};
+    return {
+    };
   },
   created() {
     store.watch(
@@ -32,6 +33,19 @@ export default {
       }
     );
   },
+  computed: {
+    ...mapState("loading", {
+      loadingState: state => state
+    }),
+    loadingMessage: {
+      get: function() {
+        return this.loadingState.loadingMessage;
+      },
+      set: function(newValue) {
+        this.$store.dispatch("loading/setLoadingMessage", newValue);
+      }
+    }
+  },
   methods: {
     openModal() {
       var element = document.getElementById("loading_modal");
@@ -41,6 +55,9 @@ export default {
       var element = document.getElementById("loading_modal");
       element.classList.remove("is-active");
     }
+    // setLoadingMessage(loadingMessage) {
+    // this.loadingMessage = loadingMessage;
+    // }
   }
 };
 </script>

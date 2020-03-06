@@ -1,5 +1,5 @@
 "use strict";
-import CollectionDAO from '../dao/CollectionDao.js'
+import CollectionDAO from '../../persistence/dao/CollectionDao'
 
 class CollectionHandler {
     constructor(){

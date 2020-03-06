@@ -42,7 +42,7 @@ const template = {
       dispatch
     }) {
       ipcRenderer.send('getTemplates')
-      ipcRenderer.on('templates', (event, receivedTemplates) => {
+      ipcRenderer.once('templates', (event, receivedTemplates) => {
         let newTemplates = []
         for (let i = 0; i < receivedTemplates.length; i++) {
           let template = new Template()
@@ -58,7 +58,7 @@ const template = {
       commit
     }, template) {
       ipcRenderer.send('getTemplate', template.getId())
-      ipcRenderer.on('template', (event, receivedTemplate) => {
+      ipcRenderer.once('template', (event, receivedTemplate) => {
         // debugger;
         // let fullTemplate = new Template()
         // template.setTemplate(receivedTemplate)

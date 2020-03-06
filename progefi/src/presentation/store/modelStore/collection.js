@@ -9,31 +9,44 @@ const collection = {
     collection: new Collection()
   },
   mutations: {
-    setCollections (state, collections) {
+    setCollections(state, collections) {
       Vue.set(state, 'collections', collections)
     },
-    setCollection (state, collection) {
+    setCollection(state, collection) {
       collection.setValid({ isValid: true, message: null })
       Vue.set(state, 'collection', collection)
     },
-    resetStore (state) {
+    resetStore(state) {
       Vue.set(state, 'collection', new Collection())
     }
   },
   actions: {
-    getCollections ({ commit }) {
-      ipcRenderer.send('getCollections')
-      ipcRenderer.on('collections', (event, receivedCollections) => {
-        let newCollections = []
-        for (let i = 0; i < receivedCollections.length; i++) {
-          let collection = new Collection()
-          collection.setCollection(receivedCollections[i])
-          newCollections.push(collection)
-        }
-        commit('setCollections', newCollections)
-      })
+    getCollections({ state, commit }) {
+      return new Promise((resolve) => {
+
+        ipcRenderer.send('getCollections')
+        ipcRenderer.once('collections', (event, receivedCollections) => {
+          let newCollections = []
+          for (let i = 0; i < receivedCollections.length; i++) {
+            let newCollection = new Collection()
+            newCollection.setCollection(receivedCollections[i])
+            newCollections.push(newCollection)
+          }
+          commit('setCollections', newCollections)
+
+          // Para ubicar la coleccion ya seleccionada dentro de la lista de colecciones
+          // recuperadas
+          if (state.collection.id != null) {
+            let selectedCollection = newCollections.find(
+              x => x.id == state.collection.getId()
+            )
+            commit('setCollection', selectedCollection)
+          }
+          resolve();
+        })
+      });
     },
-    setCollection ({ state, commit }, collection) {
+    setCollection({ commit }, collection) {
       commit('setCollection', collection)
     }
   }

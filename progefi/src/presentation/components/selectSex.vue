@@ -57,12 +57,12 @@ export default {
   computed: {
     ...mapState("speciesData", {
       speciesDataState: state => state,
-      speciesData: state => state.speciesData,
-      isSexValid: state => state.speciesData.getSexValid()
+      datacard: state => state.datacard,
+      isSexValid: state => state.datacard.getSexValid()
     }),
     sex: {
       get: function() {
-        let sex = this.speciesData.getSex();
+        let sex = this.datacard.getSex();
         return sex.getName();
       },
       set: function(newValue) {

@@ -20,10 +20,28 @@ class CatalogueDaoImp {
       catalogues[i].datacardCount = await this.countDatacardsInCatalog(
         catalogue.id
       );
+
+      let collection = await this.collectionDaoImp.getCollection(catalogue.collectionId)
+      catalogue.collection = collection
+    }
+    return catalogues;
+  }
+  async getAllCatalogues() {
+    const catalogues = await Catalogue.query()
+
+    for (let i = 0; i < catalogues.length; i++) {
+      const catalogue = catalogues[i];
+      catalogues[i].datacardCount = await this.countDatacardsInCatalog(
+        catalogue.id
+      );
+
+      let collection = await this.collectionDaoImp.getCollection(catalogue.collectionId)
+      catalogue.collection = collection
     }
     return catalogues;
   }
   async getCatalogue(catalogueId) {
+    console.info(catalogueId)
     const catalogue = await Catalogue.query()
       .where('id', catalogueId);
 
@@ -31,6 +49,16 @@ class CatalogueDaoImp {
     catalogue[0].collection = collection
 
     return catalogue[0]
+  }
+  async createCatalogue(catalogue) {
+    const createdCatalogue = await Catalogue.query().insert({
+      name: catalogue.name,
+      code: catalogue.code,
+      description: catalogue.description,
+      collectionId: catalogue.collection.id
+    })
+    console.log(createdCatalogue)
+    return createdCatalogue
   }
   async countDatacardsInCatalog(catalogueId) {
     const countResult = await Datacard.query()

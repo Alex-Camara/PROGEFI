@@ -19,7 +19,6 @@ class CuratorDaoImp {
             let curator = await this.getCurator(curators[i].curatorId)
             datacardCurators.push(curator)
         }
-        console.info(datacardCurators)
         return datacardCurators
     }
     async getCurator(curatorId) {
@@ -31,7 +30,6 @@ class CuratorDaoImp {
         const createdCurator = await Curator.query().insert({
             name: curator
         })
-        console.log(createdCurator)
         return createdCurator;
     }
 }

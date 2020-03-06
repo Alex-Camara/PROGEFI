@@ -1,5 +1,5 @@
 "use strict";
-import ClimateTypeDao from '../dao/ClimateTypeDao.js'
+import ClimateTypeDao from '../../persistence/dao/ClimateTypeDao'
 
 class ClimateTypeHandler {
     constructor(){
@@ -9,9 +9,11 @@ class ClimateTypeHandler {
         let climateTypes = await this.climateTypeDao.getClimateTypes();
         result(climateTypes);
     }
-    async getVegetationTypes(result) {
-        let vegetationTypes = await this.climateTypeDao.getVegetationTypes();
-        result(vegetationTypes);
+    async getClimateType(climateTypeId) {
+        return new Promise(async (resolve) => {
+            let climateType = await this.climateTypeDao.getClimateType(climateTypeId);
+            resolve(climateType);
+        });
     }
 }
 

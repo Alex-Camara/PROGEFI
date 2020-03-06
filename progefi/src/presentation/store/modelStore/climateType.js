@@ -28,7 +28,7 @@ const climateType = {
   actions: {
     getClimateTypes ({ commit }) {
       ipcRenderer.send('getClimateTypes')
-      ipcRenderer.on('climateTypes', (event, receivedClimateTypes) => {
+      ipcRenderer.once('climateTypes', (event, receivedClimateTypes) => {
         let newClimatesTypes = []
         for (let i = 0; i < receivedClimateTypes.length; i++) {
           let climateType = new ClimateType()
@@ -44,11 +44,11 @@ const climateType = {
         newClimateType.setValid({ isValid: true, message: null })
         newClimateType.setCode(climateType.code)
         commit('setClimateType', newClimateType)
-        commit('datacard/setClimateType', newClimateType.getCode(), { root: true })
+        commit('datacard/setClimateType', newClimateType, { root: true })
       } else {
         climateType.setValid({ isValid: true, message: null })
         commit('setClimateType', climateType)
-        commit('datacard/setClimateTypeId', climateType.getCode(), { root: true })
+        commit('datacard/setClimateType', climateType, { root: true })
       }
     }
   }

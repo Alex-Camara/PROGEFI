@@ -13,6 +13,12 @@ class DatacardDaoImp {
     return datacards;
   }
 
+  async getAllDatacards() {
+    const datacards = await Datacard.query()
+
+    return datacards;
+  }
+
   async createDatacard(datacard) {
     let sex = null;
     let sexId = null;
@@ -81,7 +87,6 @@ class DatacardDaoImp {
       climateTypeId: climateTypeId,
       vegetationTypeId: vegetationTypeId
     });
-    console.log(newDatacard);
 
     for (let i = 0; i < datacard.curators.length; i++) {
       await Datacard_has_curators.query().insert({
@@ -93,6 +98,8 @@ class DatacardDaoImp {
     return newDatacard;
   }
   async updateDatacard(datacard) {
+    console.log("datacard")
+    console.info(datacard)
     let sex = null;
     let sexId = null;
     if (datacard.sex.id != null) {
@@ -127,6 +134,9 @@ class DatacardDaoImp {
 
     let oldDatacard = await Datacard.query()
       .findOne({ code: datacard.code })
+
+      console.log("oldDatacard")
+    console.info(oldDatacard)
 
     let updatedDatacard = await oldDatacard.$query()
       .updateAndFetch({
@@ -170,9 +180,6 @@ class DatacardDaoImp {
         curatorId: datacard.curators[i].id,
       });
     }
-
-    console.log('updated datacard: ')
-    console.info(updatedDatacard)
 
     return updatedDatacard
   }

@@ -7,7 +7,9 @@
       <UIMenu id="UIMenu"></UIMenu>
     </div>
     <div id="main-content">
-      <router-view></router-view>
+      <transition name="fade">
+        <router-view></router-view>
+      </transition>
     </div>
     <div id="main-footer"></div>
     <modal-helper></modal-helper>
@@ -33,6 +35,7 @@ export default {
 </script>
 
 <style lang="scss">
+@import "/style/style.scss";
 #main-container {
   display: grid;
   width: 100%;
@@ -88,6 +91,29 @@ export default {
 
 .bordered {
   border: 0.5px solid black;
+}
+
+.gray_box {
+  background-color: #f2f2f2;
+  border-radius: 10px 10px 10px 10px;
+  border-color: $light;
+  padding: 20px 20px 20px 20px;
+  // height: 100%;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition-property: opacity;
+  transition-duration: 1s;
+}
+
+.fade-enter-active {
+  transition-delay: 1s;
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
 }
 
 @media screen and (max-width: 1200px) {

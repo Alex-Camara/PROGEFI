@@ -1,5 +1,5 @@
 "use strict";
-import TemplateDAO from '../dao/TemplateDao.js'
+import TemplateDAO from '../../persistence/dao/TemplateDao'
 
 class TemplateHandler {
     constructor() {

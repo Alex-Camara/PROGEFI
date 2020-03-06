@@ -38,13 +38,8 @@ export default {
   background-color: $secondary;
 }
 
-#search_datacards_select :hover {
-  //   position: absolute;
-  background-color: red;
-}
-
 #search_datacards_search_input {
-  width: 600px;
+  width: 700px;
 }
 
 #show_datacards_component_top_controls {
@@ -56,7 +51,7 @@ export default {
 
 #search_datacards_search_field {
   display: flex;
-  background-color: aquamarine;
+  // background-color: aquamarine;
   justify-content: center;
   width: 1200px;
   //   margin: 0 auto;

@@ -109,19 +109,24 @@ export default {
       autocompleteScientificNameStatus: false
     };
   },
+  mounted() {
+    this.$store.commit("speciesData/setDatacard", this.datacardState.datacard);
+  },
   computed: {
     ...mapState("speciesData", {
+      datacardState: state => state
+    }),
+    ...mapState("speciesData", {
       speciesDataState: state => state,
-      speciesData: state => state.speciesData,
-      isScientificNameValid: state =>
-        state.speciesData.getScientificNameValid(),
-      isCommonNameValid: state => state.speciesData.getCommonNameValid(),
-      isGenusValid: state => state.speciesData.getGenusValid(),
-      isFamilyValid: state => state.speciesData.getFamilyValid(),
-      isOrderValid: state => state.speciesData.getOrderValid(),
-      isPhylumValid: state => state.speciesData.getPhylumValid(),
-      isSpeciesClassValid: state => state.speciesData.getSpeciesClassValid(),
-      isKingdomValid: state => state.speciesData.getKingdomValid()
+      datacard: state => state.datacard,
+      isScientificNameValid: state => state.datacard.getScientificNameValid(),
+      isCommonNameValid: state => state.datacard.getCommonNameValid(),
+      isGenusValid: state => state.datacard.getGenusValid(),
+      isFamilyValid: state => state.datacard.getFamilyValid(),
+      isOrderValid: state => state.datacard.getOrderValid(),
+      isPhylumValid: state => state.datacard.getPhylumValid(),
+      isSpeciesClassValid: state => state.datacard.getSpeciesClassValid(),
+      isKingdomValid: state => state.datacard.getKingdomValid()
     }),
     scientificNames: {
       get: function() {
@@ -132,8 +137,8 @@ export default {
     },
     scientificName: {
       get: function() {
-        let scientificName = this.speciesData.getScientificName();
-        // let scientificNameValid = this.speciesData.getScientificNameValid();
+        let scientificName = this.datacard.getScientificName();
+        // let scientificNameValid = this.datacard.getScientificNameValid();
         if (this.isScientificNameValid.message == "temporary error") {
           this.addShakeEffect("scientific_name_input");
         }
@@ -145,7 +150,7 @@ export default {
     },
     commonName: {
       get: function() {
-        let commonName = this.speciesData.getCommonName();
+        let commonName = this.datacard.getCommonName();
         if (this.isCommonNameValid.message == "temporary error") {
           this.addShakeEffect("common_name_input");
         }
@@ -157,7 +162,7 @@ export default {
     },
     genus: {
       get: function() {
-        let genus = this.speciesData.getGenus();
+        let genus = this.datacard.getGenus();
         if (this.isGenusValid.message == "temporary error") {
           this.addShakeEffect("genus_input");
         }
@@ -169,7 +174,7 @@ export default {
     },
     order: {
       get: function() {
-        let order = this.speciesData.getOrder();
+        let order = this.datacard.getOrder();
         if (this.isOrderValid.message == "temporary error") {
           this.addShakeEffect("order_input");
         }
@@ -181,7 +186,7 @@ export default {
     },
     family: {
       get: function() {
-        let family = this.speciesData.getFamily();
+        let family = this.datacard.getFamily();
         if (this.isFamilyValid.message == "temporary error") {
           this.addShakeEffect("family_input");
         }
@@ -193,7 +198,7 @@ export default {
     },
     speciesClass: {
       get: function() {
-        let speciesClass = this.speciesData.getSpeciesClass();
+        let speciesClass = this.datacard.getSpeciesClass();
         if (this.isSpeciesClassValid.message == "temporary error") {
           this.addShakeEffect("species_class_input");
         }
@@ -205,7 +210,7 @@ export default {
     },
     phylum: {
       get: function() {
-        let phylum = this.speciesData.getPhylum();
+        let phylum = this.datacard.getPhylum();
         if (this.isPhylumValid.message == "temporary error") {
           this.addShakeEffect("phylum_input");
         }
@@ -217,7 +222,7 @@ export default {
     },
     kingdom: {
       get: function() {
-        let kingdom = this.speciesData.getKingdom();
+        let kingdom = this.datacard.getKingdom();
         if (this.isKingdomValid.message == "temporary error") {
           this.addShakeEffect("kingdom_input");
         }

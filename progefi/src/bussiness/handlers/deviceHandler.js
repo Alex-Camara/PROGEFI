@@ -1,8 +1,8 @@
 "use strict";
-import DeviceDao from '../dao/DeviceDao.js'
+import DeviceDao from '../../persistence/dao/DeviceDao'
 
 class DeviceHandler {
-    constructor(){
+    constructor() {
         this.deviceDao = new DeviceDao()
     }
     async getDevices(selectedDevice, result) {
@@ -12,6 +12,12 @@ class DeviceHandler {
     async getModels(deviceId, result) {
         let models = await this.deviceDao.getModels(deviceId);
         result(models);
+    }
+    async getModel(modelId) {
+        return new Promise(async (resolve) => {
+            let model = await this.deviceDao.getModel(modelId);
+            resolve(model);
+        });
     }
     async createDevice(device, result) {
         let createdDevice = await this.deviceDao.createDevice(device);
