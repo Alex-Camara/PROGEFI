@@ -1,37 +1,43 @@
 'use strict'
-import VegetalFormation from './vegetalFormation'
 
 class VegetationType {
-  constructor () {
+  constructor() {
     this.id = null
     this.name = null
-    this.vegetalFormation = null
+    this.vegetalFormationId = null
     this.required = true
     this.valid = {}
     this.valid.isValid = false
     this.valid.message = 'Campo requerido'
   }
-  setVegetationType (vegetationType) {
-    this.id = vegetationType.id
+  setVegetationType(vegetationType) {
+    if (vegetationType.hasOwnProperty("id")) {
+      this.id = vegetationType.id
+    }
     this.name = vegetationType.name
+    this.vegetalFormationId = vegetationType.vegetalFormationId
+    this.valid = { isValid: true, message: null };
   }
-  setVegetalFormation (vegetalFormation) {
+  setVegetalFormation(vegetalFormation) {
     this.vegetalFormation = vegetalFormation
   }
-  setName(name){
+  setName(name) {
     this.name = name
   }
-  setValid (valid) {
+  setValid(valid) {
     this.valid.isValid = valid.isValid
     this.valid.message = valid.message
   }
-  getId(){
+  getId() {
     return this.id
   }
-  getValid(){
+  getValid() {
     return this.valid
   }
-  getName(){
+  isValid(){
+    return this.valid.isValid
+  }
+  getName() {
     return this.name
   }
 }

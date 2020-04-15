@@ -7,7 +7,21 @@ Model.knex(Knex(KnexConfig.development));
 
 class DeviceModel extends Model {
     static get tableName() {
-        return 'model';
+        return 'Model';
+    }
+
+    static get relationMappings() {
+        const Device = require('./Device');
+        return {
+            device: {
+                relation: Model.BelongsToOneRelation,
+                modelClass: Device,
+                join: {
+                    from: 'Model.deviceId',
+                    to: 'Device.id'
+                }
+            }
+        }
     }
 }
 module.exports = DeviceModel;

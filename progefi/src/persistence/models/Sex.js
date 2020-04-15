@@ -7,7 +7,7 @@ Model.knex(Knex(KnexConfig.development));
 
 class Sex extends Model {
     static get tableName() {
-        return 'sex';
+        return 'Sex';
     }
 }
 module.exports = Sex;

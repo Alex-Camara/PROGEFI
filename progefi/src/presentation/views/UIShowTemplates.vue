@@ -1,10 +1,34 @@
 <template>
   <div id="show_templates_component">
     <div id="show_templates_component_title">
-        <p class="component_title">Plantillas</p>
+      <p class="component_title">Plantillas</p>
+    </div>
+
+    <div id="show_templates_component_content">
+      <templates-table></templates-table>
+
+      <div class="float_button" v-on:click="createTemplate()">
+        <img class="float_button_icon" :src="require('../assets/plus.png')" />
+      </div>
     </div>
   </div>
 </template>
+
+<script>
+import templatesTable from "../components/templatesTable.vue";
+export default {
+  components: {
+    "templates-table": templatesTable
+  },
+  methods: {
+    createTemplate() {
+      this.$router.push({
+        name: "UICreateTemplate"
+      });
+    }
+  }
+};
+</script>
 
 <style lang="scss">
 #show_templates_component {

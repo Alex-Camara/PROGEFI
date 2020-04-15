@@ -5,13 +5,13 @@ import Collection from '../../models/collection'
 const collection = {
   namespaced: true,
   state: {
-    collections: [],
+    // collections: [],
     collection: new Collection()
   },
   mutations: {
-    setCollections(state, collections) {
-      Vue.set(state, 'collections', collections)
-    },
+    // setCollections(state, collections) {
+    // Vue.set(state, 'collections', collections)
+    // },
     setCollection(state, collection) {
       collection.setValid({ isValid: true, message: null })
       Vue.set(state, 'collection', collection)
@@ -21,28 +21,15 @@ const collection = {
     }
   },
   actions: {
-    getCollections({ state, commit }) {
+    getCollection({ commit }) {
       return new Promise((resolve) => {
 
-        ipcRenderer.send('getCollections')
-        ipcRenderer.once('collections', (event, receivedCollections) => {
-          let newCollections = []
-          for (let i = 0; i < receivedCollections.length; i++) {
-            let newCollection = new Collection()
-            newCollection.setCollection(receivedCollections[i])
-            newCollections.push(newCollection)
-          }
-          commit('setCollections', newCollections)
-
-          // Para ubicar la coleccion ya seleccionada dentro de la lista de colecciones
-          // recuperadas
-          if (state.collection.id != null) {
-            let selectedCollection = newCollections.find(
-              x => x.id == state.collection.getId()
-            )
-            commit('setCollection', selectedCollection)
-          }
-          resolve();
+        ipcRenderer.send('getCollection')
+        ipcRenderer.once('collection', (event, receivedCollection) => {
+          let newCollection = new Collection()
+          newCollection.setCollection(receivedCollection[0])
+          commit('setCollection', newCollection)
+          resolve(newCollection);
         })
       });
     },

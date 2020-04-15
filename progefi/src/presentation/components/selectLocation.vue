@@ -4,6 +4,7 @@
       <!-- --------GeographicalData Component Content----- -->
       <div id="geographicalData_component_content_topFields" class="box">
         <div id="geographicalData_component_content_topFields_header">
+          <information_helper :message="informationMessage"></information_helper>
           <b class="is-size-6">Datos de ubicación:</b>
         </div>
         <div id="geographicalData_component_content_topFields_coordinates">
@@ -12,14 +13,25 @@
             id="longitude_helper"
             v-bind:selectedValue="longitude"
             v-bind:attribute="'longitude'"
-            v-if="metadataState.longitude"
+            v-if="longitudeMetadata != -181"
           ></metadata-helper>
 
-          <b-field id="longitude_input_field" custom-class="is-small is-centered">
+          <b-field
+            id="longitude_input_field"
+            custom-class="is-small is-centered"
+          >
             <template slot="label">
-              <required-field-helper :name="'Longitud:'" :valid="isLongitudeValid"></required-field-helper>
+              <required-field-helper
+                :name="'Longitud:'"
+                :valid="isLongitudeValid"
+              ></required-field-helper>
             </template>
-            <input id="longitude_input" class="input" v-model="longitude" placeholder="Longitud" />
+            <input
+              id="longitude_input"
+              class="input"
+              v-model="longitude"
+              placeholder="Longitud"
+            />
           </b-field>
 
           <!-- ------- latitude field ----- -->
@@ -28,14 +40,25 @@
             id="latitude_helper"
             v-bind:selectedValue="latitude"
             v-bind:attribute="'latitude'"
-            v-if="metadataState.latitude"
+            v-if="latitudeMetadata != -181"
           ></metadata-helper>
 
-          <b-field id="latitude_input_field" custom-class="is-small is-centered">
+          <b-field
+            id="latitude_input_field"
+            custom-class="is-small is-centered"
+          >
             <template slot="label">
-              <required-field-helper :name="'Latitud:'" :valid="isLatitudeValid"></required-field-helper>
+              <required-field-helper
+                :name="'Latitud:'"
+                :valid="isLatitudeValid"
+              ></required-field-helper>
             </template>
-            <input id="latitude_input" class="input" v-model="latitude" placeholder="Latitud" />
+            <input
+              id="latitude_input"
+              class="input"
+              v-model="latitude"
+              placeholder="Latitud"
+            />
           </b-field>
 
           <!-- ------- altitude field ----- -->
@@ -44,15 +67,23 @@
             id="altitude_helper"
             v-bind:selectedValue="altitude"
             v-bind:attribute="'altitude'"
-            v-if="metadataState.altitude"
+            v-if="altitudeMetadata != null"
           ></metadata-helper>
 
           <b-field id="altitude_input_field">
             <b-field custom-class="is-small is-centered">
               <template slot="label">
-                <required-field-helper :name="'Altitud:'" :valid="isAltitudeValid"></required-field-helper>
+                <required-field-helper
+                  :name="'Altitud:'"
+                  :valid="isAltitudeValid"
+                ></required-field-helper>
               </template>
-              <input id="altitude_input" class="input" v-model="altitude" placeholder="Altitud" />
+              <input
+                id="altitude_input"
+                class="input"
+                v-model="altitude"
+                placeholder="Altitud"
+              />
             </b-field>
             <p id="altitude_input_message" class="control">
               <span class="button is-static">msnm</span>
@@ -62,11 +93,22 @@
 
         <div id="geographicalData_component_content_topFields_namedLocation">
           <!-- ------- country select ----- -->
-          <b-field id="country_input_field" custom-class="is-small is-centered" label="País:">
+          <b-field
+            id="country_input_field"
+            custom-class="is-small is-centered"
+            label="País:"
+          >
             <template slot="label">
-              <required-field-helper :name="'País:'" :valid="isCountryValid"></required-field-helper>
+              <required-field-helper
+                :name="'País:'"
+                :valid="isCountryValid"
+              ></required-field-helper>
             </template>
-            <input id="country_input" class="input is-small" v-model="country" />
+            <input
+              id="country_input"
+              class="input is-small"
+              v-model="country"
+            />
           </b-field>
 
           <!-- ------- countryState select ----- -->
@@ -76,9 +118,16 @@
             label="Estado:"
           >
             <template slot="label">
-              <required-field-helper :name="'Estado:'" :valid="isCountryStateValid"></required-field-helper>
+              <required-field-helper
+                :name="'Estado:'"
+                :valid="isCountryStateValid"
+              ></required-field-helper>
             </template>
-            <input id="country_state_input" class="input is-small" v-model="countryState" />
+            <input
+              id="country_state_input"
+              class="input is-small"
+              v-model="countryState"
+            />
           </b-field>
 
           <!-- ------- municipality select ----- -->
@@ -88,21 +137,39 @@
             label="Municipio:"
           >
             <template slot="label">
-              <required-field-helper :name="'Municipio:'" :valid="isMunicipalityValid"></required-field-helper>
+              <required-field-helper
+                :name="'Municipio:'"
+                :valid="isMunicipalityValid"
+              ></required-field-helper>
             </template>
-            <input id="municipality_input" class="input is-small" v-model="municipality" />
+            <input
+              id="municipality_input"
+              class="input is-small"
+              v-model="municipality"
+            />
           </b-field>
 
           <!-- ------- locality select ----- -->
-          <b-field id="locality_input_field" custom-class="is-small is-centered" label="Localidad:">
+          <b-field
+            id="locality_input_field"
+            custom-class="is-small is-centered"
+            label="Localidad:"
+          >
             <template slot="label">
-              <required-field-helper :name="'Localidad:'" :valid="isLocalityValid"></required-field-helper>
+              <required-field-helper
+                :name="'Localidad:'"
+                :valid="isLocalityValid"
+              ></required-field-helper>
             </template>
-            <input id="locality_input" class="input is-small" v-model="locality" />
+            <input
+              id="locality_input"
+              class="input is-small"
+              v-model="locality"
+            />
           </b-field>
         </div>
       </div>
-
+      <!--  -->
       <div
         id="geographicalData_component_map"
         v-observe-visibility="visibilityChanged"
@@ -116,7 +183,11 @@
           :max-bounds="maxBounds"
           :zoom="zoom"
           :center="center"
-          :options="{zoomControl: true, attributionControl: false, scrollWheelZoom:false}"
+          :options="{
+            zoomControl: true,
+            attributionControl: false,
+            scrollWheelZoom: false
+          }"
         >
           <v-tile-layer :url="url" :noWrap="noWrap"></v-tile-layer>
           <v-marker :lat-lng.sync="center" :draggable="true"></v-marker>
@@ -127,12 +198,11 @@
 </template>
 
 <script>
-import store from "../store/store.js";
 import axios from "axios";
-import { mapState, mapGetters } from "vuex";
+import { mapState } from "vuex";
 import metadataHelper from "../helpers/metadataHelper.vue";
 import requiredFieldHelper from "../helpers/requiredFieldHelper.vue";
-import Location from "../models/location.js";
+import informationHelper from "../helpers/informationHelper.vue";
 import { LMap, LTileLayer, LMarker } from "vue2-leaflet";
 import { OpenStreetMapProvider } from "leaflet-geosearch";
 
@@ -140,6 +210,7 @@ export default {
   components: {
     "metadata-helper": metadataHelper,
     "required-field-helper": requiredFieldHelper,
+    "information_helper": informationHelper,
     "v-map": LMap,
     "v-tile-layer": LTileLayer,
     "v-marker": LMarker
@@ -151,75 +222,81 @@ export default {
       maxZoom: 18,
       minZoom: 2,
       noWrap: true,
-      maxBounds: [
-        { lat: -90, lng: -180 },
-        { lat: 90, lng: 180 }
-      ],
-      locationObject: new Location()
+      maxBounds: [{ lat: -90, lng: -180 }, { lat: 90, lng: 180 }],
+      informationMessage: "El país, estado, municipio y localidad serán " +
+              "rellenados a partir de las coordenadas que introduzcas (Si hay Internet)..."
     };
   },
   mounted() {
-    //inicializar el marcador del mapa en el centro de México
-    this.center = { lat: this.latitude, lng: this.longitude };
-    this.$store.commit("location/setDatacard", this.datacardState.datacard);
-    this.$store.commit("coordinate/setDatacard", this.datacardState.datacard);
+    //inicializar el marcador del mapa en el IIBUV
+    this.longitude = -96.873879;
+    this.latitude = 19.516454;
   },
   computed: {
     ...mapState("metadata", {
-      metadataState: state => state
+      metadataState: state => state,
+      longitudeMetadata: state => state.collect.getLongitude(),
+      latitudeMetadata: state => state.collect.getLatitude(),
+      altitudeMetadata: state => state.collect.getAltitude()
     }),
     ...mapState("datacard", {
-      datacardState: state => state
-    }),
-    ...mapState("location", {
-      locationState: state => state,
-      // location: state => state.location,
+      datacardState: state => state,
       datacard: state => state.datacard,
-      isCountryValid: state => state.datacard.getCountryValid(),
-      isCountryStateValid: state => state.datacard.getCountryStateValid(),
-      isMunicipalityValid: state => state.datacard.getMunicipalityValid(),
-      isLocalityValid: state => state.datacard.getLocalityValid()
-    }),
-    ...mapState("coordinate", {
-      coordinateState: state => state,
-      isLongitudeValid: state => state.datacard.getLongitudeValid(),
-      isLatitudeValid: state => state.datacard.getLatitudeValid(),
-      isAltitudeValid: state => state.datacard.getAltitudeValid()
+      isLongitudeValid: state =>
+        state.datacard.getCollect().getLongitudeValid(),
+      isLatitudeValid: state => state.datacard.getCollect().getLatitudeValid(),
+      isAltitudeValid: state => state.datacard.getCollect().getAltitudeValid(),
+      isCountryValid: state => state.datacard.getCollect().getCountryValid(),
+      isCountryStateValid: state =>
+        state.datacard.getCollect().getCountryStateValid(),
+      isMunicipalityValid: state =>
+        state.datacard.getCollect().getMunicipalityValid(),
+      isLocalityValid: state => state.datacard.getCollect().getLocalityValid()
     }),
     longitude: {
       get: function() {
-        let longitude = this.datacard.getLongitude();
+        let longitude = this.datacard.getCollect().getLongitude();
 
-        if (this.isLocalityValid.message == "temporary error") {
+        if (
+          this.datacard.getCollect().getLongitudeValidMessage() ===
+          "temporary error"
+        ) {
           this.addShakeEffect("longitude_input");
         }
         return longitude;
       },
       set: function(newValue) {
         newValue = this.trimCoordinate(newValue);
-        this.$store.dispatch("coordinate/setLongitude", newValue);
+        this.datacard.getCollect().setLongitude(newValue);
+        // this.$store.commit("datacard/setDatacard", this.datacard);
       }
     },
     latitude: {
       get: function() {
-        let latitude = this.datacard.getLatitude();
+        let latitude = this.datacard.getCollect().getLatitude();
 
-        if (this.isLatitudeValid.message == "temporary error") {
+        if (
+          this.datacard.getCollect().getLatitudeValidMessage() ===
+          "temporary error"
+        ) {
           this.addShakeEffect("latitude_input");
         }
         return latitude;
       },
       set: function(newValue) {
         newValue = this.trimCoordinate(newValue);
-        this.$store.dispatch("coordinate/setLatitude", newValue);
-        //return newValue;
+        this.datacard.getCollect().setLatitude(newValue);
+        // this.$store.commit("datacard/setDatacard", this.datacard);
       }
     },
     altitude: {
       get: function() {
-        let altitude = this.datacard.getAltitude();
+        let altitude = this.datacard.getCollect().getAltitude();
 
-        if (this.isAltitudeValid.message == "temporary error") {
+        if (
+          this.datacard.getCollect().getAltitudeValidMessage() ===
+          "temporary error"
+        ) {
           this.addShakeEffect("altitude_input");
         }
         return altitude;
@@ -227,8 +304,8 @@ export default {
       set: function(newValue) {
         newValue = newValue.toString();
         newValue = newValue.trim();
-        //newValue = this.trimCoordinate(newValue);
-        this.$store.dispatch("coordinate/setAltitude", newValue);
+        this.datacard.getCollect().setAltitude(newValue);
+        this.$store.commit("datacard/setDatacard", this.datacard);
       }
     },
     center: {
@@ -238,93 +315,134 @@ export default {
       set: function(newValue) {
         this.latitude = newValue.lat;
         this.longitude = newValue.lng;
-        this.getAddress(this.latitude, this.longitude);
+        if (this.internetConnection){
+          this.getAddress(this.latitude, this.longitude);
+        }
       }
     },
     country: {
       get: function() {
-        let country = this.datacard.getCountry();
-        if (this.isCountryValid.message == "temporary error") {
+        let country = this.datacard.getCollect().getCountry();
+        if (
+          this.datacard.getCollect().getCountryValidMessage() ===
+          "temporary error"
+        ) {
           this.addShakeEffect("country_input");
         }
         return country;
       },
       set: function(newValue) {
-        this.$store.dispatch("location/setCountry", newValue);
+        this.datacard.getCollect().setCountry(newValue);
+        this.$store.commit("datacard/setDatacard", this.datacard);
       }
     },
     countryState: {
       get: function() {
-        let countryState = this.datacard.getCountryState();
+        let countryState = this.datacard.getCollect().getCountryState();
 
-        if (this.isCountryStateValid.message == "temporary error") {
+        if (
+          this.datacard.getCollect().getCountryStateValidMessage() ===
+          "temporary error"
+        ) {
           this.addShakeEffect("country_state_input");
         }
         return countryState;
       },
       set: function(newValue) {
-        this.$store.dispatch("location/setCountryState", newValue);
+        this.datacard.getCollect().setCountryState(newValue);
+        this.$store.commit("datacard/setDatacard", this.datacard);
       }
     },
     municipality: {
       get: function() {
-        let municipality = this.datacard.getMunicipality();
+        let municipality = this.datacard.getCollect().getMunicipality();
 
-        if (this.isMunicipalityValid.message == "temporary error") {
+        if (
+          this.datacard.getCollect().getMunicipalityValidMessage() ==
+          "temporary error"
+        ) {
           this.addShakeEffect("municipality_input");
         }
         return municipality;
       },
       set: function(newValue) {
-        this.$store.dispatch("location/setMunicipality", newValue);
+        this.datacard.getCollect().setMunicipality(newValue);
+        this.$store.commit("datacard/setDatacard", this.datacard);
       }
     },
     locality: {
       get: function() {
-        let locality = this.datacard.getLocality();
+        let locality = this.datacard.getCollect().getLocality();
 
-        if (this.isLocalityValid.message == "temporary error") {
+        if (
+          this.datacard.getCollect().getLocalityValidMessage() ==
+          "temporary error"
+        ) {
           this.addShakeEffect("locality_input");
         }
         return locality;
       },
       set: function(newValue) {
-        this.$store.dispatch("location/setLocality", newValue);
+        this.datacard.getCollect().setLocality(newValue);
+        this.$store.commit("datacard/setDatacard", this.datacard);
       }
     },
     internetConnection() {
       return navigator.onLine;
     }
   },
+  watch: {
+    longitudeMetadata(newValue) {
+      if (newValue != null) {
+        this.longitude = newValue;
+        // debugger
+      }
+    },
+    latitudeMetadata(newValue) {
+      if (newValue != null) {
+        this.latitude = this.latitudeMetadata;
+      }
+    },
+    altitudeMetadata(newValue) {
+      if (newValue != null) {
+        this.altitude = this.altitudeMetadata;
+      }
+    }
+  },
   methods: {
     getAddress(latitude, longitude) {
-      if (this.internetConnection) {
-        //nominatim es la biblioteca de OpenStreetMaps para obtener direcciones
-        let nominatimAPIRequest =
-          "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" +
-          latitude +
-          "&lon=" +
-          longitude;
+      return new Promise(resolve => {
+        // if (this.internetConnection) {
+          //nominatim es la biblioteca de OpenStreetMaps para obtener direcciones
+          let nominatimAPIRequest =
+            "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" +
+            latitude +
+            "&lon=" +
+            longitude;
 
-        axios
-          .get(nominatimAPIRequest)
-          .then(response => {
-            let address = response.data.address;
+          axios
+            .get(nominatimAPIRequest)
+            .then(response => {
+              let address = response.data.address;
 
-            this.locality = this.getLocality(address);
-            this.municipality = address.county;
-            this.countryState = address.state;
-            this.country = address.country;
-          })
-          .catch(error => {
-            this.locality = "";
-            this.municipality = "";
-            this.countryState = "";
-            this.country = "";
-          });
-      } else {
-        this.openToastMessage("Sin conexión a internet", "is-warning");
-      }
+              this.locality = this.getLocality(address);
+              this.municipality = address.county;
+              this.countryState = address.state;
+              this.country = address.country;
+              resolve(address);
+            })
+            .catch(error => {
+              this.locality = "";
+              this.municipality = "";
+              this.countryState = "";
+              this.country = "";
+              resolve("")
+            });
+        // } else {
+          // this.openToastMessage("Sin conexión a internet", "is-warning");
+          // resolve("");
+        // }
+      });
     },
     getLocality(address) {
       //asumiremos como localidad aquellos poblados que tengan las siguientes propiedades
@@ -369,6 +487,9 @@ export default {
         return coordinate;
       }
     },
+    setHelpText(message, active) {
+      this.$store.dispatch("helpText/setActive", { active, message });
+    },
     openToastMessage(message, type) {
       this.$buefy.toast.open({
         duration: 5000,
@@ -402,6 +523,8 @@ export default {
 #geographicalData_component_content_topFields_header {
   grid-row: 1 / 2;
   grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
 }
 
 #geographicalData_component_content_topFields_coordinates {

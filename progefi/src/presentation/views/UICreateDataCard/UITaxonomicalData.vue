@@ -1,7 +1,7 @@
 <template>
   <div id="taxonomicalData_component" class="box" @click="closeAutocompletes()">
     <div id="taxonomicalData_component_header">
-      <p class="subtitle is-5">Datos taxonómicos</p>
+      <p class="subtitle_dark_gray is-5">Datos taxonómicos</p>
     </div>
 
     <div id="taxonomicalData_component_content_speciesData" class="box">
@@ -55,17 +55,24 @@ export default {
     return {};
   },
   computed: {
-    ...mapState("speciesData", {
-      isScientificNameValid: state => state.datacard.getScientificNameValid(),
-      isCommonNameValid: state => state.datacard.getCommonNameValid(),
-      isGenusValid: state => state.datacard.getGenusValid(),
-      isFamilyValid: state => state.datacard.getFamilyValid(),
-      isOrderValid: state => state.datacard.getOrderValid(),
-      isPhylumValid: state => state.datacard.getPhylumValid(),
-      isSpeciesClassValid: state => state.datacard.getSpeciesClassValid(),
-      isKingdomValid: state => state.datacard.getKingdomValid(),
-      isLifeStageValid: state => state.datacard.getLifeStageValid(),
-      isSexValid: state => state.datacard.getSexValid()
+    ...mapState("datacard", {
+      datacard: state => state.datacard,
+      scientificNameValid: state =>
+        state.datacard
+          .getCollect()
+          .getSpecimen()
+          .getSpecies()
+          .getScientificNameValid(),
+      isLifeStageValid: state =>
+        state.datacard
+          .getCollect()
+          .getSpecimen()
+          .getLifeStageValid(),
+      isSexValid: state =>
+        state.datacard
+          .getCollect()
+          .getSpecimen()
+          .getSexValid()
     })
   },
   methods: {
@@ -81,14 +88,7 @@ export default {
     disableNextButton() {
       //debugger;
       if (
-        this.isScientificNameValid.isValid &&
-        this.isCommonNameValid.isValid &&
-        this.isGenusValid.isValid &&
-        this.isFamilyValid.isValid &&
-        this.isOrderValid.isValid &&
-        this.isPhylumValid.isValid &&
-        this.isSpeciesClassValid.isValid &&
-        this.isKingdomValid.isValid &&
+        this.scientificNameValid.isValid &&
         this.isLifeStageValid.isValid &&
         this.isSexValid.isValid
       ) {

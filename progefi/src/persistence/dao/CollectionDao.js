@@ -6,12 +6,8 @@ class CollectionDao {
     constructor() {
         this.collectionDaoImp = new CollectionDaoImp();
     }
-    getCollections() {
-        let collections = Promise.resolve(this.collectionDaoImp.getCollections())
-        return collections;
-    }
-    getCollection(collectionId) {
-        let collection = Promise.resolve(this.collectionDaoImp.getCollection(collectionId))
+    getCollection() {
+        let collection = Promise.resolve(this.collectionDaoImp.getCollection())
         return collection;
     }
 }

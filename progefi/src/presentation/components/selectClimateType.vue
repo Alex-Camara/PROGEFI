@@ -3,10 +3,11 @@
     <div id="select_climate_type_container">
       <div id="select_climate_type_container_header">
         <div id="select_climate_type_container_header_title">
+          <information_helper :message="informationMessage"></information_helper>
           <required-field-helper
             id="select_climate_required_field"
             :name="null"
-            :valid="isClimateTypeValid"
+            :valid="climateTypeValid"
           ></required-field-helper>
           <b
             id="select_climate_type_container_header_title_value"
@@ -34,7 +35,7 @@
           <ul id="select_climate_type_list">
             <li
               id="select_climate_type_list_bubble"
-              v-for="climateType in climateTypeState.climateTypes"
+              v-for="climateType in climateTypes"
               :key="climateType.getCode()"
               :value="climateType.getCode()"
               :style="{'background-color': '#' + climateType.getColorCode()}"
@@ -43,12 +44,14 @@
               @mouseleave="showSelectedDescription()"
             >
               <div
-                v-if="climateType.getCode() != 'Indeterminado'"
+                v-if="climateType.getCode() !== 'Indeterminado'"
                 id="select_climate_type_list_bubble_text"
-              >{{climateType.code}}</div>
+              >
+                {{ climateType.code }}
+              </div>
               <img
                 id="select_climate_type_container_content_indeterminate_bubble"
-                v-if="climateType.getCode() == 'Indeterminado'"
+                v-if="climateType.getCode() === 'Indeterminado'"
                 :src="climateType.getColorCode()"
               />
             </li>
@@ -61,42 +64,55 @@
 </template>
 
 <script>
-import store from "../store/store.js";
 import { mapState } from "vuex";
 import requiredFieldHelper from "../helpers/requiredFieldHelper.vue";
+import ClimateType from "../models/climateType";
+import informationHelper from "../helpers/informationHelper";
 
 export default {
   components: {
-    "required-field-helper": requiredFieldHelper
+    "required-field-helper": requiredFieldHelper,
+    "information_helper": informationHelper,
   },
   name: "climateTypeHelper",
   data() {
     return {
+      climateTypes: [],
       selectedTitle: "",
-      selectedDescription: ""
+      selectedDescription: "",
+      informationMessage: "Tipos de clima obtenidos de la clasificación de Köeppen modificada por García..."
     };
   },
-  mounted() {
-    this.$store.dispatch("climateType/getClimateTypes");
+  async mounted() {
+    this.climateTypes = await ClimateType.getAll();
   },
   computed: {
-    ...mapState("climateType", {
-      climateTypeState: state => state,
-      climateTypeCode: state => state.climateType.getCode(),
-      isClimateTypeValid: state => state.climateType.getValid()
+    ...mapState("datacard", {
+      datacard: state => state.datacard,
+      climateTypeCode: state =>
+        state.datacard
+          .getCollect()
+          .getClimateType()
+          .getCode(),
+      climateTypeValid: state =>
+        state.datacard
+          .getCollect()
+          .getClimateType()
+          .getValid()
     }),
     selectedClimateType: {
       get: function() {
-        return this.climateTypeState.climateType;
+        let climateType = this.datacard.getCollect().getClimateType();
+        return climateType;
       },
       set: function(newValue) {
-        this.$store.dispatch("climateType/setClimateType", newValue);
+        this.$store.dispatch("datacard/setClimateType", newValue);
       }
     }
   },
   methods: {
     showDescription(climateCode) {
-      let climateType = this.climateTypeState.climateTypes.find(
+      let climateType = this.climateTypes.find(
         x => x.code === climateCode
       );
       this.selectedDescription = climateType.getDescription();
@@ -116,9 +132,9 @@ export default {
       this.$store.dispatch("modal/openModal", {
         title: "Tipos de clima",
         fieldText: "Ingresa el tipo de clima",
-        mutationName: "climateType/setClimateType",
+        mutationName: "datacard/setClimateType",
         valueName: "code",
-        regex: "^[a-zA-Z \\u00C0-\\u00FF]*$",
+        regex: "^[a-zA-Z0-9 \\'/():_-]*$",
         minLimit: 2,
         maxLimit: 10
       });
@@ -144,6 +160,7 @@ export default {
 #select_climate_type_container_header_title {
   align-self: start;
   display: flex;
+  align-items: center;
 }
 
 #select_climate_required_field {

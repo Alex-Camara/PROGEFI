@@ -6,7 +6,7 @@
           <required-field-helper
             id="select_vegetation_required_field"
             :name="null"
-            :valid="isVegetationTypeValid"
+            :valid="vegetationTypeValid"
           ></required-field-helper>
           <b
             id="select_vegetation_container_header_title_value"
@@ -16,12 +16,12 @@
           <b
             id="select_vegetation_container_header_value"
             class="is-size-6"
-            v-if="selectedVegetationType.getName() "
-          >{{ selectedVegetationType.getName() }}</b>
+            v-if="selectedVegetationType.name "
+          >{{ selectedVegetationType.name }}</b>
           <img
             id="select_vegetation_checked_icon"
             src="../assets/checked.png"
-            v-if="selectedVegetationType.getName() "
+            v-if="selectedVegetationType.name "
           />
         </div>
 
@@ -52,7 +52,7 @@
             id="select_vegetation_vegetal_formation_list_item"
             v-for="vegetalFormation in vegetalFormations"
             :key="vegetalFormation.getId()"
-            :value="vegetalFormation.getId()"
+            :value="vegetalFormation"
             v-on:click="showVegetationTypes(vegetalFormation)"
           >
             <div id="select_vegetation_vegetal_formation_list_element">
@@ -95,9 +95,9 @@
 </template>
 
 <script>
-import store from "../store/store.js";
 import { mapState } from "vuex";
 import requiredFieldHelper from "../helpers/requiredFieldHelper.vue";
+import VegetalFormation from "../models/vegetalFormation";
 
 export default {
   components: {
@@ -120,42 +120,42 @@ export default {
         { colorCode: "#C0CA33" },
         { colorCode: "#66BB6A" }
       ],
+      vegetalFormations: [],
       selectedVegetationTypes: [],
       selectedVegetalFormation: null,
       scroll: 0
     };
   },
-  mounted() {
-    this.$store.dispatch("vegetationType/getVegetationTypes");
+  async mounted() {
+    this.vegetalFormations = await VegetalFormation.getAll();
   },
   computed: {
-    ...mapState("vegetationType", {
-      vegetationTypeState: state => state,
-      vegetalFormations: state => state.vegetalFormations,
-      isVegetationTypeValid: state => state.vegetationType.getValid()
+    ...mapState("datacard", {
+      datacard: state => state.datacard,
+      vegetationTypeValid: state =>
+        state.datacard
+          .getCollect()
+          .getVegetationType()
+          .getValid()
     }),
     selectedVegetationType: {
       get: function() {
-        return this.vegetationTypeState.vegetationType;
+        let vegetationType = this.datacard.getCollect().getVegetationType();
+        return vegetationType;
       },
       set: function(newValue) {
-        //debugger;
-        this.$store.dispatch("vegetationType/setVegetationType", newValue);
+        this.$store.dispatch("datacard/setVegetationType", newValue);
       }
     }
   },
   methods: {
     showVegetationTypes(vegetalFormation) {
-      if (vegetalFormation.getName() == "Indeterminado") {
+      if (vegetalFormation.getName() === "Indeterminado") {
         this.setSelectedVegetationType({ name: "Indeterminado" });
         this.selectedVegetationTypes = [];
       } else {
         this.selectedVegetalFormation = vegetalFormation.getName();
-        this.selectedVegetationTypes = this.vegetationTypeState.vegetationTypes.filter(
-          vegetationType =>
-            vegetationType.vegetalFormation.getId() == vegetalFormation.getId()
-        );
-        return 1;
+        this.selectedVegetationTypes = vegetalFormation.getVegetationTypes();
       }
     },
     setSelectedVegetationType(vegetationType) {
@@ -168,7 +168,7 @@ export default {
       this.$store.dispatch("modal/openModal", {
         title: "Tipos de vegetación",
         fieldText: "Ingresa el tipo de vegetación",
-        mutationName: "vegetationType/setVegetationType",
+        mutationName: "datacard/setVegetationType",
         valueName: "name",
         regex: "^[a-zA-Z \\u00C0-\\u00FF]*$",
         minLimit: 2,

@@ -2,7 +2,12 @@
   <div>
     <div id="datacard_template_container">
       <!-- :margin="[2, 2]" -->
-      <div id="datacard" ref="datacard" v-observe-visibility="visibilityChanged" v-if="layout">
+      <div
+        id="datacard"
+        ref="datacard"
+        v-observe-visibility="visibilityChanged"
+        v-if="layout"
+      >
         <grid-layout
           id="lay"
           ref="lay"
@@ -28,11 +33,17 @@
             :h.sync="item.h"
             :i="item.i"
             :key="item.i"
-            :style="item.style"
+            :style="getStyle(item.i)"
           >
-            <img :src="photoCollect.photoCollectPath" v-if="item.i == 'photocollect'" />
-            <img :src="collection.getImagePath()" v-if="item.i == 'instituteLogo'" />
-            {{item.value}}
+            <img
+              :src="photoCollect.photoCollectPath"
+              v-if="item.i == 'photocollect'"
+            />
+            <img
+              :src="collection.getInstituteLogoPath()"
+              v-if="item.i == 'instituteLogo'"
+            />
+            {{ item.value }}
           </grid-item>
         </grid-layout>
       </div>
@@ -45,7 +56,6 @@ import { mapState } from "vuex";
 import store from "../store/store.js";
 import VueGridLayout from "vue-grid-layout";
 import domtoimage from "dom-to-image";
-import { saveAs } from "file-saver";
 
 export default {
   components: {
@@ -56,43 +66,6 @@ export default {
   data() {
     return {
       originalColors: [],
-      // storeModules: [
-      // {
-      // name: "datacard",
-      // allowedTags: ["collectDate", "collectHour"]
-      // },
-      // {
-      // name: "coordinate",
-      // allowedTags: ["latitude", "longitude", "altitude"]
-      // },
-      // { name: "catalogue", allowedTags: ["catalogue"] },
-      // { name: "collection", allowedTags: ["collection", "institute"] },
-      // { name: "vegetationType", allowedTags: ["vegetationType"] },
-      // { name: "climateType", allowedTags: ["climateType"] },
-      // { name: "collector", allowedTags: ["collector"] },
-      // { name: "curator", allowedTags: ["curator"] },
-      // { name: "device", allowedTags: ["device", "model"] },
-      // {
-      // name: "location",
-      // allowedTags: ["country", "countryState", "municipality", "locality"]
-      // },
-      // { name: "project", allowedTags: ["project"] },
-      // {
-      // name: "speciesData",
-      // allowedTags: [
-      // "scientificName",
-      // "commonName",
-      // "genus",
-      // "order",
-      // "family",
-      // "speciesClass",
-      // "phylum",
-      // "kingdom",
-      // "sex",
-      // "lifeStage"
-      // ]
-      // }
-      // ],
       percentageRatio: null,
       width: null,
       columnHeight: null,
@@ -100,53 +73,45 @@ export default {
       marginY: [0, 0],
       isResizable: true,
       isDraggable: true,
-      validated: false
+      validated: false,
+      loadingMessage: null,
+      loadingFinishedMessage: null
     };
   },
   computed: {
-    ...mapState("template", {
-      template: state => state.template,
-      fontSizes: state => state.fontSizes,
-      tagColors: state => state.tagColors
-      // layout: state => state.template.layout
-    }),
+    ...mapState("template", {}),
     ...mapState("datacard", {
-      datacard: state => state.datacard
+      datacard: state => state.datacard,
+      template: state => state.datacard.getTemplate(),
+      fontSizes: state => state.datacard.getTemplate().getFontSizes(),
+      tagColors: state => state.datacard.getTemplate().getTagColors(),
+      tags: state => state.datacard.getTemplate().getTags(),
+      collect: state => state.datacard.getCollect(),
+      climateType: state => state.datacard.getCollect().getClimateType(),
+      vegetationType: state => state.datacard.getCollect().getVegetationType(),
+      catalogue: state => state.datacard.getCatalogue(),
+      collection: state => state.datacard.getCatalogue().getCollection(),
+      collector: state => state.datacard.getCollect().getCollector(),
+      curators: state => state.datacard.getCurators(),
+      device: state =>
+        state.datacard
+          .getCollect()
+          .getModel()
+          .getDevice(),
+      project: state => state.datacard.getCollect().getProject(),
+      species: state =>
+        state.datacard
+          .getCollect()
+          .getSpecimen()
+          .getSpecies(),
+      specimen: state => state.datacard.getCollect().getSpecimen()
     }),
     ...mapState("addDatacard", {
       photoCollect: state => state.photoCollect
     }),
-    ...mapState("climateType", {
-      climateType: state => state.climateType
-    }),
-    ...mapState("vegetationType", {
-      vegetationType: state => state.vegetationType
-    }),
-    ...mapState("catalogue", {
-      catalogue: state => state.catalogue
-    }),
-    ...mapState("collection", {
-      collection: state => state.collection
-    }),
-    ...mapState("collector", {
-      collector: state => state.collector
-    }),
     ...mapState("curator", {
-      curator: state => state.curator,
-      curatorState: state => state
-    }),
-    ...mapState("device", {
-      device: state => state.device,
-      model: state => state.model
-    }),
-    ...mapState("speciesData", {
-      speciesData: state => state.speciesData
-    }),
-    ...mapState("project", {
-      project: state => state.project
-    }),
-    ...mapState("location", {
-      location: state => state.location
+      curatorState: state => state,
+      curatorsName: state => state.selectedCuratorsName
     }),
     layout: {
       get: function() {
@@ -170,24 +135,23 @@ export default {
       this.setDatacardStyle();
       //}
     },
-    width(newValue, oldValue) {}
+    curators() {
+      this.setValues();
+    }
   },
   methods: {
-    visibilityChanged(isVisible, entry) {
-      // console.info(this.datacard);
+    visibilityChanged(isVisible) {
       if (isVisible) {
         this.setDatacardStyle();
         this.setValues();
-        // debugger;
       }
     },
     // Método para ajustar el tamaño del texto segun se requiera
     setFontSize() {
       let originalStyle = this.fontSizes;
-      if (this.percentageRatio == 100) {
+      if (this.percentageRatio === 100) {
         for (let i = 0; i < this.layout.length; i++) {
-          let originalSize = originalStyle[i];
-          this.layout[i].style["font-size"] = originalSize;
+          this.tags[i].style["font-size"] = originalStyle[i];
         }
       } else {
         for (let i = 0; i < this.layout.length; i++) {
@@ -197,28 +161,33 @@ export default {
           originalSize = originalSize[0];
           let fontSize = (this.percentageRatio * originalSize) / 100;
           fontSize = fontSize + "px";
-          this.layout[counter].style["font-size"] = fontSize;
+          this.tags[counter].style["font-size"] = fontSize;
         }
       }
     },
     disableColors() {
       let tagColor = this.template.backgroundColor;
-      for (let i = 0; i < this.layout.length; i++) {
-        this.layout[i].style["background-color"] = tagColor;
+      for (let i = 0; i < this.tags.length; i++) {
+        this.tags[i].style["background-color"] = tagColor;
       }
       this.isResizable = false;
       this.isDraggable = false;
     },
+
     enableColors() {
       let tagColors = this.tagColors;
-      for (let i = 0; i < this.layout.length; i++) {
-        let tagColor = tagColors[i];
-        this.layout[i].style["background-color"] = tagColor;
+      for (let i = 0; i < this.tags.length; i++) {
+        this.tags[i].style["background-color"] = tagColors[i];
       }
       this.isResizable = true;
       this.isDraggable = true;
     },
-    setDatacardStyle() {
+    getStyle(tagValue) {
+      var foundTag = this.tags.find(x => x.tag === tagValue);
+      // //debugger;
+      return foundTag.style;
+    },
+    async setDatacardStyle() {
       let datatardDOMElement = document.getElementById("datacard");
 
       datatardDOMElement.style.backgroundColor = this.template.backgroundColor;
@@ -233,9 +202,12 @@ export default {
         // Si no es preview, es decir, es la versión final, entonces mostramos las dimensiones originales
       } else {
         var self = this;
-
+        await this.setLoadingMessage();
         //se inicia el modal de espera
-        store.dispatch("loading/setActive", true);
+        store.dispatch("loading/setActive", {
+          active: true,
+          message: this.loadingMessage
+        });
 
         //se ajusta al tamaño real
         this.setRealSize(datatardDOMElement).then(() => {
@@ -248,8 +220,21 @@ export default {
         });
       }
     },
+    setLoadingMessage() {
+      return new Promise(resolve => {
+        if (this.datacard.getCurators().length > 0) {
+          this.loadingMessage = "Creando ficha de fotocolecta...";
+          this.loadingFinishedMessage = "¡Ficha de fotocolecta creada!";
+          resolve();
+        } else {
+          this.loadingMessage = "Creando borrador de ficha...";
+          this.loadingFinishedMessage = "Se guardó el borrador de la ficha...";
+          resolve();
+        }
+      });
+    },
     setMinimalSize(datatardDOMElement) {
-      return new Promise((resolve, reject) => {
+      return new Promise(resolve => {
         //anchura de la vista previa de la ficha
         let partialWidth = 1050;
         //porcentaje de reducción de las dimensiones de la ficha
@@ -271,7 +256,7 @@ export default {
       });
     },
     setRealSize(datatardDOMElement) {
-      return new Promise((resolve, reject) => {
+      return new Promise(resolve => {
         //anchura de las columnas y filas del component vue-grid-layer
         this.width = 90;
         this.columnHeight = 1;
@@ -288,18 +273,17 @@ export default {
       });
     },
     async setDatacard() {
-      // this.datacard.setBase64(base64Datacard);
-      let deviceId = await store.dispatch("device/createDevice");
-      let createdModel = await store.dispatch("device/createModel", deviceId);
-      let createdCollector = await store.dispatch("collector/createCollector");
-      let curators = await store.dispatch("curator/createCurators");
-
-      this.datacard.setModel(createdModel);
-      this.datacard.setCollector(createdCollector);
-      this.datacard.setCurators(curators);
-      // this.datacard.setDatacardPath(this.photoCollect.photoCollectPath);
+      await this.datacard
+        .getCollect()
+        .getModel()
+        .save();
+      await this.datacard
+        .getCollect()
+        .getCollector()
+        .save();
+      await this.datacard.saveCurators();
       if (
-        this.datacard.getPhotocollectPath() ==
+        this.datacard.getPhotocollectPath() ===
         this.photoCollect.photoCollectPath
       ) {
         this.datacard.setPhotocollectPath("do-not-save");
@@ -307,53 +291,56 @@ export default {
         this.datacard.setPhotocollectPath(this.photoCollect.photoCollectPath);
       }
 
-      if (curators.length > 0) {
+      if (this.datacard.getCurators().length > 0) {
         this.datacard.validate();
-        let base64 = await this.generateDatacard();
-        this.datacard.base64 = base64;
+        this.datacard.base64 = await this.generateDatacard();
       } else {
         this.datacard.invalidate();
       }
 
+      //se va a crear por primera vez
       if (this.datacard.getCreationDate() == null) {
-        // debugger;
         this.datacard.setCreationDate();
         this.createDatacard(this.datacard);
       } else {
-        // debugger;
+        //se va a actualizar
         this.datacard.setCreationDate();
         this.updateDatacard(this.datacard);
       }
     },
-    createDatacard(datacard) {
-      store.dispatch("datacard/createDatacard", datacard).then(() => {
-        this.$store.dispatch(
-          "loading/setLoadingMessage",
-          "Creando ficha de fotocolecta..."
-        );
-        store.dispatch("loading/setActive", false, { root: true });
-        this.openToast("¡Ficha de fotocolecta creada!");
-        this.$router.push({
-          name: "UIShowDataCards",
-          params: { askToLeave: false, reloadDatacards: true }
-        });
-      });
+    async createDatacard() {
+      await this.datacard.save();
+      this.$emit("exitComponent");
+      await this.$store.dispatch(
+        "loading/setActive",
+        { active: false, message: null },
+        { root: true }
+      );
+      this.openToast(this.loadingFinishedMessage);
+      // await this.$router.push({
+      //   name: "UIShowDataCards",
+      //   params: { askToLeave: false, reloadDatacards: true }
+      // });
     },
-    updateDatacard(datacard) {
-      store.dispatch("datacard/updateDatacard", datacard).then(() => {
-        store.dispatch("loading/setActive", false, { root: true });
-        this.openToast("¡Ficha de fotocolecta validada!");
-        this.$router.push({
-          name: "UIShowDataCards",
-          params: { askToLeave: false, selectedCatalogue: this.catalogue }
-        });
-      });
+    async updateDatacard() {
+      await this.datacard.update();
+      this.$emit("exitComponent");
+      await this.$store.dispatch(
+        "loading/setActive",
+        { active: false, message: null },
+        { root: true }
+      );
+      this.openToast(this.loadingFinishedMessage);
+      // await this.$router.push({
+      //   name: "UIShowDataCards",
+      //   params: { askToLeave: false, selectedCatalogue: this.catalogue }
+      // });
     },
     openToast(message) {
       this.$buefy.toast.open(message);
     },
     generateDatacard() {
-      return new Promise((resolve, reject) => {
+      return new Promise(resolve => {
         domtoimage
           .toBlob(document.getElementById("datacard"), {
             width: this.template.width,
@@ -377,16 +364,17 @@ export default {
 
       for (let i = 0; i < tags.length; i++) {
         let model = tags[i].model;
-        let retrieveMethod = tags[i].retrieveMethod;
+        let modelAttribute = tags[i].modelAttribute;
+        // //debugger;
 
-        let fullTag = null;
+        let fullTag = "";
 
         fullTag = this.assignTagBefore(fullTag, tags[i].tagBefore);
-        fullTag = this.assignTag(tags[i].tag, fullTag, model, retrieveMethod);
+        fullTag = this.assignTag(tags[i].tag, fullTag, model, modelAttribute);
         fullTag = this.assignTagAfter(fullTag, tags[i].tagAfter);
 
         // this.setLayoutValues(fullTag);
-        var index = layout.findIndex(x => x.i == tags[i].tag);
+        var index = layout.findIndex(x => x.i === tags[i].tag);
         layout[index].value = fullTag;
       }
     },
@@ -397,14 +385,43 @@ export default {
         return "";
       }
     },
-    assignTag(tag, fullTag, model, retrieveMethod) {
-      if (tag == "curator") {
-        return this.curatorState.selectedCuratorsName;
+    assignTag(tag, fullTag, model, modelAttribute) {
+      //debugger;
+      if (tag === "curator") {
+        return fullTag + this.datacard.getFormattedCurators();
       } else {
-        try {
-          return this[model][retrieveMethod]();
-        } catch (err) {
-          debugger;
+        if (modelAttribute != null) {
+          try {
+            let rawModelAttributes = modelAttribute.split(".");
+            // //debugger;
+            let modelAttributes = [];
+            let finalAttribute = null;
+            for (let i = 0; i < rawModelAttributes.length; i++) {
+              let element = rawModelAttributes[i];
+              element = element.charAt(0).toUpperCase() + element.slice(1);
+              element = "get" + element;
+              modelAttributes.push(element);
+            }
+
+            for (let j = 0; j < modelAttributes.length; j++) {
+              // const element = modelAttributes[i];
+              if (j === 0) {
+                //debugger;
+                finalAttribute = this[model][modelAttributes[j]]();
+                //debugger;
+              } else {
+                //debugger;
+                finalAttribute = finalAttribute[modelAttributes[j]]();
+                //debugger;
+              }
+            }
+
+            //debugger;
+
+            return finalAttribute;
+          } catch (err) {
+            debugger;
+          }
         }
       }
     },

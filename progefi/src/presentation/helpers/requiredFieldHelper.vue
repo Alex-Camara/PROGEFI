@@ -4,7 +4,8 @@
       <b-tooltip :label="tooltipValue" position="is-top" type="is-warning" animated>
         <div id="required_icon" ref="required_icon"></div>
       </b-tooltip>
-      <div>{{name}}</div>
+      <div id="required_field_helper_name">{{
+        name}}</div>
     </div>
   </div>
 </template>
@@ -56,6 +57,7 @@ export default {
 #required_field_helper {
   display: flex;
   flex-direction: row;
+  margin-bottom: 5px;
 }
 
 #required_icon {
@@ -75,4 +77,9 @@ export default {
   transition: 0.1s;
   cursor: pointer;
 }
+
+  #required_field_helper_name{
+    font-weight: bold;
+    font-size: 12px;
+  }
 </style>

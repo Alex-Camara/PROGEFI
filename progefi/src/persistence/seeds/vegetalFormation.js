@@ -1,10 +1,11 @@
 
 exports.seed = function(knex) {
   // Deletes ALL existing entries
-  return knex('vegetalFormation').del()
+  return knex('VegetalFormation').del()
     .then(function () {
       // Inserts seed entries
-      return knex('vegetalFormation').insert([
+      return knex('VegetalFormation').insert([
+        {id: 0, name: 'Indeterminado', imagePath: 'general_icons/question.png'},
         {id: 1, name: 'Bosque mesófilo de montaña', imagePath: 'vegetalFormation_icons/trees.png'},
         {id: 2, name: 'Bosque templado', imagePath: 'vegetalFormation_icons/trees.png'},
         {id: 3, name: 'Selva húmeda', imagePath: 'vegetalFormation_icons/palm-tree.png'},

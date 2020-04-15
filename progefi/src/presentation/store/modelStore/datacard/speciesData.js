@@ -1,6 +1,5 @@
 import Validator from '../../../validators/validator'
 import Vue from 'vue'
-// import SpeciesData from '../../../models/speciesData'
 import Sex from '../../../models/sex'
 import LifeStage from '../../../models/lifeStage'
 import Datacard from '../../../models/datacard'
@@ -140,13 +139,16 @@ const speciesData = {
     },
     getLifeStages({ commit }) {
       ipcRenderer.send('getLifeStages')
+      // debugger
       ipcRenderer.once('lifeStages', (event, receivedLifeStages) => {
+        // debugger;
         let newLifeStages = []
         for (let i = 0; i < receivedLifeStages.length; i++) {
           let lifeStage = new LifeStage()
           lifeStage.setLifeStage(receivedLifeStages[i])
           newLifeStages.push(lifeStage)
         }
+        
         commit('setLifeStages', newLifeStages)
       })
     },
@@ -390,56 +392,56 @@ const speciesData = {
           }
         })
     },
-    setLifeStage({ state, commit }, lifeStage) {
-      if (lifeStage != null && lifeStage.id != null) {
-        lifeStage.setValid({ isValid: true, message: null })
-        commit('setLifeStage', lifeStage)
-        commit('datacard/setLifeStage', lifeStage, { root: true })
-      } else {
-        let oldLifeStage = state.datacard.getSex()
-        let newLifeStage = new LifeStage()
-        newLifeStage.setName(lifeStage.name)
-
-        let regex = '^[a-zA-Z \\u00C0-\\u00FF]*$'
-        validator
-          .testValidationOne(
-            newLifeStage.getName(),
-            2,
-            20,
-            state.requiredValues.lifeStage,
-            regex
-          )
-          .then(() => {
-            newLifeStage.setValid({ isValid: true, message: null })
-            commit('setLifeStage', newLifeStage)
-            commit('datacard/setLifeStage', lifeStage, { root: true })
-          })
-          .catch(error => {
-            if (
-              error == 'Campo requerido' ||
-              error == 'Longitud mínima invalida'
-            ) {
-              newLifeStage.setValid({ isValid: false, message: error })
-              commit('setLifeStage', newLifeStage)
-            } else if (error == 'Campo vacío') {
-              newLifeStage.setValid({
-                isValid: true,
-                message: 'temporary error'
-              })
-              commit('setLifeStage', newLifeStage)
-            } else if (newLifeStage.isValid()) {
-              oldLifeStage.setValid({
-                isValid: true,
-                message: 'temporary error'
-              })
-              commit('setLifeStage', oldLifeStage)
-            } else {
-              oldLifeStage.setValid({ isValid: false, message: error })
-              commit('setLifeStage', oldLifeStage)
-            }
-          })
-      }
-    },
+    // setLifeStage({ state, commit }, lifeStage) {
+      // if (lifeStage != null && lifeStage.id != null) {
+        // lifeStage.setValid({ isValid: true, message: null })
+        // commit('setLifeStage', lifeStage)
+        // commit('datacard/setLifeStage', lifeStage, { root: true })
+      // } else {
+        // let oldLifeStage = state.datacard.getSex()
+        // let newLifeStage = new LifeStage()
+        // newLifeStage.setName(lifeStage.name)
+// 
+        // let regex = '^[a-zA-Z \\u00C0-\\u00FF]*$'
+        // validator
+          // .testValidationOne(
+            // newLifeStage.getName(),
+            // 2,
+            // 20,
+            // state.requiredValues.lifeStage,
+            // regex
+          // )
+          // .then(() => {
+            // newLifeStage.setValid({ isValid: true, message: null })
+            // commit('setLifeStage', newLifeStage)
+            // commit('datacard/setLifeStage', lifeStage, { root: true })
+          // })
+          // .catch(error => {
+            // if (
+              // error == 'Campo requerido' ||
+              // error == 'Longitud mínima invalida'
+            // ) {
+              // newLifeStage.setValid({ isValid: false, message: error })
+              // commit('setLifeStage', newLifeStage)
+            // } else if (error == 'Campo vacío') {
+              // newLifeStage.setValid({
+                // isValid: true,
+                // message: 'temporary error'
+              // })
+              // commit('setLifeStage', newLifeStage)
+            // } else if (newLifeStage.isValid()) {
+              // oldLifeStage.setValid({
+                // isValid: true,
+                // message: 'temporary error'
+              // })
+              // commit('setLifeStage', oldLifeStage)
+            // } else {
+              // oldLifeStage.setValid({ isValid: false, message: error })
+              // commit('setLifeStage', oldLifeStage)
+            // }
+          // })
+      // }
+    // },
     setSex({ state, commit }, sex) {
       if (sex != null && sex.id != null) {
         sex.setValid({ isValid: true, message: null })

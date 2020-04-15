@@ -23,7 +23,7 @@
         <ul id="sex_helper_list">
           <li
             id="sex_helper_list_item"
-            v-for="sex in speciesDataState.sexes"
+            v-for="sex in sexes"
             :key="sex.getName()"
             :value="sex.getName()"
             v-on:click="setSex(sex)"
@@ -38,9 +38,9 @@
 </template>
 
 <script>
-import store from "../store/store.js";
 import { mapState } from "vuex";
 import requiredFieldHelper from "../helpers/requiredFieldHelper.vue";
+import Sex from "../models/sex";
 
 export default {
   components: {
@@ -48,25 +48,33 @@ export default {
   },
   data() {
     return {
+      sexes: [],
       title: "Sexo: "
     };
   },
-  mounted() {
+  async mounted() {
+    this.sexes = await Sex.getAll();
     this.$store.dispatch("speciesData/getSexes");
   },
   computed: {
-    ...mapState("speciesData", {
-      speciesDataState: state => state,
+    ...mapState("datacard", {
       datacard: state => state.datacard,
-      isSexValid: state => state.datacard.getSexValid()
+      isSexValid: state =>
+        state.datacard
+          .getCollect()
+          .getSpecimen()
+          .getSexValid()
     }),
     sex: {
       get: function() {
-        let sex = this.datacard.getSex();
+        let sex = this.datacard
+          .getCollect()
+          .getSpecimen()
+          .getSex();
         return sex.getName();
       },
       set: function(newValue) {
-        this.$store.dispatch("speciesData/setSex", newValue);
+        this.$store.dispatch("datacard/setSex", newValue);
       }
     }
   },
@@ -78,7 +86,7 @@ export default {
       this.$store.dispatch("modal/openModal", {
         title: "Sexo",
         fieldText: "Ingresa el sexo del espécimen",
-        mutationName: "speciesData/setSex",
+        mutationName: "datacard/setSex",
         valueName: "name",
         regex: "^[a-zA-Z \\u00C0-\\u00FF]*$",
         minLimit: 2,

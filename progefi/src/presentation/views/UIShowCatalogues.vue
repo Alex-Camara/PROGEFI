@@ -1,24 +1,25 @@
 <template>
   <div id="show_catalogues_component">
     <div id="show_catalogues_component_title">
-      <p
-        class="component_title_return"
-        @click="returnToCollections()"
-        v-if="selectedCollection"
-      >Colecciones</p>
-      <img class="component_title_separator" v-if="selectedCollection" src="../assets/bar.png" />
-      <p class="component_title">{{collectionTitle}}</p>
-      <p class="component_title" v-if="!selectedCollection">Catálogos</p>
+      <p class="component_title_return" @click="returnToCollections()">
+        {{ returnToCollectionTitle }}
+      </p>
+      <img class="component_title_separator" src="../assets/bar.png" />
+      <p class="component_title">{{ title }}</p>
     </div>
 
     <div id="show_catalogues_component_content">
       <catalogues-table
-        :selectedCollection="selectedCollection"
+        :selectedCollection="collection"
         @showCatalogue="showCatalogue($event)"
         @showDatacards="showDatacards($event)"
       ></catalogues-table>
 
-      <div class="float_button" v-on:click="createCatalogue">
+      <div
+        class="float_button"
+        v-on:click="createCatalogue"
+        @mouseleave="setHelpText('', false)"
+        @mouseenter="setHelpText(helpText, true)">
         <img class="float_button_icon" :src="require('../assets/plus.png')" />
       </div>
     </div>
@@ -27,6 +28,7 @@
 
 <script>
 import cataloguesTable from "../components/cataloguesTable.vue";
+import Collection from "../models/collection";
 export default {
   props: ["selectedCollection"],
   components: {
@@ -34,25 +36,22 @@ export default {
   },
   data() {
     return {
-      collectionTitle: ""
+      collection: new Collection(),
+      title: "Catálogos",
+      returnToCollectionTitle: "Colección",
+      helpText: "Agregar catálogo..."
     };
   },
-  mounted() {
-    if (this.selectedCollection != null) {
-      // debugger;
-      this.collectionTitle = this.truncate(
-        this.selectedCollection.getName(),
-        45
-      );
-    }
-  },
-  watch: {
-    "this.selectedCollection"(newVal, oldVal) {
-      debugger;
+  async mounted() {
+    if (this.selectedCollection == null) {
+      this.collection = await Collection.getAll();
+    } else{
+      this.collection = this.selectedCollection;
     }
   },
   methods: {
     createCatalogue() {
+      this.setHelpText("", false);
       this.$router.push({
         name: "UICreateCatalogue"
       });
@@ -75,6 +74,9 @@ export default {
       this.$router.push({
         name: "UIShowCollections"
       });
+    },
+    setHelpText(message, active) {
+      this.$store.dispatch("helpText/setActive", { active, message });
     },
     truncate(value, length) {
       return value.length > length ? value.substr(0, length) + "..." : value;

@@ -2,12 +2,16 @@
   <div id="validateData_component" class="box" @click="closeAutocompletes()">
     <!-- --------validateData Component Header----- -->
     <div id="validateData_component_header">
-      <p class="subtitle is-5">Validación</p>
+      <information_helper :message="informationMessage"></information_helper>
+      <p class="subtitle_dark_gray is-5">Validación</p>
     </div>
 
     <!-- --------TaxonomicalData Component Content----- -->
     <div id="validateData_component_content" class="box">
-      <select-curators id="select_curators" ref="selectCurators"></select-curators>
+      <select-curators
+        id="select_curators"
+        ref="selectCurators"
+      ></select-curators>
 
       <div id="validate_data_switch_button">
         <b-switch
@@ -16,7 +20,8 @@
           true-value="Inhabilitar edición"
           false-value="Habilitar edición"
           @input="enableColors()"
-        >{{ isSwitched }}</b-switch>
+          >{{ isSwitched }}</b-switch
+        >
       </div>
 
       <preview-datacard
@@ -25,63 +30,70 @@
         :colorsEnabled="colorsEnabled"
         :preview="showPreview"
         v-if="showPreview"
+        v-on:exitComponent="exitComponent()"
       ></preview-datacard>
 
       <preview-datacard
-        id="preview_datacard"
-        ref="preview_datacard"
         :colorsEnabled="false"
         :preview="showPreview"
+        id="preview_datacard"
+        ref="preview_datacard"
         v-if="!showPreview"
+        v-on:exitComponent="exitComponent()"
       ></preview-datacard>
     </div>
 
     <!-- --------ValidateData Bottom Buttons----- -->
     <div id="validateData_component_bottomButtons">
       <b-button type="is-light" v-on:click="backwardStep()">Anterior</b-button>
-      <b-button type="is-secondary" v-text="textInButton" v-on:click="generateDatacard()"></b-button>
+      <b-button
+        type="is-secondary"
+        v-text="textInButton"
+        v-on:click="generateDatacard()"
+      ></b-button>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
+import { mapState } from "vuex";
 import store from "../../store/store.js";
 import previewDatacard from "../../components/previewDatacard.vue";
 import selectCurators from "../../components/selectCurators.vue";
-import domtoimage from "dom-to-image";
-import { saveAs } from "file-saver";
+import informationHelper from "../../helpers/informationHelper";
 
 export default {
   components: {
     "preview-datacard": previewDatacard,
-    "select-curators": selectCurators
+    "select-curators": selectCurators,
+    information_helper: informationHelper
   },
   data() {
     return {
       colorsEnabled: true,
       isSwitched: "Inhabilitar edición",
       showPreview: true,
-      textInButton: "Guardar borrador de ficha"
+      textInButton: "Guardar borrador de ficha",
+      informationMessage:
+        "Para validar la ficha debes introducir al menos un curador, de lo contrario solo guardarás un borrador..."
     };
   },
   computed: {
     ...mapState("template", {
       template: state => state.template
     }),
-    ...mapState("curator", {
-      selectedCuratorsNameString: state => state.selectedCuratorsName
-    }),
-    ...mapGetters("curator", ["curatorsName"])
+    ...mapState("datacard", {
+      curators: state => state.datacard.getCurators()
+    })
   },
   watch: {
-    selectedCuratorsNameString(newValue, oldValue) {
-      if (newValue == "") {
-        this.$refs.preview_datacard.setValues();
-        this.textInButton = "Guardar borrador de ficha";
-      } else {
-        this.$refs.preview_datacard.setValues();
+    curators() {
+      if (this.curators.length > 0) {
+        // this.$refs.preview_datacard.setValues();
         this.textInButton = "Generar ficha";
+      } else {
+        // this.$refs.preview_datacard.setValues();
+        this.textInButton = "Guardar borrador de ficha";
       }
     }
   },
@@ -91,6 +103,9 @@ export default {
     },
     forwardStep() {
       store.commit("addDatacard/setActiveStep", 4);
+    },
+    exitComponent() {
+      this.$emit("exitComponent");
     },
     enableColors() {
       if (this.colorsEnabled) {
@@ -128,6 +143,8 @@ export default {
   grid-row: 1 / 2;
   justify-self: center;
   height: 50px;
+  display: flex;
+  align-items: center;
 }
 
 #validateData_component_content {

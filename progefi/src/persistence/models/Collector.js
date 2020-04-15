@@ -5,7 +5,7 @@ Model.knex(Knex(KnexConfig.development))
 
 class Collector extends Model {
   static get tableName () {
-    return 'collector'
+    return 'Collector'
   }
 }
 module.exports = Collector

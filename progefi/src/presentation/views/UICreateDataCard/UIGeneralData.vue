@@ -5,7 +5,7 @@
   <div id="generalData_component" class="box" @click="closeAutocompletes()">
     <!-- --------AddDataCard2 right Side Component Header----- -->
     <div id="generalData_component_header">
-      <p class="subtitle is-5">Datos generales</p>
+      <p class="subtitle_dark_gray is-5">Datos generales</p>
     </div>
 
     <div>
@@ -67,7 +67,7 @@ export default {
   },
   computed: {
     ...mapState("datacard", {
-      datacardState: state => state
+      datacard: state => state.datacard
     }),
     ...mapState("addDatacard", {
       photoCollect: state => state.photoCollect
@@ -75,29 +75,12 @@ export default {
     ...mapState("metadata", {
       metadataState: state => state
     }),
-    ...mapState("catalogue", {
-      catalogueState: state => state
-    }),
-    ...mapState("collection", {
-      collectionState: state => state
-    }),
-    ...mapState("project", {
-      projectState: state => state
-    }),
-    ...mapState("collector", {
-      collectorState: state => state
-    }),
-    ...mapState("device", {
-      deviceState: state => state,
-      isDeviceValid: state => state.device.valid,
-      isModelValid: state => state.model.valid
-    }),
     hasMetadata: function() {
       return this.metadataState.hasMetadata;
     }
   },
   watch: {
-    hasMetadata(newValue, oldValue) {
+    hasMetadata(newValue) {
       if (!newValue) {
         this.openSnackBar("¡Esta fotocolecta no contiene metadatos!");
       }
@@ -132,13 +115,12 @@ export default {
     },
     disableNextButton() {
       if (
-        this.deviceState.device.valid.isValid &&
-        this.deviceState.model.valid.isValid &&
-        this.collectionState.collection.isValid() &&
-        this.catalogueState.catalogue.isValid() &&
-        this.datacardState.datacard.isCollectDateValid() &&
-        this.projectState.project.valid.isValid &&
-        this.collectorState.collector.isValid()
+        this.datacard.getCollect().getModel().isValid()&&
+        this.datacard.getCollect().getModel().getDevice().isValid()&&
+        this.datacard.getCatalogue().isValid()&&
+        this.datacard.getCollect().isCollectDateValid()&&
+        this.datacard.getCollect().getProject().isValid()&&
+        this.datacard.getCollect().getCollector().isValid()
       ) {
         return false;
       } else {

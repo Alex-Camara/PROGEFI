@@ -7,7 +7,7 @@ Model.knex(Knex(KnexConfig.development));
 
 class Device extends Model {
     static get tableName() {
-        return 'device';
+        return 'Device';
     }
 }
 module.exports = Device;

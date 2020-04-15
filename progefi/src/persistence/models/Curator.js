@@ -7,7 +7,7 @@ Model.knex(Knex(KnexConfig.development));
 
 class Curator extends Model {
     static get tableName() {
-        return 'curator';
+        return 'Curator';
     }
 }
 module.exports = Curator;

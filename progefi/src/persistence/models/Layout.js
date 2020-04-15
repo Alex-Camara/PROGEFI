@@ -7,12 +7,13 @@ Model.knex(Knex(KnexConfig.development));
 
 class Layout extends Model {
   static get tableName() {
-    return 'layout';
+    return 'Layout';
   }
 
   static get relationMappings() {
+    const Template = require('./Template');
     return {
-      owner: {
+      template: {
         relation: Model.BelongsToOneRelation,
         modelClass: Template,
         join: {

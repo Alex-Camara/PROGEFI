@@ -1,42 +1,49 @@
-'use strict'
+"use strict";
 
-const Template = require('../models/Template')
-const Layout = require('../models/Layout')
-const Tag = require('../models/Tag')
+const Template = require("../models/Template");
+const Layout = require("../models/Layout");
+const Tag = require("../models/Tag");
 
 class TemplateDaoImp {
-    async getTemplateNames() {
-        const templates = await Template.query()
+  async getTemplateNames() {
+    const templates = await Template.query().eager("[tags, layout]");
 
-        var resourcesPath = "/src/persistence/resources/";
-        var fullPath = require('path').resolve(__dirname, '..') + resourcesPath;
+    var resourcesPath = "/src/persistence/resources/";
+    var fullPath = require("path").resolve(__dirname, "..") + resourcesPath;
 
-        for (let i = 0; i < templates.length; i++) {
-            templates[i].samplePath = fullPath + templates[i].samplePath
-        }
-        return templates;
+    for (let i = 0; i < templates.length; i++) {
+      templates[i].samplePath = fullPath + templates[i].samplePath;
+
+      for (let j = 0; j < templates[i].tags.length; j++) {
+        var jsonElement = JSON.parse(templates[i].tags[j].style);
+        templates[i].tags[j].style = jsonElement;
+      }
     }
-    async getTemplate(templateId) {
+    return templates;
+  }
+  async getTemplate(templateId) {
+    let recoveredTemplate = await Template.query()
+      .eager("[tags, layout]")
+      .findById(templateId);
 
-        const template = await Template.query().findById(templateId)
+    // console.info(recoveredTemplate)
 
-        var resourcesPath = "/src/persistence/resources/";
-        var fullPath = require('path').resolve(__dirname, '..') + resourcesPath;
+    let template = recoveredTemplate;
 
-        template.samplePath = fullPath + template.samplePath
+    var resourcesPath = "/src/persistence/resources/";
+    var fullPath = require("path").resolve(__dirname, "..") + resourcesPath;
 
-        const tags = await Tag.query().where('templateId', templateId)
-        const layout = await Layout.query().where('templateId', templateId)
-        
-        for (let i = 0; i < layout.length; i++) {
-            var jsonElement = JSON.parse(layout[i].style);
-            layout[i].style = jsonElement;
-        }
-        template.tags = tags;
-        template.layout = layout;
+    template.samplePath = fullPath + template.samplePath;
 
-        return template;
+    for (let i = 0; i < template.tags.length; i++) {
+      var jsonElement = JSON.parse(template.tags[i].style);
+      template.tags[i].style = jsonElement;
     }
+
+    // console.info(template)
+
+    return template;
+  }
 }
 
 export default TemplateDaoImp;

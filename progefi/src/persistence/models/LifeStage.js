@@ -1,11 +1,13 @@
-import { Model } from 'objection';
-import Knex from 'knex';
-import { development } from '../knexfile';
-Model.knex(Knex(development));
+const {
+    Model
+} = require('objection')
+const Knex = require('knex')
+const KnexConfig = require('../knexfile');
+Model.knex(Knex(KnexConfig.development));
 
 class LifeStage extends Model {
     static get tableName() {
-        return 'lifeStage';
+        return 'LifeStage';
     }
 }
-export default LifeStage;
+module.exports = LifeStage;

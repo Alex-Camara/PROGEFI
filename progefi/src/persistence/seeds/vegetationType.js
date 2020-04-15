@@ -1,10 +1,10 @@
 
 exports.seed = function(knex) {
   // Deletes ALL existing entries
-  return knex('vegetationType').del()
+  return knex('VegetationType').del()
     .then(function () {
       // Inserts seed entries
-      return knex('vegetationType').insert([
+      return knex('VegetationType').insert([
         {id: 1, name: 'Bosque mesófilo de montaña', vegetalFormationId: 1},
         {id: 2, name: 'Bosque de ayarín', vegetalFormationId: 2},
         {id: 3, name: 'Bosque de cedro', vegetalFormationId: 2},

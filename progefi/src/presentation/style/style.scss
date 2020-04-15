@@ -16,6 +16,7 @@ $accent-invert: findColorInvert($accent);
 $menu-background: #f5f5f5;
 $twitter: #4099ff;
 $twitter-invert: findColorInvert($twitter);
+$danger-light: #EC407A;
 
 // Setup $colors to use as bulma classes (e.g. 'is-twitter')
 $colors: ("white": ($white,
@@ -77,6 +78,8 @@ $metadata-inactive: $accent;
 @import "./text.scss";
 @import "./shake_field.scss";
 @import "./icon.scss";
+@import "./autocomplete_box.scss";
+@import "./box.scss";
 
 // Import Bulma and Buefy styles
 @import "~bulma";

@@ -7,23 +7,43 @@
         class="component_title_return"
         @click="returnToCollections()"
         v-if="selectedCatalogue"
-      >Colecciones</p>
-      <img class="component_title_separator" v-if="selectedCatalogue" src="../assets/bar.png" />
-      <p class="component_title_return" @click="returnToCatalogues()">{{collectionTitle}}</p>
-      <img class="component_title_separator" v-if="selectedCatalogue" src="../assets/bar.png" />
-      <p class="component_title">{{catalogueTitle}}</p>
+      >{{returnToCollectionTitle}}</p>
+      <img
+        class="component_title_separator"
+        v-if="selectedCatalogue"
+        src="../assets/bar.png"
+      />
+      <p class="component_title_return" @click="returnToCatalogues()">{{ returnToCataloguesTitle }}</p>
+      <img
+        class="component_title_separator"
+        v-if="selectedCatalogue"
+        src="../assets/bar.png"
+      />
+      <p class="component_title">{{ title }}</p>
       <!-- <img class="component_title_separator" v-if="selectedCatalogue" src="../assets/bar.png" /> -->
-      <p class="component_title" v-if="!selectedCatalogue">{{title}}</p>
+<!--      <p class="component_title" v-if="!selectedCatalogue">{{ title }}</p>-->
     </div>
 
     <div id="show_datacards_component_top_controls">
-      <search-datacards @searchDatacards="searchDatacards($event)"></search-datacards>
+      <search-datacards
+        @searchDatacards="searchDatacards($event)"
+      ></search-datacards>
     </div>
 
     <!-- --------showDataCards Component Content----- -->
     <div id="show_datacards_component_content">
-      <datacards-table :selectedCatalogue="selectedCatalogue" @showDatacard="showDatacard($event)"></datacards-table>
-      <div class="float_button" v-on:click="createDataCard">
+      <keep-alive>
+      <datacards-table
+        :selectedCatalogue="selectedCatalogue"
+        @showDatacard="showDatacard($event)"
+      ></datacards-table>
+      </keep-alive>
+      <div
+        class="float_button"
+        v-on:click="createDataCard"
+        @mouseleave="setHelpText('', false)"
+        @mouseenter="
+          setHelpText(helpText, true)">
         <img class="float_button_icon" :src="require('../assets/plus.png')" />
       </div>
     </div>
@@ -44,9 +64,10 @@ export default {
   data() {
     return {
       title: "Fichas de fotocolecta",
-      catalogueTitle: "",
-      collectionTitle: "",
-      searchString: null
+      returnToCataloguesTitle: "",
+      returnToCollectionTitle: "",
+      searchString: null,
+      helpText: "Agregar una ficha..."
     };
   },
   // beforeRouteEnter(to, from, next) {
@@ -61,18 +82,12 @@ export default {
   mounted() {
     if (this.selectedCatalogue != null) {
       // debugger;
-      this.catalogueTitle = this.selectedCatalogue.getName();
-      this.collectionTitle = this.truncate(
-        this.selectedCatalogue.getCollection().getName(),
-        45
-      );
+      this.title = this.selectedCatalogue.getName();
+      this.returnToCataloguesTitle = "Catálogos"
+      this.returnToCollectionTitle = "Colección";
     }
   },
-  computed: {
-    ...mapState("catalogue", {
-      catalogueState: state => state
-    })
-  },
+  computed: {},
   methods: {
     createDataCard() {
       this.$router.push({
@@ -83,6 +98,7 @@ export default {
       });
     },
     showDatacard(selectedDatacard) {
+      this.setHelpText("", false);
       if (selectedDatacard.isValidated()) {
         this.$router.push({
           name: "UIShowDatacard",
@@ -106,7 +122,11 @@ export default {
     truncate(value, length) {
       return value.length > length ? value.substr(0, length) + "..." : value;
     },
+    setHelpText(message, active) {
+      this.$store.dispatch("helpText/setActive", { active, message });
+    },
     returnToCatalogues() {
+      this.setHelpText("", false);
       this.$router.push({
         name: "UIShowCatalogues",
         params: {
@@ -115,6 +135,7 @@ export default {
       });
     },
     returnToCollections() {
+      this.setHelpText("", false);
       this.$router.push({
         name: "UIShowCollections"
       });
@@ -156,57 +177,5 @@ export default {
 #show_datacards_component_content {
   grid-row: 3 / 4;
   margin-top: 10px;
-}
-
-#show_datacards_float_button_icon {
-  width: 20px;
-  height: 20px;
-  // margin-top: 20px;
-}
-
-#show_datacards_float_button {
-  position: fixed;
-  width: 60px;
-  height: 60px;
-  bottom: 40px;
-  right: 40px;
-  background-color: $accent;
-  color: $white;
-  border-radius: 50px;
-  text-align: center;
-  box-shadow: 2px 2px 3px #999;
-  align-items: center;
-  justify-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: 0.2s;
-  padding-top: 20px;
-}
-
-#show_datacards_float_button:hover {
-  transition: 0.2s;
-  background-color: $secondary;
-  width: 70px;
-  height: 70px;
-  bottom: 35px;
-  right: 35px;
-  padding-top: 23.3px;
-}
-
-#show_datacards_float_button:active {
-  transition: 0.2s;
-  background-color: $primary;
-  width: 70px;
-  height: 70px;
-  bottom: 35px;
-  right: 35px;
-  padding-top: 23.3px;
-}
-
-#show_datacards_float_button:hover + #show_datacards_float_button_icon {
-  transition: 0.2s;
-  width: 80px;
-  height: 80px;
-  margin-top: 90px;
 }
 </style>

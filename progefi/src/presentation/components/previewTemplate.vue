@@ -1,0 +1,21 @@
+<template>
+  <div ref="template" v-observe-visibility="visibilityChanged">
+    <grid-layout
+      id="lay"
+      ref="lay"
+      :v-model="layout"
+      :responsive="false"
+      :layout="layout"
+      :col-num="90"
+      :row-height="columnHeight"
+      :is-draggable="isDraggable"
+      :is-resizable="isResizable"
+      :is-mirrored="false"
+      :vertical-compact="false"
+      :margin="marginX"
+      :use-css-transforms="true"
+      :preventCollision="false"
+      :autoSize="false"
+    ></grid-layout>
+  </div>
+</template>

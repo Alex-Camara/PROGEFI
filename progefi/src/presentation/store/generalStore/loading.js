@@ -13,8 +13,9 @@ const loading = {
     }
   },
   actions: {
-    setActive ({ commit }, value) {
-      commit('setActive', value)
+    setActive ({ commit }, {active, message}) {
+      commit('setActive', active)
+      commit("setLoadingMessage", message)
     },
     setLoadingMessage({commit}, loadingMessage){
       commit("setLoadingMessage", loadingMessage)

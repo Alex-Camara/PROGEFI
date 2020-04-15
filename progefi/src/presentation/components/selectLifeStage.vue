@@ -31,7 +31,7 @@
         <ul id="lifeStage_helper_list">
           <li
             id="lifeStage_helper_list_item"
-            v-for="lifeStage in speciesDataState.lifeStages"
+            v-for="lifeStage in lifeStages"
             :key="lifeStage.getName()"
             :value="lifeStage.getName()"
             v-on:click="setLifeStage(lifeStage)"
@@ -46,9 +46,9 @@
 </template>
 
 <script>
-import store from "../store/store.js";
 import { mapState } from "vuex";
 import requiredFieldHelper from "../helpers/requiredFieldHelper.vue";
+import LifeStage from "../models/lifeStage";
 
 export default {
   components: {
@@ -56,30 +56,38 @@ export default {
   },
   data() {
     return {
+      lifeStages: [],
       title: "Etapa:",
       selectedLifeStage: ""
     };
   },
+  async mounted() {
+    this.lifeStages = await LifeStage.getAll();
+  },
   computed: {
-    ...mapState("speciesData", {
-      speciesDataState: state => state,
+    ...mapState("datacard", {
       datacard: state => state.datacard,
-      isLifeStageValid: state => state.datacard.getLifeStageValid()
+      isLifeStageValid: state =>
+        state.datacard
+          .getCollect()
+          .getSpecimen()
+          .getLifeStageValid()
     }),
     lifeStage: {
       get: function() {
-        let lifeStage = this.datacard.getLifeStage();
+        let lifeStage = this.datacard
+          .getCollect()
+          .getSpecimen()
+          .getLifeStage();
         return lifeStage.getName();
       },
       set: function(newValue) {
-        this.$store.dispatch("speciesData/setLifeStage", newValue);
+        this.$store.dispatch("datacard/setLifeStage", newValue);
       }
     }
   },
-  mounted() {
-    this.$store.dispatch("speciesData/getLifeStages");
-  },
   methods: {
+    getLifeStages() {},
     setLifeStage(lifeStage) {
       this.lifeStage = lifeStage;
     },
@@ -87,7 +95,7 @@ export default {
       this.$store.dispatch("modal/openModal", {
         title: "Etapas de vida",
         fieldText: "Ingresa la etapa de vida",
-        mutationName: "speciesData/setLifeStage",
+        mutationName: "datacard/setLifeStage",
         valueName: "name",
         regex: "^[a-zA-Z \\u00C0-\\u00FF]*$",
         minLimit: 2,

@@ -2,16 +2,16 @@
   <div id="show_datacard_content_container">
     <div id="show_datacard_component_title">
       <p
-        class="component_title_return_small"
+        class="component_title_return"
         @click="returnToCollections()"
         v-if="selectedCatalogue"
-      >Colecciones</p>
+      >{{returnToCollectionTitle}}</p>
       <img class="component_title_separator" v-if="selectedCatalogue" src="../assets/bar.png" />
-      <p class="component_title_return_small" @click="returnToCatalogues()">{{collectionTitle}}</p>
+      <p class="component_title_return" @click="returnToCatalogues()">{{returnToCataloguesTitle}}</p>
       <img class="component_title_separator" v-if="selectedCatalogue" src="../assets/bar.png" />
-      <p class="component_title_return_small" @click="returnToDatacards()">{{catalogueTitle}}</p>
+      <p class="component_title_return" @click="returnToDatacards()">{{returnToDatacardsTitle}}</p>
       <img class="component_title_separator" v-if="selectedCatalogue" src="../assets/bar.png" />
-      <p class="component_title_small">{{datacardTitle}}</p>
+      <p class="component_title">{{datacardTitle}}</p>
     </div>
 
     <div id="show_datacard_validated_message">
@@ -59,8 +59,9 @@ export default {
     return {
       showImage: true,
       activeTab: 0,
-      collectionTitle: "",
-      catalogueTitle: "",
+      returnToCollectionTitle: "",
+      returnToCataloguesTitle: "",
+      returnToDatacardsTitle: "",
       datacardTitle: ""
     };
   },
@@ -68,11 +69,9 @@ export default {
     // Mover el scroll al principio
     window.scrollTo(0, 0);
     if (this.selectedCatalogue) {
-      this.collectionTitle = this.truncate(
-        this.selectedCatalogue.getCollection().getName(),
-        45
-      );
-      this.catalogueTitle = this.selectedCatalogue.getName();
+      this.returnToCollectionTitle = "Colección";
+      this.returnToCataloguesTitle = "Catálogos";
+      this.returnToDatacardsTitle = this.selectedCatalogue.getName();
     }
     this.datacardTitle = this.datacard.getCode();
   },

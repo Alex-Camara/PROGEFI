@@ -7,7 +7,7 @@ Model.knex(Knex(KnexConfig.development));
 
 class Tag extends Model {
   static get tableName() {
-    return 'tag';
+    return 'Tag';
   }
 
   static get relationMappings() {

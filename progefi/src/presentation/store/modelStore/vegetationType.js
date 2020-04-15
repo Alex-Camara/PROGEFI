@@ -85,19 +85,19 @@ const vegetationType = {
       }
       commit('setVegetationTypes', newVegetationTypes)
     },
-    setVegetationType ({ commit }, vegetationType) {
-      if (!vegetationType.hasOwnProperty('id')) {
-        let newVegetationType = new VegetationType()
-        newVegetationType.setValid({ isValid: true, message: null })
-        newVegetationType.setName(vegetationType.name)
-        commit('setVegetationType', newVegetationType)
-        commit('datacard/setVegetationType', newVegetationType, { root: true })
-      } else {
-        vegetationType.setValid({ isValid: true, message: null })
-        commit('setVegetationType', vegetationType)
-        commit('datacard/setVegetationType', vegetationType, { root: true })
-      }
-    }
+    // setVegetationType ({ commit }, vegetationType) {
+      // if (!vegetationType.hasOwnProperty('id')) {
+        // let newVegetationType = new VegetationType()
+        // newVegetationType.setValid({ isValid: true, message: null })
+        // newVegetationType.setName(vegetationType.name)
+        // commit('setVegetationType', newVegetationType)
+        // commit('datacard/setVegetationType', newVegetationType, { root: true })
+      // } else {
+        // vegetationType.setValid({ isValid: true, message: null })
+        // commit('setVegetationType', vegetationType)
+        // commit('datacard/setVegetationType', vegetationType, { root: true })
+      // }
+    // }
   }
 }
 

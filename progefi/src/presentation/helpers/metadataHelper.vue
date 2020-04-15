@@ -1,16 +1,17 @@
 <template>
   <div>
-    <div id="mh_container" ref="mh_container" v-on:click="restoreMetadataValue()">
-      <p id="mh_container_text">{{displayValue}}</p>
+    <div
+      id="mh_container"
+      ref="mh_container"
+      v-on:click="restoreMetadataValue()">
+      <p id="mh_container_text">{{ displayValue }}</p>
     </div>
   </div>
 </template>
 
 <script>
-import store from "../store/store.js";
 import { mapState } from "vuex";
 import styleColors from "../style/style.scss";
-import moment from "moment";
 
 export default {
   name: "metadataHelper",
@@ -21,14 +22,25 @@ export default {
     };
   },
   watch: {
-    selectedValue(newValue, oldValue) {
+    selectedValue(newValue) {
       let documentElement = this.$refs.mh_container;
-
       if (documentElement != null) {
-        if (newValue == this.originalValue) {
+        if (newValue == this.getMetadataValue(this.attribute)) {
+          documentElement.addEventListener("mouseenter", ()=>{
+            this.setHelpText('El valor del campo coincide con el metadato recuperado', true)
+          });
+          documentElement.addEventListener("mouseleave", ()=>{
+            this.setHelpText('', false)
+          });
           documentElement.style.backgroundColor = styleColors.secondary;
           this.isMetadata = true;
         } else {
+          documentElement.addEventListener("mouseenter", ()=>{
+            this.setHelpText('Has clic para restaurar el valor del metadato...', true)
+          })
+          documentElement.addEventListener("mouseleave", ()=>{
+            this.setHelpText('', false)
+          })
           documentElement.style.backgroundColor = styleColors.accent;
           this.isMetadata = false;
         }
@@ -36,18 +48,18 @@ export default {
     }
   },
   computed: {
-    /*...mapState("datacard", {
-      datacardState: state => state.datacard
-    }),*/
-    ...mapState("metadata", {
-      metadataState: state => state
+    ...mapState("datacard", {
+      datacard: state => state.datacard
     }),
-    originalValue: function() {
-      return this.metadataState[this.attribute];
-    },
+    ...mapState("metadata", {
+      metadataCollect: state => state.collect
+    }),
+    // originalValue: function() {
+    //   return this.getMetadataValue(this.attribute);
+    // },
     displayValue: {
       get: function() {
-        return this.originalValue;
+        return this.getMetadataValue(this.attribute);
       },
       set: function(newValue) {
         this.displayValue = newValue;
@@ -58,56 +70,79 @@ export default {
     restoreMetadataValue() {
       switch (this.attribute) {
         case "device":
-          store.dispatch(
-            "device/setDevice",
-            this.metadataState[this.attribute]
-          );
+          {
+            let metadataDevice = this.metadataCollect.getModel().getDevice();
+            this.datacard
+              .getCollect()
+              .getModel()
+              .setDevice(metadataDevice.getName());
+          }
           break;
         case "model":
-          store.dispatch("device/setModel", this.metadataState[this.attribute]);
+          {
+            let metadataModel = this.metadataCollect.getModel();
+            this.datacard.getCollect().setModel(metadataModel.getName());
+          }
           break;
-
         case "latitude":
-          store.dispatch(
-            "coordinate/setLatitude",
-            this.metadataState[this.attribute]
-          );
+          {
+            let metadataLatitude = this.metadataCollect.getLatitude();
+            this.datacard.getCollect().setLatitude(metadataLatitude);
+          }
           break;
         case "longitude":
-          store.dispatch(
-            "coordinate/setLongitude",
-            this.metadataState[this.attribute]
-          );
+          {
+            let metadataLongitude = this.metadataCollect.getLongitude();
+            this.datacard.getCollect().setLongitude(metadataLongitude);
+          }
           break;
         case "altitude":
-          store.dispatch(
-            "coordinate/setAltitude",
-            this.metadataState[this.attribute]
-          );
+          {
+            let metadataAltitude = this.metadataCollect.getAltitude();
+            this.datacard.getCollect().setAltitude(metadataAltitude);
+          }
           break;
-
         case "formattedHour":
-          store.dispatch(
-            "datacard/setCollectHour",
-            this.metadataState.collectHour
-          );
+          {
+            let metadataCollectDate = this.metadataCollect.getCollectDate();
+            this.datacard.getCollect().setCollectDate(metadataCollectDate);
+          }
           break;
-
         case "formattedDate":
-          // debugger;
-          store.dispatch(
-            "datacard/setCollectDate",
-            this.metadataState.collectDate
-          );
+          {
+            let metadataCollectDate = this.metadataCollect.getCollectDate();
+            this.datacard.getCollect().setCollectDate(metadataCollectDate);
+          }
           break;
-
         default:
-          store.commit("datacard/restoreMetadataValue", {
-            attribute: this.attribute,
-            metadataValue: this.metadataState[this.attribute]
-          });
           break;
       }
+    },
+    getMetadataValue(attribute) {
+      switch (attribute) {
+        case "device":
+          return this.metadataCollect
+            .getModel()
+            .getDevice()
+            .getName();
+        case "model":
+          return this.metadataCollect.getModel().getName();
+        case "latitude":
+          return this.metadataCollect.getLatitude();
+        case "longitude":
+          return this.metadataCollect.getLongitude();
+        case "altitude":
+          return this.metadataCollect.getAltitude();
+        case "formattedHour":
+          return this.metadataCollect.getFormattedCollectHour();
+        case "formattedDate":
+          return this.metadataCollect.getFormattedCollectDate();
+        default:
+          break;
+      }
+    },
+    setHelpText(message, active) {
+      this.$store.dispatch("helpText/setActive", { active, message });
     }
   }
 };

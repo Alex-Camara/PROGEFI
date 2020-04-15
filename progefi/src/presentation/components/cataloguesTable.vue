@@ -1,13 +1,16 @@
 <template>
   <div id="catalogues_table_container">
-    <div id="catalogues_table_null_catalogues_message" v-if="catalogueState.catalogues.length == 0">
-      <p class="is-size-5">Aún no hay catálogos en esta colección...</p>
+    <div
+      id="catalogues_table_null_catalogues_message"
+      v-if="catalogues.length === 0"
+    >
+      <p class="is-size-5">{{ nullCataloguesMessage }}</p>
     </div>
     <div id="catalogues_table_table_container">
       <b-table
         class="borderless"
         id="catalogues_table_table"
-        :data="catalogueState.catalogues"
+        :data="catalogues"
         :selected="selectedCatalogue"
         :loading="loading"
         hoverable
@@ -16,38 +19,75 @@
         @dblclick="showDatacards($event)"
       >
         <template slot-scope="props">
-          <b-table-column field="name" label="Nombre" width="20" centered class="selected">
+          <b-table-column
+            field="name"
+            label="Nombre"
+            width="20"
+            centered
+            class="selected"
+          >
             <div>
-              <p id="catalogues_table_table_catalogue_name">{{ props.row.getName() }}</p>
+              <p id="catalogues_table_table_catalogue_name">
+                {{ props.row.getName() }}
+              </p>
             </div>
           </b-table-column>
           <b-table-column field="code" label="Código" width="20" centered>
             <div>
-              <p id="catalogues_table_table_catalogue_code">{{ props.row.getCode() }}</p>
+              <p id="catalogues_table_table_catalogue_code">
+                {{ props.row.getCollection().getCode() + props.row.getCode() }}
+              </p>
             </div>
           </b-table-column>
-          <b-table-column field="colection" label="Colección" width="20" centered>
+          <b-table-column
+            field="colection"
+            label="Colección"
+            width="20"
+            centered
+          >
             <div>
-              <p
-                id="catalogues_table_table_catalogue_collection"
-              >{{ props.row.getCollection().getName() }}</p>
+              <p id="catalogues_table_table_catalogue_collection">
+                {{ props.row.getCollection().getName() }}
+              </p>
             </div>
           </b-table-column>
-          <b-table-column field="datacardCount" label="N° de fichas" width="200" centered>
+          <b-table-column
+            field="datacardCount"
+            label="N° de fichas"
+            width="200"
+            centered
+          >
             <div id="catalogues_table_table_datacard_count">
               <p>{{ props.row.getDatacardCount() }}</p>
             </div>
           </b-table-column>
           <b-table-column field="datacards" label="Fichas" width="50" centered>
-            <div id="catalogues_table_row_options" @click="showDatacards(props.row)">
+            <div
+              id="catalogues_table_row_options"
+              @click="showDatacards(props.row)"
+            >
               <!-- <b-tooltip label="aber"> -->
-              <img id="catalogues_table_row_options_icon" src="../assets/image.png" />
+              <img
+                id="catalogues_table_row_options_icon"
+                src="../assets/image.png"
+              />
               <!-- </b-tooltip> -->
             </div>
           </b-table-column>
-          <b-table-column field="catalogue" label="Detalles" width="50" centered>
-            <div id="catalogues_table_row_options" @click="showCatalogue(props.row)">
-              <img id="catalogues_table_row_options_icon" src="../assets/right.png" />
+          <b-table-column
+            field="catalogue"
+            label="Detalles"
+            width="50"
+            centered
+          >
+            <div
+              id="catalogues_table_row_options"
+              @click="showCatalogue(props.row)"
+            >
+              <img
+                id="catalogues_table_row_options_icon"
+                src="../assets/right.png"
+              />
             </div>
           </b-table-column>
         </template>
@@ -57,30 +97,25 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import Catalogue from "../models/catalogue";
 export default {
   props: ["selectedCollection"],
   data() {
     return {
       selectedCatalogue: null,
-      loading: false
+      loading: false,
+      catalogues: [],
+      nullCataloguesMessage: "Aún no hay catálogos en esta colección..."
     };
   },
-  mounted() {
-    if (this.selectedCollection) {
-      this.$store.dispatch(
-        "catalogue/getCatalogues",
-        this.selectedCollection.getId()
-      );
-    } else {
-      //Sustituir por método para recuperar todos los catálogos
-      this.$store.dispatch("catalogue/getCatalogues", null);
-    }
-  },
-  computed: {
-    ...mapState("catalogue", {
-      catalogueState: state => state
-    })
+  async mounted() {
+    Catalogue.getAll()
+      .then(result => {
+        this.catalogues = result;
+      })
+      .catch(() => {
+        this.openDialog("Ha ocurrido un error con la base de datos");
+      });
   },
   filters: {
     truncate(value, length) {
@@ -97,11 +132,14 @@ export default {
     showCatalogue(selectedCatalogue) {
       this.$emit("showCatalogue", selectedCatalogue);
     },
+    openDialog(message) {
+      this.$buefy.dialog.alert(message);
+    },
     // Usado para obtener la clase css de la fila que invoca al método
     getRowClass(row, index) {
       // debugger;
       if (this.selectedCatalogue != null) {
-        if (this.selectedCatalogue.getId() == row.getId()) {
+        if (this.selectedCatalogue.getId() === row.getId()) {
           return "selected";
         }
         return "not-selected";

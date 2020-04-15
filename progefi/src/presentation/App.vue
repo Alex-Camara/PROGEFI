@@ -11,7 +11,9 @@
         <router-view></router-view>
       </transition>
     </div>
-    <div id="main-footer"></div>
+    <div id="main-footer" class="stickyFooter">
+      <UIFooter></UIFooter>
+    </div>
     <modal-helper></modal-helper>
     <loading-helper></loading-helper>
   </div>
@@ -20,16 +22,25 @@
 <script>
 import UINavBar from "./views/UINavBar.vue";
 import UIMenu from "./views/UIMenu.vue";
+import UIFooter from "./views/UIFooter.vue";
 import modalHelper from "./helpers/modalHelper.vue";
+// import { Titlebar, Color } from 'custom-electron-titlebar'
+
 
 export default {
   components: {
     UINavBar,
     UIMenu,
+    UIFooter,
     "modal-helper": modalHelper
   },
   data() {
     return {};
+  },
+  mounted() {
+    // new Titlebar({
+    //   backgroundColor: Color.fromHex('#ECECEC')
+    // });
   }
 };
 </script>
@@ -41,7 +52,8 @@ export default {
   width: 100%;
   height: 700px;
   grid-template-columns: 1fr 6fr;
-  grid-template-rows: 50px 700px 10px;
+  /*grid-template-rows: 50px 700px 10px;*/
+  grid-template-rows: 6.5% 92% 1.5%;
   grid-gap: 3px;
 }
 
@@ -89,16 +101,21 @@ export default {
   top: 50px;
 }
 
-.bordered {
-  border: 0.5px solid black;
+.stickyFooter {
+  background-color: #f8f6f6;
+  position: fixed;
+  grid-row: 3 / 4;
+  grid-column: 1 / -1;
+  width: 100%;
+  height: 20px;
+
+  z-index: 1;
+  bottom: 0px;
+  left: 0px;
 }
 
-.gray_box {
-  background-color: #f2f2f2;
-  border-radius: 10px 10px 10px 10px;
-  border-color: $light;
-  padding: 20px 20px 20px 20px;
-  // height: 100%;
+.bordered {
+  border: 0.5px solid black;
 }
 
 .fade-enter-active,

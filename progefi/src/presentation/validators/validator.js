@@ -28,9 +28,9 @@ class Validator {
       testValue = testValue.toString()
       let length = testValue.length
       if (length < minLimit && length > 0) {
-        reject('Longitud mínima invalida')
+        reject('Longitud mínima inválida')
       } else if (length > maxLimit) {
-        reject('Longitud máxima invalida')
+        reject('Longitud máxima inválida')
       } else {
         resolve('ok')
       }
@@ -43,7 +43,7 @@ class Validator {
       if (isRegexTrue) {
         resolve('ok')
       } else {
-        reject('Caracteres invalidos')
+        reject('Caracteres inválidos')
       }
     })
   }
@@ -87,9 +87,9 @@ class Validator {
     return new Promise((resolve, reject) => {
       if (testValue.length > 1) {
         if ((testValue.startsWith('0')) && !(testValue.startsWith('0.'))) {
-          reject('Cero invalido')
+          reject('Cero inválido')
         } else if ((testValue.startsWith('-0')) && !(testValue.startsWith('-0.'))) {
-          reject('Cero invalido')
+          reject('Cero inválido')
         } else {
           resolve('ok')
         }

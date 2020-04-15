@@ -19,9 +19,9 @@ class CollectorHandler {
     let createdCollector = await this.collectorDao.createCollector(collector)
     result(createdCollector)
   }
-  async getDatacardsCountByCollector(collectorCode, catalogue, result) {
+  async getDatacardsCountByCollector(collectorId, catalogue, result) {
     let count = await this.collectorDao.getDatacardsCountByCollector(
-      collectorCode,
+        collectorId,
       catalogue
     )
     result(count)
@@ -33,6 +33,13 @@ class CollectorHandler {
     } else {
       result(true)
     }
+  }
+
+  async getCollectorByName(collectorName, result){
+    let collector = await this.collectorDao.getCollectorByName(collectorName)
+    console.log('collector')
+    console.info(collector)
+    result(collector)
   }
 }
 

@@ -1,52 +1,33 @@
 
-exports.seed = function(knex) {
+exports.seed = function (knex) {
   // Deletes ALL existing entries
-  return knex('tag').del()
+  return knex('Tag').del()
     .then(function () {
       // Inserts seed entries
-      return knex('tag').insert([
-        { tag: "altitude", tagBefore: null, tagAfter: 'msnm', model: 'datacard', retrieveMethod: 'getAltitude', templateId: 1},
-                { tag: "device", tagBefore: null, tagAfter: null, model: 'device', retrieveMethod: 'getName', templateId: 1 },
-                { tag: "longitude", tagBefore: null, tagAfter: null, model: 'datacard', retrieveMethod: 'getLongitude', templateId: 1 },
-                { tag: "latitude", tagBefore: null, tagAfter: null, model: 'datacard', retrieveMethod: 'getLatitude', templateId: 1 },
-                { tag: "vegetationType", tagBefore: null, tagAfter: null, model: 'vegetationType', retrieveMethod: 'getName', templateId: 1 },
-                { tag: "climateType", tagBefore: null, tagAfter: null, model: 'climateType', retrieveMethod: 'getCode', templateId: 1 },
-                { tag: "collection", tagBefore: null, tagAfter: null, model: 'collection', retrieveMethod: 'getName', templateId: 1 },
-                { tag: "institute", tagBefore: null, tagAfter: null, model: 'collection', retrieveMethod: 'getResearchArea', templateId: 1 },
-                { tag: "catalogue", tagBefore: 'Catálogo:', tagAfter: null, model: 'catalogue', retrieveMethod: 'getName', templateId: 1 },
-                { tag: "collector", tagBefore: null, tagAfter: null,model: 'collector', retrieveMethod: 'getName', templateId: 1 },
-                { tag: "model", tagBefore: null, tagAfter: null, model: 'model', retrieveMethod: 'getName', templateId: 1 },
-                { tag: "collectDate", tagBefore: null, tagAfter: null, model: 'datacard', retrieveMethod: 'getFormattedDate' , templateId: 1},
-                { tag: "collectHour", tagBefore: null, tagAfter: null, model: 'datacard', retrieveMethod: 'getFormattedHour', templateId: 1 },
-                { tag: "scientificName", tagBefore: null, tagAfter: null, model: 'datacard', retrieveMethod: 'getScientificName', templateId: 1 },
-                { tag: "sex", tagBefore: null, tagAfter: null, model: 'datacard', retrieveMethod: 'getSexName', templateId: 1 },
-                { tag: "lifeStage", tagBefore: null, tagAfter: null, model: 'datacard', retrieveMethod: 'getLifeStageName', templateId: 1 },
-                { tag: "country", tagBefore: null, tagAfter: null, model: 'datacard', retrieveMethod: 'getCountry', templateId: 1 },
-                { tag: "countryState", tagBefore: null, tagAfter: null, model: 'datacard', retrieveMethod: 'getCountryState', templateId: 1 },
-                { tag: "municipality", tagBefore: null, tagAfter: null, model: 'datacard', retrieveMethod: 'getMunicipality', templateId: 1 },
-                { tag: "locality", tagBefore: null, tagAfter: null, model: 'datacard', retrieveMethod: 'getLocality', templateId: 1 },
-                { tag: "curator", tagBefore: 'Curador:', tagAfter: null, model: 'curator', retrieveMethod: 'getName', templateId: 1 },
-                { tag: "altitude", tagBefore: null, tagAfter: 'msnm', model: 'datacard', retrieveMethod: 'getAltitude', templateId: 2},
-                { tag: "device", tagBefore: null, tagAfter: null, model: 'device', retrieveMethod: 'getName', templateId: 2 },
-                { tag: "longitude", tagBefore: null, tagAfter: null, model: 'datacard', retrieveMethod: 'getLongitude', templateId: 2 },
-                { tag: "latitude", tagBefore: null, tagAfter: null, model: 'datacard', retrieveMethod: 'getLatitude', templateId: 2 },
-                { tag: "vegetationType", tagBefore: null, tagAfter: null, model: 'vegetationType', retrieveMethod: 'getName', templateId: 2 },
-                { tag: "climateType", tagBefore: null, tagAfter: null, model: 'climateType', retrieveMethod: 'getCode', templateId: 2 },
-                { tag: "collection", tagBefore: null, tagAfter: null, model: 'collection', retrieveMethod: 'getName', templateId: 2 },
-                { tag: "institute", tagBefore: null, tagAfter: null, model: 'collection', retrieveMethod: 'getResearchArea', templateId: 2 },
-                { tag: "catalogue", tagBefore: 'Catálogo:', tagAfter: null, model: 'catalogue', retrieveMethod: 'getName', templateId: 2 },
-                { tag: "collector", tagBefore: null, tagAfter: null,model: 'collector', retrieveMethod: 'getName', templateId: 2 },
-                { tag: "model", tagBefore: null, tagAfter: null, model: 'model', retrieveMethod: 'getName', templateId: 2 },
-                { tag: "collectDate", tagBefore: null, tagAfter: null, model: 'datacard', retrieveMethod: 'getFormattedDate' , templateId: 2},
-                { tag: "collectHour", tagBefore: null, tagAfter: null, model: 'datacard', retrieveMethod: 'getFormattedHour', templateId: 2 },
-                { tag: "scientificName", tagBefore: null, tagAfter: null, model: 'datacard', retrieveMethod: 'getScientificName', templateId: 2 },
-                { tag: "sex", tagBefore: null, tagAfter: null, model: 'datacard', retrieveMethod: 'getSexName', templateId: 2 },
-                { tag: "lifeStage", tagBefore: null, tagAfter: null, model: 'datacard', retrieveMethod: 'getLifeStageName', templateId: 2 },
-                { tag: "country", tagBefore: null, tagAfter: null, model: 'datacard', retrieveMethod: 'getCountry', templateId: 2 },
-                { tag: "countryState", tagBefore: null, tagAfter: null, model: 'datacard', retrieveMethod: 'getCountryState', templateId: 2 },
-                { tag: "municipality", tagBefore: null, tagAfter: null, model: 'datacard', retrieveMethod: 'getMunicipality', templateId: 2 },
-                { tag: "locality", tagBefore: null, tagAfter: null, model: 'datacard', retrieveMethod: 'getLocality', templateId: 2 },
-                { tag: "curator", tagBefore: 'Curador:', tagAfter: null, model: 'curator', retrieveMethod: 'getName', templateId: 2 },
+      return knex('Tag').insert([
+        { tag: "altitude", tagBefore: null, tagAfter: 'msnm', model: 'collect', modelAttribute: 'altitude', style: '{ "background-color": "rgb(30, 136, 229,0.8)", "font-size": "20px" }', templateId: 1 },
+        { tag: "instituteLogo", tagBefore: null, tagAfter: null, model: null, modelAttribute: null,style: '{ "background-color": "rgb(255, 183, 77,0.8)" , "font-size": "20px" }', templateId: 1 },
+        { tag: "photocollect", tagBefore: null, tagAfter: null, model: null, modelAttribute: null, style: '{ "background-color": "rgb(255, 183, 77,0.8)", "font-size": "20px" }',templateId: 1 },
+        { tag: "device", tagBefore: null, tagAfter: null, model: 'collect', modelAttribute: 'model.device.name', style: '{ "background-color": "rgb(230, 81, 0,0.8)", "font-size": "20px" }' , templateId: 1 },
+        { tag: "longitude", tagBefore: null, tagAfter: null, model: 'collect', modelAttribute: 'longitude',style: '{ "background-color": "rgb(100, 181, 246,0.8)", "font-size": "20px" }',  templateId: 1 },
+        { tag: "latitude", tagBefore: null, tagAfter: null, model: 'collect', modelAttribute: 'latitude',style: '{ "background-color": "rgb(66, 165, 245, 0.8)", "font-size": "20px" }', templateId: 1 },
+        { tag: "vegetationType", tagBefore: null, tagAfter: null, model: 'collect', modelAttribute: 'vegetationType.name',style: '{ "background-color": "rgb(21, 101, 192, 0.8)", "font-size": "20px" }', templateId: 1 },
+        { tag: "climateType", tagBefore: null, tagAfter: null, model: 'collect', modelAttribute: 'climateType.code',style: '{ "background-color": "rgb(21, 101, 192, 0.8)", "font-size": "20px" }', templateId: 1 },
+        { tag: "collection", tagBefore: null, tagAfter: null, model: 'datacard', modelAttribute: 'catalogue.collection.name', templateId: 1, style: '{ "background-color": "rgb(0, 172, 193, 0.8)", "font-size": "24px", "text-align": "center" }' },
+        { tag: "researchArea", tagBefore: null, tagAfter: null, model: 'datacard', modelAttribute: 'catalogue.collection.researchArea',style: '{ "background-color": "rgb(0, 151, 167,0.8)", "text-align": "center", "font-weight": "bold", "font-size": "20px" }', templateId: 1 },
+        { tag: "catalogue", tagBefore: 'Catálogo:', tagAfter: null, model: 'datacard', modelAttribute: 'catalogue.name',style: '{ "background-color": "rgb(230, 81, 0, 0.8)", "font-size": "20px" }' , templateId: 1 },
+        { tag: "collector", tagBefore: null, tagAfter: null, model: 'collect', modelAttribute: 'collector.name',style: '{ "background-color": "rgb(255, 145, 0,0.8)", "font-size": "20px" }' ,  templateId: 1 },
+        { tag: "model", tagBefore: null, tagAfter: null, model: 'collect', modelAttribute: 'model.name', style: '{ "background-color": "rgb(255, 167, 38, 0.8)", "font-size": "20px" }' , templateId: 1 },
+        { tag: "collectDate", tagBefore: null, tagAfter: null, model: 'collect', modelAttribute: 'formattedCollectDate',style: '{ "background-color": "rgb(251, 140, 0, 0.8)", "font-size": "20px" }', templateId: 1 },
+        { tag: "collectHour", tagBefore: null, tagAfter: null, model: 'collect', modelAttribute: 'formattedCollectHour',style: '{ "background-color": "rgb(255, 167, 38,0.8)", "font-size": "20px" }', templateId: 1 },
+        { tag: "scientificName", tagBefore: null, tagAfter: null, model: 'species', modelAttribute: 'scientificName',style: '{ "background-color": "rgb(104, 159, 56, 0.8)", "font-style": "italic", "font-size": "20px" }' , templateId: 1 },
+        { tag: "sex", tagBefore: null, tagAfter: null, model: 'specimen', modelAttribute: 'sex.name',style: '{ "background-color": "rgb(124, 179, 66,0.8)", "font-size": "20px" }',  templateId: 1 },
+        { tag: "lifeStage", tagBefore: null, tagAfter: null, model: 'specimen', modelAttribute: 'lifeStage.name',style: '{ "background-color": "rgb(156, 204, 101, 0.8)", "font-size": "20px" }', templateId: 1 },
+        { tag: "country", tagBefore: null, tagAfter: null, model: 'collect', modelAttribute: 'country',style: '{ "background-color": "rgb(33, 150, 243,0.8)", "font-size": "20px" }', templateId: 1 },
+        { tag: "countryState", tagBefore: null, tagAfter: null, model: 'collect', modelAttribute: 'countryState',style: '{ "background-color": "rgb(13, 71, 161, 0.8)", "font-size": "20px" }', templateId: 1 },
+        { tag: "municipality", tagBefore: null, tagAfter: null, model: 'collect', modelAttribute: 'municipality',style: '{ "background-color": "rgb(41, 121, 255,0.8)", "font-size": "20px" }' , templateId: 1 },
+        { tag: "locality", tagBefore: null, tagAfter: null, model: 'collect', modelAttribute: 'locality',style: '{ "background-color": "rgb(25, 118, 210, 0.8)", "font-size": "20px" }', templateId: 1 },
+        { tag: "curator", tagBefore: 'Curador:', tagAfter: null, model: 'datacard', modelAttribute: 'curador.name',style: '{ "background-color": "rgb(230, 81, 0, 0.8)", "font-size": "20px" }' , templateId: 1 }
       ]);
     });
 };

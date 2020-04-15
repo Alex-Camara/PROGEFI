@@ -100,7 +100,7 @@ const modal = {
           if (error == 'Campo requerido') {
             testValue.valid = { isValid: false, message: error }
             commit('setModalValue', testValue)
-          } else if (error == 'Longitud mínima invalida') {
+          } else if (error == 'Longitud mínima inválida') {
             testValue.valid = { isValid: false, message: error }
             commit('setModalValue', testValue)
           } else if (error == 'Campo vacío') {

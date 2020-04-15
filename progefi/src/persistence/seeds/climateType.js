@@ -1,9 +1,9 @@
 exports.seed = function (knex) {
   // Deletes ALL existing entries
-  return knex('climateType').del()
+  return knex('ClimateType').del()
     .then(function () {
       // Inserts seed entries
-      return knex('climateType').insert([
+      return knex('ClimateType').insert([
         {
           code: 'Indeterminado',
           colorCode: 'general_icons/question.png',

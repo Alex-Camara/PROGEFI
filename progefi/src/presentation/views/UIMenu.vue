@@ -25,7 +25,7 @@ export default {
         {
           name: "UIShowCollections",
           params: "",
-          title: "Colecciones",
+          title: "Colección",
           classObject: {
             "is-active": false
           }
@@ -50,6 +50,14 @@ export default {
           name: "UIShowTemplates",
           params: "",
           title: "Plantillas",
+          classObject: {
+            "is-active": false
+          }
+        },
+        {
+          name: "",
+          params: "",
+          title: "Rastreo",
           classObject: {
             "is-active": false
           }

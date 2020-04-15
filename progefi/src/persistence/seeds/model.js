@@ -1,10 +1,10 @@
 
 exports.seed = function(knex) {
   // Deletes ALL existing entries
-  return knex('model').del()
+  return knex('Model').del()
     .then(function () {
       // Inserts seed entries
-      return knex('model').insert([
+      return knex('Model').insert([
         {id: 1, name: 'iPhone 3', deviceId: 5},
         {id: 2, name: 'iPhone 5', deviceId: 5},
         {id: 3, name: 'iPhone 6', deviceId: 5},

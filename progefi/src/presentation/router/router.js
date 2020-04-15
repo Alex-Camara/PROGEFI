@@ -9,6 +9,7 @@ import UIShowCatalogue from '../views/UIShowCatalogue'
 import UICreateCatalogue from '../views/UICreateCatalogue'
 import UIShowCollections from '../views/UIShowCollections'
 import UIShowTemplates from '../views/UIShowTemplates'
+import UICreateTemplate from '../views/UICreateTemplate'
 Vue.use(Router)
 
 export default new Router({
@@ -59,6 +60,12 @@ export default new Router({
     path: '/UIShowTemplates',
     name: 'UIShowTemplates',
     component: UIShowTemplates,
+    props: true
+  },
+  {
+    path: '/UICreateTemplate',
+    name: 'UICreateTemplate',
+    component: UICreateTemplate,
     props: true
   },
   {

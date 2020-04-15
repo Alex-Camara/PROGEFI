@@ -1,6 +1,6 @@
 exports.up = function (knex) {
   return knex.schema
-    .createTable('template', table => {
+    .createTable('Template', table => {
       table.increments('id').primary()
       table.string('name')
       table.string('height')
@@ -9,20 +9,21 @@ exports.up = function (knex) {
       table.string('fontColor')
       table.string('samplePath')
     })
-    .createTable('tag', table => {
+    .createTable('Tag', table => {
       table.increments('id').primary()
       table.string('tag')
       table.string('tagBefore')
       table.string('tagAfter')
       table.string('model')
-      table.string('retrieveMethod')
+      table.string('modelAttribute')
+      table.json('style')
       table
         .integer('templateId')
         .references('id')
-        .inTable('template')
+        .inTable('Template')
         .onDelete('cascade')
     })
-    .createTable('layout', table => {
+    .createTable('Layout', table => {
       table.increments('id').primary()
       table.integer('x')
       table.integer('y')
@@ -30,18 +31,17 @@ exports.up = function (knex) {
       table.integer('h')
       table.string('i')
       table.string('value')
-      table.json('style')
       table
         .integer('templateId')
         .references('id')
-        .inTable('template')
+        .inTable('Template')
         .onDelete('cascade')
     })
 }
 
 exports.down = function (knex) {
   return knex.schema
-    .dropTableIfExists('template')
-    .dropTableIfExists('tag')
-    .dropTableIfExists('layout')
+    .dropTableIfExists('Template')
+    .dropTableIfExists('Tag')
+    .dropTableIfExists('Layout')
 }

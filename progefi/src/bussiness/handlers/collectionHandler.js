@@ -5,9 +5,9 @@ class CollectionHandler {
     constructor(){
         this.collectionDAO = new CollectionDAO()
     }
-    async getCollections(result) {
-        let collections = await this.collectionDAO.getCollections();
-        result(collections);
+    async getCollection(result) {
+        let collection = await this.collectionDAO.getCollection();
+        result(collection);
     }
 }
 

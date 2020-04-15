@@ -3,15 +3,8 @@
   <div id="create_datacard_component">
     <!-- --------AddDataCard Component Header----- -->
     <div id="create_datacard_component_header">
-      <!-- <div id="create_datacard_return_button"> -->
-      <!-- <button id="add_datacard_return_button" class="button is-accent" @click="showDatacards()"> -->
-      <!-- <img id="add_datacard_return_icon" :src="require('../assets/back.png')" /> -->
-      <!-- Regresar -->
-      <!-- </button> -->
-      <!-- </div> -->
-
       <div id="create_datacard_component_title">
-        <p class="is-size-4">{{title}}</p>
+        <p class="component_title">{{title}}</p>
       </div>
     </div>
 
@@ -32,7 +25,7 @@
             <UITaxonomicalData></UITaxonomicalData>
           </b-step-item>
           <b-step-item label="Validación" :clickable="true">
-            <UIValidateData></UIValidateData>
+            <UIValidateData v-on:exitComponent="exitComponent()"></UIValidateData>
           </b-step-item>
         </b-steps>
       </div>
@@ -124,18 +117,6 @@ export default {
     }
   },
   methods: {
-    setCatalogue(catalogue) {
-      this.$store.dispatch(
-        "collection/setCollection",
-        catalogue.getCollection()
-      );
-      this.$store.dispatch(
-        "catalogue/getCatalogues",
-        catalogue.getCollection().getId()
-      );
-      this.$store.dispatch("catalogue/setCatalogue", catalogue);
-      // debugger;
-    },
     // Sí se va a continuar un borrador de ficha, se cargan sus datos
     async setDatacard(datacardDraft) {
       this.disableGeneralDataFields = true;
@@ -144,92 +125,6 @@ export default {
       await this.$store.dispatch(
         "addDatacard/setPhotocollectFilePath",
         photocollectPath
-      );
-      this.$store.dispatch(
-        "catalogue/getCatalogues",
-        datacardDraft
-          .getCatalogue()
-          .getCollection()
-          .getId()
-      );
-      this.$store.dispatch(
-        "catalogue/setCatalogue",
-        datacardDraft.getCatalogue()
-      );
-      this.$store.dispatch(
-        "collection/setCollection",
-        datacardDraft.getCatalogue().getCollection()
-      );
-      this.$store.dispatch(
-        "datacard/setCollectDate",
-        datacardDraft.getCollectDate()
-      );
-      this.$store.dispatch("project/setProject", datacardDraft.getProject());
-      this.$store.dispatch(
-        "collector/setCollector",
-        datacardDraft.getCollector()
-      );
-      this.$store.dispatch("device/setModel", datacardDraft.getModel());
-      this.$store.dispatch(
-        "device/setDevice",
-        datacardDraft.getModel().getDevice()
-      );
-
-      this.$store.dispatch(
-        "coordinate/setAltitude",
-        datacardDraft.getAltitude()
-      );
-      this.$store.dispatch(
-        "coordinate/setLatitude",
-        datacardDraft.getLatitude()
-      );
-      this.$store.dispatch(
-        "coordinate/setLongitude",
-        datacardDraft.getLongitude()
-      );
-      this.$store.dispatch("location/setCountry", datacardDraft.getCountry());
-      this.$store.dispatch(
-        "location/setCountryState",
-        datacardDraft.getCountryState()
-      );
-      this.$store.dispatch(
-        "location/setMunicipality",
-        datacardDraft.getMunicipality()
-      );
-      this.$store.dispatch("location/setLocality", datacardDraft.getLocality());
-      this.$store.dispatch(
-        "climateType/setClimateType",
-        datacardDraft.getClimateType()
-      );
-      this.$store.dispatch(
-        "vegetationType/setVegetationType",
-        datacardDraft.getVegetationType()
-      );
-
-      this.$store.dispatch(
-        "speciesData/setScientificName",
-        datacardDraft.getScientificName()
-      );
-      this.$store.dispatch("speciesData/setGenus", datacardDraft.getGenus());
-      this.$store.dispatch(
-        "speciesData/setCommonName",
-        datacardDraft.getCommonName()
-      );
-      this.$store.dispatch("speciesData/setOrder", datacardDraft.getOrder());
-      this.$store.dispatch("speciesData/setFamily", datacardDraft.getFamily());
-      this.$store.dispatch(
-        "speciesData/setSpeciesClass",
-        datacardDraft.getSpeciesClass()
-      );
-      this.$store.dispatch("speciesData/setPhylum", datacardDraft.getPhylum());
-      this.$store.dispatch(
-        "speciesData/setKingdom",
-        datacardDraft.getKingdom()
-      );
-      this.$store.dispatch("speciesData/setSex", datacardDraft.getSex());
-      this.$store.dispatch(
-        "speciesData/setLifeStage",
-        datacardDraft.getLifeStage()
       );
     },
     resetStore() {
@@ -243,6 +138,20 @@ export default {
         this.showNotification("No hay conexión a Internet", "is-warning");
       }
     },
+    async exitComponent(){
+      if (this.catalogue){
+        await this.$router.push({
+          name: "UIShowCatalogues",
+          params: { askToLeave: false }
+        });
+      } else{
+        await this.$router.push({
+          name: "UIShowDataCards",
+          params: { askToLeave: false, selectedCatalogue: this.catalogue }
+        });
+      }
+
+    },
     showNotification(message, type) {
       this.$buefy.notification.open({
         duration: 5000,
@@ -253,7 +162,7 @@ export default {
       });
     },
     showDialog() {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         let f = this.$buefy.dialog.confirm({
           message: "¿Deseas salir de esta ventana? Tu trabajo no se guardará",
           confirmText: "Cancelar",

@@ -1,26 +1,27 @@
 const {
-    Model
+  Model
 } = require('objection')
 const Knex = require('knex')
 const KnexConfig = require('../knexfile');
 Model.knex(Knex(KnexConfig.development));
 
 class VegetationType extends Model {
-    static get tableName() {
-        return 'vegetationType';
-    }
+  static get tableName() {
+    return 'VegetationType';
+  }
 
-    static get relationMappings () {
-      return {
-        vegetalFormation: {
-          relation: Model.BelongsToOneRelation,
-          modelClass: VegetalFormation,
-          join: {
-            from: 'vegetalFormationId',
-            to: 'vegetalFormation.id'
-          }
+  static get relationMappings() {
+    const VegetalFormation = require('./VegetalFormation');
+    return {
+      vegetalFormation: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: VegetalFormation,
+        join: {
+          from: 'VegetationType.vegetalFormationId',
+          to: 'VegetalFormation.id'
         }
       }
     }
+  }
 }
 module.exports = VegetationType;

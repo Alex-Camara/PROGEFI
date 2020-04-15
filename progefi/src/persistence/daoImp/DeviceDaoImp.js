@@ -36,7 +36,7 @@ class DeviceDaoImp {
   async createModel(model) {
     const createdModel = await Model.query().insert({
       name: model.name,
-      deviceId: model.deviceId
+      deviceId: model.device.id
     })
     return createdModel
   }

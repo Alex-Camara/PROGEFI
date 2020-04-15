@@ -13,20 +13,21 @@
             placeholder="Nombre del curador..."
             class="input"
             v-model="selectedCurator"
-            @focus="autocompleteCuratorStatus =true"
-            @click.stop="autocompleteCuratorStatus =true"
+            @focus="autocompleteCuratorStatus = true"
+            @click.stop="autocompleteCuratorStatus = true"
           />
-          <div
-            id="autocomplete_box"
-            v-if="autocompleteCuratorStatus && curatorState.curators.length > 0"
+          <div class="autocomplete_box"
+            v-if="autocompleteCuratorStatus && curators.length > 0"
           >
-            <ul id="autocomplete_list">
+            <ul class="autocomplete_list">
               <li
-                v-for="curator in curatorState.curators"
-                :key="curator.name"
+                v-for="curator in curators"
+                :key="curator.getName()"
                 :value="curator"
                 @click="setCurator($event, curator)"
-              >{{curator.name}}</li>
+              >
+                {{ curator.getName() }}
+              </li>
             </ul>
           </div>
         </b-field>
@@ -38,11 +39,14 @@
           class="button"
           @click="addCurator()"
           :disabled="!isCuratorValid"
-        >Agregar</button>
+        >
+          Agregar
+        </button>
       </div>
 
       <div id="curators_tags" class="box">
-        <div>
+        <div id="curators_tags_title">
+          <information_helper :message="informationMessage"></information_helper>
           <b>Curadores:</b>
         </div>
 
@@ -55,7 +59,7 @@
               :value="selectedCurator"
             >
               <span id="curators_tags_list_item_tag" class="tag is-secondary">
-                {{selectedCurator}}
+                {{ selectedCurator }}
                 <button
                   class="delete is-small"
                   @click="deleteCurator(selectedCurator)"
@@ -71,29 +75,40 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
+import informationHelper from "../helpers/informationHelper";
 
 export default {
+  components:{
+    "information_helper": informationHelper,
+  },
   data() {
     return {
-      autocompleteCuratorStatus: false
+      autocompleteCuratorStatus: false,
+      informationMessage: "Solo puedes agregar dos curadores..."
     };
   },
   computed: {
     ...mapState("curator", {
       curatorState: state => state,
+      curator: state => state.curator,
+      curators: state => state.curators,
       isCuratorValid: state => state.curator.valid.isValid
+    }),
+    ...mapState("datacard", {
+      datacard: state => state.datacard
     }),
     ...mapGetters("curator", ["selectedCuratorsName"]),
     selectedCurator: {
+
       get: function() {
-        let curator = this.curatorState.curator;
+        // this.curator;
+        // debugger;
         if (
-          !curator.valid.isValid ||
-          curator.valid.message == "temporary error"
+          !this.curator.valid.isValid || this.curator.valid.message === "temporary error"
         ) {
           this.addShakeEffect("validate_input");
         }
-        return curator.name;
+        return this.curator.getName();
       },
       set: function(newValue) {
         this.$store.dispatch("curator/setCurator", newValue);
@@ -101,12 +116,16 @@ export default {
     }
   },
   methods: {
-    addCurator() {
-      this.$store.dispatch("curator/addCurator");
+    async addCurator() {
+      let selectedCurators = await this.$store.dispatch("curator/addCurator");
+      this.datacard.setCurators(selectedCurators)
+      this.$store.commit("datacard/setDatacard", this.datacard);
       this.selectedCurator = "";
     },
     deleteCurator(curator) {
-      this.$store.commit("curator/deleteCurator", curator);
+      let selectedCurators = this.$store.dispatch("curator/deleteCurator", curator);
+      this.datacard.setCurators(selectedCurators)
+      this.$store.commit("datacard/setDatacard", this.datacard);
     },
     setCurator(event, curator) {
       this.selectedCurator = curator;
@@ -178,8 +197,12 @@ export default {
   // align-self: center;
 }
 
+#curators_tags_title{
+  display: flex;
+  align-items: center;
+}
+
 #curators_tags {
-  margin-top: 0px;
   padding-top: 5px;
   grid-row: 2 / 3;
   grid-column: 1 / -1;

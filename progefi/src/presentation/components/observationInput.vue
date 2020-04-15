@@ -26,10 +26,17 @@ export default {
     }),
     observations: {
       get: function() {
-        return this.datacard.getObservations();
+        return this.datacard
+          .getCollect()
+          .getSpecimen()
+          .getObservations();
       },
       set: function(newValue) {
-        this.setObservations(newValue);
+        this.datacard
+          .getCollect()
+          .getSpecimen()
+          .setObservations(newValue);
+        this.$store.commit("datacard/setDatacard", this.datacard);
       }
     }
   },

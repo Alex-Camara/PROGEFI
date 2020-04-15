@@ -1,9 +1,9 @@
 exports.seed = function (knex) {
   // Deletes ALL existing entries
-  return knex('project').del()
+  return knex('Project').del()
     .then(function () {
       // Inserts seed entries
-      return knex('project').insert([{
+      return knex('Project').insert([{
         id: 1,
         name: 'Captura de aves en Belice',
         sponsor: 'INECOL',

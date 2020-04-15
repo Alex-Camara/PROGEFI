@@ -1,53 +1,56 @@
 <template>
   <div>
     <div id="generalDataForm_content">
-      <b-field id="colection_select_field" custom-class="is-small is-centered">
-        <template slot="label">
-          <required-field-helper
-            :name="'Colección:'"
-            :valid="collectionState.collection.getValid()"
-          ></required-field-helper>
-        </template>
-        <div class="select">
-          <select
-            id="colection_select"
-            placeholder="Selecciona una colección"
-            v-model="selectedCollection"
-            :disabled="disableFields"
-          >
-            <option
-              v-for="collection in collectionState.collections"
-              :key="collection.getName()"
-              :value="collection"
-            >{{ collection.getName() }}</option>
-          </select>
-        </div>
+      <b-field
+        id="colection_select_field"
+        custom-class="is-small is-centered"
+        label="Colección"
+      >
+        <input
+          id="colection_select"
+          class="input"
+          :value="collection.getName()"
+          :disabled="true"
+        />
       </b-field>
       <!-- ------- catalogue select ----- -->
       <b-field id="catalogue_select_field" custom-class="is-small is-centered">
         <template slot="label">
-          <required-field-helper :name="'Catálogo:'" :valid="catalogueState.catalogue.getValid()"></required-field-helper>
+          <required-field-helper
+            :name="'Catálogo:'"
+            :valid="catalogueValid"
+          ></required-field-helper>
         </template>
-        <div class="select">
+        <div class="select" v-if="!disableFields">
           <select
             id="catalogue_select"
             placeholder="Selecciona un catálogo"
             v-model="selectedCatalogue"
-            :disabled="disableFields"
           >
             <option
-              v-for="catalogue in catalogueState.catalogues"
+              v-for="catalogue in catalogues"
               :key="catalogue.getId()"
               :value="catalogue"
-            >{{ catalogue.getName() }}</option>
+              >{{ catalogue.getName() }}</option
+            >
           </select>
         </div>
+        <input
+          id="colection_select"
+          class="input"
+          :value="selectedCatalogue.getName()"
+          :disabled="true"
+          v-if="disableFields"
+        />
       </b-field>
 
       <!-- ------- proyect select ----- -->
       <b-field id="project_select_field" custom-class="is-small is-centered">
         <template slot="label">
-          <required-field-helper :name="'Proyecto:'" :valid="projectState.project.valid"></required-field-helper>
+          <required-field-helper
+            :name="'Proyecto:'"
+            :valid="projectValid"
+          ></required-field-helper>
         </template>
         <div class="select">
           <select
@@ -56,123 +59,154 @@
             v-model="selectedProject"
           >
             <option
-              v-for="project in projectState.projects"
+              v-for="project in projects"
               :key="project.name"
               :value="project"
-            >{{ project.name }}</option>
+              >{{ project.name }}</option
+            >
           </select>
         </div>
       </b-field>
 
       <!-- ------- collector select ----- -->
-      <b-field id="collector_select_field" custom-class="is-small is-centered">
+      <b-field
+        id="collector_select_field"
+        class="autocomplete_box_field"
+        custom-class="is-small is-centered"
+      >
         <template slot="label">
-          <required-field-helper :name="'Colector:'" :valid="collectorState.collector.getValid()"></required-field-helper>
+          <required-field-helper
+            :name="'Colector:'"
+            :valid="collectorValid"
+          ></required-field-helper>
         </template>
         <input
           id="collector_select"
+          ref="collector_select"
           placeholder="Selecciona un colector"
           class="input"
           v-model="selectedCollector"
-          @focus="autocompleteCollectorStatus =true"
-          @click.stop="autocompleteCollectorStatus =true"
-          :disabled="catalogueState.catalogue.id == null || disableFields"
+          @focus="autocompleteCollectorStatus = true"
+          @click.stop="autocompleteCollectorStatus = true"
+          :disabled="datacard.getCatalogue().getId() == null || disableFields"
         />
         <div
-          id="autocomplete_box"
-          v-if="autocompleteCollectorStatus && collectorState.collectors.length > 0"
+          class="autocomplete_box"
+          v-if="autocompleteCollectorStatus && collectors.length > 0"
         >
-          <ul id="autocomplete_list">
+          <ul class="autocomplete_list">
             <li
-              v-for="collector in collectorState.collectors"
+              v-for="collector in collectors"
               :key="collector.getName()"
               :value="collector"
               @click="setCollector($event, collector)"
-            >{{collector.getName()}}</li>
+            >
+              {{ collector.getName() }}
+            </li>
           </ul>
         </div>
       </b-field>
-
+      <!--  -->
       <!-- ------- device select ----- -->
       <metadata-helper
         id="device_helper"
         v-bind:selectedValue="selectedDevice"
         v-bind:attribute="'device'"
-        v-if="metadataState.device"
+        v-if="deviceMetadata != null"
       ></metadata-helper>
-
-      <b-field id="device_select_field" custom-class="is-small is-centered">
+      <b-field
+        id="device_select_field"
+        class="autocomplete_box_field"
+        custom-class="is-small is-centered"
+      >
         <template slot="label">
-          <required-field-helper :name="'Dispositivo:'" :valid="deviceState.device.valid"></required-field-helper>
+          <required-field-helper
+            :name="'Dispositivo:'"
+            :valid="deviceValid"
+          ></required-field-helper>
         </template>
         <input
           id="device_select"
           placeholder="Selecciona un dispositivo"
           class="input"
           v-model="selectedDevice"
-          @focus="autocompleteDeviceStatus =true"
-          @click.stop="autocompleteDeviceStatus =true"
+          @focus="autocompleteDeviceStatus = true"
+          @click.stop="autocompleteDeviceStatus = true"
         />
         <div
-          id="autocomplete_box"
-          v-if="autocompleteDeviceStatus && deviceState.devices.length > 0"
+          class="autocomplete_box"
+          v-if="autocompleteDeviceStatus && devices.length > 0"
         >
-          <ul id="autocomplete_list">
+          <ul class="autocomplete_list">
             <li
-              v-for="device in deviceState.devices"
-              :key="device.name"
+              v-for="device in devices"
+              :key="device.getName()"
               :value="device"
               @click="setDevice($event, device)"
-            >{{device.name}}</li>
+            >
+              {{ device.getName() }}
+            </li>
           </ul>
         </div>
       </b-field>
-
+      <!--  -->
       <!-- ------- model select ----- -->
       <metadata-helper
         id="model_helper"
         v-bind:selectedValue="selectedModel"
         v-bind:attribute="'model'"
-        v-if="metadataState.model"
+        v-if="modelMetadata != null"
       ></metadata-helper>
 
-      <b-field id="model_select_field" custom-class="is-small is-centered">
+      <b-field
+        id="model_select_field"
+        class="autocomplete_box_field"
+        custom-class="is-small is-centered"
+      >
         <template slot="label">
-          <required-field-helper :name="'Modelo:'" :valid="deviceState.model.valid"></required-field-helper>
+          <required-field-helper
+            :name="'Modelo:'"
+            :valid="modelValid"
+          ></required-field-helper>
         </template>
         <input
           id="model_select"
           placeholder="Selecciona un modelo"
           class="input"
           v-model="selectedModel"
-          @focus="autocompleteModelStatus =true"
-          @click.stop="autocompleteModelStatus =true"
+          @focus="autocompleteModelStatus = true"
+          @click.stop="autocompleteModelStatus = true"
         />
-        <div id="autocomplete_box" v-if="autocompleteModelStatus && deviceState.models.length > 0">
-          <ul id="autocomplete_list">
+        <div
+          class="autocomplete_box"
+          v-if="autocompleteModelStatus && models.length > 0"
+        >
+          <ul class="autocomplete_list">
             <li
-              v-for="model in deviceState.models"
-              :key="model.name"
+              v-for="model in models"
+              :key="model.getName()"
               :value="model"
               @click="setModel($event, model)"
-            >{{model.name}}</li>
+            >
+              {{ model.getName() }}
+            </li>
           </ul>
         </div>
       </b-field>
-
+      <!--  -->
       <!-- ------- collect date select ----- -->
       <metadata-helper
         id="collectDate_helper"
-        v-bind:selectedValue="datacardState.datacard.getFormattedDate()"
+        v-bind:selectedValue="datacard.getCollect().getFormattedCollectDate()"
         v-bind:attribute="'formattedDate'"
-        v-if="metadataState.collectDate"
+        v-if="collectDateMetadata != null"
       ></metadata-helper>
 
       <b-field id="collect-date-select" custom-class="is-small is-centered">
         <template slot="label">
           <required-field-helper
             :name="'Fecha de colecta:'"
-            :valid="datacardState.datacard.getCollectDateValid()"
+            :valid="collectDateValid"
           ></required-field-helper>
         </template>
         <b-datepicker
@@ -187,16 +221,16 @@
       <!-- ------- collect hour select ----- -->
       <metadata-helper
         id="collectHour_helper"
-        v-bind:selectedValue="datacardState.datacard.getFormattedHour()"
+        v-bind:selectedValue="datacard.getCollect().getFormattedCollectHour()"
         v-bind:attribute="'formattedHour'"
-        v-if="metadataState.collectHour"
+        v-if="collectDateMetadata != null"
       ></metadata-helper>
 
       <b-field id="collect-hour-select" custom-class="is-small is-centered">
         <template slot="label">
           <required-field-helper
             :name="'Hora de colecta:'"
-            :valid="datacardState.datacard.getCollectDateValid()"
+            :valid="collectDateValid"
           ></required-field-helper>
         </template>
         <b-timepicker
@@ -213,12 +247,17 @@
 </template>
 
 <script>
-import store from "../store/store.js";
-import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
+  import {mapState} from "vuex";
+  import Collector from "../models/collector.js";
+  import Catalogue from "../models/catalogue";
+  import metadataHelper from "../helpers/metadataHelper.vue";
+  import requiredFieldHelper from "../helpers/requiredFieldHelper.vue";
+  import Collection from "../models/collection";
+  import Project from "../models/project";
+  import Device from "../models/device";
+  import Model from "../models/model";
 
-import metadataHelper from "../helpers/metadataHelper.vue";
-import requiredFieldHelper from "../helpers/requiredFieldHelper.vue";
-export default {
+  export default {
   props: ["catalogue", "disableFields"],
   components: {
     "metadata-helper": metadataHelper,
@@ -226,142 +265,154 @@ export default {
   },
   data() {
     return {
-      collectorFieldDisabled: true,
+      collection: new Collection(),
+      catalogues: [],
+      projects: [],
+      devices: [],
+      models: [],
+      collectors: [],
       maxDate: new Date(),
       autocompleteDeviceStatus: false,
       autocompleteCollectorStatus: false,
       autocompleteModelStatus: false
     };
   },
-  mounted() {
-    this.$store.dispatch("collection/getCollections");
-    this.$store.dispatch("project/getProjects");
+  async mounted() {
+    this.collection = await Collection.getAll();
+    this.catalogues = await Catalogue.getAll();
+    this.projects = await Project.getAll();
+    this.datacard.getCollect().setCollectDate(new Date());
     if (this.catalogue) {
-      this.selectedCollection = this.catalogue.getCollection();
-      this.selectedCatalogue = this.catalogue;
+      this.selectedCatalogue = this.catalogues.find(
+        x => x.name === this.catalogue.getName()
+      );
     }
-    // debugger;
   },
   computed: {
     ...mapState("datacard", {
-      datacardState: state => state
+      datacardState: state => state,
+      datacard: state => state.datacard,
+      catalogueValid: state => state.datacard.getCatalogue().getValid(),
+      projectValid: state =>
+        state.datacard
+          .getCollect()
+          .getProject()
+          .getValid(),
+      collectorValid: state =>
+        state.datacard
+          .getCollect()
+          .getCollector()
+          .getValid(),
+      deviceValid: state =>
+        state.datacard
+          .getCollect()
+          .getModel()
+          .getDevice()
+          .getValid(),
+      modelValid: state =>
+        state.datacard
+          .getCollect()
+          .getModel()
+          .getValid(),
+      collectDateValid: state =>
+        state.datacard.getCollect().getCollectDateValid()
     }),
     ...mapState("addDatacard", {
       photoCollect: state => state.photoCollect
     }),
     ...mapState("metadata", {
-      metadataState: state => state
-    }),
-    ...mapState("catalogue", {
-      catalogueState: state => state
-    }),
-    ...mapState("collection", {
-      collectionState: state => state
-    }),
-    ...mapState("project", {
-      projectState: state => state
-    }),
-    ...mapState("collector", {
-      collectorState: state => state
-    }),
-    ...mapState("device", {
-      deviceState: state => state,
-      isDeviceValid: state => state.device.valid,
-      isModelValid: state => state.model.valid
+      metadataState: state => state,
+      deviceMetadata: state =>
+        state.collect
+          .getModel()
+          .getDevice()
+          .getName(),
+      modelMetadata: state => state.collect.getModel().getName(),
+      collectDateMetadata: state => state.collect.getCollectDate()
     }),
     hasMetadata: function() {
       return this.metadataState.hasMetadata;
     },
-    ...mapGetters("collector", ["collectorsName"]),
-    ...mapGetters("collection", ["collectionIsRequired"]),
-    selectedCollection: {
-      get: function() {
-        return this.collectionState.collection;
-      },
-      set: function(newValue) {
-        this.$store.commit("catalogue/resetStore");
-        this.$store.dispatch("collection/setCollection", newValue);
-        // debugger;
-        this.$store.dispatch("catalogue/getCatalogues", newValue.id);
-      }
-    },
     selectedCatalogue: {
       get: function() {
-        return this.catalogueState.catalogue;
+        return this.datacard.getCatalogue();
       },
       set: function(newValue) {
         //Por alguna razón, al asignar el catálogo desde mounted, el valor
         //de catalogue se asigna a undefined
-        if (newValue == undefined) {
+        if (newValue === undefined) {
           newValue = this.selectedCatalogue;
         }
-        this.collectorFieldDisabled = false;
-        this.$store.dispatch("catalogue/setCatalogue", newValue);
-        this.$store.commit("datacard/setCatalogue", newValue);
-        this.$store.dispatch("datacard/setDatacardCode", {
-          catalogueCode: newValue.getCode(),
-          datacardCountInCatalogue: newValue.getDatacardCount()
-        });
-        this.$store.dispatch("datacard/setCollectorCode");
+        newValue.setCollection(this.collection);
+
+        this.datacard.setCatalogue(newValue);
       }
     },
     selectedProject: {
       get: function() {
-        return this.projectState.project;
+        return this.datacard.getCollect().getProject();
       },
-      set: function(project) {
-        this.$store.commit("project/setProject", project);
-        this.$store.commit("datacard/setProject", project);
+      set: function(newValue) {
+        this.datacard.getCollect().setProject(newValue);
+        this.$store.commit("datacard/setDatacard", this.datacard);
       }
     },
     selectedCollector: {
       get: function() {
-        let collector = this.collectorState.collector;
+        let collector = this.datacard.getCollect().getCollector();
         if (
           !collector.isValid() ||
-          collector.getErrorMessage() == "temporary error"
+          collector.getValidMessage() == "temporary error"
         ) {
           this.addShakeEffect("collector_select");
         }
         return collector.getName();
       },
-      set: function(collector) {
-        this.$store.dispatch("collector/setCollector", collector);
+      set: async function(newValue) {
+        let collector = await this.datacard.getCollect().setCollector(newValue);
+        await this.datacard.generateCollectorCode();
+        this.collectors = await Collector.getAll(collector.getName());
       }
     },
     selectedDevice: {
       get: function() {
-        let device = this.deviceState.device;
+        let device = this.datacard
+          .getCollect()
+          .getModel()
+          .getDevice();
         if (
           !device.valid.isValid ||
-          device.valid.message == "temporary error"
+          device.valid.message === "temporary error"
         ) {
           this.addShakeEffect("device_select");
         }
-        return device.name;
+        return device.getName();
       },
-      set: function(newValue) {
-        this.$store.dispatch("device/setDevice", newValue);
+      set: async function(newValue) {
+        await this.datacard.getCollect().getModel().setDevice(newValue);
+        let newDevice = this.datacard.getCollect().getModel().getDevice();
+        this.selectedModel = this.datacard.getCollect().getModel().getName();
+        this.devices = await Device.getAll(newDevice.getName());
+        this.models = await Model.getAll(newDevice.getId());
       }
     },
     selectedModel: {
       get: function() {
-        let model = this.deviceState.model;
-        if (!model.valid.isValid || model.valid.message == "temporary error") {
+        let model = this.datacard.getCollect().getModel();
+        if (!model.valid.isValid || model.valid.message === "temporary error") {
           this.addShakeEffect("model_select");
         }
-        return model.name;
+        return model.getName();
+
       },
-      set: function(newValue) {
-        this.$store.dispatch("device/setModel", newValue);
+      set: async function(newValue) {
+        await this.datacard.getCollect().setModel(newValue);
       }
     },
+
     selectedDate: {
       get: function() {
-        // if (this.datacardState.datacard.getCollectDate() == null) {
-        // this.$store.dispatch("datacard/setCollectDate", new Date());
-        // }
-        return this.datacardState.datacard.getCollectDate();
+        return this.datacard.getCollect().getCollectDate();
       },
       set: function(newValue) {
         this.$store.dispatch("datacard/setCollectDate", newValue);
@@ -369,10 +420,24 @@ export default {
     },
     selectedHour: {
       get: function() {
-        return this.datacardState.datacard.getCollectDate();
+        return this.datacard.getCollect().getCollectDate();
       },
       set: function(newValue) {
         this.$store.dispatch("datacard/setCollectDate", newValue);
+      }
+    }
+  },
+  watch: {
+    deviceMetadata(newValue) {
+      if (newValue != null) {
+        this.selectedDevice = this.deviceMetadata;
+        this.selectedModel = this.modelMetadata;
+      }
+    },
+    collectDateMetadata(newValue) {
+      if (newValue != null) {
+        this.selectedDate = this.collectDateMetadata;
+        this.selectedHour = this.collectDateMetadata;
       }
     }
   },
@@ -440,8 +505,6 @@ export default {
 #collector_select_field {
   grid-row: 2 / 3;
   grid-column: 4 / 6;
-  display: flex;
-  flex-direction: column;
 }
 
 #device_helper {
@@ -453,33 +516,33 @@ export default {
 #device_select_field {
   grid-row: 3 / 4;
   grid-column: 2 / 3;
-  display: flex;
-  flex-direction: column;
+  // display: flex;
+  // flex-direction: column;
 }
-
-#autocomplete_list {
-  height: 200px;
-  overflow: hidden;
-  overflow-y: scroll;
-  z-index: 1;
-}
-
-#autocomplete_list li {
-  padding: 5px;
-  padding-left: 10px;
-}
-
-#autocomplete_list li:hover {
-  background-color: $secondary;
-  cursor: pointer;
-}
-
-#autocomplete_box {
-  position: relative;
-  z-index: 10;
-  box-shadow: 1px 1px 7px 0px rgba(0, 0, 0, 0.35);
-  background-color: white;
-}
+//
+// #autocomplete_list {
+// height: 200px;
+// overflow: hidden;
+// overflow-y: scroll;
+// z-index: 1;
+// }
+//
+// #autocomplete_list li {
+// padding: 5px;
+// padding-left: 10px;
+// }
+//
+// #autocomplete_list li:hover {
+// background-color: $secondary;
+// cursor: pointer;
+// }
+//
+// #autocomplete_box {
+// position: relative;
+// z-index: 10;
+// box-shadow: 1px 1px 7px 0px rgba(0, 0, 0, 0.35);
+// background-color: white;
+// }
 
 #model_helper {
   grid-row: 3 / 4;
@@ -490,8 +553,8 @@ export default {
 #model_select_field {
   grid-row: 3 / 4;
   grid-column: 4 / 5;
-  display: flex;
-  flex-direction: column;
+  // display: flex;
+  // flex-direction: column;
 }
 
 #collectDate_helper {

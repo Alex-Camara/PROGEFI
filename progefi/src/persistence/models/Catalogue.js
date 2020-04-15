@@ -7,7 +7,7 @@ Model.knex(Knex(KnexConfig.development));
 
 class Catalogue extends Model {
     static get tableName() {
-        return 'catalogue';
+        return 'Catalogue';
     }
 
     static get relationMappings () {
@@ -17,8 +17,8 @@ class Catalogue extends Model {
             relation: Model.BelongsToOneRelation,
             modelClass: Collection,
             join: {
-              from: 'catalogue.collectionId',
-              to: 'collection.id'
+              from: 'Catalogue.collectionId',
+              to: 'Collection.id'
             }
           }
         }

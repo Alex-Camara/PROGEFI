@@ -30,11 +30,18 @@ class CollectorDao {
     )
     return isDuplicated
   }
-  getDatacardsCountByCollector (collectorCode, catalogueId) {
+  getDatacardsCountByCollector (collectorId, catalogueId) {
     let count = Promise.resolve(
-      this.collectorDaoImp.countDatacardsCreated(collectorCode, catalogueId)
+      this.collectorDaoImp.countDatacardsCreated(collectorId, catalogueId)
     )
     return count
+  }
+
+  getCollectorByName(collectorName){
+    let isDuplicated = Promise.resolve(
+        this.collectorDaoImp.getCollectorByName(collectorName)
+    )
+    return isDuplicated
   }
 }
 

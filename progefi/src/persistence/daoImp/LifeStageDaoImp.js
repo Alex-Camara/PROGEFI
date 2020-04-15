@@ -1,5 +1,5 @@
 'use strict'
-const LifeStage = require('../models/LifeStage').default
+const LifeStage = require('../models/LifeStage')
 
 class LifeStageDaoImp {
     constructor() {

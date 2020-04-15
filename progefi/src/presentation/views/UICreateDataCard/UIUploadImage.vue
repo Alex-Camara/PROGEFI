@@ -5,17 +5,8 @@
     <div id="add_datacard_left_side" class="box">
       <!-- --------AddDataCard1 Component Header----- -->
       <div id="add_datacard_component_header">
-        <p class="subtitle is-5">
-          <b-tooltip
-            label="Los formatos permitidos son: jpeg, png, bmp y tiff."
-            type="is-dark"
-            position="is-top"
-            animated
-            multilined
-          >
-            <img id="icon_info" :src="icon" />
-          </b-tooltip>Sube el archivo de la fotocolecta
-        </p>
+        <information_helper :message="informationMessage"></information_helper>
+        <p class="subtitle_dark_gray is-5">Sube el archivo de la fotocolecta</p>
       </div>
 
       <!-- --------AddDataCard1 Component Content----- -->
@@ -61,12 +52,17 @@
 <script>
 import store from "../../store/store.js";
 import { mapState } from "vuex";
+import informationHelper from "../../helpers/informationHelper";
 
 export default {
+  components: {
+    "information_helper": informationHelper,
+  },
   data() {
     return {
       // file: null,
-      icon: require("../../assets/question.png")
+      icon: require("../../assets/question.png"),
+      informationMessage: "Los formatos permitidos son: jpeg, png, bmp y tiff..."
     };
   },
   computed: {

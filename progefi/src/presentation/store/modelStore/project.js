@@ -21,32 +21,32 @@ const project = {
     }
   },
   actions: {
-    getProjects({ state, commit }) {
-      // return new Promise((resolve, reject) => {
-      ipcRenderer.send('getProjects')
-      ipcRenderer.once('projects', (event, receivedProjects) => {
-        let newProjects = []
-        for (let i = 0; i < receivedProjects.length; i++) {
-          let project = new Project()
-          project.setProject(receivedProjects[i])
-          newProjects.push(project)
-        }
-        commit('setProjects', newProjects)
-        // Para ubicar el proyecto ya seleccionado dentro de la lista de proyectos
-        // recuperados
-        if (state.project.id != null) {
-          let selectedProject = newProjects.find(
-            x => x.id == state.project.getId()
-          )
-          commit('setProject', selectedProject)
-        }
-        // resolve();
-      })
-      // });
-    },
-    setProject({ commit }, project) {
-      commit('setProject', project)
-    },
+    // getProjects({ state, commit }) {
+    //   // return new Promise((resolve, reject) => {
+    //   ipcRenderer.send('getProjects')
+    //   ipcRenderer.once('projects', (event, receivedProjects) => {
+    //     let newProjects = []
+    //     for (let i = 0; i < receivedProjects.length; i++) {
+    //       let project = new Project()
+    //       project.setProject(receivedProjects[i])
+    //       newProjects.push(project)
+    //     }
+    //     commit('setProjects', newProjects)
+    //     // Para ubicar el proyecto ya seleccionado dentro de la lista de proyectos
+    //     // recuperados
+    //     if (state.project.id != null) {
+    //       let selectedProject = newProjects.find(
+    //         x => x.id == state.project.getId()
+    //       )
+    //       commit('setProject', selectedProject)
+    //     }
+    //     // resolve();
+    //   })
+    //   // });
+    // },
+    // setProject({ commit }, project) {
+    //   commit('setProject', project)
+    // },
   }
 }
 

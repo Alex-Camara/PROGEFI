@@ -1,12 +1,19 @@
 
-exports.seed = function(knex) {
+exports.seed = function (knex) {
   // Deletes ALL existing entries
-  return knex('collection').del()
+  return knex('Collection').del()
     .then(function () {
       // Inserts seed entries
-      return knex('collection').insert([
-        {id: 1, name: "Colección Fotográfica de Vertebrados Terrestres 'Alvar González Cristen'", instituteId: 1},
-        {id: 2, name: "Colección de fotografías de flora de Xalapa ", instituteId: 1}
+      return knex('Collection').insert([
+        {
+          id: 1,
+          name: "Colección Fotográfica de Vertebrados Terrestres 'Alvar González Cristen'",
+          code: "IIBUV-",
+          instituteName: 'Universidad Veracruzana',
+          acronym: 'UV',
+          researchArea: 'Instituto de Investigaciones Biológicas UV',
+          instituteLogoPath: 'C:\\Users\\arcam\\Documents\\Github\\PROGEFI\\progefi\\src\\persistence\\resources\\institute_logos\\logo.png'
+        }
       ]);
     });
 };

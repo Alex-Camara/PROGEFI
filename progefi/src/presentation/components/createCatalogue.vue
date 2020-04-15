@@ -1,13 +1,16 @@
 <template>
   <!-- <div> -->
   <div id="create_catalogue_container">
-    <div id="create_catalogue_content" class="gray_box">
-      <p class="title">CREAR FICHA:</p>
+    <p class="title">{{title}}</p>
 
+    <div class="gray_box create_catalogue_content">
       <!-- <div> -->
       <b-field id="create_catalogue_name_input_field" custom-class="is-small">
         <template slot="label">
-          <required-field-helper :name="'Nombre:'" :valid="isNameValid"></required-field-helper>
+          <required-field-helper
+            :name="'Nombre:'"
+            :valid="isNameValid"
+          ></required-field-helper>
         </template>
         <input
           id="create_catalogue_name_input"
@@ -15,40 +18,49 @@
           v-model="name"
         />
       </b-field>
+    </div>
 
-      <b-field id="create_catalogue_code_input_field" custom-class="is-small">
-        <template slot="label">
-          <required-field-helper :name="'Código:'" :valid="isCodeValid"></required-field-helper>
-        </template>
+    <div class="gray_box create_catalogue_content">
+      <required-field-helper
+        :name="'Código:'"
+        :valid="isCodeValid"
+      ></required-field-helper>
+      <div class="input_field_control">
+        <span id="create_catalogue_collection_code" class="button is-static">{{catalogue.getCollection().getCode()}}</span>
         <input
-          id="create_catalogue_code_input"
-          class="input create_catalogue_input_elements"
-          v-model="code"
+                id="create_catalogue_code_input"
+                class="input create_catalogue_input_elements"
+                v-model="code"
+        />
+      </div>
+
+    </div>
+
+    <div class="gray_box create_catalogue_content">
+      <b-field
+        id="create_catalogue_collection_select_field"
+        custom-class="is-small is-centered"
+        label="Colección:"
+      >
+        <input
+          id="create_catalogue_collection_input"
+          class="input"
+          :value="collection.getName()"
+          :disabled="true"
         />
       </b-field>
+    </div>
 
-      <b-field id="create_catalogue_collection_select_field" custom-class="is-small is-centered">
+    <div class="gray_box create_catalogue_content">
+      <b-field
+        id="create_catalogue_description_input_field"
+        custom-class="is-small"
+      >
         <template slot="label">
-          <required-field-helper :name="'Colección:'" :valid="isCollectionValid"></required-field-helper>
-        </template>
-        <div class="select create_catalogue_input_elements">
-          <select
-            id="create_catalogue_collection_select"
-            placeholder="Selecciona una colección"
-            v-model="collection"
-          >
-            <option
-              v-for="collection in collections"
-              :key="collection.getName()"
-              :value="collection"
-            >{{ collection.getName() }}</option>
-          </select>
-        </div>
-      </b-field>
-
-      <b-field id="create_catalogue_description_input_field" custom-class="is-small">
-        <template slot="label">
-          <required-field-helper :name="'Descripción:'" :valid="isDescriptionValid"></required-field-helper>
+          <required-field-helper
+            :name="'Descripción:'"
+            :valid="isDescriptionValid"
+          ></required-field-helper>
         </template>
         <textarea
           id="create_catalogue_description_input"
@@ -60,106 +72,86 @@
       </b-field>
       <!-- </div> -->
     </div>
-    <div>
-      <button
-        id="create_catalogue_create_button"
-        class="button is-accent"
-        :disabled="disableCreateButton()"
-        @click="createCatalogue()"
-      >Crear catálogo</button>
-    </div>
   </div>
   <!-- </div> -->
 </template>
 
 <script>
-import { mapState } from "vuex";
 import requiredFieldHelper from "../helpers/requiredFieldHelper.vue";
+import Collection from "../models/collection";
+
 export default {
-  // props: ["selectedCollection"],
+  props: ["catalogue"],
   components: {
     "required-field-helper": requiredFieldHelper
   },
-  mounted() {
-    this.$store.dispatch("collection/getCollections");
-    // if (this.selectedCollection) {
-    // this.setCollection(this.selectedCollection);
-    // }
+  data() {
+    return {
+      collection: new Collection(),
+      title: "CREAR CATÁLOGO:",
+      createButtonText: "Crear catálogo"
+    };
+  },
+  async mounted() {
+    this.collection = await Collection.getAll();
+    this.catalogue.setCollection(this.collection);
   },
   computed: {
-    ...mapState("catalogue", {
-      catalogue: state => state.catalogue,
-      isNameValid: state => state.catalogue.getNameValid(),
-      isCodeValid: state => state.catalogue.getCodeValid(),
-      isDescriptionValid: state => state.catalogue.getDescriptionValid(),
-      isCollectionValid: state => state.catalogue.getCollectionValid()
-    }),
-    ...mapState("collection", {
-      collections: state => state.collections
-    }),
+    isNameValid: function() {
+      return this.catalogue.getNameValid();
+    },
+    isCodeValid: function() {
+      return this.catalogue.getCodeValid();
+    },
+    isDescriptionValid: function() {
+      return this.catalogue.getDescriptionValid();
+    },
     name: {
       get: function() {
         let name = this.catalogue.getName();
-        if (this.catalogue.getNameValid().message == "temporary error") {
+        if (this.catalogue.getNameValid().message === "temporary error") {
           this.addShakeEffect("create_catalogue_name_input");
         }
         return name;
       },
-      set: function(newValue) {
-        this.$store.dispatch("catalogue/setName", newValue);
+      set: async function(newValue) {
+        let error = "";
+        error = await this.catalogue.setName(newValue);
+        if (error === "error") {
+          this.openDialog("Ha ocurrido un error con la base de datos");
+        }
       }
     },
     code: {
       get: function() {
         let code = this.catalogue.getCode();
-        if (this.catalogue.getCodeValid().message == "temporary error") {
+        if (this.catalogue.getCodeValid().message === "temporary error") {
           this.addShakeEffect("create_catalogue_code_input");
         }
         return code;
       },
-      set: function(newValue) {
-        this.$store.dispatch("catalogue/setCode", newValue);
+      set: async function(newValue) {
+        await this.catalogue.setCode(newValue);
       }
     },
     description: {
       get: function() {
         let description = this.catalogue.getDescription();
-        if (this.catalogue.getDescriptionValid().message == "temporary error") {
+        if (
+          this.catalogue.getDescriptionValid().message === "temporary error"
+        ) {
           this.addShakeEffect("create_catalogue_description_input");
         }
         return description;
       },
-      set: function(newValue) {
-        this.$store.dispatch("catalogue/setDescription", newValue);
-      }
-    },
-    collection: {
-      get: function() {
-        //ELIMINAR CUANDO SE HAYA IMPLEMENTATO CRUD COLECCIONES
-        return this.catalogue.getCollection();
-      },
-      set: function(newValue) {
-        this.$store.dispatch("catalogue/setCollection", newValue);
+      set: async function(newValue) {
+        await this.catalogue.setDescription(newValue);
       }
     }
   },
   methods: {
-    // Establecer el valor de la colección seleccionada
-    // setCollection(collection) {
-    // this.$store.dispatch("catalogue/setCollection", collection);
-    // debugger;
-    // },
-    disableCreateButton() {
-      if (
-        this.isNameValid.isValid &&
-        this.isCodeValid.isValid &&
-        this.isDescriptionValid.isValid &&
-        this.isCollectionValid.isValid
-      ) {
-        return false;
-      } else {
-        return true;
-      }
+    openDialog(message) {
+      this.$buefy.dialog.alert(message);
     },
     addShakeEffect(elemenId) {
       let element = document.getElementById(elemenId);
@@ -168,40 +160,36 @@ export default {
         void element.offsetWidth; // trigger a DOM reflow
         element.classList.add("shake_field");
       }
-    },
-    async createCatalogue() {
-      this.$store.dispatch("loading/setLoadingMessage", "Creando catálogo...");
-      this.$store.dispatch("loading/setActive", true, { root: true });
-      await this.$store.dispatch("catalogue/createCatalogue");
-      this.$store.dispatch("loading/setActive", false, { root: true });
-      // console.log("catalogue creado");
-      this.openToast("¡Catálogo creado!");
-      this.$router.push({
-        name: "UIShowCatalogues",
-        params: { askToLeave: false }
-      });
-    },
-    openToast(message) {
-      this.$buefy.toast.open(message);
     }
   }
 };
 </script>
 
 <style lang="scss">
+  @import "../style/style.scss";
+  .input_field_control{
+    display: flex;
+  }
 #create_catalogue_container {
-  // display: flex;
-  // flex-direction: column;
-  // display: grid;
-  // grid-template-rows: 800px 50px;
-  // justify-content: center;
-  // height: 100%;
+  justify-content: center;
+  width: 100%;
+  height: 650px;
 }
-#create_catalogue_content {
-  // grid-row: 1 / 2;
-  // background-color: red;
-  // width: 1000px;
-  // height: 400px;
+
+.create_catalogue_content {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  width: 100%;
+}
+#create_catalogue_name_input {
+  width: 400px;
+}
+#create_catalogue_code_input {
+  width: 150px;
+}
+#create_catalogue_collection_input {
+  width: 800px;
 }
 #create_catalogue_description_input {
   width: 600px;
@@ -212,6 +200,10 @@ export default {
   display: flex;
   grid-row: 2 / 3;
   justify-self: end;
+}
+#create_catalogue_collection_code{
+  background-color: $secondary;
+  font-weight: bold;
 }
 .create_catalogue_input_elements {
   width: 420px;

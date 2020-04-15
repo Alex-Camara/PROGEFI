@@ -1,10 +1,10 @@
 
 exports.seed = function(knex) {
   // Deletes ALL existing entries
-  return knex('curator').del()
+  return knex('Curator').del()
     .then(function () {
       // Inserts seed entries
-      return knex('curator').insert([
+      return knex('Curator').insert([
         {id: 1, name: 'Ximena Del Campo Gómez'},
         {id: 2, name: 'Romeo Cámara Olivares'},
         {id: 3, name: 'Guillermo Missael Toral Hernández'},

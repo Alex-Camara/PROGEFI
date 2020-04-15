@@ -3,7 +3,7 @@
   <div id="geographicalData_component" class="box">
     <!-- --------GeographicalData Component Header----- -->
     <div id="geographicalData_component_header">
-      <p class="subtitle is-5">Datos geográficos</p>
+      <p class="subtitle_dark_gray is-5">Datos geográficos</p>
     </div>
 
     <div>
@@ -40,31 +40,10 @@ export default {
     "select-vegetation-type": selectVegetationType,
     "select-location": selectLocation
   },
-  created() {
-    // this.$store.commit("location/setDatacard", this.datacardState.datacard);
-    // this.$store.commit("coordinate/setDatacard", this.datacardState.datacard);
-    // debugger;
-  },
+  created() {},
   computed: {
-    ...mapState("location", {
-      isCountryValid: state => state.datacard.getCountryValid(),
-      isCountryStateValid: state => state.datacard.getCountryStateValid(),
-      isMunicipalityValid: state => state.datacard.getMunicipalityValid(),
-      isLocalityValid: state => state.datacard.getLocalityValid()
-    }),
-    ...mapState("coordinate", {
-      isLongitudeValid: state => state.datacard.getLongitudeValid(),
-      isLatitudeValid: state => state.datacard.getLatitudeValid(),
-      isAltitudeValid: state => state.datacard.getAltitudeValid()
-    }),
-    ...mapState("climateType", {
-      isClimateTypeValid: state => state.climateType.valid
-    }),
-    ...mapState("vegetationType", {
-      isVegetationTypeValid: state => state.vegetationType.valid
-    }),
     ...mapState("datacard", {
-      datacardState: state => state
+      datacard: state => state.datacard
     })
   },
   methods: {
@@ -76,15 +55,21 @@ export default {
     },
     disableNextButton() {
       if (
-        this.isCountryValid.isValid &&
-        this.isCountryStateValid.isValid &&
-        this.isMunicipalityValid.isValid &&
-        this.isLocalityValid.isValid &&
-        this.isLongitudeValid.isValid &&
-        this.isLatitudeValid.isValid &&
-        this.isAltitudeValid.isValid &&
-        this.isClimateTypeValid.isValid &&
-        this.isVegetationTypeValid.isValid
+        this.datacard.getCollect().isLongitudeValid() &&
+        this.datacard.getCollect().isLatitudeValid() &&
+        this.datacard.getCollect().isAltitudeValid() &&
+        this.datacard.getCollect().isCountryValid() &&
+        this.datacard.getCollect().isCountryStateValid() &&
+        this.datacard.getCollect().isMunicipalityValid() &&
+        this.datacard.getCollect().isLocalityValid() &&
+        this.datacard
+          .getCollect()
+          .getClimateType()
+          .isValid() &&
+        this.datacard
+          .getCollect()
+          .getVegetationType()
+          .isValid()
       ) {
         return false;
       } else {

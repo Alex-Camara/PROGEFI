@@ -14,9 +14,11 @@ import template from './modelStore/template'
 import metadata from './generalStore/metadata'
 import coordinate from './modelStore/datacard/coordinate'
 import curator from './modelStore/curator'
+import tag from './modelStore/tag'
 import modal from './generalStore/modal'
 import loading from './generalStore/loading'
 import addDatacard from './generalStore/addDatacard'
+import helpText from './generalStore/helpText'
 
 Vue.use(Vuex)
 
@@ -36,12 +38,14 @@ const store = new Vuex.Store({
     metadata: metadata,
     coordinate: coordinate,
     curator: curator,
+    tag: tag,
     modal: modal,
     loading: loading,
-    addDatacard: addDatacard
+    addDatacard: addDatacard,
+    helpText: helpText
   },
   actions: {
-    resetStore ({ commit }) {
+    resetStore({ commit }) {
       console.log('reseteando...')
       commit('catalogue/resetStore')
       commit('collection/resetStore')
@@ -54,6 +58,7 @@ const store = new Vuex.Store({
       commit('location/resetStore')
       commit('project/resetStore')
       commit('speciesData/resetStore')
+      commit('template/resetStore')
     }
   }
 })

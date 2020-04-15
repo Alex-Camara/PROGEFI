@@ -8,7 +8,6 @@
 
         <div id="template_helper_container_content">
           <div id="template_helper_container_content_select">
-            
             <b-field id="template-select" custom-class="is-small is-centered" label="Plantilla:">
               <div class="select">
                 <select
@@ -17,7 +16,7 @@
                   v-model="selectedTemplate"
                 >
                   <option
-                    v-for="template in templateState.templates"
+                    v-for="template in templates"
                     :key="template.getName()"
                     :value="template"
                   >{{ template.getName() }}</option>
@@ -36,29 +35,29 @@
 </template>
 
 <script>
-import store from "../store/store.js";
-import { mapState, mapGetters } from "vuex";
+import { mapState } from "vuex";
+import Template from "../models/template";
 
 export default {
   data() {
     return {
+      templates: []
     };
   },
-  mounted() {
-    this.$store.dispatch("template/getTemplates");
+  async mounted() {
+    this.templates = await Template.getAll();
+    this.selectedTemplate = this.templates[0];
   },
   computed: {
-    ...mapState("template", {
-      templateState: state => state
+    ...mapState("datacard", {
+      datacard: state => state.datacard
     }),
     selectedTemplate: {
       get: function() {
-        // this.templateName = this.templateState.template.getName()
-        return this.templateState.template;
+        return this.datacard.getTemplate();
       },
       set: function(newValue) {
-        //debugger;
-        this.$store.dispatch("template/getTemplate", newValue);
+        this.datacard.setTemplate(newValue);
       }
     }
   }

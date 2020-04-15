@@ -38,19 +38,19 @@ const climateType = {
         commit('setClimateTypes', newClimatesTypes)
       })
     },
-    setClimateType ({ commit }, climateType) {
-      if (!climateType.hasOwnProperty('id')) {
-        let newClimateType = new ClimateType()
-        newClimateType.setValid({ isValid: true, message: null })
-        newClimateType.setCode(climateType.code)
-        commit('setClimateType', newClimateType)
-        commit('datacard/setClimateType', newClimateType, { root: true })
-      } else {
-        climateType.setValid({ isValid: true, message: null })
-        commit('setClimateType', climateType)
-        commit('datacard/setClimateType', climateType, { root: true })
-      }
-    }
+    // setClimateType ({ commit }, climateType) {
+      // if (!climateType.hasOwnProperty('id')) {
+        // let newClimateType = new ClimateType()
+        // newClimateType.setValid({ isValid: true, message: null })
+        // newClimateType.setCode(climateType.code)
+        // commit('setClimateType', newClimateType)
+        // commit('datacard/setClimateType', newClimateType, { root: true })
+      // } else {
+        // climateType.setValid({ isValid: true, message: null })
+        // commit('setClimateType', climateType)
+        // commit('datacard/setClimateType', climateType, { root: true })
+      // }
+    // }
   }
 }
 
