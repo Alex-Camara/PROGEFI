@@ -1,6 +1,6 @@
 "use strict";
-
-import Template from "./template";
+import Validator from "../validators/validator";
+import { ipcRenderer } from "electron";
 
 class Tag {
   constructor() {
@@ -20,33 +20,79 @@ class Tag {
       isValid: true,
       message: null
     };
-    this.fontSize = 12;
+    this.fontSize = "";
     this.fontSizeValid = {
       isValid: true,
       message: null
     };
-    this.bold = false;
-    this.italics = false;
+    this.fontWeight = "normal";
+    this.fontStyle = "normal";
     this.textAlignment = "left";
     this.model = null;
-    this.retrieveMethod = null;
+    this.modelAttribute = null;
     this.style = null;
-    this.template = new Template();
+    this.backgroundColor = "";
+    this.exampleValue = "";
+    this.draggable = true;
+    this.resizable = true;
+    this.isStatic = false;
+    this.h = "";
+    this.w = "";
+    this.x = 0;
+    this.y = 0;
+    this.i = "";
+
+    this.templateId = null;
+  }
+  setTag(tag) {
+    this.id = tag.id;
+    this.tagName = tag.tagName;
+    this.i = tag.tagName;
+    this.tagBefore = tag.tagBefore;
+    this.tagAfter = tag.tagAfter;
+    this.templateId = tag.templateId;
+    this.model = tag.model;
+    this.modelAttribute = tag.modelAttribute;
+    this.backgroundColor = tag.backgroundColor;
+    this.fontSize = tag.fontSize;
+    this.fontWeight = tag.fontWeight;
+    this.textAlignment = tag.textAlignment;
+    this.exampleValue = tag.exampleValue;
+    this.fontStyle = tag.fontStyle;
+    this.draggable = Boolean(Number(tag.draggable));
+    this.resizable = Boolean(Number(tag.resizable));
+    this.isStatic = tag.isStatic;
+    this.w = tag.w;
+    this.h = tag.h;
+    this.x = tag.x;
+    this.y = tag.y;
   }
   setTagName(tagName) {
-    this.tagName = tagName;
+    if (tagName !== "" && tagName !== null) {
+      this.tagNameValid = { isValid: true, message: null };
+      this.tagName = tagName;
+      this.i = tagName;
+    }
   }
-  setTagBefore(tagBefore) {
-    this.tagBefore = tagBefore;
+  async setTagBefore(tagBefore) {
+    let regex = "[\\s\\S]*";
+    await this.validate(tagBefore, "tagBefore", 0, 60, regex, false);
   }
-  setTagAfter(tagAfter) {
-    this.tagAfter = tagAfter;
+  async setTagAfter(tagAfter) {
+    let regex = "[\\s\\S]*";
+    await this.validate(tagAfter, "tagAfter", 0, 60, regex, false);
   }
   setModel(model) {
     this.model = model;
   }
-  setRetrieveMethod(retrieveMethod) {
-    this.retrieveMethod = retrieveMethod;
+  setModelAttribute(modelAttribute) {
+    this.modelAttribute = modelAttribute;
+  }
+  setWidth(width) {
+    this.w = width;
+  }
+  setHeight(height) {
+    this.h = height;
   }
   setTemplate(template) {
     this.template = template;
@@ -54,14 +100,32 @@ class Tag {
   setFontSize(fontSize) {
     this.fontSize = fontSize;
   }
-  setBold(bold) {
-    this.bold = bold;
+  setFontWeight(fontWeight) {
+    this.fontWeight = fontWeight;
   }
-  setItalics(italics) {
-    this.italics = italics;
+  setFontStyle(fontStyle) {
+    this.fontStyle = fontStyle;
   }
   setTextAlignment(textAlignment) {
     this.textAlignment = textAlignment;
+  }
+  setExampleValue(exampleValue) {
+    this.exampleValue = exampleValue;
+  }
+  setBackgroundColor(color) {
+    this.backgroundColor = color;
+  }
+  setDraggable(draggable) {
+    this.draggable = draggable;
+  }
+  setResizable(resizable) {
+    this.resizable = resizable;
+  }
+  setStatic(isStatic) {
+    this.static = isStatic;
+  }
+  setTemplateId(templateId) {
+    this.templateId = templateId;
   }
   setTagNameValid(valid) {
     this.tagNameValid.isValid = valid.isValid;
@@ -82,23 +146,44 @@ class Tag {
   getTagName() {
     return this.tagName;
   }
+  getExampleValue() {
+    return this.exampleValue;
+  }
   getTagBefore() {
     return this.tagBefore;
   }
   getTagAfter() {
     return this.tagAfter;
   }
+  getFullTag() {
+    return this.tagBefore + this.tagName + this.tagAfter;
+  }
+  getFullExampleTag() {
+    return this.tagBefore + this.exampleValue + this.tagAfter;
+  }
   getFontSize() {
     return this.fontSize;
   }
-  isBold() {
-    return this.bold;
+  getFontWeight() {
+    return this.fontWeight;
   }
-  isItalics() {
-    return this.italics;
+  getFontStyle() {
+    return this.fontStyle;
   }
   getTextAlignment() {
     return this.textAlignment;
+  }
+  getBackgroundColor() {
+    return this.backgroundColor;
+  }
+  isResizable() {
+    return this.resizable;
+  }
+  isDraggable() {
+    return this.draggable;
+  }
+  isStatic() {
+    return this.isStatic;
   }
   getTagNameValid() {
     return this.tagNameValid;
@@ -123,6 +208,94 @@ class Tag {
   }
   isFontSizeValid() {
     return this.fontSizeValid.isValid;
+  }
+  getStyle(fontFamily) {
+    let flexAlignment = "";
+    switch (this.textAlignment) {
+      case "left": {
+        flexAlignment = "flex-start";
+        break;
+      }
+      case "right": {
+        flexAlignment = "flex-end";
+        break;
+      }
+      case "center": {
+        flexAlignment = "center";
+        break;
+      }
+    }
+    let finalStatement = {
+      display: "flex",
+      fontSize: this.fontSize + "px",
+      alignContent: "flex-start",
+      flexWrap: "wrap",
+      alignSelf: "flex-start",
+      alignItems: "flex-start",
+      textAlign: this.textAlignment,
+      justifyContent: flexAlignment,
+      fontWeight: this.fontWeight,
+      fontStyle: this.fontStyle,
+      backgroundColor: this.backgroundColor,
+      fontFamily: fontFamily
+    };
+    return finalStatement;
+  }
+  save(templateId) {
+    return new Promise((resolve, reject) => {
+      this.templateId = templateId;
+      ipcRenderer.send("createTag", this);
+
+      ipcRenderer.once("tagCreated", (event, createdTag) => {
+        if (
+          createdTag.hasOwnProperty("nativeError") &&
+          createdTag.nativeError.code === "SQLITE_ERROR"
+        ) {
+          reject();
+        } else {
+          resolve();
+        }
+      });
+    });
+  }
+  validate(testValue, testValueName, minLimit, maxLimit, regex, isRequired) {
+    return new Promise(async resolve => {
+      // debugger;
+      var validator = new Validator();
+      validator
+        .testValidationOne(testValue, minLimit, maxLimit, isRequired, regex)
+        .then(() => {
+          this[testValueName] = testValue;
+          this[testValueName + "Valid"] = { isValid: true, message: null };
+          resolve();
+        })
+        .catch(error => {
+          if (
+            error === "Campo requerido" ||
+            error === "Longitud mínima inválida"
+          ) {
+            this[testValueName] = testValue;
+            this[testValueName + "Valid"] = { isValid: false, message: error };
+            resolve();
+          } else if (error === "Campo vacío") {
+            this[testValueName] = testValue;
+            this[testValueName + "Valid"] = {
+              isValid: true,
+              message: "temporary error"
+            };
+            resolve();
+          } else if (this[testValueName + "Valid"].isValid) {
+            this[testValueName + "Valid"] = {
+              isValid: true,
+              message: "temporary error"
+            };
+            resolve();
+          } else {
+            this[testValueName + "Valid"] = { isValid: false, message: error };
+            resolve();
+          }
+        });
+    });
   }
 }
 

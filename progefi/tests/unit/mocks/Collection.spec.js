@@ -3,6 +3,7 @@ import Collection from "@/presentation/models/collection.js";
 const testCollection1 = new Collection();
 testCollection1.setCollection({
   id: 1,
+  code: "IIB-",
   name: "Colección Alvar Cristen",
   institudeName: "Universidad Veracruzana",
   acronym: "UV",

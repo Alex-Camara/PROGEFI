@@ -4,6 +4,7 @@ import Datacard from "@/presentation/models/datacard.js";
 import Buefy from "buefy";
 import { Store } from "vuex-mock-store";
 import axios from "axios";
+import {loadDatacardValues, testDatacard1} from "./mocks/Datacard.spec";
 const flushPromises = require("flush-promises");
 
 jest.mock("axios");
@@ -159,5 +160,15 @@ describe("selectLocation component", () => {
     expect(wrapper.vm.family).toStrictEqual("");
     expect(wrapper.vm.genus).toStrictEqual("");
   })
+
+  it("sets values according to dacatacard draft", async () => {
+    await loadDatacardValues();
+
+    store.state.datacard.datacard = testDatacard1;
+    wrapper.vm.$forceUpdate();
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.scientificName).toEqual(testDatacard1.collect.specimen.species.scientificName);
+  });
 
 });

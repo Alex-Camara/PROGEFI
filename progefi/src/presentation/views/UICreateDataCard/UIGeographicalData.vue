@@ -65,11 +65,11 @@ export default {
         this.datacard
           .getCollect()
           .getClimateType()
-          .isValid() &&
+          .isCodeValid() &&
         this.datacard
           .getCollect()
           .getVegetationType()
-          .isValid()
+          .isNameValid()
       ) {
         return false;
       } else {

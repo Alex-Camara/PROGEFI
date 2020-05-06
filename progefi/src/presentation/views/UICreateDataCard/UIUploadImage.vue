@@ -6,7 +6,7 @@
       <!-- --------AddDataCard1 Component Header----- -->
       <div id="add_datacard_component_header">
         <information_helper :message="informationMessage"></information_helper>
-        <p class="subtitle_dark_gray is-5">Sube el archivo de la fotocolecta</p>
+        <p class="subtitle_dark_gray is-5">{{title}}</p>
       </div>
 
       <!-- --------AddDataCard1 Component Content----- -->
@@ -15,7 +15,7 @@
           <b-upload v-model="file" accept="image/*">
             <a class="button is-secondary">
               <b-icon icon="upload"></b-icon>
-              <span>Selecciona para subir un archivo</span>
+              <span>{{uploadButtonText}}</span>
             </a>
           </b-upload>
           <span
@@ -27,7 +27,7 @@
 
       <!-- --------AddDataCard1 Bottom Buttons----- -->
       <div id="add_datacard_next_button" @click="forwardStep()">
-        <button class="button" type="is-accent" :disabled="disableNextButton()">Siguiente</button>
+        <button class="button" type="is-accent" :disabled="disableNextButton()">{{nextButtonText}}</button>
       </div>
     </div>
 
@@ -42,7 +42,7 @@
         />
       </div>
       <div v-if="photoCollect.loading">
-        Procesando imagen, espere...
+        {{loadingMessage}}
         <progress class="progress is-small is-accent" max="100"></progress>
       </div>
     </div>
@@ -61,8 +61,12 @@ export default {
   data() {
     return {
       // file: null,
+      title: "Sube el archivo de la fotocolecta",
+      uploadButtonText: "Selecciona para subir un archivo",
       icon: require("../../assets/question.png"),
-      informationMessage: "Los formatos permitidos son: jpeg, png, bmp y tiff..."
+      informationMessage: "Los formatos permitidos son: jpeg, png, bmp y tiff...",
+      loadingMessage: "Procesando imagen, espere...",
+      nextButtonText: "Siguiente"
     };
   },
   computed: {
@@ -81,7 +85,7 @@ export default {
     }
   },
   watch: {
-    photoCollectPath(newValue, oldValue) {
+    photoCollectPath(newValue) {
       if (newValue == "not-supported-format") {
         this.file = null;
         this.openSnackBar("¡Formato no soportado!");

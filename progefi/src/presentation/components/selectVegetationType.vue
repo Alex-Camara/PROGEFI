@@ -98,6 +98,8 @@
 import { mapState } from "vuex";
 import requiredFieldHelper from "../helpers/requiredFieldHelper.vue";
 import VegetalFormation from "../models/vegetalFormation";
+import LifeStage from "../models/lifeStage";
+import VegetationType from "../models/vegetationType";
 
 export default {
   components: {
@@ -123,6 +125,7 @@ export default {
       vegetalFormations: [],
       selectedVegetationTypes: [],
       selectedVegetalFormation: null,
+      modalVegetationType: new VegetationType(),
       scroll: 0
     };
   },
@@ -136,7 +139,10 @@ export default {
         state.datacard
           .getCollect()
           .getVegetationType()
-          .getValid()
+          .getNameValid()
+    }),
+    ...mapState("modal", {
+      saveVegetationTypeValue: state => state.saveVegetationTypeValue,
     }),
     selectedVegetationType: {
       get: function() {
@@ -144,8 +150,17 @@ export default {
         return vegetationType;
       },
       set: function(newValue) {
-        this.$store.dispatch("datacard/setVegetationType", newValue);
+        this.datacard.getCollect().setVegetationType(newValue);
       }
+    }
+  },
+  watch:{
+    saveVegetationTypeValue(newValue){
+      if (newValue){
+        this.selectedVegetationType = this.modalVegetationType;
+      }
+      this.modalVegetationType = new VegetationType();
+      this.$store.commit("modal/reset");
     }
   },
   methods: {
@@ -168,11 +183,10 @@ export default {
       this.$store.dispatch("modal/openModal", {
         title: "Tipos de vegetación",
         fieldText: "Ingresa el tipo de vegetación",
-        mutationName: "datacard/setVegetationType",
-        valueName: "name",
-        regex: "^[a-zA-Z \\u00C0-\\u00FF]*$",
-        minLimit: 2,
-        maxLimit: 50
+        model: this.modalVegetationType,
+        getter: "getName",
+        setter: "setName",
+        getterValid: "getNameValid"
       });
     },
     slideLeft() {

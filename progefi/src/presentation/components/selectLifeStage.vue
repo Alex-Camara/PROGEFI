@@ -49,6 +49,7 @@
 import { mapState } from "vuex";
 import requiredFieldHelper from "../helpers/requiredFieldHelper.vue";
 import LifeStage from "../models/lifeStage";
+import Sex from "../models/sex";
 
 export default {
   components: {
@@ -58,7 +59,8 @@ export default {
     return {
       lifeStages: [],
       title: "Etapa:",
-      selectedLifeStage: ""
+      selectedLifeStage: "",
+      modalLifeStage: new LifeStage()
     };
   },
   async mounted() {
@@ -73,6 +75,9 @@ export default {
           .getSpecimen()
           .getLifeStageValid()
     }),
+    ...mapState("modal", {
+      saveLifeStageValue: state => state.saveLifeStageValue,
+    }),
     lifeStage: {
       get: function() {
         let lifeStage = this.datacard
@@ -82,8 +87,17 @@ export default {
         return lifeStage.getName();
       },
       set: function(newValue) {
-        this.$store.dispatch("datacard/setLifeStage", newValue);
+        this.datacard.getCollect().getSpecimen().setLifeStage(newValue);
       }
+    }
+  },
+  watch:{
+    saveLifeStageValue(newValue){
+      if (newValue){
+        this.lifeStage = this.modalLifeStage;
+      }
+      this.modalLifeStage = new LifeStage();
+      this.$store.commit("modal/reset");
     }
   },
   methods: {
@@ -95,12 +109,11 @@ export default {
       this.$store.dispatch("modal/openModal", {
         title: "Etapas de vida",
         fieldText: "Ingresa la etapa de vida",
-        mutationName: "datacard/setLifeStage",
-        valueName: "name",
-        regex: "^[a-zA-Z \\u00C0-\\u00FF]*$",
-        minLimit: 2,
-        maxLimit: 20
-      });
+        model: this.modalLifeStage,
+        getter: "getName",
+        setter: "setName",
+        getterValid: "getNameValid"
+      })
     }
   }
 };

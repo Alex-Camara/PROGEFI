@@ -1,6 +1,6 @@
 <template>
-  <div id="create_tag_container" class="white_box">
-    <p>Añadir etiqueta</p>
+  <div id="create_tag_container" class="gray_box">
+    <div id="create_tag_fields_title">{{title}}</div>
     <div id="create_tag_fields">
       <b-field
         id="create_tag_before_tag_input_field"
@@ -8,26 +8,47 @@
         label="Etiqueta anterior:"
       >
         <template slot="label">
-          <required-field-helper :name="'Etiqueta anterior:'" :valid="isTagBeforeValid"></required-field-helper>
+          <required-field-helper
+            :name="previousTagText"
+            :valid="isTagBeforeValid"
+          ></required-field-helper>
         </template>
-        <input id="create_tag_before_tag_input" class="input" v-model="tagBefore" />
+        <input
+          id="create_tag_before_tag_input"
+          class="input"
+          v-model="tagBefore"
+        />
       </b-field>
 
       <div class="create_tag_plus_icon_div">
         <img class="create_tag_plus_icon" src="../assets/plus.png" />
       </div>
 
-      <b-field id="create_tag_tag_name_input_field" custom-class="is-small" label="Etiqueta:">
+      <b-field
+        id="create_tag_tag_name_input_field"
+        custom-class="is-small"
+        label="Etiqueta:"
+      >
         <template slot="label">
-          <required-field-helper :name="'Etiqueta:'" :valid="isTagNameValid"></required-field-helper>
+          <required-field-helper
+            :name="actualTagText"
+            :valid="isTagNameValid"
+          ></required-field-helper>
         </template>
         <div class="select">
           <select
             id="create_tag_tag_name_select"
             placeholder="Selecciona una etiqueta"
-            v-model="tagName"
+            v-model="selectedTagName"
+            @change="setTextControlValues"
           >
-            <option v-for="tag in tags" :key="tag.tagName" :value="tag.tagName">{{ tag.tag }}</option>
+            <option
+              v-for="tag in tagNames"
+              :key="tag.tagName"
+              :value="tag"
+              :disabled="isTagNameAssigned(tag.tagName)"
+              >{{ tag.tagPlaceholder }}</option
+            >
           </select>
         </div>
       </b-field>
@@ -42,76 +63,132 @@
         label="Etiqueta posterior:"
       >
         <template slot="label">
-          <required-field-helper :name="'Etiqueta posterior:'" :valid="isTagAfterValid"></required-field-helper>
+          <required-field-helper
+            :name="nextTagText"
+            :valid="isTagAfterValid"
+          ></required-field-helper>
         </template>
-        <input id="create_tag_after_tag_input" class="input" v-model="tagAfter" />
+        <input
+          id="create_tag_after_tag_input"
+          class="input"
+          v-model="tagAfter"
+        />
       </b-field>
     </div>
+    <div class="space"></div>
     <div id="create_tag_style">
       <div id="create_tag_style_font_weight">
         <div
           id="create_tag_style_font_weight_italics"
           class="create_tag_style_button"
-          @click="setItalics()"
+          @click="changeFontStyle()"
+          @mouseleave="setHelpText('', false)"
+          @mouseenter="setHelpText(helpTextItalics, true)"
         >
           <img class="create_tag_style_icon" src="../assets/italic.png" />
         </div>
         <div
           id="create_tag_style_font_weight_bold"
           class="create_tag_style_button"
-          @click="setBold()"
+          @click="changeFontWeight()"
+          @mouseleave="setHelpText('', false)"
+          @mouseenter="setHelpText(helpTextBold, true)"
         >
           <img class="create_tag_style_icon" src="../assets/bold.png" />
         </div>
-        <div class="create_tag_style_button">
-          <!-- <img class="create_tag_style_icon" src="../assets/trash.png" /> -->
-        </div>
       </div>
+
+      <div class="separator"></div>
 
       <div id="create_tag_style_font_alignment">
         <div
           id="create_tag_style_font_alignment_left"
           class="create_tag_style_button"
-          @click="setTextAlignment($event, 'left')"
+          @click="setTextAlignment('left')"
+          @mouseleave="setHelpText('', false)"
+          @mouseenter="setHelpText(helpTextTextLeft, true)"
         >
           <img class="create_tag_style_icon" src="../assets/left_text.png" />
         </div>
         <div
           id="create_tag_style_font_alignment_center"
           class="create_tag_style_button"
-          @click="setTextAlignment($event, 'center')"
+          @click="setTextAlignment('center')"
+          @mouseleave="setHelpText('', false)"
+          @mouseenter="setHelpText(helpTextTextCenter, true)"
         >
           <img class="create_tag_style_icon" src="../assets/center_text.png" />
         </div>
         <div
           id="create_tag_style_font_alignment_right"
           class="create_tag_style_button"
-          @click="setTextAlignment($event, 'right')"
+          @click="setTextAlignment('right')"
+          @mouseleave="setHelpText('', false)"
+          @mouseenter="setHelpText(helpTextTextRight, true)"
         >
           <img class="create_tag_style_icon" src="../assets/right_text.png" />
         </div>
       </div>
 
-      <b-field id="create_tag_font_size_input_field" custom-class="is-small" label="Tamaño:">
+      <div class="separator"></div>
+
+      <div id="create_tag_style_drag_and_resize">
+        <div
+          id="create_tag_style_drag"
+          class="create_tag_style_button"
+          @click="setDraggable"
+          @mouseleave="setHelpText('', false)"
+          @mouseenter="setHelpText(helpTextDrag, true)"
+        >
+          <img class="create_tag_style_icon" src="../assets/drag.png" />
+        </div>
+        <div
+          id="create_tag_style_resize"
+          class="create_tag_style_button"
+          @click="setResizable"
+          @mouseleave="setHelpText('', false)"
+          @mouseenter="setHelpText(helpTextResize, true)"
+        >
+          <img class="create_tag_style_icon" src="../assets/resize.png" />
+        </div>
+      </div>
+
+      <div class="separator"></div>
+
+      <b-field
+        id="create_tag_font_size_input_field"
+        custom-class="is-small"
+        label="Tamaño:"
+      >
         <template slot="label">
-          <required-field-helper :name="'Tamaño:'" :valid="isFontSizeValid"></required-field-helper>
+          <required-field-helper
+            :name="'Tamaño:'"
+            :valid="isFontSizeValid"
+          ></required-field-helper>
         </template>
-        <input id="create_tag_font_size_input" class="input" v-model="fontSize" />
+        <input
+          id="create_tag_font_size_input"
+          class="input"
+          v-model="fontSize"
+        />
       </b-field>
 
-      <div id="create_tag_add_tag_button">
-        <button class="button is-secondary">Agregar etiqueta</button>
+      <div id="create_tag_add_tag_button_div">
+        <button id="create_tag_add_tag_button" class="button is-secondary" :disabled="disabledAddTagButton" @click="createTag">
+         {{addTagButtonText}}
+        </button>
       </div>
+
     </div>
 
     <hr />
 
     <div id="create_tag_preview">
-      <p>Vista previa de la etiqueta:</p>
+      <p>{{previewTagText}}</p>
 
       <!-- <div> -->
       <div id="create_tag_preview_tag" :style="getTagStyle()">
-        <p>{{fullTag}}</p>
+        <p>{{ fullTag }}</p>
       </div>
       <!-- </div> -->
     </div>
@@ -119,49 +196,341 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 import requiredFieldHelper from "../helpers/requiredFieldHelper.vue";
+import Tag from "../models/tag.js";
+import { mapState } from "vuex";
+
 export default {
   components: {
     "required-field-helper": requiredFieldHelper
   },
+  props: ["template"],
+  data() {
+    return {
+      tag: new Tag(),
+      selectedTagName: {
+        tagName: "",
+        model: "",
+        modelAttribute: "",
+        tagPlaceholder: "",
+        example: ""
+      },
+      tagNames: [
+        {
+          tagName: "altitude",
+          model: "collect",
+          modelAttribute: "altitude",
+          tagPlaceholder: "Altitud",
+          example: "2000"
+        },
+        {
+          tagName: "latitude",
+          model: "collect",
+          modelAttribute: "latitude",
+          tagPlaceholder: "Latitud",
+          example: "98.236"
+        },
+        {
+          tagName: "DMSLatitude",
+          model: "collect",
+          modelAttribute: "DMSLatitude",
+          tagPlaceholder: "Latitud DMS",
+          example: "19° 43' 12''"
+        },
+        {
+          tagName: "longitude",
+          model: "collect",
+          modelAttribute: "longitude",
+          tagPlaceholder: "Longitud",
+          example: "19.236"
+        },
+        {
+          tagName: "DMSLongitude",
+          model: "collect",
+          modelAttribute: "DMSLongitude",
+          tagPlaceholder: "Longitud DMS",
+          example: "23° 87' 12''"
+        },
+        {
+          tagName: "device",
+          model: "collect",
+          modelAttribute: "model.device.name",
+          tagPlaceholder: "Dispositivo",
+          example: "motorola"
+        },
+        {
+          tagName: "vegetationType",
+          model: "collect",
+          modelAttribute: "vegetationType.name",
+          tagPlaceholder: "Tipo de vegetación",
+          example: "Bosque mesófilo"
+        },
+        {
+          tagName: "climateType",
+          model: "collect",
+          modelAttribute: "climateType.code",
+          tagPlaceholder: "Tipo de clima",
+          example: "A('w)"
+        },
+        {
+          tagName: "collection",
+          model: "datacard",
+          modelAttribute: "catalogue.collection.name",
+          tagPlaceholder: "Nombre de la colección",
+          example: "Colección fotográfica de vertebrados"
+        },
+        {
+          tagName: "researchArea",
+          model: "datacard",
+          modelAttribute: "catalogue.collection.researchArea",
+          tagPlaceholder: "Área de investigación",
+          example: "Instituto de Investigaciones Biológicas"
+        },
+        {
+          tagName: "catalogue",
+          model: "datacard",
+          modelAttribute: "catalogue.name",
+          tagPlaceholder: "Catálogo",
+          example: "Mamíferos"
+        },
+        {
+          tagName: "collector",
+          model: "collect",
+          modelAttribute: "collector.name",
+          tagPlaceholder: "Nombre del colector",
+          example: "Alan Yoset Garcia Cruz"
+        },
+        {
+          tagName: "model",
+          model: "collect",
+          modelAttribute: "model.name",
+          tagPlaceholder: "Modelo del dispositivo",
+          example: "moto g5"
+        },
+        {
+          tagName: "collectDate",
+          model: "collect",
+          modelAttribute: "formattedCollectDate",
+          tagPlaceholder: "Fecha de colecta",
+          example: "14/02/2019"
+        },
+        {
+          tagName: "collectHour",
+          model: "collect",
+          modelAttribute: "formattedCollectHour",
+          tagPlaceholder: "Hora de colecta",
+          example: "10:34"
+        },
+        {
+          tagName: "scientificName",
+          model: "species",
+          modelAttribute: "scientificName",
+          tagPlaceholder: "Nombre científico",
+          example: "Felis catus"
+        },
+        {
+          tagName: "sexName",
+          model: "specimen",
+          modelAttribute: "sex.name",
+          tagPlaceholder: "Sexo del espécimen",
+          example: "Hembra"
+        },
+        {
+          tagName: "sexSymbol",
+          model: "specimen",
+          modelAttribute: "sex.symbol",
+          tagPlaceholder: "Sexo del espécimen (Símbolo)",
+          example: "♀"
+        },
+        {
+          tagName: "lifeStage",
+          model: "specimen",
+          modelAttribute: "lifeStage.name",
+          tagPlaceholder: "Etapa de vida del espécimen",
+          example: "Juvenil"
+        },
+        {
+          tagName: "country",
+          model: "collect",
+          modelAttribute: "country",
+          tagPlaceholder: "País",
+          example: "México"
+        },
+        {
+          tagName: "countryState",
+          model: "collect",
+          modelAttribute: "countryState",
+          tagPlaceholder: "Estado",
+          example: "Veracruz"
+        },
+        {
+          tagName: "municipality",
+          model: "collect",
+          modelAttribute: "municipality",
+          tagPlaceholder: "Municipio",
+          example: "Xalapa"
+        },
+        {
+          tagName: "locality",
+          model: "collect",
+          modelAttribute: "locality",
+          tagPlaceholder: "Localidad",
+          example: "Coatepec"
+        },
+        {
+          tagName: "curator",
+          model: "datacard",
+          modelAttribute: "curator",
+          tagPlaceholder: "Curador(es)",
+          example: "Christian Alejandro Delfín Alfonso"
+        },
+        {
+          tagName: "collectorCode",
+          model: "datacard",
+          modelAttribute: "collectorCode",
+          tagPlaceholder: "Código del colector",
+          example: "CADA 00001"
+        },
+        {
+          tagName: "creationDate",
+          model: "datacard",
+          modelAttribute: "formattedCreationDate",
+          tagPlaceholder: "Fecha de creación",
+          example: "20/01/2020"
+        },
+        {
+          tagName: "code",
+          model: "datacard",
+          modelAttribute: "code",
+          tagPlaceholder: "Código de ficha",
+          example: "IIBUV-MAM 00001f"
+        },
+        {
+          tagName: "project",
+          model: "collect",
+          modelAttribute: "project.name",
+          tagPlaceholder: "Nombre del proyecto",
+          example: "Captura de mamíferos en la costa"
+        },
+        {
+          tagName: "observations",
+          model: "specimen",
+          modelAttribute: "observations",
+          tagPlaceholder: "Observaciones",
+          example: "Felino de dimensiones normales."
+        },
+        {
+          tagName: "photocollect",
+          model: "",
+          modelAttribute: "",
+          tagPlaceholder: "Fotocolecta",
+          example: "Fotocolecta"
+        },
+        {
+          tagName: "researchAreaAcronym",
+          model: "datacard",
+          modelAttribute: "catalogue.collection.researchAreaAcronym",
+          tagPlaceholder: "Acrónimo del área de investigación",
+          example: "IIB-UV"
+        },
+        {
+          tagName: "instituteAcronym",
+          model: "datacard",
+          modelAttribute: "catalogue.collection.instituteAcronym",
+          tagPlaceholder: "Acrónimo del instituto",
+          example: "UV"
+        },
+        {
+          tagName: "instituteLogo",
+          model: "",
+          modelAttribute: "",
+          tagPlaceholder: "Logo de la institución",
+          example: "Logo de la institución"
+        }
+      ],
+      assignedTagNames: [],
+      title: "Añadir etiqueta",
+      addTagButtonText: "Agregar etiqueta",
+      previewTagText: "Vista previa de la etiqueta:",
+      previousTagText: "Texto anterior:",
+      nextTagText: "Texto posterior:",
+      actualTagText: "Valor:",
+      helpTextBold: "Negritas",
+      helpTextItalics: "Italicas",
+      helpTextTextCenter: "Texto alineado al centro",
+      helpTextTextLeft: "Texto alineado a la izquierda",
+      helpTextTextRight: "Texto alineado a la derecha",
+      helpTextDrag: "Selecciona para establecer si la etiqueta va a poder ser arrastrada",
+      helpTextResize: "Selecciona para establecer si la etiqueta va a poder ser redimensionada",
+    };
+  },
+  mounted() {
+    let self = this;
+    window.addEventListener("load", function(event) {
+      self.setTextControlValues();
+    });
+  },
   computed: {
-    ...mapState("tag", {
-      tagState: state => state,
-      tag: state => state.tag,
-      tags: state => state.tags,
-      isTagNameValid: state => state.tag.getTagNameValid(),
-      isTagBeforeValid: state => state.tag.getTagBeforeValid(),
-      isTagAfterValid: state => state.tag.getTagAfterValid(),
-      isFontSizeValid: state => state.tag.getFontSizeValid()
+    ...mapState("template", {
+      tagToDelete: state => state.tagToDelete
     }),
+    templateFontSize: function() {
+      return this.template.getFontSize();
+    },
+    templateFontFamily: function() {
+      return this.template.getFontFamily();
+    },
+    isTagNameValid: function() {
+      return this.tag.getTagNameValid();
+    },
+    isTagBeforeValid: function() {
+      return this.tag.getTagBeforeValid();
+    },
+    isTagAfterValid: function() {
+      return this.tag.getTagAfterValid();
+    },
+    isFontSizeValid: function() {
+      return this.tag.getFontSizeValid();
+    },
+    isFontFamilyValid: function() {
+      return this.template.getFontFamilyValid();
+    },
+    isHeightValid: function() {
+      return this.template.getHeightValid();
+    },
+    tags: function() {
+      return this.template.getTags();
+    },
     fullTag: function() {
-      return this.tagBefore + " <<" + this.tagName + ">> " + this.tagAfter;
+      return this.tag.getFullExampleTag();
+    },
+    disabledAddTagButton: function(){
+      return !(this.isTagAfterValid.isValid && this.isTagBeforeValid.isValid && this.isTagNameValid.isValid);
     },
     tagBefore: {
       get: function() {
         let tagBefore = this.tag.getTagBefore();
-        // debugger;
         if (this.tag.getTagBeforeValid().message == "temporary error") {
           this.addShakeEffect("create_tag_before_tag_input");
         }
         return tagBefore;
       },
       set: function(newValue) {
-        this.$store.dispatch("tag/setTagBefore", newValue);
+        this.tag.setTagBefore(newValue);
       }
     },
     tagName: {
       get: function() {
         let tagName = this.tag.getTagName();
-        // debugger;
         if (this.tag.getTagNameValid().message == "temporary error") {
           this.addShakeEffect("create_tag_tag_name_input");
         }
         return tagName;
       },
       set: function(newValue) {
-        this.$store.dispatch("tag/setTagName", newValue);
+        this.tag.setTagName(newValue.tagName);
+        this.tag.setModel(newValue.model);
+        this.tag.setModelAttribute(newValue.modelAttribute);
       }
     },
     tagAfter: {
@@ -174,36 +543,35 @@ export default {
         return tagAfter;
       },
       set: function(newValue) {
-        this.$store.dispatch("tag/setTagAfter", newValue);
+        this.tag.setTagAfter(newValue);
       }
     },
     fontSize: {
       get: function() {
         let fontSize = this.tag.getFontSize();
-        // debugger;
         if (this.tag.getFontSizeValid().message == "temporary error") {
           this.addShakeEffect("create_tag_font_size_input");
         }
         return fontSize;
       },
       set: function(newValue) {
-        this.$store.dispatch("tag/setFontSize", newValue);
+        this.tag.setFontSize(newValue);
       }
     },
-    bold: {
+    fontWeight: {
       get: function() {
-        return this.tag.isBold();
+        return this.tag.getFontWeight();
       },
       set: function(newValue) {
-        this.$store.dispatch("tag/setBold", newValue);
+        this.tag.setFontWeight(newValue);
       }
     },
-    italics: {
+    fontStyle: {
       get: function() {
-        return this.tag.isItalics();
+        return this.tag.getFontStyle();
       },
       set: function(newValue) {
-        this.$store.dispatch("tag/setItalics", newValue);
+        this.tag.setFontStyle(newValue);
       }
     },
     textAlignment: {
@@ -211,37 +579,166 @@ export default {
         return this.tag.getTextAlignment();
       },
       set: function(newValue) {
-        this.$store.dispatch("tag/setTextAlignment", newValue);
+        this.tag.setTextAlignment(newValue);
+      }
+    },
+    backgroundColor: {
+      get: function() {
+        return this.tag.getBackgroundColor();
+      },
+      set: function(newValue) {
+        this.tag.setBackgroundColor(newValue);
+      }
+    },
+    draggable: {
+      get: function() {
+        return this.tag.isDraggable();
+      },
+      set: function(newValue) {
+        this.tag.setDraggable(newValue);
+      }
+    },
+    resizable: {
+      get: function() {
+        return this.tag.isResizable();
+      },
+      set: function(newValue) {
+        this.tag.setResizable(newValue);
       }
     }
   },
-
+  watch: {
+    templateFontSize(newValue) {
+      this.fontSize = newValue;
+    },
+    selectedTagName(newValue) {
+      this.tagName = newValue;
+      this.tag.setExampleValue(newValue.example);
+    },
+    tagToDelete(newValue) {
+      this.deleteTag(newValue);
+    }
+  },
   methods: {
-    setItalics() {
+    async createTag() {
+      //Vuelve las etiquetas estaticas para que su orden no se vea alterado por la nueva etiqueta
+      for (let i=0; i<this.tags.length; i++){
+        this.tags[i].setStatic(true);
+      }
+      this.assignedTagNames.push(this.selectedTagName);
+      await this.getTagDimensions();
+      this.template.addTag(this.tag);
+      this.$store.commit("template/setCreatedTag", this.tag);
+
+      this.setTextControlValues();
+      this.selectedTagName = {
+        tagName: "",
+        model: "",
+        modelAttribute: "",
+        tagPlaceholder: "",
+        example: ""
+      };
+    },
+    deleteTag(tag) {
+      let index = this.tags.findIndex(x => x.tagName === tag.tagName);
+      this.tags.splice(index, 1);
+      index = this.assignedTagNames.findIndex(x => x.tagName === tag.tagName);
+      this.assignedTagNames.splice(index, 1);
+    },
+    setTextControlValues() {
+      this.tag = new Tag();
+      this.tag.setFontSize(this.template.getFontSize());
+      this.backgroundColor = this.generateBackgroundColor();
+      this.setFontWeight();
+      this.setFontStyle();
+      this.setTextAlignment(this.textAlignment);
+      this.setDraggableButtonStyle();
+      this.setResizableButtonStyle();
+    },
+    isTagNameAssigned: function(tagName) {
+      return this.assignedTagNames.find(x => x.tagName === tagName);
+    },
+    changeFontStyle() {
       let element = document.getElementById(
         "create_tag_style_font_weight_italics"
       );
-      if (this.italics) {
-        this.italics = false;
+      if (this.fontStyle === "italic") {
+        this.fontStyle = "normal";
         element.classList.remove("create_tag_style_button_selected");
       } else {
-        this.italics = true;
+        this.fontStyle = "italic";
         element.classList.add("create_tag_style_button_selected");
       }
     },
-    setBold() {
+    setFontStyle() {
+      let element = document.getElementById(
+        "create_tag_style_font_weight_italics"
+      );
+      if (this.fontStyle === "italic") {
+        element.classList.add("create_tag_style_button_selected");
+      } else {
+        element.classList.remove("create_tag_style_button_selected");
+      }
+    },
+    changeFontWeight() {
       let element = document.getElementById(
         "create_tag_style_font_weight_bold"
       );
-      if (this.bold) {
-        this.bold = false;
+      if (this.fontWeight === "bold") {
+        this.fontWeight = "normal";
         element.classList.remove("create_tag_style_button_selected");
       } else {
-        this.bold = true;
+        this.fontWeight = "bold";
         element.classList.add("create_tag_style_button_selected");
       }
     },
-    setTextAlignment(event, textAlignment) {
+    setFontWeight() {
+      let element = document.getElementById(
+        "create_tag_style_font_weight_bold"
+      );
+      if (this.fontWeight === "bold") {
+        element.classList.add("create_tag_style_button_selected");
+      } else {
+        element.classList.remove("create_tag_style_button_selected");
+      }
+    },
+    setResizableButtonStyle() {
+      let element = document.getElementById("create_tag_style_resize");
+      if (this.resizable) {
+        element.classList.add("create_tag_style_button_selected");
+      } else {
+        element.classList.remove("create_tag_style_button_selected");
+      }
+    },
+    setResizable() {
+      let element = document.getElementById("create_tag_style_resize");
+      if (this.resizable) {
+        this.resizable = false;
+        element.classList.remove("create_tag_style_button_selected");
+      } else {
+        this.resizable = true;
+        element.classList.add("create_tag_style_button_selected");
+      }
+    },
+    setDraggableButtonStyle() {
+      let element = document.getElementById("create_tag_style_drag");
+      if (this.resizable) {
+        element.classList.add("create_tag_style_button_selected");
+      } else {
+        element.classList.remove("create_tag_style_button_selected");
+      }
+    },
+    setDraggable() {
+      let element = document.getElementById("create_tag_style_drag");
+      if (this.draggable) {
+        this.draggable = false;
+        element.classList.remove("create_tag_style_button_selected");
+      } else {
+        this.draggable = true;
+        element.classList.add("create_tag_style_button_selected");
+      }
+    },
+    setTextAlignment(textAlignment) {
       let elementTextLeft = document.getElementById(
         "create_tag_style_font_alignment_left"
       );
@@ -251,33 +748,47 @@ export default {
       let elementTextRight = document.getElementById(
         "create_tag_style_font_alignment_right"
       );
-      // debugger;
-      elementTextLeft.classList.remove("create_tag_style_button_selected");
-      elementTextCenter.classList.remove("create_tag_style_button_selected");
-      elementTextRight.classList.remove("create_tag_style_button_selected");
-      let elementId = event.currentTarget.id;
-      let element = document.getElementById(elementId);
-      // debugger;
-      element.classList.add("create_tag_style_button_selected");
+
+      if (textAlignment === "left") {
+        elementTextCenter.classList.remove("create_tag_style_button_selected");
+        elementTextRight.classList.remove("create_tag_style_button_selected");
+        elementTextLeft.classList.add("create_tag_style_button_selected");
+      }
+      if (textAlignment === "center") {
+        elementTextLeft.classList.remove("create_tag_style_button_selected");
+        elementTextRight.classList.remove("create_tag_style_button_selected");
+        elementTextCenter.classList.add("create_tag_style_button_selected");
+      }
+      if (textAlignment === "right") {
+        elementTextLeft.classList.remove("create_tag_style_button_selected");
+        elementTextCenter.classList.remove("create_tag_style_button_selected");
+        elementTextRight.classList.add("create_tag_style_button_selected");
+      }
       this.textAlignment = textAlignment;
+    },
+    getTagDimensions() {
+      return new Promise(resolve => {
+        let element = document.getElementById("create_tag_preview_tag");
+        let elementWidth = element.offsetWidth;
+        let tagWidth = (elementWidth * 100) / 1000;
+        tagWidth = (tagWidth * 100) / 90;
+
+        console.info(tagWidth);
+        this.tag.setWidth(tagWidth);
+        this.tag.setHeight(element.offsetHeight);
+        resolve();
+      });
     },
     getTagStyle() {
       let element = document.getElementById("create_tag_preview_tag");
-      // debugger;
       if (element != null) {
-        element.style.fontFamily = this.fontFamily;
+        element.style.fontFamily = this.templateFontFamily;
         element.style.fontSize = this.fontSize + "px";
         element.style.textAlign = this.textAlignment;
-        if (this.bold) {
-          element.style.fontWeight = "bold";
-        } else {
-          element.style.fontWeight = "normal";
-        }
-        if (this.italics) {
-          element.style.fontStyle = "italic";
-        } else {
-          element.style.fontStyle = "normal";
-        }
+        element.style.fontStyle = this.fontStyle;
+        element.style.fontWeight = this.fontWeight;
+        element.style.fontColor = this.template.getFontColor();
+        element.style.backgroundColor = this.backgroundColor;
       }
     },
     addShakeEffect(elemenId) {
@@ -287,6 +798,23 @@ export default {
         void element.offsetWidth; // trigger a DOM reflow
         element.classList.add("shake_field");
       }
+    },
+    setHelpText(message, active) {
+      this.$store.dispatch("helpText/setActive", { active, message });
+    },
+    generateBackgroundColor() {
+      let colors = [
+        "rgba(0, 229, 255, 0.8)",
+        "rgba(233, 32, 99, 0.8)",
+        "rgba(230, 81, 0, 0.8)",
+        "rgba(32, 148, 243, 0.8)",
+        "rgba(28, 233, 181, 0.8)",
+        "rgba(0, 176, 255, 0.8)",
+        "rgba(255, 153, 0, 0.8)",
+        "rgba(255, 23, 68, 0.8)"
+      ];
+      let randomNumber = Math.floor(Math.random() * 8);
+      return colors[randomNumber];
     }
   }
 };
@@ -302,15 +830,19 @@ export default {
 
 #create_tag_fields {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   margin-top: 10px;
   height: 60px;
+  margin-left: 20px;
+  margin-right: 20px;
   // background-color: blueviolet;
 }
 
 #create_tag_style {
   display: flex;
   margin-top: 10px;
+  margin-left: 20px;
+  margin-right: 20px;
   // background-color: rgb(184, 29, 106);
 }
 
@@ -319,20 +851,28 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-content: center;
+  height: 100px;
 }
 
 #create_tag_style_font_weight {
   display: flex;
   justify-content: space-between;
-  width: 120px;
-  margin-right: 20px;
+  width: 75px;
+  /*margin-right: 20px;*/
 }
 
 #create_tag_style_font_alignment {
   display: flex;
   justify-content: space-between;
   width: 120px;
-  margin-right: 20px;
+  /*margin-right: 20px;*/
+}
+
+#create_tag_style_drag_and_resize {
+  display: flex;
+  justify-content: space-between;
+  width: 80px;
+  /*margin-right: 20px;*/
 }
 
 #create_tag_before_tag_input_field {
@@ -351,7 +891,7 @@ export default {
   width: 70px;
 }
 
-#create_tag_add_tag_button {
+#create_tag_add_tag_button_div {
   margin-top: 25px;
   margin-left: auto;
 }
@@ -362,7 +902,17 @@ export default {
   justify-content: center;
   margin: auto;
   background-color: rgb(255, 214, 78);
+  padding: 5px;
   // opacity: 0.5;
+}
+
+.separator {
+  border-left: 2px solid;
+  border-left-color: lightgray;
+  height: 20px;
+  margin-right: 10px;
+  margin-left: 10px;
+  margin-top: 32.5px;
 }
 
 .create_tag_plus_icon_div {

@@ -147,7 +147,7 @@ export default {
       } else{
         await this.$router.push({
           name: "UIShowDataCards",
-          params: { askToLeave: false, selectedCatalogue: this.catalogue }
+          params: { askToLeave: false, selectedCatalogue: this.catalogue, reload: true }
         });
       }
 

@@ -5,10 +5,17 @@ const Collection = require("../models/Collection");
 
 class CollectionDaoImp {
   async getCollection() {
-    let collection = await Collection.query().eager("[catalogues]");
-
-    let cataloguesNumber = await CatalogueDaoImp.getCataloguesCount();
-    collection[0].cataloguesNumber = cataloguesNumber;
+    let collection = await Collection.query()
+      .eager("[catalogues]")
+      .catch(error => {
+        return error;
+      });
+    if (collection.length > 0) {
+      let cataloguesNumber = await CatalogueDaoImp.getCataloguesCount().catch(error => {
+          return error;
+      });
+      collection[0].cataloguesNumber = cataloguesNumber;
+    }
     return collection;
   }
 }

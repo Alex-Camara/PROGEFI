@@ -21,6 +21,7 @@
     </div>
 
     <div id="generalData_component_template_selection">
+
       <select-template></select-template>
     </div>
 
@@ -119,7 +120,7 @@ export default {
         this.datacard.getCollect().getModel().getDevice().isValid()&&
         this.datacard.getCatalogue().isValid()&&
         this.datacard.getCollect().isCollectDateValid()&&
-        this.datacard.getCollect().getProject().isValid()&&
+        this.datacard.getCollect().getProject().isNameValid()&&
         this.datacard.getCollect().getCollector().isValid()
       ) {
         return false;

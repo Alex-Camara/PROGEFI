@@ -88,7 +88,7 @@ class Collect {
       this.climateType = newClimateType;
     } else {
       let newClimateType = new ClimateType();
-      newClimateType.setCode(collect.customClimateTypeCode);
+      await newClimateType.setCode(collect.customClimateTypeCode);
       newClimateType.setValid({isValid: true, message: null});
       this.climateType = newClimateType;
     }
@@ -98,8 +98,8 @@ class Collect {
       this.vegetationType = newVegetationType;
     } else {
       let newVegetationType = new VegetationType();
-      newVegetationType.setName(collect.customVegetationTypeName);
-      newVegetationType.setValid({isValid: true, message: null});
+      await newVegetationType.setName(collect.customVegetationTypeName);
+      newVegetationType.setNameValid({isValid: true, message: null});
       this.vegetationType = newVegetationType;
     }
   }
@@ -185,10 +185,27 @@ class Collect {
     })
   }
   setClimateType(climateType) {
-    this.climateType = climateType;
+    if (!climateType.hasOwnProperty("id")) {
+      let newClimateType = new ClimateType();
+      newClimateType.setValid({ isValid: true, message: null });
+      newClimateType.setCode(climateType.code);
+      this.climateType = newClimateType;
+    } else {
+      climateType.setValid({ isValid: true, message: null });
+      this.climateType = climateType;
+    }
   }
-  setVegetationType(vegetationType) {
-    this.vegetationType = vegetationType;
+  async setVegetationType(vegetationType) {
+      if (!vegetationType.hasOwnProperty("id")) {
+        let newVegetationType = new VegetationType();
+        newVegetationType.setNameValid({ isValid: true, message: null });
+        await newVegetationType.setName(vegetationType.name);
+        newVegetationType.setNameValid({ isValid: true, message: null });
+        this.vegetationType = newVegetationType;
+      } else {
+        vegetationType.setNameValid({ isValid: true, message: null });
+        this.vegetationType = vegetationType;
+      }
   }
   setCollector(collector) {
     return new Promise(async resolve => {
@@ -233,6 +250,12 @@ class Collect {
   }
   getLatitude() {
     return this.latitude;
+  }
+  getDMSLatitude(){
+    return this.getDMSCoordinate(this.latitude);
+  }
+  getDMSLongitude(){
+    return this.getDMSCoordinate(this.longitude);
   }
   getAltitude() {
     return this.altitude;
@@ -332,6 +355,19 @@ class Collect {
   }
   isLatitudeValid() {
     return this.latitudeValid.isValid;
+  }
+  getDMSCoordinate(coordinate){
+    let splitCoordinate = coordinate.toString().split(".");
+    let degrees = splitCoordinate[0];
+
+    let degreesRemaining = ('.' + splitCoordinate[1]) * 60;
+    degreesRemaining = degreesRemaining.toString().split(".");
+    let minutes = degreesRemaining[0];
+
+    let minutesRemaining = ('.' + degreesRemaining[1]) * 60;
+    let seconds = Math.round(minutesRemaining);
+
+    return degrees + "° " + minutes + "' " + seconds + "''";
   }
   validateCoordinate(
     testValue,

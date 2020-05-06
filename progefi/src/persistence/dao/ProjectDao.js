@@ -14,6 +14,10 @@ class ProjectDao {
         let project = Promise.resolve(this.projectDaoImp.getProject(projectId))
         return project;
     }
+    save(project){
+        let savedProject = Promise.resolve(this.projectDaoImp.save(project))
+        return savedProject;
+    }
 }
 
 export default ProjectDao;

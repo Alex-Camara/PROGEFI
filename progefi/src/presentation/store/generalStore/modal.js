@@ -1,123 +1,85 @@
-import Validator from '../../validators/validator'
-var validator = new Validator()
-
 const modal = {
   namespaced: true,
   state: {
     active: false,
-    title: '',
-    fieldText: '',
-    mutationName: null,
-    required: true,
-    regex: null,
-    minLimit: null,
-    maxLimit: null,
-    modalValue: {
-      valueName: null,
-      value: null,
-      valid: {
-        isValid: false,
-        message: null
-      }
-    }
+    title: "",
+    fieldText: "",
+    model: "",
+    getter: "",
+    getterValid: "",
+    setter: "",
+    saveSexValue: "",
+    saveClimateTypeValue: "",
+    saveVegetationTypeValue: "",
+    saveLifeStageValue: "",
+    saveProjectValue: ""
   },
   mutations: {
-    setActive (state, value) {
-      state.active = value
+    setActive(state, value) {
+      state.active = value;
     },
-    setTitle (state, title) {
-      state.title = title
+    setTitle(state, title) {
+      state.title = title;
     },
-    setFieldText (state, fieldText) {
-      state.fieldText = fieldText
+    setFieldText(state, fieldText) {
+      state.fieldText = fieldText;
     },
-    setRegex (state, regex) {
-      state.regex = regex
+    setModel(state, model) {
+      state.model = model;
     },
-    setModalValue (state, modalValue) {
-      state.modalValue = null
-      state.modalValue = modalValue
-      // debugger
+    setGetter(state, getter) {
+      state.getter = getter;
     },
-    setLimitValues (state, { minLimit, maxLimit }) {
-      state.minLimit = minLimit
-      state.maxLimit = maxLimit
+    setGetterValid(state, getterValid) {
+      state.getterValid = getterValid;
     },
-    setMutationName (state, mutationName) {
-      state.mutationName = mutationName
+    setSetter(state, setter) {
+      state.setter = setter;
+    },
+    setSaveSexValue(state, value) {
+      state.saveSexValue = value;
+    },
+    setSaveClimateTypeValue(state, value) {
+      state.saveClimateTypeValue = value;
+    },
+    setSaveVegetationTypeValue(state, value) {
+      state.saveVegetationTypeValue = value;
+    },
+    setSaveLifeStageValue(state, value) {
+      state.saveLifeStageValue = value;
+    },
+    setSaveProjectValue(state, value) {
+      state.saveProjectValue = value;
+    },
+    reset(state){
+      state.active = false;
+      state.model = "";
+      state.setter = "";
+      state.getter = "";
+      state.getterValid = "";
+      state.title = "";
+      state.fieldText = "";
+      state.saveSexValue = "";
+      state.saveClimateTypeValue = "";
+      state.saveVegetationTypeValue = "";
+      state.saveLifeStageValue = "";
+      state.saveProjectValue = "";
     }
   },
   actions: {
-    openModal ({ commit }, { title, fieldText, mutationName, valueName, regex, minLimit, maxLimit }) {
-      commit('setActive', true)
-      commit('setTitle', title)
-      commit('setFieldText', fieldText)
-      commit('setMutationName', mutationName)
-      commit('setRegex', regex)
-      commit('setLimitValues', { minLimit, maxLimit })
-      let modalValue = { value: null, valueName: valueName, valid: { isValid: false, message: null } }
-
-      commit('setModalValue', modalValue)
+    openModal({ commit }, { title, fieldText, model, getter, getterValid, setter }) {
+      commit("setActive", true);
+      commit("setTitle", title);
+      commit("setFieldText", fieldText);
+      commit("setModel", model);
+      commit("setGetter", getter);
+      commit("setGetterValid", getterValid);
+      commit("setSetter", setter);
     },
-    closeModal ({ commit }) {
-      commit('setActive', false)
+    closeModal({ commit }) {
+      commit("setActive", false);
     },
-    setValue ({ state, dispatch }, value) {
-      let modalValue = { value: value, valueName: state.modalValue.valueName, valid: null }
-      dispatch('validate', { testValue: modalValue })
-      // commit('setModalValue', value)
-    },
-    saveValue ({ state, dispatch }) {
-      let sendingValue = state.modalValue.value
-      if (state.modalValue.valueName != null) {
-        let keyName = state.modalValue.valueName
-        sendingValue = {
-          [keyName]: state.modalValue.value
-        }
-      }
-
-      dispatch(state.mutationName, sendingValue, { root: true })
-      dispatch('resetModal')
-    },
-    resetModal ({ commit }) {
-      commit('setTitle', null)
-      commit('setFieldText', null)
-      commit('setMutationName', null)
-      commit('setRegex', null)
-      commit('setLimitValues', {minLimit: null, maxLimit: null})
-      // commit('setModalValue', null)
-    },
-    validate ({ state, commit }, { testValue }) {
-      validator
-        .testValidationOne(testValue.value, state.minLimit, state.maxLimit, state.required, state.regex)
-        .then(() => {
-          // debugger
-          testValue.valid = { isValid: true, message: null }
-          commit('setModalValue', testValue)
-        })
-        .catch(error => {
-          // debugger
-          if (error == 'Campo requerido') {
-            testValue.valid = { isValid: false, message: error }
-            commit('setModalValue', testValue)
-          } else if (error == 'Longitud mínima inválida') {
-            testValue.valid = { isValid: false, message: error }
-            commit('setModalValue', testValue)
-          } else if (error == 'Campo vacío') {
-            testValue.valid = { isValid: true, message: 'temporary error' }
-            commit('setModalValue', testValue)
-          } else if (state.modalValue.valid.isValid) {
-            // debugger
-            state.modalValue.valid = { isValid: true, message: 'temporary error' }
-            commit('setModalValue', state.modalValue)
-          } else {
-            // debugger
-            state.modalValue.valid = { isValid: false, message: error }
-            commit('setModalValue', state.modalValue)
-          }
-        })
-    }
   }
-}
+};
 
-export default modal
+export default modal;

@@ -24,8 +24,8 @@ import UINavBar from "./views/UINavBar.vue";
 import UIMenu from "./views/UIMenu.vue";
 import UIFooter from "./views/UIFooter.vue";
 import modalHelper from "./helpers/modalHelper.vue";
+import Collection from "./models/collection";
 // import { Titlebar, Color } from 'custom-electron-titlebar'
-
 
 export default {
   components: {
@@ -37,10 +37,14 @@ export default {
   data() {
     return {};
   },
-  mounted() {
-    // new Titlebar({
-    //   backgroundColor: Color.fromHex('#ECECEC')
-    // });
+  async mounted() {
+    let collection = await Collection.getAll();
+    if (collection.length === 0) {
+      this.$store.commit("menu/disableAllExceptSelected", "Colección");
+    } else {
+      this.$store.commit("menu/setItemByName", "Fichas de fotocolecta");
+      // this.$store.commit("menu/setItemByName", "Plantillas");
+    }
   }
 };
 </script>
@@ -121,11 +125,11 @@ export default {
 .fade-enter-active,
 .fade-leave-active {
   transition-property: opacity;
-  transition-duration: 1s;
+  transition-duration: 0.2s;
 }
 
 .fade-enter-active {
-  transition-delay: 1s;
+  transition-delay: 0.2s;
 }
 
 .fade-enter,

@@ -7,13 +7,17 @@
         class="component_title_return"
         @click="returnToCollections()"
         v-if="selectedCatalogue"
-      >{{returnToCollectionTitle}}</p>
+      >
+        {{ returnToCollectionTitle }}
+      </p>
       <img
         class="component_title_separator"
         v-if="selectedCatalogue"
         src="../assets/bar.png"
       />
-      <p class="component_title_return" @click="returnToCatalogues()">{{ returnToCataloguesTitle }}</p>
+      <p class="component_title_return" @click="returnToCatalogues()">
+        {{ returnToCataloguesTitle }}
+      </p>
       <img
         class="component_title_separator"
         v-if="selectedCatalogue"
@@ -21,7 +25,7 @@
       />
       <p class="component_title">{{ title }}</p>
       <!-- <img class="component_title_separator" v-if="selectedCatalogue" src="../assets/bar.png" /> -->
-<!--      <p class="component_title" v-if="!selectedCatalogue">{{ title }}</p>-->
+      <!--      <p class="component_title" v-if="!selectedCatalogue">{{ title }}</p>-->
     </div>
 
     <div id="show_datacards_component_top_controls">
@@ -33,17 +37,18 @@
     <!-- --------showDataCards Component Content----- -->
     <div id="show_datacards_component_content">
       <keep-alive>
-      <datacards-table
-        :selectedCatalogue="selectedCatalogue"
-        @showDatacard="showDatacard($event)"
-      ></datacards-table>
+        <datacards-table
+          :selectedCatalogue="selectedCatalogue"
+          :reload="reload"
+          @showDatacard="showDatacard($event)"
+        ></datacards-table>
       </keep-alive>
       <div
         class="float_button"
         v-on:click="createDataCard"
         @mouseleave="setHelpText('', false)"
-        @mouseenter="
-          setHelpText(helpText, true)">
+        @mouseenter="setHelpText(helpText, true)"
+      >
         <img class="float_button_icon" :src="require('../assets/plus.png')" />
       </div>
     </div>
@@ -67,27 +72,29 @@ export default {
       returnToCataloguesTitle: "",
       returnToCollectionTitle: "",
       searchString: null,
-      helpText: "Agregar una ficha..."
+      helpText: "Agregar una ficha...",
+      reload: true
     };
   },
-  // beforeRouteEnter(to, from, next) {
-  // next(vm => {
-  // if (to.params.reloadDatacards) {
-  // vm.reloadDatacards = true;
-  // } else {
-  // vm.reloadDatacards = false;
-  // }
-  // });
-  // },
+  beforeRouteUpdate(to, from, next) {
+    if (from.params.reload) {
+      this.reload = true;
+      next();
+    } else {
+      this.reload = false;
+      next();
+    }
+  },
+
   mounted() {
     if (this.selectedCatalogue != null) {
       // debugger;
       this.title = this.selectedCatalogue.getName();
-      this.returnToCataloguesTitle = "Catálogos"
+      this.returnToCataloguesTitle = "Catálogos";
       this.returnToCollectionTitle = "Colección";
     }
   },
-  computed: {},
+
   methods: {
     createDataCard() {
       this.$router.push({

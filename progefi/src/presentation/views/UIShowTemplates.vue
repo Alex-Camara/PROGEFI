@@ -5,11 +5,12 @@
     </div>
 
     <div id="show_templates_component_content">
-      <templates-table></templates-table>
+      <templates-table @showTemplate="showTemplate($event)"></templates-table>
 
       <div class="float_button" v-on:click="createTemplate()">
         <img class="float_button_icon" :src="require('../assets/plus.png')" />
       </div>
+
     </div>
   </div>
 </template>
@@ -24,6 +25,12 @@ export default {
     createTemplate() {
       this.$router.push({
         name: "UICreateTemplate"
+      });
+    },
+    showTemplate(template){
+      this.$router.push({
+        name: "UIShowTemplate",
+        params: {template}
       });
     }
   }

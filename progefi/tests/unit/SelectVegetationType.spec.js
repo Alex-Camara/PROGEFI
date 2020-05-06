@@ -10,6 +10,7 @@ import {
   testVegetalFormation1,
   testVegetationType1
 } from "./mocks/VegetalFormation.spec";
+import {loadDatacardValues, testDatacard1} from "./mocks/Datacard.spec";
 
 jest.mock("@/presentation/models/vegetalFormation.js");
 jest.mock("@/presentation/models/vegetationType.js");
@@ -86,5 +87,15 @@ describe("selectVegetationType component", () => {
     await wrapper.vm.$nextTick()
 
     expect(addOption).toHaveBeenCalled()
+  });
+
+  it("sets values according to dacatacard draft", async () => {
+    await loadDatacardValues();
+
+    store.state.datacard.datacard = testDatacard1;
+    wrapper.vm.$forceUpdate();
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.selectedVegetationType).toEqual(testDatacard1.collect.vegetationType);
   });
 });

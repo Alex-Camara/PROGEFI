@@ -20,14 +20,14 @@
     </div>
 
     <div id="show_datacard_options_component">
-      <show-datacard-options @showImage="setShowImage($event)" @showDatacards="showDatacards()"></show-datacard-options>
+      <export-button :datacard="datacard" @showImage="setShowImage($event)" @showDatacards="showDatacards()"></export-button>
     </div>
 
     <div id="show_datacard_component">
       <b-tabs v-model="activeTab" position="is-centered">
         <b-tab-item label="Imagen">
           <div>
-            <show-datacard-image v-bind:datacardPath="datacard.getDatacardPath()"></show-datacard-image>
+            <show-image v-bind:imagePath="datacard.getDatacardPath() + '/datacard.png'"></show-image>
           </div>
         </b-tab-item>
 
@@ -44,15 +44,15 @@
 <script>
 import Datacard from "../models/datacard.js";
 import Catalogue from "../models/catalogue.js";
-import showDatacardOptions from "../components/showDatacardOptions";
-import showDatacardImage from "../components/showDatacardImage";
+import exportButton from "../components/exportButton";
+import showImage from "../components/showImage";
 import showDatacardInfo from "../components/showDatacardInfo";
 export default {
   name: "UIShowDatacard",
   props: { datacard: Datacard, selectedCatalogue: Catalogue },
   components: {
-    "show-datacard-options": showDatacardOptions,
-    "show-datacard-image": showDatacardImage,
+    "export-button": exportButton,
+    "show-image": showImage,
     "show-datacard-info": showDatacardInfo
   },
   data() {
@@ -73,7 +73,9 @@ export default {
       this.returnToCataloguesTitle = "Catálogos";
       this.returnToDatacardsTitle = this.selectedCatalogue.getName();
     }
-    this.datacardTitle = this.datacard.getCode();
+    if (this.datacard){
+      this.datacardTitle = this.datacard.getCode();
+    }
   },
   methods: {
     setShowImage(show) {

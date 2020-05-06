@@ -7,9 +7,11 @@ import UIUploadImage from '../views/UICreateDataCard/UIUploadImage'
 import UIShowCatalogues from '../views/UIShowCatalogues'
 import UIShowCatalogue from '../views/UIShowCatalogue'
 import UICreateCatalogue from '../views/UICreateCatalogue'
-import UIShowCollections from '../views/UIShowCollections'
+import UIShowCollections from '../views/UIShowCollection'
 import UIShowTemplates from '../views/UIShowTemplates'
 import UICreateTemplate from '../views/UICreateTemplate'
+import UIShowTemplate from '../views/UIShowTemplate'
+import UITrackDatacard from '../views/UITrackDatacard'
 Vue.use(Router)
 
 export default new Router({
@@ -62,6 +64,12 @@ export default new Router({
     component: UIShowTemplates,
     props: true
   },
+    {
+      path: '/UIShowTemplate',
+      name: 'UIShowTemplate',
+      component: UIShowTemplate,
+      props: true
+    },
   {
     path: '/UICreateTemplate',
     name: 'UICreateTemplate',
@@ -72,6 +80,11 @@ export default new Router({
     path: '/UIUploadImage',
     name: 'UIUploadImage',
     component: UIUploadImage
-  }
+  },
+    {
+      path: '/UITrackDatacard',
+      name: 'UITrackDatacard',
+      component: UITrackDatacard
+    },
   ]
 })

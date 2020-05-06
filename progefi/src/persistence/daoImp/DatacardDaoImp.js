@@ -10,7 +10,7 @@ class DatacardDaoImp {
   async getDatacardsInCatalogue(catalogueId, searchString) {
     const datacards = await Datacard.query()
       .withGraphFetched(
-        "[collect.[collector, project, model.device, climateType, vegetationType.vegetalFormation, specimen.[species, sex, lifeStage]], catalogue.collection, curators, template.[tags, layout]]"
+        "[collect.[collector, project, model.device, climateType, vegetationType.vegetalFormation, specimen.[species, sex, lifeStage]], catalogue.collection, curators, template.[tags]]"
       )
       .where("catalogueId", catalogueId)
       .where("code", "like", "%" + searchString + "%")
@@ -29,15 +29,24 @@ class DatacardDaoImp {
       .select("datacardPath")
       .findById(datacardId);
     const deletedDatacard = await datacard.$query().delete();
-    console.log("directorio a borrar:")
+    console.log("directorio a borrar:");
     console.info(directoryToDelete);
     return directoryToDelete;
+  }
+  static async getNotValidatedByTemplateId(templateId) {
+    let query = Datacard.query()
+      .where("templateId", templateId)
+      .where("validated", false);
+
+    let count = await Promise.resolve(query.resultSize());
+
+    return count;
   }
   async getAllDatacards() {
     // console.log("recuperando fichas...");
     const datacards = await Datacard.query()
       .withGraphFetched(
-        "[collect.[collector, project, model.device, climateType, vegetationType.vegetalFormation, specimen.[species, sex, lifeStage]], catalogue.collection, curators, template.[tags, layout]]"
+        "[collect.[collector, project, model.device, climateType, vegetationType.vegetalFormation, specimen.[species, sex, lifeStage]], catalogue.collection, curators, template.[tags]]"
       )
       .catch(error => {
         console.info(error);
@@ -79,7 +88,7 @@ class DatacardDaoImp {
       datacards = await Datacard.query()
         .joinRelated("[collect.[specimen.species, collector, project]]")
         .withGraphFetched(
-          "[collect.[collector, project, model.device, climateType, vegetationType.vegetalFormation, specimen.[species, sex, lifeStage]], catalogue.collection, curators, template.[tags, layout]]"
+          "[collect.[collector, project, model.device, climateType, vegetationType.vegetalFormation, specimen.[species, sex, lifeStage]], catalogue.collection, curators, template.[tags]]"
         )
         .where("catalogueId", catalogueId)
         .orderBy(orderByQuery, order)
@@ -93,7 +102,7 @@ class DatacardDaoImp {
       datacards = await Datacard.query()
         .joinRelated("[collect.[specimen.species, collector, project]]")
         .withGraphFetched(
-          "[collect.[collector, project, model.device, climateType, vegetationType.vegetalFormation, specimen.[species, sex, lifeStage]], catalogue.collection, curators, template.[tags, layout]]"
+          "[collect.[collector, project, model.device, climateType, vegetationType.vegetalFormation, specimen.[species, sex, lifeStage]], catalogue.collection, curators, template.[tags]]"
         )
         .orderBy(orderByQuery, order)
         .limit(limit)
@@ -106,40 +115,52 @@ class DatacardDaoImp {
 
     return datacards;
   }
-  async getSortedDatacardsByScientificName(catalogueId, order, limit) {}
   async createDatacard(datacard) {
     let species = await datacard.collect.specimen.species;
     let scientificName = species.scientificName.toString().toLowerCase();
     species.scientificName = scientificName;
 
     let newSpecies;
-    let foundSpecies = await Species.query().where(
-      "scientificName",
-      scientificName
-    );
+    let foundSpecies = await Species.query()
+      .where("scientificName", scientificName)
+      .catch(error => {
+        console.info(error);
+        return error;
+      });
 
     if (foundSpecies.length > 0) {
       newSpecies = foundSpecies[0];
       if (newSpecies.kingdom === "" && species.kingdom !== "") {
-        newSpecies = await newSpecies.$query().updateAndFetch({
+        newSpecies = await newSpecies
+          .$query()
+          .updateAndFetch({
+            genus: species.genus,
+            order: species.order,
+            family: species.family,
+            phylum: species.phylum,
+            kingdom: species.kingdom,
+            speciesClass: species.speciesClass
+          })
+          .catch(error => {
+            console.info(error);
+            return error;
+          });
+      }
+    } else {
+      newSpecies = await Species.query()
+        .insert({
+          scientificName: species.scientificName,
           genus: species.genus,
           order: species.order,
           family: species.family,
+          speciesClass: species.speciesClass,
           phylum: species.phylum,
-          kingdom: species.kingdom,
-          speciesClass: species.speciesClass
+          kingdom: species.kingdom
+        })
+        .catch(error => {
+          console.info(error);
+          return error;
         });
-      }
-    } else {
-      newSpecies = await Species.query().insert({
-        scientificName: species.scientificName,
-        genus: species.genus,
-        order: species.order,
-        family: species.family,
-        speciesClass: species.speciesClass,
-        phylum: species.phylum,
-        kingdom: species.kingdom
-      });
     }
 
     let specimen = datacard.collect.specimen;
@@ -159,14 +180,19 @@ class DatacardDaoImp {
     } else {
       customLifeStageName = specimen.lifeStage.name;
     }
-    let newSpecimen = await Specimen.query().insert({
-      observations: specimen.observations,
-      customSexName: customSexName,
-      customLifeStageName: customLifeStageName,
-      sexId: sexId,
-      lifeStageId: lifeStageId,
-      speciesId: newSpecies.id
-    });
+    let newSpecimen = await Specimen.query()
+      .insert({
+        observations: specimen.observations,
+        customSexName: customSexName,
+        customLifeStageName: customLifeStageName,
+        sexId: sexId,
+        lifeStageId: lifeStageId,
+        speciesId: newSpecies.id
+      })
+      .catch(error => {
+        console.info(error);
+        return error;
+      });
 
     let collect = datacard.collect;
 
@@ -186,41 +212,56 @@ class DatacardDaoImp {
       customClimateTypeCode = collect.climateType.code;
     }
 
-    const newCollect = await Collect.query().insert({
-      collectDate: collect.collectDate,
-      longitude: collect.longitude,
-      latitude: collect.latitude,
-      altitude: collect.altitude,
-      country: collect.country,
-      countryState: collect.countryState,
-      municipality: collect.municipality,
-      locality: collect.locality,
-      customClimateTypeCode: customClimateTypeCode,
-      customVegetationTypeName: customVegetationTypeName,
-      climateTypeId: climateTypeId,
-      vegetationTypeId: vegetationTypeId,
-      projectId: collect.project.id,
-      modelId: collect.model.id,
-      collectorId: collect.collector.id,
-      specimenId: newSpecimen.id
-    });
+    const newCollect = await Collect.query()
+      .insert({
+        collectDate: collect.collectDate,
+        longitude: collect.longitude,
+        latitude: collect.latitude,
+        altitude: collect.altitude,
+        country: collect.country,
+        countryState: collect.countryState,
+        municipality: collect.municipality,
+        locality: collect.locality,
+        customClimateTypeCode: customClimateTypeCode,
+        customVegetationTypeName: customVegetationTypeName,
+        climateTypeId: climateTypeId,
+        vegetationTypeId: vegetationTypeId,
+        projectId: collect.project.id,
+        modelId: collect.model.id,
+        collectorId: collect.collector.id,
+        specimenId: newSpecimen.id
+      })
+      .catch(error => {
+        console.info(error);
+        return error;
+      });
 
-    const newDatacard = await Datacard.query().insert({
-      code: datacard.code,
-      validated: datacard.validated,
-      datacardPath: datacard.datacardPath,
-      creationDate: datacard.creationDate,
-      collectorCode: datacard.collectorCode,
-      catalogueId: datacard.catalogue.id,
-      templateId: datacard.template.id,
-      collectId: newCollect.id
-    });
+    const newDatacard = await Datacard.query()
+      .insert({
+        code: datacard.code,
+        validated: datacard.validated,
+        datacardPath: datacard.datacardPath,
+        creationDate: datacard.creationDate,
+        collectorCode: datacard.collectorCode,
+        catalogueId: datacard.catalogue.id,
+        templateId: datacard.template.id,
+        collectId: newCollect.id
+      })
+      .catch(error => {
+        console.info(error);
+        return error;
+      });
 
     for (let i = 0; i < datacard.curators.length; i++) {
-      await Datacard_has_curators.query().insert({
-        datacardId: newDatacard.id,
-        curatorId: datacard.curators[i].id
-      });
+      await Datacard_has_curators.query()
+        .insert({
+          datacardId: newDatacard.id,
+          curatorId: datacard.curators[i].id
+        })
+        .catch(error => {
+          console.info(error);
+          return error;
+        });
     }
 
     return newDatacard;
@@ -237,38 +278,27 @@ class DatacardDaoImp {
       .where("scientificName", scientificName)
       .catch(error => {
         console.info(error);
+        return error;
       });
 
     if (foundSpecies.length > 0) {
       updatedSpecies = foundSpecies[0];
       if (updatedSpecies.kingdom === "" && speciesToUpdate.kingdom !== "") {
-        updatedSpecies = await updatedSpecies.$query().updateAndFetch({
-          genus: speciesToUpdate.genus,
-          order: speciesToUpdate.order,
-          family: speciesToUpdate.family,
-          phylum: speciesToUpdate.phylum,
-          kingdom: speciesToUpdate.kingdom,
-          speciesClass: speciesToUpdate.speciesClass
-        });
+        updatedSpecies = await updatedSpecies
+          .$query()
+          .updateAndFetch({
+            genus: speciesToUpdate.genus,
+            order: speciesToUpdate.order,
+            family: speciesToUpdate.family,
+            phylum: speciesToUpdate.phylum,
+            kingdom: speciesToUpdate.kingdom,
+            speciesClass: speciesToUpdate.speciesClass
+          })
+          .catch(error => {
+            console.info(error);
+            return error;
+          });
       }
-      // if (foundSpecies.length > 0) {
-      //   if (foundSpecies.kingdom !== "") {
-      //     updatedSpecies = foundSpecies[0];
-      //   } else {
-      //     updatedSpecies = await foundSpecies
-      //       .$query()
-      //       .updateAndFetch({
-      //         genus: speciesToUpdate.genus,
-      //         speciesClass: speciesToUpdate.speciesClass,
-      //         kingdom: speciesToUpdate.kingdom,
-      //         order: speciesToUpdate.order,
-      //         family: speciesToUpdate.family,
-      //         phylum: speciesToUpdate.phylum
-      //       })
-      //       .catch(error => {
-      //         console.info(error);
-      //       });
-      //   }
     } else {
       updatedSpecies = await Species.query()
         .insert({
@@ -282,6 +312,7 @@ class DatacardDaoImp {
         })
         .catch(error => {
           console.info(error);
+          return error;
         });
     }
 
@@ -306,8 +337,8 @@ class DatacardDaoImp {
     let oldSpecimen = await Specimen.query()
       .findById(specimenToUpdate.id)
       .catch(error => {
-        console.log("ERROR AL BUSCAR ESPECIMEN");
         console.info(error);
+        return error;
       });
     // console.info(oldSpecimen)
     let updatedSpecimen = await oldSpecimen
@@ -322,6 +353,7 @@ class DatacardDaoImp {
       })
       .catch(error => {
         console.info(error);
+        return error;
       });
 
     let oldCollect = await Collect.query()
@@ -329,6 +361,7 @@ class DatacardDaoImp {
       .findById(datacard.collect.id)
       .catch(error => {
         console.info(error);
+        return error;
       });
     let collectToUpdate = datacard.collect;
 
@@ -370,12 +403,14 @@ class DatacardDaoImp {
       })
       .catch(error => {
         console.info(error);
+        return error;
       });
 
     let oldDatacard = await Datacard.query()
       .findById(datacard.id)
       .catch(error => {
         console.info(error);
+        return error;
       });
 
     const updatedDatacard = await oldDatacard
@@ -391,13 +426,19 @@ class DatacardDaoImp {
       })
       .catch(error => {
         console.info(error);
+        return error;
       });
 
     for (let i = 0; i < datacard.curators.length; i++) {
-      await Datacard_has_curators.query().insert({
-        datacardId: datacard.id,
-        curatorId: datacard.curators[i].id
-      });
+      await Datacard_has_curators.query()
+        .insert({
+          datacardId: datacard.id,
+          curatorId: datacard.curators[i].id
+        })
+        .catch(error => {
+          console.info(error);
+          return error;
+        });
     }
 
     return updatedDatacard;

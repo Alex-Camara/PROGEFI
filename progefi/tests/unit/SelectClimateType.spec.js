@@ -5,6 +5,7 @@ import Buefy from "buefy";
 import { Store } from "vuex-mock-store";
 const flushPromises = require ('flush-promises');
 import {ClimateType, testClimateType1, testClimateType2} from "./mocks/ClimateType.spec";
+import {loadDatacardValues, testDatacard1} from "./mocks/Datacard.spec";
 
 jest.mock("@/presentation/models/climateType.js");
 
@@ -90,5 +91,15 @@ describe("selectClimateType component", () => {
     await wrapper.vm.$nextTick();
 
     expect(methods.addOption).toHaveBeenCalled();
+  });
+
+  it("sets values according to dacatacard draft", async () => {
+    await loadDatacardValues();
+
+    store.state.datacard.datacard = testDatacard1;
+    wrapper.vm.$forceUpdate();
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.selectedClimateType).toEqual(testDatacard1.collect.climateType);
   });
 });

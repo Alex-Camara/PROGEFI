@@ -45,7 +45,10 @@ function listen() {
   });
 
   ipcMain.on("getDatacards", async (event, catalogueId, searchString) => {
-    let datacards = await datacardHandler.getDatacardsInCatalogue(catalogueId, searchString);
+    let datacards = await datacardHandler.getDatacardsInCatalogue(
+      catalogueId,
+      searchString
+    );
     event.reply("datacards", datacards);
   });
 
@@ -55,11 +58,21 @@ function listen() {
     });
   });
 
-  ipcMain.on("getSortedDatacards", (event, catalogueId, field, order, limit, offset) => {
-    datacardHandler.getSortedDatacards(catalogueId, field, order, limit, offset, async function(datacards) {
-      event.reply("sortedDatacards", datacards);
-    });
-  });
+  ipcMain.on(
+    "getSortedDatacards",
+    (event, catalogueId, field, order, limit, offset) => {
+      datacardHandler.getSortedDatacards(
+        catalogueId,
+        field,
+        order,
+        limit,
+        offset,
+        async function(datacards) {
+          event.reply("sortedDatacards", datacards);
+        }
+      );
+    }
+  );
 
   ipcMain.on("getTemplates", event => {
     templateHandler.getTemplateNames(function(templates) {
@@ -224,13 +237,13 @@ function listen() {
 
   ipcMain.on("createDatacard", (event, datacard) => {
     datacardHandler.createDatacard(datacard, function(createdDatacard) {
-      event.reply("datacardCreated");
+      event.reply("datacardCreated", createdDatacard);
     });
   });
 
   ipcMain.on("updateDatacard", (event, datacard) => {
     datacardHandler.updateDatacard(datacard, function(updatedDatacard) {
-      event.reply("datacardUpdated");
+      event.reply("datacardUpdated", updatedDatacard);
     });
   });
 
@@ -250,6 +263,49 @@ function listen() {
       event.reply("datacardDeleted", deletedDatacard);
     });
   });
+
+  ipcMain.on("createTag", (event, tag) => {
+    console.log("listener");
+    console.info(tag);
+    templateHandler.saveTag(tag, function(createdTag) {
+      event.reply("tagCreated", createdTag);
+    });
+  });
+  ipcMain.on("createTemplate", (event, template) => {
+    templateHandler.save(template, function(createdTemplate) {
+      event.reply("templateCreated", createdTemplate);
+    });
+  });
+  ipcMain.on("createProject", (event, project) => {
+    projectHandler.save(project, function(createdProject) {
+      event.reply("projectCreated", createdProject.id);
+    });
+  });
+  ipcMain.on("updateTemplate", (event, template) => {
+    templateHandler.update(template, function(updatedTemplate) {
+      event.reply("templateUpdated", updatedTemplate);
+    });
+  });
+  ipcMain.on("deleteTemplate", (event, templateId) => {
+    templateHandler.delete(templateId, function(deletedTemplate) {
+      event.reply("templateDeleted", deletedTemplate);
+    });
+  });
+  ipcMain.on(
+    "exportDatacards",
+    async (event, datacards, format, destinationDirectory) => {
+      let exportedFile = await datacardHandler.export(datacards, format, destinationDirectory);
+      event.reply("datacardsExported", exportedFile);
+    }
+  );
+  ipcMain.on(
+      "decodeDatacard",
+      async (event, base64) => {
+        let decodedDatacard = await datacardHandler.decode(base64);
+        console.info(decodedDatacard)
+          event.reply("datacardDecoded", decodedDatacard);
+      }
+  );
 }
 
 export default {

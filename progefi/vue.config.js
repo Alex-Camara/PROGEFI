@@ -43,7 +43,7 @@ module.exports = {
   },
   pluginOptions: {
     electronBuilder: {
-      externals: ['sharp', 'objection', 'knex', 'collections', 'Collection', 'font-manager', 'fontmanager']
+      externals: ['sharp', 'pdfkit', 'objection', 'knex', 'collections', 'Collection', 'font-manager', 'fontmanager']
     }
   }
   /*

@@ -196,7 +196,7 @@ export default {
         deleteButton.classList.remove("float_button_delete");
         deleteButton.classList.add(
           "float_button",
-          "ui_show_catalogue_cancel_button"
+          "float_cancel_style"
         );
       } else {
         this.helpTextEdit = "Editar...";
@@ -205,7 +205,7 @@ export default {
         editButton.classList.add("float_button");
         deleteButton.classList.remove(
           "float_button",
-          "ui_show_catalogue_cancel_button"
+          "float_cancel_style"
         );
         deleteButton.classList.add("float_button_delete");
       }
@@ -238,12 +238,5 @@ export default {
   /*height: 100%;*/
   width: 1000px;
   justify-self: center;
-}
-
-.ui_show_catalogue_cancel_button {
-  background-color: $danger-light !important;
-}
-.ui_show_catalogue_cancel_button:hover {
-  background-color: $danger !important;
 }
 </style>

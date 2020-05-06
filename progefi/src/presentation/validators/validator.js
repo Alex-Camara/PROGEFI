@@ -12,15 +12,6 @@ class Validator {
       } else {
         resolve('ok')
       }
-      /* if (isRequired) {
-        if (testValue == null || testValue == '') {
-          reject('Campo requerido')
-        } else {
-          resolve('ok')
-        }
-      } else {
-        resolve('ok')
-      } */
     })
   }
   isLengthOk (testValue, minLimit, maxLimit) {

@@ -70,7 +70,7 @@ class Catalogue {
       return "error";
     }
 
-    let foundCatalogueName = catalogues.find(x => x.name === name);
+    let foundCatalogueName = catalogues.find(x => x.name === name.toString().trim());
     if (foundCatalogueName) {
       // debugger
       this.name = name;
@@ -85,8 +85,9 @@ class Catalogue {
   }
   async setCode(code) {
     let catalogues = await Catalogue.getAll();
-    let foundCatalogueCode = catalogues.find(x => x.code === code);
+    let foundCatalogueCode = catalogues.find(x => x.code === code.toString().trim());
     if (foundCatalogueCode) {
+
       // debugger
       this.code = code;
       this.codeValid = {
@@ -172,8 +173,8 @@ class Catalogue {
       ipcRenderer.send("createCatalogue", this);
       ipcRenderer.once("catalogueCreated", createdCatalogue => {
         if (
-          createdCatalogue.hasOwnProperty("code") &&
-          createdCatalogue.code === "SQLITE_ERROR"
+            createdCatalogue.hasOwnProperty("nativeError") &&
+            createdCatalogue.nativeError.code === "SQLITE_ERROR"
         ) {
           reject();
         } else {
@@ -187,8 +188,8 @@ class Catalogue {
       ipcRenderer.send("deleteCatalogue", this.id);
       ipcRenderer.once("catalogueDeleted", deletedCatalogue => {
         if (
-          deletedCatalogue.hasOwnProperty("code") &&
-          deletedCatalogue.code === "SQLITE_ERROR"
+            deletedCatalogue.hasOwnProperty("nativeError") &&
+            deletedCatalogue.nativeError.code === "SQLITE_ERROR"
         ) {
           reject();
         } else {
@@ -204,8 +205,8 @@ class Catalogue {
       ipcRenderer.once("catalogues", (event, receivedCatalogues) => {
         console.info(receivedCatalogues);
         if (
-          receivedCatalogues.hasOwnProperty("code") &&
-          receivedCatalogues.code === "SQLITE_ERROR"
+            receivedCatalogues.hasOwnProperty("nativeError") &&
+            receivedCatalogues.nativeError.code === "SQLITE_ERROR"
         ) {
           reject();
         } else {

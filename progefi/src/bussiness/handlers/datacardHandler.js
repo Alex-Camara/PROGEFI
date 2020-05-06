@@ -1,35 +1,17 @@
 "use strict";
 
 import "regenerator-runtime/runtime";
+import * as bmp from "@vingle/bmp-js";
+import Jimp from "jimp";
 const path = require("path");
 const fs = require("fs");
 import Datacard from "../models/Datacard.js";
 import DatacardDao from "../../persistence/dao/DatacardDao";
-import ClimateTypeDao from "../../persistence/dao/ClimateTypeDao";
-import VegetationTypeDao from "../../persistence/dao/VegetationTypeDao";
-import CollectorDao from "../../persistence/dao/CollectorDao";
-import CollectionDao from "../../persistence/dao/CollectionDao";
-import CatalogueDao from "../../persistence/dao/CatalogueDao";
-import CuratorDao from "../../persistence/dao/CuratorDao";
-import DeviceDao from "../../persistence/dao/DeviceDao";
-import ProjectDao from "../../persistence/dao/ProjectDao";
-import SexDao from "../../persistence/dao/SexDao";
-import LifeStageDao from "../../persistence/dao/LifeStageDao";
 
 class DatacardHandler {
   constructor() {
     this.datacard = new Datacard();
     this.datacardDao = new DatacardDao();
-    this.climateTypeDao = new ClimateTypeDao();
-    this.vegetationTypeDao = new VegetationTypeDao();
-    this.catalogueDao = new CatalogueDao();
-    this.collectionDao = new CollectionDao();
-    this.curatorDao = new CuratorDao();
-    this.collectorDao = new CollectorDao();
-    this.deviceDao = new DeviceDao();
-    this.projectDao = new ProjectDao();
-    this.lifeStageDao = new LifeStageDao();
-    this.sexDao = new SexDao();
 
     this.imageFormat = null;
     this.folderPathName = null;
@@ -68,7 +50,7 @@ class DatacardHandler {
         return "not-supported-format";
       }
     } catch (error) {
-      console.info(error)
+      console.info(error);
       return "not-supported-format";
     }
   }
@@ -121,7 +103,7 @@ class DatacardHandler {
     return new Promise((resolve, reject) => {
       try {
         var directory = photocollectsFolderPath;
-        console.info(directory)
+        console.info(directory);
         fs.readdir(directory, (err, files) => {
           if (err) reject(err);
           for (let i = 0; i < files.length; i++) {
@@ -159,7 +141,7 @@ class DatacardHandler {
     var bitmap = new Buffer(base64str, "base64");
     // write buffer to file
     try {
-      fs.writeFileSync(file, bitmap);
+      fs.writeFileSync(file, bitmap, {encoding: "base64"});
       console.log("******** File created from base64 encoded string ********");
     } catch (error) {
       console.log("ERROR EN GUARDAR LA DATACARD: " + error);
@@ -258,7 +240,6 @@ class DatacardHandler {
       );
       // console.log(filePath)
     }
-
     //Solo si la ficha se va a validar, se guarda la ficha
     if (datacard.validated) {
       let base64String = datacard.base64; // Not a real image
@@ -322,6 +303,7 @@ class DatacardHandler {
           collectDate,
           collectDate + " " + collectHour
         );
+        console.info(result);
         return this.datacard;
       })
       .catch(error => {
@@ -351,6 +333,266 @@ class DatacardHandler {
         }
       );
     });
+  }
+  generateCSVFile(datacards, destinationFileName) {
+    return new Promise(async function(resolve, reject) {
+      const {
+        Parser,
+        transforms: { unwind }
+      } = require("json2csv");
+
+      const fields = [
+        {
+          label: "ID",
+          value: "id"
+        },
+        {
+          label: "Species",
+          value: "collect.specimen.species.scientificName"
+        },
+        {
+          label: "Collection code",
+          value: "catalogue.collection.code"
+        },
+        {
+          label: "Catalogue code",
+          value: "catalogue.code"
+        },
+        {
+          label: "Code",
+          value: "code"
+        },
+        {
+          label: "Collect date",
+          value: "collect.collectDate"
+        },
+        {
+          label: "Creation date",
+          value: "creationDate"
+        },
+        {
+          label: "Locality",
+          value: "collect.locality"
+        },
+        {
+          label: "Municipality",
+          value: "collect.municipality"
+        },
+        {
+          label: "Country State",
+          value: "collect.countryState"
+        },
+        {
+          label: "Country",
+          value: "collect.country"
+        },
+        {
+          label: "Latitude",
+          value: "collect.latitude"
+        },
+        {
+          label: "Longitude",
+          value: "collect.longitude"
+        },
+        {
+          label: "Altitude",
+          value: "collect.altitude"
+        },
+        {
+          label: "Collector",
+          value: "collect.collector.name"
+        },
+        {
+          label: "Collector Code",
+          value: "collectorCode"
+        },
+        {
+          label: "Climate Type",
+          value: "collect.climateType.code"
+        },
+        {
+          label: "Vegetation Type",
+          value: "collect.vegetationType.name"
+        },
+        {
+          label: "Sex",
+          value: "collect.specimen.sex.name"
+        },
+        {
+          label: "Life Stage",
+          value: "collect.specimen.lifeStage.name"
+        },
+        {
+          label: "Observations",
+          value: "collect.specimen.observations"
+        },
+        {
+          label: "Project",
+          value: "project.name"
+        },
+        {
+          label: "Validated",
+          value: "validated"
+        },
+        {
+          label: "Curator",
+          value: "curators.name"
+        }
+      ];
+
+      const transforms = [unwind({ paths: ["curators"] })];
+
+      const json2csvParser = new Parser({ fields, transforms, withBOM: true });
+      const csv = json2csvParser.parse(datacards);
+      console.info(csv);
+      fs.writeFileSync(destinationFileName, csv, "utf8");
+      resolve();
+    });
+  }
+  async decode(base64){
+    let self = this;
+    return new Promise(async function(resolve, reject) {
+      const steggy = require('steggy');
+      base64 = base64.split(';base64,').pop();
+      // var bitmap = new Buffer(base64, "base64");
+      var tempPath =
+          path.resolve(".") + "/src/bussiness/temp.png";
+      self.base64Decode(base64, tempPath);
+      const image = fs.readFileSync(tempPath)
+
+      try{
+      let revealed = steggy.reveal()(image, "utf8");
+      fs.unlinkSync(tempPath);
+        resolve(revealed);
+      } catch (e) {
+        fs.unlinkSync(tempPath);
+        resolve("DECODE ERROR");
+      }
+    });
+  }
+  async generatePNGFile(datacards, destinationDirectory, sharp){
+    const steggy = require('steggy');
+
+    for (let i = 0; i < datacards.length; i++) {
+      let destinationFileName =
+          destinationDirectory + "/" + datacards[i].code + ".png";
+      let original = fs.readFileSync(datacards[i].datacardPath + "/datacard.png");
+      let code = datacards[i].code;
+      let collector = datacards[i].collect.collector.name;
+      let creator = "";
+      let curator = datacards[i].curators[i].name;
+      let collectDate = datacards[i].collect.collectDate;
+      let creationDate = datacards[i].creationDate;
+
+      let message = code + "," + collector + "," + creator + "," + curator + "," + collectDate + "," + creationDate;
+      // let message = 'IIB-UV MAM0001f, Gerardo Contreras Vega, Christian Alejandro Delfín Alfonso, Christian Alejandro Delfín Alfonso, 27/12/19 17:45:00, 27/12/19 17:45:00';
+
+      let concealed = await steggy.conceal()(original, message);
+      fs.writeFileSync(destinationFileName, concealed)
+    }
+  }
+  async export(datacards, format, destinationDirectory) {
+    const sharp = require("sharp");
+
+    switch (format) {
+      case "JPEG": {
+        return new Promise(async function(resolve, reject) {
+          for (let i = 0; i < datacards.length; i++) {
+            let destinationFileName =
+              destinationDirectory + "/" + datacards[i].code;
+            await sharp(datacards[i].datacardPath + "/datacard.png")
+              .jpeg({
+                quality: 100,
+                chromaSubsampling: "4:4:4"
+              })
+              .toFile(destinationFileName + ".jpg");
+          }
+          resolve();
+        });
+      }
+      case "PNG": {
+        let self = this;
+        return new Promise(async function(resolve, reject) {
+          await self.generatePNGFile(datacards, destinationDirectory, sharp);
+          resolve();
+        });
+      }
+      case "TIFF": {
+        return new Promise(async function(resolve, reject) {
+          for (let i = 0; i < datacards.length; i++) {
+            let destinationFileName =
+              destinationDirectory + "/" + datacards[i].code;
+            let data = await sharp(datacards[i].datacardPath + "/datacard.png")
+              .tiff({
+                quality: 100,
+                compression: "lzw"
+              })
+              .toFile(destinationFileName + ".tiff");
+          }
+          resolve();
+        });
+      }
+      case "BMP": {
+        return new Promise(async function(resolve, reject) {
+          for (let i = 0; i < datacards.length; i++) {
+            let destinationFileName =
+              destinationDirectory + "/" + datacards[i].code + ".bmp";
+
+            Jimp.read(datacards[i].datacardPath + "/datacard.png")
+              .then(datacard => {
+                return datacard.write(destinationFileName);
+              })
+              .catch(err => {
+                console.error(err);
+              });
+          }
+          resolve();
+        });
+      }
+      case "PDF": {
+        return new Promise(async function(resolve, reject) {
+          for (let i = 0; i < datacards.length; i++) {
+            try {
+              let destinationFileName =
+                destinationDirectory + "/" + datacards[i].code + ".pdf";
+
+              const PDFDocument = require("pdfkit");
+              const doc = new PDFDocument({ layout: "landscape" });
+              doc.pipe(fs.createWriteStream(destinationFileName)); // write to PDF
+
+              doc.image(datacards[i].datacardPath + "/datacard.png", 0, 15, {
+                width: 800,
+                align: "center",
+                valign: "center",
+                margins: {
+                  top: 20,
+                  bottom: 20,
+                  left: 20,
+                  right: 20
+                }
+              });
+
+              doc.end();
+            } catch (e) {
+              return e;
+            }
+          }
+          resolve();
+        });
+      }
+      case "CSV": {
+        let self = this;
+        return new Promise(async function(resolve, reject) {
+          let destinationFileName =
+            destinationDirectory + "/" + new Date().getTime() + ".csv";
+          await self.generateCSVFile(datacards, destinationFileName);
+          resolve();
+        });
+      }
+    }
+
+    //   resolve();
+    // });
   }
 }
 export default DatacardHandler;

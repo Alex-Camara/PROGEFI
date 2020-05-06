@@ -6,6 +6,11 @@ import VueObserveVisibility from "vue-observe-visibility";
 import { Store } from "vuex-mock-store";
 import Collect from "../../src/presentation/models/collect";
 import axios from "axios";
+import {loadModelValues, testModel1} from "./mocks/Model.spec";
+import {loadDatacardValues, testDatacard1} from "./mocks/Datacard.spec";
+import {testCatalogue1} from "./mocks/Catalogue.spec";
+import {testCollector1} from "./mocks/Collector.spec";
+import {testProject1} from "./mocks/Project.spec";
 
 jest.mock("axios");
 
@@ -440,5 +445,22 @@ describe("selectLocation component", () => {
     expect(locality2).toStrictEqual("Xalapa");
     expect(locality3).toStrictEqual("Xalapa");
     expect(locality4).toStrictEqual("Xalapa");
+  });
+
+  it("sets values according to dacatacard draft", async () => {
+    await loadDatacardValues();
+
+    store.state.datacard.datacard = testDatacard1;
+    wrapper.vm.$forceUpdate();
+    await wrapper.vm.$nextTick();
+    // await flushPromises();
+
+    expect(wrapper.vm.longitude).toEqual(testDatacard1.collect.longitude);
+    expect(wrapper.vm.latitude).toEqual(testDatacard1.collect.latitude);
+    expect(wrapper.vm.altitude).toEqual(testDatacard1.collect.altitude);
+    expect(wrapper.vm.country).toEqual(testDatacard1.collect.country);
+    expect(wrapper.vm.countryState).toEqual(testDatacard1.collect.countryState);
+    expect(wrapper.vm.municipality).toEqual(testDatacard1.collect.municipality);
+    expect(wrapper.vm.locality).toEqual(testDatacard1.collect.locality);
   });
 });

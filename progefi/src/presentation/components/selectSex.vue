@@ -49,12 +49,13 @@ export default {
   data() {
     return {
       sexes: [],
-      title: "Sexo: "
+      title: "Sexo: ",
+      modalSex: new Sex()
     };
   },
   async mounted() {
     this.sexes = await Sex.getAll();
-    this.$store.dispatch("speciesData/getSexes");
+    // this.$store.dispatch("speciesData/getSexes");
   },
   computed: {
     ...mapState("datacard", {
@@ -65,6 +66,9 @@ export default {
           .getSpecimen()
           .getSexValid()
     }),
+    ...mapState("modal", {
+      saveSexValue: state => state.saveSexValue,
+    }),
     sex: {
       get: function() {
         let sex = this.datacard
@@ -74,8 +78,17 @@ export default {
         return sex.getName();
       },
       set: function(newValue) {
-        this.$store.dispatch("datacard/setSex", newValue);
+        this.datacard.getCollect().getSpecimen().setSex(newValue);
       }
+    }
+  },
+  watch:{
+    saveSexValue(newValue){
+      if (newValue){
+        this.sex = this.modalSex;
+      }
+      this.modalSex = new Sex();
+      this.$store.commit("modal/reset");
     }
   },
   methods: {
@@ -86,12 +99,11 @@ export default {
       this.$store.dispatch("modal/openModal", {
         title: "Sexo",
         fieldText: "Ingresa el sexo del espécimen",
-        mutationName: "datacard/setSex",
-        valueName: "name",
-        regex: "^[a-zA-Z \\u00C0-\\u00FF]*$",
-        minLimit: 2,
-        maxLimit: 20
-      });
+        model: this.modalSex,
+        getter: "getName",
+        setter: "setName",
+        getterValid: "getNameValid"
+      })
     }
   }
 };

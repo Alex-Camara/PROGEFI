@@ -25,7 +25,7 @@ class Specimen {
     } else {
       let newLifeStage = new LifeStage();
       newLifeStage.setName(specimen.customLifeStageName);
-      newLifeStage.setValid({isValid: true, message: null});
+      newLifeStage.setNameValid({isValid: true, message: null});
       this.lifeStage = newLifeStage;
     }
     if (specimen.sex !== null) {
@@ -35,7 +35,7 @@ class Specimen {
     } else {
       let newSex = new Sex();
       newSex.setName(specimen.customSexName);
-      newSex.setValid({isValid: true, message: null});
+      newSex.setNameValid({isValid: true, message: null});
       this.sex = newSex;
     }
   }
@@ -43,10 +43,25 @@ class Specimen {
     this.observations = observations;
   }
   setSex(sex) {
-    this.sex = sex;
+    if (!sex.hasOwnProperty("id")){
+      let newSex = new Sex();
+      newSex.setName(sex.name);
+      this.sex = newSex
+    } else{
+      sex.setNameValid({ isValid: true, message: null });
+      this.sex = sex;
+    }
   }
   setLifeStage(lifeStage) {
-    this.lifeStage = lifeStage;
+    if (!lifeStage.hasOwnProperty("id")) {
+      let newLifeStage = new LifeStage();
+      newLifeStage.setNameValid({ isValid: true, message: null });
+      newLifeStage.setName(lifeStage.name);
+      this.lifeStage = newLifeStage;
+    } else {
+      lifeStage.setNameValid({ isValid: true, message: null });
+      this.lifeStage = lifeStage;
+    }
   }
   setSpecies(species) {
     this.species = species;
@@ -75,11 +90,11 @@ class Specimen {
     return valid;
   }
   getSexValid() {
-    let valid = this.sex.getValid();
+    let valid = this.sex.getNameValid();
     return valid;
   }
   getLifeStageValid() {
-    let valid = this.lifeStage.getValid();
+    let valid = this.lifeStage.getNameValid();
     return valid;
   }
   getSpecies() {

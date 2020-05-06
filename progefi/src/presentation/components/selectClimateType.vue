@@ -68,6 +68,7 @@ import { mapState } from "vuex";
 import requiredFieldHelper from "../helpers/requiredFieldHelper.vue";
 import ClimateType from "../models/climateType";
 import informationHelper from "../helpers/informationHelper";
+import Sex from "../models/sex";
 
 export default {
   components: {
@@ -80,7 +81,8 @@ export default {
       climateTypes: [],
       selectedTitle: "",
       selectedDescription: "",
-      informationMessage: "Tipos de clima obtenidos de la clasificación de Köeppen modificada por García..."
+      informationMessage: "Tipos de clima obtenidos de la clasificación de Köeppen modificada por García...",
+      modalClimateType: new ClimateType()
     };
   },
   async mounted() {
@@ -98,7 +100,10 @@ export default {
         state.datacard
           .getCollect()
           .getClimateType()
-          .getValid()
+          .getCodeValid()
+    }),
+    ...mapState("modal", {
+      saveClimateTypeValue: state => state.saveClimateTypeValue,
     }),
     selectedClimateType: {
       get: function() {
@@ -106,8 +111,17 @@ export default {
         return climateType;
       },
       set: function(newValue) {
-        this.$store.dispatch("datacard/setClimateType", newValue);
+        this.datacard.getCollect().setClimateType(newValue);
       }
+    }
+  },
+  watch:{
+    saveClimateTypeValue(newValue){
+      if (newValue){
+        this.selectedClimateType = this.modalClimateType;
+      }
+      this.modalClimateType = new ClimateType();
+      this.$store.commit("modal/reset");
     }
   },
   methods: {
@@ -132,12 +146,11 @@ export default {
       this.$store.dispatch("modal/openModal", {
         title: "Tipos de clima",
         fieldText: "Ingresa el tipo de clima",
-        mutationName: "datacard/setClimateType",
-        valueName: "code",
-        regex: "^[a-zA-Z0-9 \\'/():_-]*$",
-        minLimit: 2,
-        maxLimit: 10
-      });
+        model: this.modalClimateType,
+        getter: "getCode",
+        setter: "setCode",
+        getterValid: "getCodeValid"
+      })
     }
   }
 };

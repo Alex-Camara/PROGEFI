@@ -1,47 +1,92 @@
 "use strict";
 
+import DatacardDaoImp from "./DatacardDaoImp";
+
 const Template = require("../models/Template");
-const Layout = require("../models/Layout");
-const Tag = require("../models/Tag");
 
 class TemplateDaoImp {
-  async getTemplateNames() {
-    const templates = await Template.query().eager("[tags, layout]");
+  async save(template) {
+    console.log("template daoimp");
+    console.info(template);
+    let createdTemplate = await Template.query()
+      .insert({
+        name: template.name,
+        height: template.height,
+        width: template.width,
+        marginX: template.marginX,
+        marginY: template.marginY,
+        fontFamily: template.fontFamily,
+        backgroundColor: template.backgroundColor,
+        fontColor: template.fontColor,
+        samplePath: template.samplePath,
+          active: true
+      })
+      .catch(error => {
+        return error;
+      });
+    console.log("template created daoimp");
+    console.info(createdTemplate);
+    return createdTemplate;
+  }
+  async update(template) {
+    const updatedTemplate = await Template.query()
+      .patchAndFetchById(template.id, {
+        name: template.name,
+        height: template.height,
+        width: template.width,
+        marginX: template.marginX,
+        marginY: template.marginY,
+        fontColor: template.fontColor,
+        backgroundColor: template.backgroundColor,
+        fontFamily: template.fontFamily
+      })
+      .catch(error => {
+        return error;
+      });
 
-    var resourcesPath = "/src/persistence/resources/";
-    var fullPath = require("path").resolve(__dirname, "..") + resourcesPath;
+    return updatedTemplate;
+  }
+  async getTemplateNames() {
+    let templates = await Template.query()
+        .where("active", true)
+      .eager("[tags]")
+      .catch(error => {
+        return error;
+      });
 
     for (let i = 0; i < templates.length; i++) {
-      templates[i].samplePath = fullPath + templates[i].samplePath;
-
-      for (let j = 0; j < templates[i].tags.length; j++) {
-        var jsonElement = JSON.parse(templates[i].tags[j].style);
-        templates[i].tags[j].style = jsonElement;
-      }
+      templates[
+        i
+      ].notValidatedDatacards = await DatacardDaoImp.getNotValidatedByTemplateId(
+        templates[i].id
+      );
+      console.info(templates[i].notValidatedDatacards);
     }
     return templates;
   }
+  async delete(templateId) {
+    let template = await Template.query().findById(templateId);
+    let directoryToDelete = template.samplePath;
+    // await template.$query().delete().catch(error => {
+    //     return error;
+    // });;
+    await template
+      .$query()
+      .updateAndFetch({
+        active: false
+      })
+      .catch(error => {
+        return error;
+      });
+    console.log("directorio a borrar:");
+    console.info(directoryToDelete);
+    return directoryToDelete;
+  }
   async getTemplate(templateId) {
-    let recoveredTemplate = await Template.query()
-      .eager("[tags, layout]")
+    let template = await Template.query()
+        .where("active", true)
+      .eager("[tags]")
       .findById(templateId);
-
-    // console.info(recoveredTemplate)
-
-    let template = recoveredTemplate;
-
-    var resourcesPath = "/src/persistence/resources/";
-    var fullPath = require("path").resolve(__dirname, "..") + resourcesPath;
-
-    template.samplePath = fullPath + template.samplePath;
-
-    for (let i = 0; i < template.tags.length; i++) {
-      var jsonElement = JSON.parse(template.tags[i].style);
-      template.tags[i].style = jsonElement;
-    }
-
-    // console.info(template)
-
     return template;
   }
 }

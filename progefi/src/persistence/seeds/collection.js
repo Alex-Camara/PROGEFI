@@ -10,7 +10,8 @@ exports.seed = function (knex) {
           name: "Colección Fotográfica de Vertebrados Terrestres 'Alvar González Cristen'",
           code: "IIBUV-",
           instituteName: 'Universidad Veracruzana',
-          acronym: 'UV',
+          instituteAcronym: 'UV',
+          researchAreaAcronym: 'IIB-UV',
           researchArea: 'Instituto de Investigaciones Biológicas UV',
           instituteLogoPath: 'C:\\Users\\arcam\\Documents\\Github\\PROGEFI\\progefi\\src\\persistence\\resources\\institute_logos\\logo.png'
         }

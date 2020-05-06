@@ -8,8 +8,13 @@
         </li>
       </ul>
       <p class="menu-label">Fichas</p>
+
       <ul class="menu-list">
-        <li v-for="item in items" v-bind:key="item.title" v-on:click="setSelection(item)">
+        <li
+          v-for="item in items"
+          v-bind:key="item.title"
+          v-on:click="setSelection(item)"
+        >
           <a id="menu-item" v-bind:class="item.classObject">{{ item.title }}</a>
         </li>
       </ul>
@@ -18,83 +23,21 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+import Collection from "../models/collection";
 export default {
-  data() {
-    return {
-      items: [
-        {
-          name: "UIShowCollections",
-          params: "",
-          title: "Colección",
-          classObject: {
-            "is-active": false
-          }
-        },
-        {
-          name: "UIShowCatalogues",
-          params: { selectedCatalogue: null },
-          title: "Catálogos",
-          classObject: {
-            "is-active": false
-          }
-        },
-        {
-          name: "UIShowDataCards",
-          params: { selectedCatalogue: null },
-          title: "Fichas de fotocolecta",
-          classObject: {
-            "is-active": false
-          }
-        },
-        {
-          name: "UIShowTemplates",
-          params: "",
-          title: "Plantillas",
-          classObject: {
-            "is-active": false
-          }
-        },
-        {
-          name: "",
-          params: "",
-          title: "Rastreo",
-          classObject: {
-            "is-active": false
-          }
-        }
-      ]
-    };
+  computed: {
+    ...mapState("menu", {
+      items: state => state.items
+    })
   },
-  created() {
-    this.$router.push({ name: "UIShowDataCards" });
-    this.setInitialSelection("Fichas de fotocolecta");
+  async created() {
+      this.$store.commit("menu/setItemByName", "Fichas de fotocolecta");
   },
   methods: {
-    setInitialSelection(title) {
-      for (var i = 0; i < this.items.length; i++) {
-        if (this.items[i].title === title) {
-          this.items[i].classObject = {
-            "is-active": true
-          };
-        }
-      }
-    },
     setSelection(menuItem) {
-      for (var i = 0; i < this.items.length; i++) {
-        this.items[i].classObject = {
-          "is-active": false
-        };
-      }
-      menuItem.classObject = {
-        "is-active": true
-      };
-      // debugger;
-      if (this.$router.currentRoute.name != menuItem.name) {
-        this.$router.push({ name: menuItem.name, params: menuItem.params });
-      } else {
-        this.$router.push({ params: menuItem.params });
-        // this.$router.go()
-        // debugger;
+      if (!menuItem.classObject["disabled_item"]){
+        this.$store.commit("menu/setItem", menuItem);
       }
     }
   }
@@ -110,5 +53,10 @@ export default {
   padding-top: 10px;
   height: 600px;
   //background-color: $menu-background;
+}
+
+.disabled_item {
+  pointer-events: none; //This makes it not clickable
+  opacity: 0.6; //This grays it out to look disabled
 }
 </style>

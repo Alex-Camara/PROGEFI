@@ -1,14 +1,18 @@
 <template>
   <div>
-    <div id="template_helper_container" class="box has-background-light">
+    <div id="template_helper_container" class="gray_box">
       <div id="template_helper_container_header">
         <div id="template_helper_container_header_title">
-          <b class="is-size-6">Plantilla a utilizar:</b>
+          <b class="is-size-6">{{ title }}</b>
         </div>
 
         <div id="template_helper_container_content">
           <div id="template_helper_container_content_select">
-            <b-field id="template-select" custom-class="is-small is-centered" label="Plantilla:">
+            <b-field
+              id="template-select"
+              custom-class="is-small is-centered"
+              label="Plantilla:"
+            >
               <div class="select">
                 <select
                   id="template_select"
@@ -19,7 +23,8 @@
                     v-for="template in templates"
                     :key="template.getName()"
                     :value="template"
-                  >{{ template.getName() }}</option>
+                    >{{ template.getName() }}</option
+                  >
                 </select>
               </div>
             </b-field>
@@ -41,12 +46,20 @@ import Template from "../models/template";
 export default {
   data() {
     return {
+      title: "Plantilla a utilizar:",
       templates: []
     };
   },
   async mounted() {
     this.templates = await Template.getAll();
-    this.selectedTemplate = this.templates[0];
+
+    if (this.selectedTemplate.getId() === null) {
+      this.selectedTemplate = this.templates[0];
+    } else {
+      this.selectedTemplate = this.templates.find(
+        x => x.name === this.selectedTemplate.getName()
+      );
+    }
   },
   computed: {
     ...mapState("datacard", {

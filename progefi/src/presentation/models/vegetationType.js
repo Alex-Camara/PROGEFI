@@ -1,45 +1,75 @@
-'use strict'
+"use strict";
+
+import Validator from "../validators/validator";
 
 class VegetationType {
   constructor() {
-    this.id = null
-    this.name = null
-    this.vegetalFormationId = null
-    this.required = true
-    this.valid = {}
-    this.valid.isValid = false
-    this.valid.message = 'Campo requerido'
+    this.id = null;
+    this.name = "";
+    this.vegetalFormationId = null;
+    this.required = true;
+    this.nameValid = {};
+    this.nameValid.isValid = false;
+    this.nameValid.message = "Campo requerido";
   }
   setVegetationType(vegetationType) {
     if (vegetationType.hasOwnProperty("id")) {
-      this.id = vegetationType.id
+      this.id = vegetationType.id;
     }
-    this.name = vegetationType.name
-    this.vegetalFormationId = vegetationType.vegetalFormationId
-    this.valid = { isValid: true, message: null };
+    this.name = vegetationType.name;
+    this.vegetalFormationId = vegetationType.vegetalFormationId;
+    this.nameValid = { isValid: true, message: null };
   }
   setVegetalFormation(vegetalFormation) {
-    this.vegetalFormation = vegetalFormation
+    this.vegetalFormation = vegetalFormation;
   }
   setName(name) {
-    this.name = name
+    return new Promise(resolve => {
+      var validator = new Validator();
+      let regex = "^[a-zA-Z \\u00C0-\\u00FF]*$";
+      validator
+        .testValidationOne(name, 2, 30, true, regex)
+        .then(() => {
+          this.name = name;
+          this.nameValid = { isValid: true, message: null };
+          resolve();
+        })
+        .catch(error => {
+          if (error === "Campo requerido") {
+            this.name = name;
+            this.nameValid = { isValid: false, message: error };
+            resolve();
+          } else if (error === "Longitud mínima inválida") {
+            this.name = name;
+            // debugger;
+            this.nameValid = { isValid: false, message: error };
+            resolve();
+          } else if (this.nameValid.isValid) {
+            this.nameValid = { isValid: true, message: "temporary error" };
+            resolve();
+          } else {
+            this.nameValid = { isValid: false, message: error };
+            resolve();
+          }
+        });
+    });
   }
-  setValid(valid) {
-    this.valid.isValid = valid.isValid
-    this.valid.message = valid.message
+  setNameValid(valid) {
+    this.nameValid.isValid = valid.isValid;
+    this.nameValid.message = valid.message;
   }
   getId() {
-    return this.id
+    return this.id;
   }
-  getValid() {
-    return this.valid
+  getNameValid() {
+    return this.nameValid;
   }
-  isValid(){
-    return this.valid.isValid
+  isNameValid() {
+    return this.nameValid.isValid;
   }
   getName() {
-    return this.name
+    return this.name;
   }
 }
 
-export default VegetationType
+export default VegetationType;

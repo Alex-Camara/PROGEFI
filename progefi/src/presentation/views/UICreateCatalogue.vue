@@ -119,6 +119,7 @@ export default {
         name: "UIShowCatalogues"
       });
     },
+
     setHelpText(message, active) {
       this.$store.dispatch("helpText/setActive", { active, message });
     }

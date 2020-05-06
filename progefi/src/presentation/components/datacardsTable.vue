@@ -5,6 +5,7 @@
       v-if="datacards.length === 0 && !loading"
     >
       <p class="is-size-5">{{ datacardsNullMessage }}</p>
+
     </div>
     <progress
       id="datacards_table_progress"
@@ -145,7 +146,7 @@
 import moment from "moment";
 import Datacard from "../models/datacard";
 export default {
-  props: ["selectedCatalogue"],
+  props: ["selectedCatalogue", "reload"],
   data() {
     return {
       selectedDatacard: null,
@@ -162,8 +163,21 @@ export default {
     };
   },
   async mounted() {
+    if (this.selectedCatalogue){
+      this.datacardsNullMessage = "Aún no hay fichas en este catálogo..."
+    } else{
+      this.datacardsNullMessage = "Aún no hay fichas registradas en el sistema..."
+    }
     this.orderTable("code", "asc");
     this.offset = 10;
+  },
+  watch: {
+    reload(newValue){
+      if (newValue){
+        this.orderTable("code", "asc");
+        this.reload = false;
+      }
+    }
   },
   computed: {
     disableLoadMoreButton: function() {

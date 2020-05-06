@@ -10,17 +10,49 @@
       </b-field>
     </div>
 
+    <div id="create_template_general_data_font" class="gray_box">
+      <b-field
+              id="create_template_general_data_font_family_field"
+              class="autocomplete_box_field"
+              custom-class="is-small"
+              label="Fuente:"
+      >
+        <template slot="label">
+          <required-field-helper :name="'Fuente:'" :valid="isFontFamilyValid"></required-field-helper>
+        </template>
+        <input
+                id="create_template_general_data_font_family_input"
+                placeholder
+                class="input"
+                v-model="fontFamily"
+                @click.stop="autocompleteFontFamilyStatus =true"
+                @focus="autocompleteFontFamilyStatus =true"
+                @keyup="searchFontFamily($event)"
+        />
+        <div
+                class="autocomplete_box"
+                v-if="autocompleteFontFamilyStatus && filteredFontFamilies != undefined && filteredFontFamilies.length > 0"
+        >
+          <ul class="autocomplete_list">
+            <li
+                    v-for="fontFamily in filteredFontFamilies"
+                    :key="fontFamily"
+                    :value="fontFamily"
+                    @click="setFontFamily(fontFamily)"
+            >{{fontFamily}}</li>
+          </ul>
+        </div>
+      </b-field>
+    </div>
+
     <div id="create_template_general_data_color" class="gray_box">
-      <div id="create_template_general_data_color_title">
-        <p class="title">COLOR:</p>
-      </div>
-      <div id="create_template_general_data_color_fields">
+      <div class="container_flex">
         <div>
           <b-field id="create_template_background_color_input_field" custom-class="is-small">
             <template slot="label">
               <required-field-helper :name="'Color de fondo:'" :valid="isBackgroundColorValid"></required-field-helper>
             </template>
-            <div id="create_template_background_color_div">
+            <div class="container_flex">
               <div
                 id="create_template_background_color_sample"
                 @click.stop
@@ -49,7 +81,7 @@
             <template slot="label">
               <required-field-helper :name="'Color del texto:'" :valid="isFontColorValid"></required-field-helper>
             </template>
-            <div id="create_template_font_color_div">
+            <div class="container_flex">
               <div
                 id="create_template_font_color_sample"
                 @click.stop
@@ -73,55 +105,72 @@
       </div>
     </div>
 
-    <div id="create_template_general_data_font" class="gray_box">
-      <p class="title">FUENTE:</p>
+    <div id="create_template_general_data_dimensions_field" class="container_flex container_100_width">
+    <div id="create_template_general_data_dimensions" class="gray_box">
+      <div class="container_flex">
+    <b-field id="create_template_height_input_field" custom-class="is-small">
+      <template slot="label">
+        <required-field-helper :name="'Alto:'" :valid="isHeightValid"></required-field-helper>
+      </template>
+      <input id="create_template_height_input" class="input create_template_input_width" v-model="height" />
+    </b-field>
 
-      <b-field
-        id="create_template_general_data_font_family_field"
-        class="autocomplete_box_field"
-        custom-class="is-small"
-        label="Fuente:"
-      >
+      <div class="space"></div>
+
+      <b-field id="create_template_width_input_field" custom-class="is-small">
         <template slot="label">
-          <required-field-helper :name="'Fuente:'" :valid="isFontFamilyValid"></required-field-helper>
+          <required-field-helper :name="'Ancho:'" :valid="isWidthValid"></required-field-helper>
         </template>
-        <input
-          id="create_template_general_data_font_family_input"
-          placeholder
-          class="input"
-          v-model="fontFamily"
-          @click.stop="autocompleteFontFamilyStatus =true"
-          @focus="autocompleteFontFamilyStatus =true"
-          @keyup="searchFontFamily($event)"
-        />
-        <div
-          class="autocomplete_box"
-          v-if="autocompleteFontFamilyStatus && filteredFontFamilies != undefined && filteredFontFamilies.length > 0"
-        >
-          <ul class="autocomplete_list">
-            <li
-              v-for="fontFamily in filteredFontFamilies"
-              :key="fontFamily"
-              :value="fontFamily"
-              @click="setFontFamily(fontFamily)"
-            >{{fontFamily}}</li>
-          </ul>
-        </div>
+        <input id="create_template_width_input" class="input create_template_input_width" v-model="width" />
       </b-field>
+
+        <div class="space"></div>
+
+        <b-field id="create_template_x_margin_input_field" custom-class="is-small">
+          <template slot="label">
+            <required-field-helper :name="'Margen (X):'" :valid="isMarginXValid"></required-field-helper>
+          </template>
+          <input id="create_template_margin_x_input" class="input create_template_input_width" v-model="marginX" />
+        </b-field>
+
+        <div class="space"></div>
+
+        <b-field id="create_template_y_margin_input_field" custom-class="is-small">
+          <template slot="label">
+            <required-field-helper :name="'Margen (Y):'" :valid="isMarginYValid"></required-field-helper>
+          </template>
+          <input id="create_template_margin_y_input" class="input create_template_input_width" v-model="marginY" />
+        </b-field>
+<!--      </div>-->
+
     </div>
+  </div>
+
+      <div id="create_template_general_data_font_size" class="gray_box">
+        <div class="container_flex">
+          <b-field id="create_template_font_size_input_field" custom-class="is-small">
+            <template slot="label">
+              <required-field-helper :name="'Tamaño de fuente:'" :valid="isFontSizeValid"></required-field-helper>
+            </template>
+            <input id="create_template_font_size_input" class="input create_template_input_width" v-model="fontSize" />
+          </b-field>
+        </div>
+      </div>
+
+    </div>
+
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
 import requiredFieldHelper from "../helpers/requiredFieldHelper.vue";
-// import colorPicker from "@caohenghu/vue-colorpicker";
 import { Chrome } from "vue-color";
 export default {
   components: {
     "required-field-helper": requiredFieldHelper,
     "color-picker": Chrome
   },
+  props: ["template"],
   data() {
     return {
       //Este valor es solo para el comp picker, dado que retora un objeto
@@ -133,20 +182,37 @@ export default {
       autocompleteFontFamilyStatus: false
     };
   },
-  mounted() {
-    this.$store.dispatch("template/getFonts");
-    // debugger;
-  },
   computed: {
-    ...mapState("template", {
-      templateState: state => state,
-      template: state => state.template,
-      fontFamilies: state => state.fontFamilies,
-      isNameValid: state => state.template.getNameValid(),
-      isBackgroundColorValid: state => state.template.getBackgroundColorValid(),
-      isFontColorValid: state => state.template.getFontColorValid(),
-      isFontFamilyValid: state => state.template.getFontFamilyValid()
-    }),
+    fontFamilies: function() {
+      return this.template.getFontFamilies();
+    },
+    isNameValid: function() {
+      return this.template.getNameValid();
+    },
+    isBackgroundColorValid: function() {
+      return this.template.getBackgroundColorValid();
+    },
+    isFontColorValid: function() {
+      return this.template.getFontColorValid();
+    },
+    isFontFamilyValid: function() {
+      return this.template.getFontFamilyValid();
+    },
+    isHeightValid: function() {
+      return this.template.getHeightValid();
+    },
+    isWidthValid: function() {
+      return this.template.getWidthValid();
+    },
+    isMarginXValid: function() {
+      return this.template.getMarginXValid();
+    },
+    isMarginYValid: function() {
+      return this.template.getMarginYValid();
+    },
+    isFontSizeValid: function() {
+      return this.template.getFontSizeValid();
+    },
     name: {
       get: function() {
         let name = this.template.getName();
@@ -156,14 +222,14 @@ export default {
         return name;
       },
       set: function(newValue) {
-        this.$store.dispatch("template/setName", newValue);
+        this.template.setName(newValue);
       }
     },
     backgroundColor: {
       get: function() {
         let backgroundColor = this.template.getBackgroundColor();
         if (
-          this.template.getBackgroundColorValid().message == "temporary error"
+                this.template.getBackgroundColorValid().message == "temporary error"
         ) {
           this.addShakeEffect("create_template_background_color_input");
         }
@@ -171,7 +237,7 @@ export default {
         return backgroundColor;
       },
       set: function(newValue) {
-        this.$store.dispatch("template/setBackgroundColor", newValue);
+        this.template.setBackgroundColor(newValue);
       }
     },
     fontColor: {
@@ -184,19 +250,79 @@ export default {
         return fontColor;
       },
       set: function(newValue) {
-        this.$store.dispatch("template/setFontColor", newValue);
+        this.template.setFontColor(newValue);
+      }
+    },
+    height: {
+      get: function() {
+        let height = this.template.getHeight();
+        if (this.template.getHeightValid().message == "temporary error") {
+          this.addShakeEffect("create_template_height_input");
+        }
+        return height;
+      },
+      set: function(newValue) {
+        this.template.setHeight(newValue);
+      }
+    },
+    width: {
+      get: function() {
+        let height = this.template.getWidth();
+        if (this.template.getWidthValid().message == "temporary error") {
+          this.addShakeEffect("create_template_width_input");
+        }
+        return height;
+      },
+      set: function(newValue) {
+        this.template.setWidth(newValue);
+      }
+    },
+    marginX: {
+      get: function() {
+        let marginX = this.template.getMarginX();
+        if (this.template.getMarginXValid().message == "temporary error") {
+          this.addShakeEffect("create_template_margin_x_input");
+        }
+        return marginX;
+      },
+      set: function(newValue) {
+        this.template.setMarginX(newValue);
+      }
+    },
+    marginY: {
+      get: function() {
+        let marginY = this.template.getMarginY();
+        if (this.template.getMarginYValid().message == "temporary error") {
+          this.addShakeEffect("create_template_margin_y_input");
+        }
+        return marginY;
+      },
+      set: function(newValue) {
+        this.template.setMarginY(newValue);
       }
     },
     fontFamily: {
       get: function() {
         let fontFamily = this.template.getFontFamily();
         if (this.template.getFontFamilyValid().message == "temporary error") {
-          this.addShakeEffect("create_template_background_color_input");
+          this.addShakeEffect("create_template_font_family_input");
         }
         return fontFamily;
       },
       set: function(newValue) {
-        this.$store.dispatch("template/setFontFamily", newValue);
+        this.template.setFontFamily(newValue);
+      }
+    },
+    fontSize: {
+      get: function() {
+        let fontSize = this.template.getFontSize();
+        if (this.template.getFontSizeValid().message == "temporary error") {
+          this.addShakeEffect("create_template_font_size_input");
+        }
+        return fontSize;
+      },
+      set: function(newValue) {
+        this.template.setFontSize(newValue);
       }
     }
   },
@@ -279,6 +405,24 @@ export default {
   margin-top: 20px;
 }
 
+#create_template_general_data_font {
+  margin-top: 20px;
+}
+
+#create_template_general_data_dimensions_field{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+#create_template_general_data_dimensions{
+  margin-top: 20px;
+}
+
+#create_template_general_data_font_size{
+  margin-top: 20px;
+}
+
 #create_template_general_data_color_title {
   display: flex;
   flex-wrap: wrap;
@@ -286,10 +430,6 @@ export default {
 
 #create_template_general_data_font {
   margin-top: 20px;
-}
-
-#create_template_general_data_color_fields {
-  display: flex;
 }
 
 #create_template_name_input {
@@ -300,12 +440,12 @@ export default {
   width: 500px;
 }
 
-#create_template_background_color_div {
-  display: flex;
+#create_template_background_color_input {
+  width: 100px;
 }
 
-#create_template_font_color_div {
-  display: flex;
+#create_template_font_color_input {
+  width: 100px;
 }
 
 #create_template_background_color_sample {
@@ -326,12 +466,16 @@ export default {
   cursor: pointer;
 }
 
-#create_template_background_color_input {
-  width: 100px;
-}
+/*#create_template_background_color_input {*/
+/*  width: 100px;*/
+/*}*/
 
-#create_template_font_color_input {
-  width: 100px;
+/*#create_template_font_color_input {*/
+/*  width: 100px;*/
+/*}*/
+
+.create_template_input_width{
+  width: 100px !important;
 }
 
 .color_picker {

@@ -11,6 +11,7 @@ class Tag extends Model {
   }
 
   static get relationMappings() {
+    const Template = require('./Template');
     return {
       owner: {
         relation: Model.BelongsToOneRelation, 

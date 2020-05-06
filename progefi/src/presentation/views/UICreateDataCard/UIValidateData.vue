@@ -19,26 +19,27 @@
           v-model="isSwitched"
           true-value="Inhabilitar edición"
           false-value="Habilitar edición"
-          @input="enableColors()"
+          @input="editMode = !editMode"
           >{{ isSwitched }}</b-switch
         >
       </div>
 
+
       <preview-datacard
         id="preview_datacard"
         ref="preview_datacard"
-        :colorsEnabled="colorsEnabled"
-        :preview="showPreview"
-        v-if="showPreview"
+        :editMode="editMode"
+        :previewMode="previewMode"
+        v-if="previewMode"
         v-on:exitComponent="exitComponent()"
       ></preview-datacard>
 
       <preview-datacard
-        :colorsEnabled="false"
-        :preview="showPreview"
+        :editMode="false"
+        :previewMode="previewMode"
         id="preview_datacard"
         ref="preview_datacard"
-        v-if="!showPreview"
+        v-if="!previewMode"
         v-on:exitComponent="exitComponent()"
       ></preview-datacard>
     </div>
@@ -70,12 +71,12 @@ export default {
   },
   data() {
     return {
-      colorsEnabled: true,
       isSwitched: "Inhabilitar edición",
-      showPreview: true,
+      previewMode: true,
       textInButton: "Guardar borrador de ficha",
       informationMessage:
-        "Para validar la ficha debes introducir al menos un curador, de lo contrario solo guardarás un borrador..."
+        "Para validar la ficha debes introducir al menos un curador, de lo contrario solo guardarás un borrador...",
+      editMode: true
     };
   },
   computed: {
@@ -107,18 +108,11 @@ export default {
     exitComponent() {
       this.$emit("exitComponent");
     },
-    enableColors() {
-      if (this.colorsEnabled) {
-        this.colorsEnabled = false;
-      } else {
-        this.colorsEnabled = true;
-      }
-    },
     generateDatacard() {
-      if (this.showPreview) {
-        this.showPreview = false;
+      if (this.previewMode) {
+        this.previewMode = false;
       } else {
-        this.showPreview = true;
+        this.previewMode = true;
       }
     },
     closeAutocompletes() {

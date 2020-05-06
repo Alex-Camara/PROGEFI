@@ -34,16 +34,11 @@ Icon.Default.mergeOptions({
   shadowUrl: require("leaflet/dist/images/marker-shadow.png")
 });
 
-// Vue.use(ElementUI);
-// Vue.use(VueAxios, axios);
-// Vue.use(VueJsonp);
-// Vue.use(VueHead);
 Vue.use(VueObserveVisibility);
 
 Vue.use(Buefy, {
   defaultIconPack: "mdi"
 });
-// Vue.use(ElementUI)
 Vue.config.productionTip = false;
 
 new Vue({

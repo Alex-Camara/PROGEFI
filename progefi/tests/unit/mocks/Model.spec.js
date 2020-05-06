@@ -1,4 +1,5 @@
 import Model from "@/presentation/models/model.js";
+import {testDevice1, testDevice2} from "./Device.spec"
 const testModel1 = new Model();
 const testModel2 = new Model();
 const testModel3 = new Model();
@@ -8,13 +9,15 @@ async function loadModelValues() {
   await testModel1.setModel({
     id: 1,
     name: "moto g3",
-    deviceId: 1
+    deviceId: 1,
+    device: testDevice1
   });
 
   await testModel2.setModel({
     id: 2,
     name: "moto g4",
-    deviceId: 1
+    deviceId: 1,
+    device: testDevice1
   });
 
   await testModel3.setModel({

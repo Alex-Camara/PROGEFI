@@ -1,23 +1,45 @@
 <template>
   <div>
     <div id="modal" class="modal">
-      <div class="modal-background" @click="setActive(false)"></div>
+      <div class="modal-background" @click="closeModal()"></div>
       <div class="modal-card">
         <header class="modal-card-head">
-          <p class="modal-card-title">{{title}}</p>
-          <button class="delete" aria-label="close" @click="setActive(false)"></button>
+          <p class="modal-card-title">{{ title }}</p>
+          <button
+            class="delete"
+            aria-label="close"
+            @click="closeModal()"
+          ></button>
         </header>
-        <section class="modal-card-body">
-          <b-field id="modal_input_field" custom-class="is-small is-centered" :label="fieldText">
-            <input id="modal_input" class="input" v-model="value" placeholder="Introduce el valor" />
-          </b-field>
-        </section>
-        <section class="modal-card-body">
-          <b>Valor: {{value}}</b>
-        </section>
+        <div id="model_helper_content" class="modal-card-body">
+          <div class="container_flex_column">
+            <div class="container_flex_column">
+              <required-field-helper
+                id="modal_helper_required_field_helper"
+                :name="fieldText"
+                :valid="isValid"
+              ></required-field-helper>
+              <input
+                id="modal_input"
+                class="input"
+                v-model="value"
+                placeholder="Introduce el valor"
+              />
+            </div>
+            <b>{{ valueText + value }}</b>
+          </div>
+        </div>
         <footer class="modal-card-foot">
-          <button class="button is-secondary" @click="saveValue()" :disabled="disable">Guardar</button>
-          <button class="button is-danger" @click="setActive(false)">Cancelar</button>
+          <button
+            class="button is-secondary"
+            @click="save"
+            :disabled="!isValid.isValid"
+          >
+            {{ saveButtonText }}
+          </button>
+          <button class="button is-danger" @click="closeModal()">
+            Cancelar
+          </button>
         </footer>
       </div>
     </div>
@@ -25,78 +47,143 @@
 </template>
 
 <script>
-import store from "../store/store.js";
 import { mapState } from "vuex";
+import requiredFieldHelper from "./requiredFieldHelper";
 
 export default {
+  name: "modal-helper",
+  components: {
+    "required-field-helper": requiredFieldHelper
+  },
   data() {
     return {
-      disable: true
+      disable: true,
+      saveButtonText: "Guardar",
+      valueText: "Valor: "
     };
   },
-  created() {
-    store.watch(
-      state => state.modal.active,
-      (newValue, oldValue) => {
-        if (newValue) {
-          this.openModal();
-        } else {
-          this.closeModal();
-        }
-      }
-    );
-    store.watch(
-      state => state.modal.modalValue.valid,
-      (newValue, oldValue) => {
-        console.log(newValue);
-        if (!newValue.isValid) {
-          this.addShakeEffect("modal_input");
-          this.disable = true;
-        } else {
-          this.disable = false;
-        }
-        if (newValue.message == "temporary error") {
-          this.addShakeEffect("modal_input");
-        }
-      }
-    );
-  },
+  created() {},
   computed: {
     ...mapState("modal", {
+      active: state => state.active,
       title: state => state.title,
       fieldText: state => state.fieldText,
+      model: state => state.model,
+      getterValue: state => state.getter,
+      getterValidValue: state => state.getterValid,
+      setter: state => state.setter,
       modalState: state => state
-    }),
+   }),
+    isValid: function() {
+      if (this.model) {
+        return this.model[this.getterValidValue]();
+      } else {
+        return { isValid: false, message: null };
+      }
+    },
     value: {
       get: function() {
-        return store.state.modal.modalValue.value;
+        if (this.model) {
+          return this.model[this.getterValue]();
+        }
+        return null;
       },
       set: function(newValue) {
-        store.dispatch("modal/setValue", newValue);
+        this.model[this.setter](newValue);
+      }
+    },
+    saveClimateTypeValue: {
+      get: function() {
+        return this.modal.state.saveClimateTypeValue;
+      },
+      set: function(newValue) {
+        this.$store.commit("modal/setSaveClimateTypeValue", newValue);
+      }
+    },
+    saveSexValue: {
+      get: function() {
+        return this.modal.state.saveSexValue;
+      },
+      set: function(newValue) {
+        this.$store.commit("modal/setSaveSexValue", newValue);
+      }
+    },
+    saveVegetationTypeValue: {
+      get: function() {
+        return this.modal.state.saveVegetationTypeValue;
+      },
+      set: function(newValue) {
+        this.$store.commit("modal/setSaveVegetationTypeValue", newValue);
+      }
+    },
+    saveLifeStageValue: {
+      get: function() {
+        return this.modal.state.saveLifeStageValue;
+      },
+      set: function(newValue) {
+        this.$store.commit("modal/setSaveLifeStageValue", newValue);
+      }
+    },
+    saveProjectValue: {
+      get: function() {
+        return this.modal.state.saveProjectValue;
+      },
+      set: function(newValue) {
+        this.$store.commit("modal/setSaveProjectValue", newValue);
+      }
+    }
+  },
+  watch: {
+    active(newValue) {
+      if (newValue) {
+        this.openModal();
+      } else {
+        this.closeModalWindow();
+      }
+    },
+    isValid(newValue) {
+      if (newValue.message === "temporary error") {
+        this.addShakeEffect();
       }
     }
   },
   methods: {
-    setActive(value) {
-      store.dispatch("modal/closeModal");
+    save() {
+      this.setSaveValues(true);
+    },
+    closeModal() {
+      this.setSaveValues(false);
+      // this.$store.commit("modal/reset");
+    },
+    setSaveValues(save) {
+      switch (this.model.constructor.name) {
+        case "Sex":
+          this.saveSexValue = save;
+          break;
+        case "ClimateType":
+          this.saveClimateTypeValue = save;
+          break;
+        case "VegetationType":
+          this.saveVegetationTypeValue = save;
+          break;
+        case "LifeStage":
+          this.saveLifeStageValue = save;
+          break;
+        case "Project":
+          this.saveProjectValue = save;
+          break;
+      }
     },
     openModal() {
       var element = document.getElementById("modal");
       element.classList.add("is-active");
     },
-    closeModal() {
+    closeModalWindow() {
       var element = document.getElementById("modal");
       element.classList.remove("is-active");
     },
-    disableButton() {
-      //store.dispatch("modal/setValue", );
-    },
-    saveValue() {
-      store.dispatch("modal/saveValue");
-      this.setActive(false);
-    },
-    addShakeEffect(elemenId) {
-      let element = document.getElementById(elemenId);
+    addShakeEffect() {
+      let element = document.getElementById("modal_input");
       if (element != null) {
         element.classList.remove("shake_field");
         void element.offsetWidth; // trigger a DOM reflow
@@ -108,6 +195,16 @@ export default {
 </script>
 
 <style lang="scss">
+.modal-card-body {
+  height: 200px !important;
+  padding-right: 80px !important;
+  padding-left: 80px !important;
+  padding-top: 50px !important;
+}
+
+#modal_input {
+  margin-bottom: 20px;
+}
 .shake_field {
   outline-color: red;
   /* also need animation and -moz-animation */

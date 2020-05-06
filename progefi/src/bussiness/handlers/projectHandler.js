@@ -15,6 +15,10 @@ class ProjectHandler {
             resolve(project);
         });
     }
+    async save(project, result) {
+        let savedProject = await this.projectDAO.save(project);
+        result(savedProject);
+    }
 }
 
 export default ProjectHandler;

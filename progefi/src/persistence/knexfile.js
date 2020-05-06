@@ -6,7 +6,7 @@ module.exports = {
   development: {
     client: 'sqlite3',
     useNullAsDefault: true,
-    connection: {
+    connection:{
       //filename: path.resolve('.') + '/progefiDB.db'
     filename: path.resolve('.') + './src/persistence/progefiDB.db'
     }

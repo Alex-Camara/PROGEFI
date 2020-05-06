@@ -193,18 +193,32 @@ class Datacard {
     });
   }
   save() {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       ipcRenderer.send("createDatacard", this);
-      ipcRenderer.once("datacardCreated", () => {
-        resolve();
+      ipcRenderer.once("datacardCreated", (event, createdDatacard) => {
+        if (
+            createdDatacard.hasOwnProperty("nativeError") &&
+            createdDatacard.nativeError.code === "SQLITE_ERROR"
+        ) {
+          reject();
+        } else {
+          resolve();
+        }
       });
     });
   }
   update() {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       ipcRenderer.send("updateDatacard", this);
-      ipcRenderer.once("datacardUpdated", () => {
-        resolve();
+      ipcRenderer.once("datacardUpdated", (event, updatedDatacard) => {
+        if (
+            updatedDatacard.hasOwnProperty("nativeError") &&
+            updatedDatacard.nativeError.code === "SQLITE_ERROR"
+        ) {
+          reject();
+        } else {
+          resolve();
+        }
       });
     });
   }
@@ -215,6 +229,28 @@ class Datacard {
         resolve();
       });
     });
+  }
+  static decode(base64){
+    return new Promise((resolve, reject) => {
+      ipcRenderer.send("decodeDatacard", base64);
+      ipcRenderer.once("datacardDecoded", (event, decodedDatacard) => {
+        if (decodedDatacard === "DECODE ERROR"){
+          reject()
+        } else {
+          decodedDatacard = decodedDatacard.split(",");
+          console.info(decodedDatacard)
+          resolve(decodedDatacard);
+        }
+      });
+    })
+  }
+  static export(datacards, format, destinationDirectory){
+    return new Promise(resolve => {
+      ipcRenderer.send("exportDatacards", datacards, format, destinationDirectory);
+      ipcRenderer.once("datacardsExported", (event, receivedDatacards) => {
+        resolve()
+      });
+    })
   }
   static getAll(catalogueId) {
     return new Promise((resolve, reject) => {
@@ -244,12 +280,19 @@ class Datacard {
   }
   static getSorted(catalogueId, field, order, limit, offset) {
     return new Promise((resolve, reject) => {
-      ipcRenderer.send("getSortedDatacards", catalogueId, field, order, limit, offset);
+      ipcRenderer.send(
+        "getSortedDatacards",
+        catalogueId,
+        field,
+        order,
+        limit,
+        offset
+      );
       ipcRenderer.once("sortedDatacards", (event, receivedDatacards) => {
         console.info(receivedDatacards);
         if (
-          receivedDatacards.hasOwnProperty("code") &&
-          receivedDatacards.code === "SQLITE_ERROR"
+            receivedDatacards.hasOwnProperty("nativeError") &&
+            receivedDatacards.nativeError.code === "SQLITE_ERROR"
         ) {
           reject();
         } else {
@@ -270,8 +313,8 @@ class Datacard {
       ipcRenderer.once("sortedDatacards", (event, receivedDatacards) => {
         console.info(receivedDatacards);
         if (
-          receivedDatacards.hasOwnProperty("code") &&
-          receivedDatacards.code === "SQLITE_ERROR"
+            receivedDatacards.hasOwnProperty("nativeError") &&
+            receivedDatacards.nativeError.code === "SQLITE_ERROR"
         ) {
           reject();
         } else {

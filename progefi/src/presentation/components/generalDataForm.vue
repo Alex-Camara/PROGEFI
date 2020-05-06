@@ -58,6 +58,8 @@
             placeholder="Selecciona un proyecto"
             v-model="selectedProject"
           >
+            <option id="general_data_form_add_project">
+              <div >{{ addProjectText }}</div ></option>
             <option
               v-for="project in projects"
               :key="project.name"
@@ -247,17 +249,18 @@
 </template>
 
 <script>
-  import {mapState} from "vuex";
-  import Collector from "../models/collector.js";
-  import Catalogue from "../models/catalogue";
-  import metadataHelper from "../helpers/metadataHelper.vue";
-  import requiredFieldHelper from "../helpers/requiredFieldHelper.vue";
-  import Collection from "../models/collection";
-  import Project from "../models/project";
-  import Device from "../models/device";
-  import Model from "../models/model";
+import { mapState } from "vuex";
+import Collector from "../models/collector.js";
+import Catalogue from "../models/catalogue";
+import metadataHelper from "../helpers/metadataHelper.vue";
+import requiredFieldHelper from "../helpers/requiredFieldHelper.vue";
+import Collection from "../models/collection";
+import Project from "../models/project";
+import Device from "../models/device";
+import Model from "../models/model";
+import Sex from "../models/sex";
 
-  export default {
+export default {
   props: ["catalogue", "disableFields"],
   components: {
     "metadata-helper": metadataHelper,
@@ -274,7 +277,12 @@
       maxDate: new Date(),
       autocompleteDeviceStatus: false,
       autocompleteCollectorStatus: false,
-      autocompleteModelStatus: false
+      autocompleteModelStatus: false,
+      addProjectText: "Agregar proyecto",
+      projectCreatedMessage: "El proyecto ha sido guardado",
+      creatingProjectMessage: "Creando proyecto...",
+      databaseErrorMessage: "Ha ocurrido un error con la base de datos",
+      modalProject: new Project()
     };
   },
   async mounted() {
@@ -297,7 +305,7 @@
         state.datacard
           .getCollect()
           .getProject()
-          .getValid(),
+          .getNameValid(),
       collectorValid: state =>
         state.datacard
           .getCollect()
@@ -330,6 +338,9 @@
       modelMetadata: state => state.collect.getModel().getName(),
       collectDateMetadata: state => state.collect.getCollectDate()
     }),
+    ...mapState("modal", {
+      saveProjectValue: state => state.saveProjectValue
+    }),
     hasMetadata: function() {
       return this.metadataState.hasMetadata;
     },
@@ -353,8 +364,11 @@
         return this.datacard.getCollect().getProject();
       },
       set: function(newValue) {
-        this.datacard.getCollect().setProject(newValue);
-        this.$store.commit("datacard/setDatacard", this.datacard);
+        if (newValue === "Agregar proyecto") {
+          this.addProject();
+        } else {
+          this.datacard.getCollect().setProject(newValue);
+        }
       }
     },
     selectedCollector: {
@@ -389,9 +403,18 @@
         return device.getName();
       },
       set: async function(newValue) {
-        await this.datacard.getCollect().getModel().setDevice(newValue);
-        let newDevice = this.datacard.getCollect().getModel().getDevice();
-        this.selectedModel = this.datacard.getCollect().getModel().getName();
+        await this.datacard
+          .getCollect()
+          .getModel()
+          .setDevice(newValue);
+        let newDevice = this.datacard
+          .getCollect()
+          .getModel()
+          .getDevice();
+        this.selectedModel = this.datacard
+          .getCollect()
+          .getModel()
+          .getName();
         this.devices = await Device.getAll(newDevice.getName());
         this.models = await Model.getAll(newDevice.getId());
       }
@@ -403,7 +426,6 @@
           this.addShakeEffect("model_select");
         }
         return model.getName();
-
       },
       set: async function(newValue) {
         await this.datacard.getCollect().setModel(newValue);
@@ -439,6 +461,36 @@
         this.selectedDate = this.collectDateMetadata;
         this.selectedHour = this.collectDateMetadata;
       }
+    },
+    async saveProjectValue(newValue) {
+      if (newValue) {
+        await this.$store.dispatch(
+          "loading/setActive",
+          { active: true, message: this.creatingProjectMessage },
+          { root: true }
+        );
+        let newProject = new Project();
+        newProject.setProject(this.modalProject);
+        newProject
+          .save()
+          .then(async () => {
+            await this.$store.dispatch(
+              "loading/setActive",
+              { active: false, message: null },
+              { root: true }
+            );
+            this.openToast(this.projectCreatedMessage);
+            this.projects.push(newProject);
+          })
+          .catch(() => {
+            this.openDialog(this.databaseErrorMessage);
+
+          });
+      }else{
+        this.selectedProject = new Project();
+      }
+      this.modalProject = new Project();
+      this.$store.commit("modal/reset");
     }
   },
   methods: {
@@ -449,6 +501,12 @@
         void element.offsetWidth; // trigger a DOM reflow
         element.classList.add("shake_field");
       }
+    },
+    openToast(message) {
+      this.$buefy.toast.open(message);
+    },
+    openDialog(message) {
+      this.$buefy.dialog.alert(message);
     },
     closeAutocompletes() {
       this.autocompleteDeviceStatus = false;
@@ -466,6 +524,16 @@
     setCollector(event, collector) {
       this.selectedCollector = collector;
       this.autocompleteCollectorStatus = false;
+    },
+    addProject() {
+      this.$store.dispatch("modal/openModal", {
+        title: "Agregar proyecto",
+        fieldText: "Ingresa el nombre del proyecto:",
+        model: this.modalProject,
+        getter: "getName",
+        setter: "setName",
+        getterValid: "getNameValid"
+      });
     }
   }
 };
@@ -516,33 +584,7 @@
 #device_select_field {
   grid-row: 3 / 4;
   grid-column: 2 / 3;
-  // display: flex;
-  // flex-direction: column;
 }
-//
-// #autocomplete_list {
-// height: 200px;
-// overflow: hidden;
-// overflow-y: scroll;
-// z-index: 1;
-// }
-//
-// #autocomplete_list li {
-// padding: 5px;
-// padding-left: 10px;
-// }
-//
-// #autocomplete_list li:hover {
-// background-color: $secondary;
-// cursor: pointer;
-// }
-//
-// #autocomplete_box {
-// position: relative;
-// z-index: 10;
-// box-shadow: 1px 1px 7px 0px rgba(0, 0, 0, 0.35);
-// background-color: white;
-// }
 
 #model_helper {
   grid-row: 3 / 4;
@@ -600,6 +642,14 @@
   margin-right: 3px;
   transition: 0.1s;
   cursor: pointer;
+}
+
+#general_data_form_add_project{
+  display: flex!important;
+  justify-content: center!important;
+  opacity: 0.8!important;
+  font-weight: bold!important;
+  margin-bottom: 5px!important;
 }
 
 .shake_field {

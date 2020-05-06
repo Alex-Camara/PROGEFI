@@ -156,6 +156,7 @@ export default {
   display: flex;
   justify-content: center;
   flex-direction: column;
+  margin-bottom: 50px;
 }
 #catalogues_table_null_catalogues_message {
   text-align: center;

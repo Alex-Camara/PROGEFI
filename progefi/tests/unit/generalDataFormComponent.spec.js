@@ -10,6 +10,7 @@ const flushPromises = require("flush-promises");
 import {Catalogue, testCatalogue1, testCatalogue2} from "./mocks/Catalogue.spec";
 import { Collection, testCollection1 } from "./mocks/Collection.spec";
 import { Project, testProject1 } from "./mocks/Project.spec";
+import { testDatacard1, loadDatacardValues } from "./mocks/Datacard.spec";
 import {
   Device,
   loadDeviceValues,
@@ -39,7 +40,7 @@ import {
 // );
 
 // jest.mock("@/presentation/models/catalogue.js");
-jest.mock("@/presentation/models/collection.js");
+// jest.mock("@/presentation/models/collection.js");
 jest.mock("@/presentation/models/project.js");
 // jest.mock("@/presentation/models/collector.js");
 
@@ -83,7 +84,7 @@ describe("generalDataForm component", () => {
       mocks
     });
     // Catalogue.mockClear();
-    Collection.mockClear();
+    // Collection.mockClear();
     Project.mockClear();
     // Collector.mockClear();
   });
@@ -114,7 +115,7 @@ describe("generalDataForm component", () => {
     wrapper.vm.selectedCatalogue = testCatalogue1;
     await wrapper.vm.$nextTick();
     expect(store.state.datacard.datacard.getCode()).toStrictEqual(
-      "CATA 00010f"
+      "IIB-CATA 00010f"
     );
   });
 
@@ -124,7 +125,7 @@ describe("generalDataForm component", () => {
     wrapper.vm.selectedCatalogue = testCatalogue1;
     await wrapper.vm.$nextTick();
     expect(store.state.datacard.datacard.getCode()).toStrictEqual(
-      "CATA 00101f"
+      "IIB-CATA 00101f"
     );
   });
 
@@ -386,5 +387,27 @@ describe("generalDataForm component", () => {
     await wrapper.vm.$nextTick();
     // await flushPromises();
     expect(wrapper.vm.datacard.getCollect().getModel().getDevice()).toStrictEqual(testDevice1);
+  });
+
+  it("sets values according to dacatacard draft", async () => {
+    wrapper = shallowMount(generalDataForm, {
+      localVue,
+      mocks,
+      propsData:{
+        disableFields: true
+      }
+    });
+    await loadModelValues();
+    await loadDatacardValues();
+
+    store.state.datacard.datacard = testDatacard1;
+    wrapper.vm.$forceUpdate();
+    await wrapper.vm.$nextTick();
+    await flushPromises();
+
+    expect(wrapper.vm.selectedCatalogue.id).toEqual(testCatalogue1.id);
+    expect(wrapper.vm.selectedCollector).toEqual(testCollector1.name);
+    expect(wrapper.vm.selectedProject.id).toEqual(testProject1.id);
+    expect(wrapper.vm.selectedModel).toEqual(testModel1.name);
   });
 });

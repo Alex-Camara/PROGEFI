@@ -1,18 +1,18 @@
 <template>
   <div id="templates_table_container">
-    <div id="templates_table_null_templates_message" v-if="templateState.templates.length == 0">
-      <p class="is-size-5">Aún no hay plantillas...</p>
+    <div id="templates_table_null_templates_message" v-if="templates.length == 0">
+      <p class="is-size-5">{{nullTemplatesMessage}}</p>
     </div>
 
     <div id="templates_table_table_container">
       <div
         id="templates_table_container_elements"
-        v-for="template in templateState.templates"
+        v-for="template in templates"
         :key="template.getId()"
-        @click="setSelected(template)"
+        @click="showTemplate(template)"
       >
         <div>
-          <img :src="template.getSamplePath()" />
+          <img id="templates_table_container_sample_image" :src="template.getSamplePath()" />
         </div>
         <div id="templates_table_element_title">{{template.getName()}}</div>
       </div>
@@ -21,37 +21,21 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import Template from "../models/template";
 export default {
   data() {
     return {
-      selectedTemplate: null,
-      loading: false
+      templates: [],
+      loading: false,
+      nullTemplatesMessage: "Aún no hay plantillas..."
     };
   },
-  mounted() {
-    this.$store.dispatch("template/getTemplates");
-  },
-  computed: {
-    ...mapState("template", {
-      templateState: state => state
-    })
+  async mounted() {
+    this.templates = await Template.getAll();
   },
   methods: {
-    setSelected(template) {
-        this.selectedTemplate = template
-    },
-    showTemplate() {},
-    // Usado para obtener la clase css de la fila que invoca al método
-    getRowClass(row, index) {
-      // debugger;
-      if (this.selectedTemplate != null) {
-        if (this.selectedTemplate.getId() == row.getId()) {
-          return "selected";
-        }
-        return "not-selected";
-      }
-      return "not-selected";
+    showTemplate(template) {
+      this.$emit("showTemplate", template);
     }
   }
 };
@@ -61,8 +45,11 @@ export default {
 @import "../style/style.scss";
 #templates_table_container {
   display: flex;
+  margin: auto;
   justify-content: center;
   flex-direction: column;
+  width: 1000px;
+  margin-bottom: 100px;
 }
 
 #templates_table_null_templates_message {
@@ -71,7 +58,8 @@ export default {
 
 #templates_table_table_container {
   display: flex;
-  justify-content: center;
+  flex-wrap: wrap;
+  justify-content: flex-start;
 }
 
 #templates_table_container_elements {
@@ -91,7 +79,26 @@ export default {
   background-color: $secondary;
 }
 
+#templates_table_container_sample_image{
+  transition: 0.2s;
+  opacity: 1;
+}
+
+#templates_table_container_elements:hover #templates_table_container_sample_image{
+  transition: 0.2s;
+  opacity: 0.2;
+}
+
+#templates_table_container_elements:hover #templates_table_element_title{
+  transition: 0.2s;
+  /*padding-bottom: 100px;*/
+  /*font-size: 20px;*/
+  transform: scale(1.5);
+}
+
 #templates_table_element_title {
+  transition: 0.2s;
+  font-size: 18px;
   justify-self: end;
   align-self: center;
   font-weight: bold;

@@ -1,4 +1,6 @@
 "use strict";
+import Validator from "../validators/validator";
+
 const { ipcRenderer } = require("electron");
 
 class LifeStage {
@@ -6,22 +8,50 @@ class LifeStage {
     this.id = null;
     this.name = null;
     this.iconPath = null;
-    this.valid = {};
-    this.valid.isValid = false;
-    this.valid.message = "Campo requerido";
+    this.nameValid = {};
+    this.nameValid.isValid = false;
+    this.nameValid.message = "Campo requerido";
   }
   setLifeStage(lifeStage) {
     this.id = lifeStage.id;
     this.name = lifeStage.name;
     this.iconPath = lifeStage.iconPath;
-    this.valid = { isValid: true, message: null };
+    this.nameValid = { isValid: true, message: null };
   }
   setName(name) {
-    this.name = name;
+    return new Promise(resolve => {
+      var validator = new Validator();
+      let regex = "^[a-zA-Z \\u00C0-\\u00FF]*$";
+      validator
+        .testValidationOne(name, 2, 30, true, regex)
+        .then(() => {
+          this.name = name;
+          this.nameValid = { isValid: true, message: null };
+          resolve();
+        })
+        .catch(error => {
+          if (error === "Campo requerido") {
+            this.name = name;
+            this.nameValid = { isValid: false, message: error };
+            resolve();
+          } else if (error === "Longitud mínima inválida") {
+            this.name = name;
+            // debugger;
+            this.nameValid = { isValid: false, message: error };
+            resolve();
+          } else if (this.nameValid.isValid) {
+            this.nameValid = { isValid: true, message: "temporary error" };
+            resolve();
+          } else {
+            this.nameValid = { isValid: false, message: error };
+            resolve();
+          }
+        });
+    });
   }
-  setValid(valid) {
-    this.valid.isValid = valid.isValid;
-    this.valid.message = valid.message;
+  setNameValid(valid) {
+    this.nameValid.isValid = valid.isValid;
+    this.nameValid.message = valid.message;
   }
   getId() {
     return this.id;
@@ -32,11 +62,11 @@ class LifeStage {
   getIconPath() {
     return this.iconPath;
   }
-  isValid() {
-    return this.valid.isValid;
+  isNameValid() {
+    return this.nameValid.isValid;
   }
-  getValid() {
-    return this.valid;
+  getNameValid() {
+    return this.nameValid;
   }
   static getAll() {
     return new Promise(resolve => {

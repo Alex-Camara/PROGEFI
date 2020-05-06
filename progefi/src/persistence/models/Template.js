@@ -11,17 +11,8 @@ class Template extends Model {
     }
 
     static get relationMappings () {
-        const Layout = require('./Layout');
         const Tag = require('./Tag');
           return {
-            layout: {
-              relation: Model.HasManyRelation,
-              modelClass: Layout,
-              join: {
-                from: 'Template.id',
-                to: 'Layout.templateId'
-              }
-            },
             tags: {
                 relation: Model.HasManyRelation,
                 modelClass: Tag,

@@ -4,6 +4,7 @@ exports.up = function (knex) {
         .createTable('Sex', table => {
             table.increments('id').primary();
             table.string('name');
+            table.string('symbol');
             table.string('iconPath');
         })
         .createTable('LifeStage', table => {
