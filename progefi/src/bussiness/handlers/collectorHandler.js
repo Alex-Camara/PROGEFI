@@ -5,8 +5,12 @@ class CollectorHandler {
   constructor() {
     this.collectorDao = new CollectorDao()
   }
-  async getCollectors(selectedCollector, result) {
-    let collectors = await this.collectorDao.getCollectors(selectedCollector)
+  async getCollectors(result) {
+    let collectors = await this.collectorDao.getAll()
+    result(collectors)
+  }
+  async getCollectorsByName(name, result) {
+    let collectors = await this.collectorDao.getAllByName(name)
     result(collectors)
   }
   async getCollector(collectorId) {

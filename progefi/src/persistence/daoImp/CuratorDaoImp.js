@@ -4,10 +4,14 @@ const Curator = require("../models/Curator");
 const Datacard_has_curators = require("../models/Datacard_has_curators");
 
 class CuratorDaoImp {
-  async getCurators(selectedCurator) {
+  async getAll() {
     const curators = await Curator.query()
-      .where("name", "like", "%" + selectedCurator + "%")
-      .limit(10);
+    return curators;
+  }
+  async getAllByName(name) {
+    const curators = await Curator.query()
+        .where("name", "like", "%" + name + "%")
+        .limit(10);
     return curators;
   }
   async getDatacardCurators(datacardId) {

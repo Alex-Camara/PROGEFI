@@ -20,7 +20,7 @@
     </div>
 
     <div id="show_datacard_options_component">
-      <export-button :datacard="datacard" @showImage="setShowImage($event)" @showDatacards="showDatacards()"></export-button>
+      <export-button :datacards="[datacard]" :disabled="false"></export-button>
     </div>
 
     <div id="show_datacard_component">

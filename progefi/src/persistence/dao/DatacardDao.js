@@ -12,6 +12,12 @@ class DatacardDao {
     );
     return datacards;
   }
+  getByCode(catalogueId, code) {
+    let datacards = Promise.resolve(
+        this.datacardDaoImp.getByCode(catalogueId, code)
+    );
+    return datacards;
+  }
   createDatacard(datacard) {
     let createdDatacard = Promise.resolve(
       this.datacardDaoImp.createDatacard(datacard)
@@ -26,6 +32,10 @@ class DatacardDao {
   }
   getAllDatacards() {
     let datacards = Promise.resolve(this.datacardDaoImp.getAllDatacards());
+    return datacards;
+  }
+  getFiltered(searchCriteria){
+    let datacards = Promise.resolve(this.datacardDaoImp.getFiltered(searchCriteria));
     return datacards;
   }
   getSortedDatacards(catalogueId, field, order, limit, offset){

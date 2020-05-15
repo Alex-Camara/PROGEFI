@@ -8,6 +8,7 @@ import loading from './generalStore/loading'
 import addDatacard from './generalStore/addDatacard'
 import helpText from './generalStore/helpText'
 import menu from './generalStore/menu'
+import template from './generalStore/template'
 
 Vue.use(Vuex)
 
@@ -20,7 +21,8 @@ const store = new Vuex.Store({
     loading,
     addDatacard,
     helpText,
-    menu
+    menu,
+    template
   },
   actions: {
     resetStore({ commit }) {

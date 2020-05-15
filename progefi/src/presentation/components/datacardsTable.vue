@@ -5,7 +5,6 @@
       v-if="datacards.length === 0 && !loading"
     >
       <p class="is-size-5">{{ datacardsNullMessage }}</p>
-
     </div>
     <progress
       id="datacards_table_progress"
@@ -41,7 +40,6 @@
                 id="datacards_table_photocollect_thumbnail"
                 :src="props.row.getPhotocollectPath()"
               />
-              <!--              <img :src="getBase64Image(props.row.thumbnail)" />-->
             </div>
           </b-table-column>
           <b-table-column field="code" label="Código" width="30" sortable>
@@ -146,11 +144,17 @@
 import moment from "moment";
 import Datacard from "../models/datacard";
 export default {
-  props: ["selectedCatalogue", "reload"],
+  props: [
+    "selectedCatalogue",
+    "reload",
+    "advancedSearchCriteria",
+    "simpleSearchCriteria"
+  ],
   data() {
     return {
       selectedDatacard: null,
       datacards: [],
+      allDatacards: [],
       loading: false,
       loadingTable: false,
       datacardsNullMessage: "Aún no hay fichas en este catálogo...",
@@ -163,19 +167,84 @@ export default {
     };
   },
   async mounted() {
-    if (this.selectedCatalogue){
-      this.datacardsNullMessage = "Aún no hay fichas en este catálogo..."
-    } else{
-      this.datacardsNullMessage = "Aún no hay fichas registradas en el sistema..."
+    if (this.selectedCatalogue) {
+      this.datacardsNullMessage = "Aún no hay fichas en este catálogo...";
+    } else {
+      this.datacardsNullMessage =
+        "Aún no hay fichas registradas en el sistema...";
     }
     this.orderTable("code", "asc");
     this.offset = 10;
   },
   watch: {
-    reload(newValue){
-      if (newValue){
+    reload(newValue) {
+      if (newValue) {
         this.orderTable("code", "asc");
         this.reload = false;
+      }
+    },
+    async advancedSearchCriteria(newValue) {
+      if (newValue !== null) {
+        this.$emit("loading", true);
+        Datacard.getFiltered(newValue)
+          .then(result => {
+            this.datacards = result;
+            this.$emit("filteredDatacards", this.datacards);
+          })
+          .catch(() => {
+            this.openDialog("Ha ocurrido un error con la base de datos");
+          })
+          .finally(() => {
+            this.$emit("loading", false);
+          });
+        if (this.datacards.length === 0) {
+          this.datacardsNullMessage = "No se encontraron resultados...";
+          this.openToast("No se encontraron resultados...");
+          this.$emit("loading", false);
+        }
+      } else {
+        this.datacards = [];
+        for (let i = 0; i < this.allDatacards.length; i++) {
+          this.datacards.push(this.allDatacards[i]);
+        }
+        this.$emit("filteredDatacards", []);
+      }
+    },
+    async simpleSearchCriteria(newValue) {
+      if (newValue !== null || newValue !== "") {
+        this.$emit("loading", true);
+        if (this.selectedCatalogue) {
+          Datacard.getByCode(this.selectedCatalogue.getId(), newValue)
+            .then(result => {
+              this.datacards = result;
+            })
+            .catch(() => {
+              this.openDialog("Ha ocurrido un error con la base de datos");
+            })
+            .finally(() => {
+              this.$emit("loading", false);
+            });
+        } else {
+          Datacard.getByCode(null, newValue)
+            .then(result => {
+              this.datacards = result;
+            })
+            .catch(() => {
+              this.openDialog("Ha ocurrido un error con la base de datos");
+            })
+            .finally(() => {
+              this.$emit("loading", false);
+            });
+        }
+        if (this.datacards.length === 0) {
+          this.datacardsNullMessage = "No se encontraron resultados...";
+          this.$emit("loading", false);
+        }
+      } else {
+        this.datacards = [];
+        for (let i = 0; i < this.allDatacards.length; i++) {
+          this.datacards.push(this.allDatacards[i]);
+        }
       }
     }
   },
@@ -192,6 +261,9 @@ export default {
     async orderTable(field, order) {
       let offset = 0;
       this.datacards = await this.getSortedDatacards(field, order, offset);
+      for (let i = 0; i < this.datacards.length; i++) {
+        this.allDatacards.push(this.datacards[i]);
+      }
     },
     getSortedDatacards(field, order, offset) {
       return new Promise((resolve, reject) => {
@@ -204,7 +276,7 @@ export default {
             field,
             order,
             this.currentLength,
-                  offset
+            offset
           )
             .then(result => {
               this.loadingTable = false;
@@ -216,13 +288,7 @@ export default {
               reject();
             });
         } else {
-          Datacard.getSorted(
-            null,
-            field,
-            order,
-            this.currentLength,
-                  offset
-          )
+          Datacard.getSorted(null, field, order, this.currentLength, offset)
             .then(result => {
               this.loadingTable = false;
               resolve(result);
@@ -241,7 +307,11 @@ export default {
     },
     async loadMoreDatacards() {
       let newDatacards = [];
-      newDatacards = await this.getSortedDatacards(this.sortField, this.sortOrder, this.offset);
+      newDatacards = await this.getSortedDatacards(
+        this.sortField,
+        this.sortOrder,
+        this.offset
+      );
       await this.datacards.push(newDatacards[0]);
       this.offset += 10;
       this.currentLength = this.datacards.length;
@@ -266,6 +336,9 @@ export default {
     },
     setHelpText(message, active) {
       this.$store.dispatch("helpText/setActive", { active, message });
+    },
+    openToast(message) {
+      this.$buefy.toast.open(message);
     },
     // Usado para obtener la clase css de la fila que invoca al método
     getRowClass(row) {

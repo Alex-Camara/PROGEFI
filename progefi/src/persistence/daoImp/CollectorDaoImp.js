@@ -6,10 +6,16 @@ const Collector = require("../models/Collector");
 const Datacard = require("../models/Datacard");
 
 class CollectorDaoImp {
-  async getCollectors(selectedCollector) {
-    return Collector.query()
-      .where("name", "like", "%" + selectedCollector + "%")
-      .limit(10);
+  async getAll() {
+    const collectors = await Collector.query()
+    return collectors;
+  }
+  async getAllByName(name) {
+    const collectors = await Collector.query()
+        .where("name", "like", "%" + name + "%")
+        .limit(10);
+
+    return collectors;
   }
   async getCollector(collectorId) {
     const collector = await Collector.query().where("id", collectorId);

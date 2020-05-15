@@ -26,7 +26,7 @@ class VegetationType {
   setName(name) {
     return new Promise(resolve => {
       var validator = new Validator();
-      let regex = "^[a-zA-Z \\u00C0-\\u00FF]*$";
+      let regex = "^[a-zA-Z \\u00C0-\\u00FF -]*$";
       validator
         .testValidationOne(name, 2, 30, true, regex)
         .then(() => {

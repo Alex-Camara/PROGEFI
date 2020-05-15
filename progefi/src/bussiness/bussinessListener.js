@@ -74,6 +74,22 @@ function listen() {
     }
   );
 
+  ipcMain.on("getFilteredDatacards", (event, searchCriteria) => {
+    datacardHandler.getFilteredDatacards(searchCriteria, async function(
+      datacards
+    ) {
+      event.reply("filteredDatacards", datacards);
+    });
+  });
+
+  ipcMain.on("getDatacardsByCode", (event, catalogueId, code) => {
+    datacardHandler.getDatacardsByCode(catalogueId, code, function(datacards) {
+      console.log("en bussiness");
+      console.log(datacards);
+      event.reply("datacardsByCode", datacards);
+    });
+  });
+
   ipcMain.on("getTemplates", event => {
     templateHandler.getTemplateNames(function(templates) {
       event.reply("templates", templates);
@@ -116,9 +132,15 @@ function listen() {
     });
   });
 
-  ipcMain.on("getCollectors", (event, selectedCollector) => {
-    collectorHandler.getCollectors(selectedCollector, function(collectors) {
+  ipcMain.on("getCollectors", event => {
+    collectorHandler.getCollectors(function(collectors) {
       event.reply("collectors", collectors);
+    });
+  });
+
+  ipcMain.on("getCollectorsByName", (event, name) => {
+    collectorHandler.getCollectorsByName(name, function(collectors) {
+      event.reply("collectorsByName", collectors);
     });
   });
 
@@ -155,9 +177,15 @@ function listen() {
     }
   );
 
-  ipcMain.on("getCurators", (event, selectedCurator) => {
-    curatorHandler.getCurators(selectedCurator, function(curators) {
+  ipcMain.on("getCurators", event => {
+    curatorHandler.getCurators(function(curators) {
       event.reply("curators", curators);
+    });
+  });
+
+  ipcMain.on("getCuratorsByName", (event, selectedCurator) => {
+    curatorHandler.getCuratorsByName(selectedCurator, function(curators) {
+      event.reply("curatorsByName", curators);
     });
   });
 
@@ -253,6 +281,18 @@ function listen() {
     });
   });
 
+  ipcMain.on("createCollection", (event, collection) => {
+    collectionHandler.save(collection, function(createdCollection) {
+      event.reply("collectionCreated", createdCollection);
+    });
+  });
+
+  ipcMain.on("updateCollection", (event, collection) => {
+    collectionHandler.update(collection, function(updatedCollection) {
+      event.reply("collectionUpdated", updatedCollection);
+    });
+  });
+
   ipcMain.on("deleteCatalogue", (event, catalogueId) => {
     catalogueHandler.deleteCatalogue(catalogueId, function(deletedCatalogue) {
       event.reply("catalogueDeleted", deletedCatalogue);
@@ -294,18 +334,19 @@ function listen() {
   ipcMain.on(
     "exportDatacards",
     async (event, datacards, format, destinationDirectory) => {
-      let exportedFile = await datacardHandler.export(datacards, format, destinationDirectory);
+      let exportedFile = await datacardHandler.export(
+        datacards,
+        format,
+        destinationDirectory
+      );
       event.reply("datacardsExported", exportedFile);
     }
   );
-  ipcMain.on(
-      "decodeDatacard",
-      async (event, base64) => {
-        let decodedDatacard = await datacardHandler.decode(base64);
-        console.info(decodedDatacard)
-          event.reply("datacardDecoded", decodedDatacard);
-      }
-  );
+  ipcMain.on("decodeDatacard", async (event, base64) => {
+    let decodedDatacard = await datacardHandler.decode(base64);
+    console.info(decodedDatacard);
+    event.reply("datacardDecoded", decodedDatacard);
+  });
 }
 
 export default {

@@ -5,8 +5,12 @@ class CuratorHandler {
     constructor() {
         this.curatorDao = new CuratorDao()
     }
-    async getCurators(selectedCurator, result) {
-        let curators = await this.curatorDao.getCurators(selectedCurator);
+    async getCurators(result) {
+        let curators = await this.curatorDao.getAll();
+        result(curators);
+    }
+    async getCuratorsByName(selectedCurator, result) {
+        let curators = await this.curatorDao.getAllByName(selectedCurator);
         result(curators);
     }
     async getDatacardCurators(datacardId) {

@@ -1,7 +1,6 @@
 "use strict";
 
 import "regenerator-runtime/runtime";
-import * as bmp from "@vingle/bmp-js";
 import Jimp from "jimp";
 const path = require("path");
 const fs = require("fs");
@@ -141,7 +140,7 @@ class DatacardHandler {
     var bitmap = new Buffer(base64str, "base64");
     // write buffer to file
     try {
-      fs.writeFileSync(file, bitmap, {encoding: "base64"});
+      fs.writeFileSync(file, bitmap, { encoding: "base64" });
       console.log("******** File created from base64 encoded string ********");
     } catch (error) {
       console.log("ERROR EN GUARDAR LA DATACARD: " + error);
@@ -203,6 +202,17 @@ class DatacardHandler {
       return error;
     }
   }
+  async getDatacardsByCode(catalogueId, code, result) {
+    // try {
+      let datacards = await this.datacardDao.getByCode(
+          catalogueId,
+          code
+      );
+      result(datacards);
+    // } catch (error) {
+    //   result(error);
+    // }
+  }
   async getAllDatacards(result) {
     let datacards = await this.datacardDao.getAllDatacards();
     // for (let i = 0; i < datacards.length; i++) {
@@ -218,6 +228,13 @@ class DatacardHandler {
       limit,
       offset
     );
+    // for (let i = 0; i < datacards.length; i++) {
+    //   datacards[i].thumbnail = await this.getThumbnails(datacards[i])
+    // }
+    result(datacards);
+  }
+  async getFilteredDatacards(searchCritera, result) {
+    let datacards = await this.datacardDao.getFiltered(searchCritera);
     // for (let i = 0; i < datacards.length; i++) {
     //   datacards[i].thumbnail = await this.getThumbnails(datacards[i])
     // }
@@ -449,20 +466,19 @@ class DatacardHandler {
       resolve();
     });
   }
-  async decode(base64){
+  async decode(base64) {
     let self = this;
     return new Promise(async function(resolve, reject) {
-      const steggy = require('steggy');
-      base64 = base64.split(';base64,').pop();
+      const steggy = require("steggy");
+      base64 = base64.split(";base64,").pop();
       // var bitmap = new Buffer(base64, "base64");
-      var tempPath =
-          path.resolve(".") + "/src/bussiness/temp.png";
+      var tempPath = path.resolve(".") + "/src/bussiness/temp.png";
       self.base64Decode(base64, tempPath);
-      const image = fs.readFileSync(tempPath)
+      const image = fs.readFileSync(tempPath);
 
-      try{
-      let revealed = steggy.reveal()(image, "utf8");
-      fs.unlinkSync(tempPath);
+      try {
+        let revealed = steggy.reveal()(image, "utf8");
+        fs.unlinkSync(tempPath);
         resolve(revealed);
       } catch (e) {
         fs.unlinkSync(tempPath);
@@ -470,25 +486,43 @@ class DatacardHandler {
       }
     });
   }
-  async generatePNGFile(datacards, destinationDirectory, sharp){
-    const steggy = require('steggy');
+  async generatePNGFile(datacards, destinationDirectory) {
+    const steggy = require("steggy");
 
-    for (let i = 0; i < datacards.length; i++) {
-      let destinationFileName =
+    try {
+      for (let i = 0; i < datacards.length; i++) {
+        console.info(datacards[i])
+        let destinationFileName =
           destinationDirectory + "/" + datacards[i].code + ".png";
-      let original = fs.readFileSync(datacards[i].datacardPath + "/datacard.png");
-      let code = datacards[i].code;
-      let collector = datacards[i].collect.collector.name;
-      let creator = "";
-      let curator = datacards[i].curators[i].name;
-      let collectDate = datacards[i].collect.collectDate;
-      let creationDate = datacards[i].creationDate;
+        let original = fs.readFileSync(
+          datacards[i].datacardPath + "/datacard.png"
+        );
+        let code = datacards[i].code;
+        let collector = datacards[i].collect.collector.name;
+        let creator = "";
+        let curator = datacards[i].curators[0].name;
+        let collectDate = datacards[i].collect.collectDate;
+        let creationDate = datacards[i].creationDate;
 
-      let message = code + "," + collector + "," + creator + "," + curator + "," + collectDate + "," + creationDate;
-      // let message = 'IIB-UV MAM0001f, Gerardo Contreras Vega, Christian Alejandro Delfín Alfonso, Christian Alejandro Delfín Alfonso, 27/12/19 17:45:00, 27/12/19 17:45:00';
+        let message =
+          code +
+          "," +
+          collector +
+          "," +
+          creator +
+          "," +
+          curator +
+          "," +
+          collectDate +
+          "," +
+          creationDate;
+        // let message = 'IIB-UV MAM0001f, Gerardo Contreras Vega, Christian Alejandro Delfín Alfonso, Christian Alejandro Delfín Alfonso, 27/12/19 17:45:00, 27/12/19 17:45:00';
 
-      let concealed = await steggy.conceal()(original, message);
-      fs.writeFileSync(destinationFileName, concealed)
+        let concealed = await steggy.conceal()(original, message);
+        fs.writeFileSync(destinationFileName, concealed);
+      }
+    } catch (e) {
+      console.info(e);
     }
   }
   async export(datacards, format, destinationDirectory) {

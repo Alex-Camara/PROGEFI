@@ -12,6 +12,7 @@ import UIShowTemplates from '../views/UIShowTemplates'
 import UICreateTemplate from '../views/UICreateTemplate'
 import UIShowTemplate from '../views/UIShowTemplate'
 import UITrackDatacard from '../views/UITrackDatacard'
+import UICreateCollection from '../views/UICreateCollection'
 Vue.use(Router)
 
 export default new Router({
@@ -34,6 +35,12 @@ export default new Router({
     component: UIShowCollections,
     props: true
   },
+    {
+      path: '/UICreateCollection',
+      name: 'UICreateCollection',
+      component: UICreateCollection,
+      props: true
+    },
   {
     path: '/UICreateDataCard',
     name: 'UICreateDataCard',

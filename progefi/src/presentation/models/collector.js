@@ -128,11 +128,25 @@ class Collector {
       }
     });
   }
-  static getAll(collector) {
+  static getAll() {
     return new Promise(resolve => {
-      if (collector !== "") {
-        ipcRenderer.send("getCollectors", collector);
-        ipcRenderer.once("collectors", (event, receivedCollectors) => {
+      ipcRenderer.send("getCollectors");
+      ipcRenderer.once("collectors", (event, receivedCollectors) => {
+        let collectors = [];
+        for (let i = 0; i < receivedCollectors.length; i++) {
+          let newCollector = new Collector();
+          newCollector.setCollector(receivedCollectors[i]);
+          collectors.push(newCollector);
+        }
+        resolve(collectors);
+      });
+    });
+  }
+  static getAllByName(name) {
+    return new Promise(resolve => {
+      if (name !== "") {
+        ipcRenderer.send("getCollectorsByName", name);
+        ipcRenderer.once("collectorsByName", (event, receivedCollectors) => {
           let collectors = [];
           for (let i = 0; i < receivedCollectors.length; i++) {
             let newCollector = new Collector();
@@ -156,8 +170,8 @@ class Collector {
           await newCollector.setCollector(receivedCollector[0]);
           // debugger
           resolve(newCollector);
-        } else{
-          resolve([])
+        } else {
+          resolve([]);
         }
       });
     });

@@ -45,6 +45,9 @@ class Curator {
         });
     });
   }
+  setId(id){
+    this.id = id;
+  }
   setValid(valid) {
     this.valid.isValid = valid.isValid;
     this.valid.message = valid.message;
@@ -70,7 +73,7 @@ class Curator {
   getErrorMessage() {
     return this.valid.message;
   }
-  save(){
+  save() {
     return new Promise(resolve => {
       if (this.id != null) {
         resolve();
@@ -83,11 +86,11 @@ class Curator {
       }
     });
   }
-  static getAll(curator) {
+  static getAllByName(name) {
     return new Promise(async resolve => {
-      if (curator !== "") {
-        ipcRenderer.send("getCurators", curator);
-        ipcRenderer.once("curators", (event, receivedCurators) => {
+      if (name !== "") {
+        ipcRenderer.send("getCuratorsByName", name);
+        ipcRenderer.once("curatorsByName", (event, receivedCurators) => {
           let curators = [];
           for (let i = 0; i < receivedCurators.length; i++) {
             let newCurator = new Curator();
@@ -99,6 +102,20 @@ class Curator {
       } else {
         resolve([]);
       }
+    });
+  }
+  static getAll() {
+    return new Promise(async resolve => {
+      ipcRenderer.send("getCurators");
+      ipcRenderer.once("curators", (event, receivedCurators) => {
+        let curators = [];
+        for (let i = 0; i < receivedCurators.length; i++) {
+          let newCurator = new Curator();
+          newCurator.setCurator(receivedCurators[i]);
+          curators.push(newCurator);
+        }
+        resolve(curators);
+      });
     });
   }
 }

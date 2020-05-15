@@ -43,7 +43,6 @@ export default {
       this.$store.commit("menu/disableAllExceptSelected", "Colección");
     } else {
       this.$store.commit("menu/setItemByName", "Fichas de fotocolecta");
-      // this.$store.commit("menu/setItemByName", "Plantillas");
     }
   }
 };

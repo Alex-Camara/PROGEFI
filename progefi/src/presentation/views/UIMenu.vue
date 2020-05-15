@@ -24,7 +24,6 @@
 
 <script>
 import { mapState } from "vuex";
-import Collection from "../models/collection";
 export default {
   computed: {
     ...mapState("menu", {
@@ -32,7 +31,6 @@ export default {
     })
   },
   async created() {
-      this.$store.commit("menu/setItemByName", "Fichas de fotocolecta");
   },
   methods: {
     setSelection(menuItem) {

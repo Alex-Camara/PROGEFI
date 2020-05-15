@@ -74,7 +74,7 @@ const curator = {
   },
   actions: {
     async getCurators({ commit }, curator) {
-      commit("setCurators", await Curator.getAll(curator));
+      commit("setCurators", await Curator.getAllByName(curator));
 
     },
     existingCurator({ state }, curator) {

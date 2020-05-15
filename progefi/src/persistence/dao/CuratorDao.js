@@ -6,8 +6,12 @@ class CuratorDao {
     constructor() {
         this.curatorDaoImp = new CuratorDaoImp();
     }
-    getCurators(selectedCurator) {
-        let curators = Promise.resolve(this.curatorDaoImp.getCurators(selectedCurator));
+    getAll() {
+        let curators = Promise.resolve(this.curatorDaoImp.getAll());
+        return curators;
+    }
+    getAllByName(selectedCurator) {
+        let curators = Promise.resolve(this.curatorDaoImp.getAllByName(selectedCurator));
         return curators;
     }
     getDatacardCurators(datacardId){

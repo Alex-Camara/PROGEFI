@@ -7,6 +7,7 @@
             id="show_datacard_export_button"
             class="button"
             slot="trigger"
+            :disabled="disabled"
           >
             <img
               id="show_datacard_options_export_icon"
@@ -73,7 +74,7 @@
 <script>
 import Datacard from "../models/datacard";
 export default {
-  props: ["datacard"],
+  props: ["datacards", "disabled"],
   data() {
     return {
       exportText: "Exportar",
@@ -105,7 +106,7 @@ export default {
           { root: true }
         );
         await Datacard.export(
-          [this.datacard],
+          this.datacards,
           this.selectedExportationFormat,
           destinationDirectory
         );

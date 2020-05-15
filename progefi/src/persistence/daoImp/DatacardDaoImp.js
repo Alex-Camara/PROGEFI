@@ -1,8 +1,10 @@
 "use strict";
 
 const Collect = require("../models/Collect");
+const VegetationType = require("../models/VegetationType");
 const Species = require("../models/Species");
 const Specimen = require("../models/Specimen");
+const ClimateType = require("../models/ClimateType");
 const Datacard = require("../models/Datacard");
 const Datacard_has_curators = require("../models/Datacard_has_curators");
 
@@ -17,6 +19,31 @@ class DatacardDaoImp {
       .catch(error => {
         return error;
       });
+
+    return datacards;
+  }
+  async getByCode(catalogueId, code) {
+    let datacards = [];
+    if (catalogueId !== null) {
+      datacards = await Datacard.query()
+        .withGraphFetched(
+          "[collect.[collector, project, model.device, climateType, vegetationType.vegetalFormation, specimen.[species, sex, lifeStage]], catalogue.collection, curators, template.[tags]]"
+        )
+        .where("catalogueId", catalogueId)
+        .where("code", "like", "%" + code + "%")
+        .catch(error => {
+          return error;
+        });
+    } else {
+      datacards = await Datacard.query()
+        .withGraphFetched(
+          "[collect.[collector, project, model.device, climateType, vegetationType.vegetalFormation, specimen.[species, sex, lifeStage]], catalogue.collection, curators, template.[tags]]"
+        )
+        .where("code", "like", "%" + code + "%")
+        .catch(error => {
+          return error;
+        });
+    }
 
     return datacards;
   }
@@ -113,6 +140,198 @@ class DatacardDaoImp {
         });
     }
 
+    return datacards;
+  }
+  async getFiltered(searchCriteria) {
+    let datacards = await Datacard.query()
+      .withGraphFetched(
+        "[collect.[collector, project, model.device, climateType, vegetationType.vegetalFormation, specimen.[species, sex, lifeStage]], catalogue.collection, curators, template.[tags]]"
+      );
+    let filterValue = null;
+    let datacardFilter = searchCriteria.datacard;
+    let creationDates = searchCriteria.creationDates;
+    let collectDates = searchCriteria.collectDates;
+    filterValue = datacardFilter.catalogue.id;
+    if (filterValue !== null) {
+      console.log("entró a catalogo");
+      let idsToDelete = [];
+      for (let i = 0; i < datacards.length; i++) {
+        let actualValue = datacards[i].catalogue.id;
+        if (actualValue !== filterValue) {
+          idsToDelete.push(datacards[i].id);
+        }
+      }
+      datacards = datacards.filter(item => !idsToDelete.includes(item.id));
+    }
+
+    filterValue = datacardFilter.collect.project.id;
+    if (filterValue !== null) {
+      console.log("entró a proyecto");
+      let idsToDelete = [];
+      for (let i = 0; i < datacards.length; i++) {
+        let actualValue = datacards[i].collect.project.id;
+        if (actualValue !== filterValue) {
+          idsToDelete.push(datacards[i].id);
+        }
+      }
+      datacards = datacards.filter(item => !idsToDelete.includes(item.id));
+    }
+
+    filterValue = datacardFilter.collect.collector.id;
+    if (filterValue !== null) {
+      console.log("entró a colector");
+      let idsToDelete = [];
+      for (let i = 0; i < datacards.length; i++) {
+        let actualValue = datacards[i].collect.collector.id;
+        if (actualValue !== filterValue) {
+          idsToDelete.push(datacards[i].id);
+        }
+      }
+      datacards = datacards.filter(item => !idsToDelete.includes(item.id));
+    }
+
+    filterValue = datacardFilter.curators[0];
+    if (filterValue !== null && filterValue !== undefined) {
+      console.log("entró a curador");
+      let idsToDelete = [];
+      for (let i = 0; i < datacards.length; i++) {
+        let curator = datacards[i].curators.filter(
+          curator => curator.id === filterValue.id
+        );
+        if (curator.length === 0) {
+          idsToDelete.push(datacards[i].id);
+        }
+      }
+      datacards = datacards.filter(item => !idsToDelete.includes(item.id));
+    }
+    filterValue = null;
+
+    filterValue = datacardFilter.collect.country;
+    if (filterValue !== null) {
+      console.log("entró a pais");
+      let idsToDelete = [];
+      for (let i = 0; i < datacards.length; i++) {
+        let actualValue = datacards[i].collect.country;
+        if (actualValue !== filterValue) {
+          idsToDelete.push(datacards[i].id);
+        }
+      }
+      datacards = datacards.filter(item => !idsToDelete.includes(item.id));
+    }
+
+    filterValue = datacardFilter.collect.countryState;
+    if (filterValue !== null) {
+      console.log("entró a estado");
+      let idsToDelete = [];
+      for (let i = 0; i < datacards.length; i++) {
+        let actualValue = datacards[i].collect.countryState;
+        if (actualValue !== filterValue) {
+          idsToDelete.push(datacards[i].id);
+        }
+      }
+      datacards = datacards.filter(item => !idsToDelete.includes(item.id));
+    }
+
+    filterValue = datacardFilter.collect.municipality;
+    if (filterValue !== null) {
+      console.log("entró a mucnicpio");
+      let idsToDelete = [];
+      for (let i = 0; i < datacards.length; i++) {
+        let actualValue = datacards[i].collect.municipality;
+        if (actualValue !== filterValue) {
+          idsToDelete.push(datacards[i].id);
+        }
+      }
+      datacards = datacards.filter(item => !idsToDelete.includes(item.id));
+    }
+
+    filterValue = datacardFilter.collect.locality;
+    if (filterValue !== null) {
+      console.log("entró a licalidad");
+      let idsToDelete = [];
+      for (let i = 0; i < datacards.length; i++) {
+        let actualValue = datacards[i].collect.locality;
+        if (actualValue !== filterValue) {
+          idsToDelete.push(datacards[i].id);
+        }
+      }
+      datacards = datacards.filter(item => !idsToDelete.includes(item.id));
+    }
+
+    filterValue = datacardFilter.collect.climateType.code;
+    if (filterValue !== null && filterValue !== "") {
+      console.log("entró a clima");
+      let idsToDelete = [];
+      for (let i = 0; i < datacards.length; i++) {
+        let actualValue1 = datacards[i].collect.climateType.code;
+        let actualValue2 = datacards[i].collect.customClimateTypeCode;
+        if (!(actualValue1 === filterValue || actualValue2 === filterValue)) {
+          idsToDelete.push(datacards[i].id);
+        }
+      }
+      datacards = datacards.filter(item => !idsToDelete.includes(item.id));
+    }
+
+    filterValue = datacardFilter.collect.vegetationType.name;
+    if (filterValue !== null && filterValue !== "") {
+      let idsToDelete = [];
+      for (let i = 0; i < datacards.length; i++) {
+        let actualValue1 = datacards[i].collect.vegetationType.name;
+        let actualValue2 = datacards[i].collect.customVegetationTypeName;
+        if (!(actualValue1 === filterValue || actualValue2 === filterValue)) {
+          idsToDelete.push(datacards[i].id);
+        }
+      }
+      datacards = datacards.filter(item => !idsToDelete.includes(item.id));
+    }
+
+    filterValue = datacardFilter.collect.specimen.species.scientificName;
+    if (filterValue !== null && filterValue !== "") {
+      let idsToDelete = [];
+      for (let i = 0; i < datacards.length; i++) {
+        let actualValue = datacards[i].collect.specimen.species.scientificName;
+        if (actualValue !== filterValue) {
+          idsToDelete.push(datacards[i].id);
+        }
+      }
+      datacards = datacards.filter(item => !idsToDelete.includes(item.id));
+    }
+
+    if (creationDates !== null && creationDates !== undefined) {
+      let idsToDelete = [];
+      for (let i = 0; i < datacards.length; i++) {
+        let actualValue = datacards[i].creationDate;
+        let creationDate = new Date(actualValue);
+        let initialDate = new Date(creationDates[0]);
+
+        let endingDate = new Date(creationDates[1]);
+        endingDate.setDate(endingDate.getDate() + 1)
+
+        let inRange = creationDate >= initialDate && creationDate < endingDate;
+        if (!inRange) {
+          idsToDelete.push(datacards[i].id);
+        }
+      }
+      datacards = datacards.filter(item => !idsToDelete.includes(item.id));
+    }
+
+    if (collectDates !== null && collectDates !== undefined) {
+      let idsToDelete = [];
+      for (let i = 0; i < datacards.length; i++) {
+        let actualValue = datacards[i].creationDate;
+        let creationDate = new Date(actualValue);
+        let initialDate = new Date(creationDates[0]);
+
+        let endingDate = new Date(creationDates[1]);
+        endingDate.setDate(endingDate.getDate() + 1)
+
+        let inRange = creationDate >= initialDate && creationDate < endingDate;
+        if (!inRange) {
+          idsToDelete.push(datacards[i].id);
+        }
+      }
+      datacards = datacards.filter(item => !idsToDelete.includes(item.id));
+    }
     return datacards;
   }
   async createDatacard(datacard) {

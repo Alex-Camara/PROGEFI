@@ -6,9 +6,15 @@ class CollectorDao {
   constructor () {
     this.collectorDaoImp = new CollectorDaoImp()
   }
-  getCollectors (selectedCollector) {
+  getAll () {
     let collectors = Promise.resolve(
-      this.collectorDaoImp.getCollectors(selectedCollector)
+      this.collectorDaoImp.getAll()
+    )
+    return collectors
+  }
+  getAllByName (name) {
+    let collectors = Promise.resolve(
+        this.collectorDaoImp.getAllByName(name)
     )
     return collectors
   }

@@ -1,8 +1,13 @@
 <template>
   <!-- --------showDataCards Component----- -->
-  <div id="show_datacards_component">
+  <div id="ui_show_datacards_component">
+    <b-loading
+            :is-full-page="true"
+            :active.sync="loading"
+            :can-cancel="false"
+    ></b-loading>
     <!-- --------showDataCards Component Header----- -->
-    <div id="show_datacards_component_title">
+    <div id="ui_show_datacards_component_title">
       <p
         class="component_title_return"
         @click="returnToCollections()"
@@ -24,23 +29,33 @@
         src="../assets/bar.png"
       />
       <p class="component_title">{{ title }}</p>
-      <!-- <img class="component_title_separator" v-if="selectedCatalogue" src="../assets/bar.png" /> -->
-      <!--      <p class="component_title" v-if="!selectedCatalogue">{{ title }}</p>-->
     </div>
 
-    <div id="show_datacards_component_top_controls">
-      <search-datacards
-        @searchDatacards="searchDatacards($event)"
-      ></search-datacards>
-    </div>
+    <simple-search
+      id="ui_show_datacards_component_top_controls"
+      @showAdvancedSearch="setShowAdvancedSearch($event)"
+      @search="simpleSearchDatacards($event)"
+    ></simple-search>
+
+    <advanced-search
+      id="ui_show_datacards_advanced_search"
+      :filtered-datacards="filteredDatacards"
+      :show="showAdvancedSearch"
+      :catalogue="selectedCatalogue"
+      @search="advanceSearchDatacards($event)"
+    ></advanced-search>
 
     <!-- --------showDataCards Component Content----- -->
-    <div id="show_datacards_component_content">
+    <div id="ui_show_datacards_component_content">
       <keep-alive>
         <datacards-table
-          :selectedCatalogue="selectedCatalogue"
+          :selected-catalogue="selectedCatalogue"
           :reload="reload"
+          :advanced-search-criteria="advancedSearchCriteria"
+          :simple-search-criteria="simpleSearchCriteria"
+          @filteredDatacards="setFilteredDatacards($event)"
           @showDatacard="showDatacard($event)"
+          @loading="setLoading"
         ></datacards-table>
       </keep-alive>
       <div
@@ -56,15 +71,16 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import searchDatacards from "../components/searchDatacards.vue";
+import simpleSearch from "../components/simpleSearch.vue";
 import datacardsTable from "../components/datacardsTable.vue";
+import advancedSearch from "../components/advancedSearch";
 export default {
   name: "UIShowDataCards",
   props: ["selectedCatalogue"],
   components: {
-    "search-datacards": searchDatacards,
-    "datacards-table": datacardsTable
+    "simple-search": simpleSearch,
+    "datacards-table": datacardsTable,
+    "advanced-search": advancedSearch
   },
   data() {
     return {
@@ -73,7 +89,12 @@ export default {
       returnToCollectionTitle: "",
       searchString: null,
       helpText: "Agregar una ficha...",
-      reload: true
+      reload: true,
+      advancedSearchCriteria: null,
+      simpleSearchCriteria: null,
+      filteredDatacards: [],
+      showAdvancedSearch: false,
+      loading: false
     };
   },
   beforeRouteUpdate(to, from, next) {
@@ -88,7 +109,6 @@ export default {
 
   mounted() {
     if (this.selectedCatalogue != null) {
-      // debugger;
       this.title = this.selectedCatalogue.getName();
       this.returnToCataloguesTitle = "Catálogos";
       this.returnToCollectionTitle = "Colección";
@@ -123,14 +143,26 @@ export default {
         });
       }
     },
-    searchDatacards(searchString) {
-      console.log("EL TEXTO ES: " + searchString);
+    advanceSearchDatacards(advancedSearchCriteria) {
+      this.advancedSearchCriteria = advancedSearchCriteria;
+    },
+    simpleSearchDatacards(code){
+      this.simpleSearchCriteria = code;
+    },
+    setFilteredDatacards(filteredDatacards) {
+      this.filteredDatacards = filteredDatacards;
+    },
+    setShowAdvancedSearch(show){
+      this.showAdvancedSearch = show;
     },
     truncate(value, length) {
       return value.length > length ? value.substr(0, length) + "..." : value;
     },
     setHelpText(message, active) {
       this.$store.dispatch("helpText/setActive", { active, message });
+    },
+    setLoading(boolean){
+      this.loading = boolean;
     },
     returnToCatalogues() {
       this.setHelpText("", false);
@@ -154,35 +186,44 @@ export default {
 <style lang="scss">
 @import "../style/style.scss";
 
-#show_datacards_component {
-  display: grid;
-  grid-template-rows: 10% 10% 80%;
-  height: 100%;
+#ui_show_datacards_component {
+  display: flex;
+  flex-direction: column;
+  /*grid-template-rows: 10% 10% 80%;*/
+  /*height: 100%;*/
 }
 
-#show_datacards_component_title {
+#ui_show_datacards_component_title {
   display: flex;
-  grid-row: 1 / 2;
+  /*grid-row: 1 2;*/
   justify-self: center;
   align-self: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
-#show_datacards_component_top_controls {
-  grid-row: 2 / 3;
+#ui_show_datacards_component_top_controls {
+  /*grid-row: 2  3;*/
   align-self: center;
-  display: grid;
-  grid-template-columns: 60% 20% 20%;
+  justify-content: center;
 }
 
-#show_datacards_search_field {
-  margin-top: 25px;
-  margin-left: 10px;
-  margin-right: 10px;
-  margin-bottom: 10px;
+#ui_show_datacards_advanced_search {
+  /*width: 1000px;*/
+  align-self: center;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
+/*#show_datacards_search_field {*/
+/*  margin-top: 25px;*/
+/*  margin-left: 10px;*/
+/*  margin-right: 10px;*/
+/*  margin-bottom: 10px;*/
+/*}*/
 
-#show_datacards_component_content {
-  grid-row: 3 / 4;
+#ui_show_datacards_component_content {
+  /*grid-row: 3 4;*/
   margin-top: 10px;
 }
 </style>

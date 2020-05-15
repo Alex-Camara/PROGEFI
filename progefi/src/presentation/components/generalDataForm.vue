@@ -385,7 +385,7 @@ export default {
       set: async function(newValue) {
         let collector = await this.datacard.getCollect().setCollector(newValue);
         await this.datacard.generateCollectorCode();
-        this.collectors = await Collector.getAll(collector.getName());
+        this.collectors = await Collector.getAllByName(collector.getName());
       }
     },
     selectedDevice: {

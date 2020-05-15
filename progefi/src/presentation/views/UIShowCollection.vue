@@ -3,18 +3,25 @@
     <div id="show_collections_component_title">
       <p class="component_title">{{ title }}</p>
     </div>
-
     <div id="show_collections_component_content">
       <show-collection
         :collection="this.collection"
         :thereIsNoCollection="thereIsNoCollection"
-        :addMode="addMode"
+        v-if="!editMode"
       ></show-collection>
+
+      <create-collection
+        :collection="this.collection"
+        :edit-mode="editMode"
+        v-if="editMode"
+      ></create-collection>
 
       <div
         id="ui_show_collection_cancel_button"
         class="float_button float_cancel_style"
         v-on:click="cancel"
+        @mouseleave="setHelpText('', false)"
+        @mouseenter="setHelpText(helpTextCancel, true)"
       >
         <img class="float_button_icon" :src="require('../assets/close.png')" />
       </div>
@@ -23,6 +30,8 @@
         id="ui_show_collection_edit_button"
         class="float_button"
         v-on:click="editCollection()"
+        @mouseleave="setHelpText('', false)"
+        @mouseenter="setHelpText(helpTextEdit, true)"
       >
         <img
           id="ui_show_collection_edit_icon"
@@ -37,9 +46,11 @@
 <script>
 import showCollection from "../components/showCollection.vue";
 import Collection from "../models/collection";
+import createCollection from "../components/createCollection";
 export default {
   components: {
-    "show-collection": showCollection
+    "show-collection": showCollection,
+    "create-collection": createCollection
   },
   data() {
     return {
@@ -52,18 +63,22 @@ export default {
       editButtonAction: "editCollection",
       editIcon: require("../assets/edit.png"),
       cancelIcon: require("../assets/close.png"),
-      commitIcon: require("../assets/correct.png")
+      commitIcon: require("../assets/correct.png"),
+      newCollection: new Collection(),
+      helpTextEdit: "Editar colección...",
+      helpTextCancel: "Cancelar...",
+      auxiliarCollection: new Collection()
     };
   },
   async mounted() {
     Collection.getAll()
       .then(result => {
-        // let receivedCollection = result;
-        let receivedCollection = [];
+        let receivedCollection = result;
+        // let receivedCollection = [];
         if (receivedCollection.length === 0) {
-          this.thereIsNoCollection = true;
-          this.addMode = true;
-          this.modifyButton();
+          this.$router.push({
+            name: "UICreateCollection"
+          });
         } else {
           this.collection = receivedCollection;
         }
@@ -72,14 +87,23 @@ export default {
         this.openDialog("Ha ocurrido un error con la base de datos");
       });
   },
+  computed: {},
   methods: {
     editCollection() {
-      this.editMode = !this.editMode;
-      this.modifyButton();
+      if (this.editMode) {
+        this.updateCollection();
+        this.editMode = !this.editMode;
+        this.modifyButton();
+      } else {
+        this.editMode = !this.editMode;
+        this.modifyButton();
+        this.auxiliarCollection.setCollection(this.collection);
+      }
     },
     cancel() {
       this.editMode = !this.editMode;
       this.modifyButton();
+      this.collection.setCollection(this.auxiliarCollection);
     },
     modifyButton() {
       let editButton = document.getElementById(
@@ -90,15 +114,43 @@ export default {
         editButton.classList.remove("float_button");
         editButton.classList.add("float_button_lateral");
         editIcon.src = this.commitIcon;
-      } else if (this.addMode) {
-        editButton.classList.remove("float_button");
-        editButton.classList.add("float_button_lateral");
-        editIcon.src = this.commitIcon;
+        this.helpTextEdit = "Guardar cambios..."
       } else {
         editButton.classList.remove("float_button_lateral");
         editButton.classList.add("float_button");
         editIcon.src = this.editIcon;
+        this.helpTextEdit = "Editar colección..."
       }
+    },
+    async updateCollection() {
+      await this.$store.dispatch("loading/setActive", {
+        active: true,
+        message: "Actualizando la colección..."
+      });
+
+      this.collection
+        .update()
+        .then(async () => {
+          await this.$store.dispatch("loading/setActive", {
+            active: false,
+            message: null
+          });
+          this.openToast("La colección ha sido actualizada");
+        })
+        .catch(async (error) => {
+          console.info(error)
+          await this.$store.dispatch("loading/setActive", {
+            active: false,
+            message: null
+          });
+          this.openDialog("Ha ocurrido un error con la base de datos");
+        });
+    },
+    setHelpText(message, active) {
+      this.$store.dispatch("helpText/setActive", { active, message });
+    },
+    openToast(message) {
+      this.$buefy.toast.open(message);
     },
     openDialog(message) {
       this.$buefy.dialog.alert(message);

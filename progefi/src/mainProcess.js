@@ -1,5 +1,6 @@
 'use strict'
 
+
 import PresentationProcess from './presentation/presentationProcess'
 import BussinessProcess from './bussiness/bussinessListener'
 
@@ -10,6 +11,9 @@ const BrowserWindow = electron.BrowserWindow
 const protocol = electron.protocol
 const vueCliPlugIn = require('vue-cli-plugin-electron-builder/lib')
 const createProtocol = vueCliPlugIn.createProtocol;
+
+
+
 
 
 

@@ -15,23 +15,38 @@
 
     <div class="gray_box show_collection_content">
       <div class="show_collection_attribute_div_title">
+        <p class="attribute_name">{{collectionCodeTitle}}</p>
+      </div>
+      <p class="attribute_value">{{ collection.getCode() }}</p>
+    </div>
+
+    <div class="gray_box show_collection_content">
+      <div class="show_collection_attribute_div_title">
         <p class="attribute_name">{{instituteNameTitle}}</p>
       </div>
       <p class="attribute_value">{{ collection.getInstituteName() }}</p>
     </div>
 
+
     <div class="gray_box show_collection_content">
       <div class="show_collection_attribute_div_title">
-        <p class="attribute_name">{{acronymTitle}}</p>
+        <p class="attribute_name">{{instituteAcronymTitle}}</p>
       </div>
-      <p class="attribute_value">{{ collection.getResearchAreaAcronym() }}</p>
+      <p class="attribute_value">{{ collection.getInstituteAcronym() }}</p>
     </div>
 
     <div class="gray_box show_collection_content">
       <div class="show_collection_attribute_div_title">
-        <p class="attribute_name">{{areaTitle}}</p>
+        <p class="attribute_name">{{researchAreaTitle}}</p>
       </div>
       <p class="attribute_value">{{ collection.getResearchArea() }}</p>
+    </div>
+
+    <div class="gray_box show_collection_content">
+      <div class="show_collection_attribute_div_title">
+        <p class="attribute_name">{{researchAreaAcronymTitle}}</p>
+      </div>
+      <p class="attribute_value">{{ collection.getResearchAreaAcronym() }}</p>
     </div>
 
     <div class="gray_box show_collection_content">
@@ -75,9 +90,11 @@ export default {
       title: "DATOS DE LA COLECCIÓN:",
       collectionNullMessage: "Debes crear una colección para utilizar el sistema...",
       collectionNameTitle: "Nombre: ",
+      collectionCodeTitle: "Código: ",
       instituteNameTitle: "Instituto:",
-      acronymTitle: "Nombre:",
-      areaTitle: "Área:",
+      instituteAcronymTitle: "Acrónimo del instituto:",
+      researchAreaTitle: "Área de investigación:",
+      researchAreaAcronymTitle: "Acrónimo del área de investigación:",
       instituteLogoTitle: "Logo de la institución:",
       catalogueNumberTitle: "Número de catálogos:",
       descriptionTitle: "Descripción: ",
