@@ -57,11 +57,9 @@ export default {
       });
     },
     showDatacards(selectedCatalogue) {
-      this.$router.push({
+      this.$store.commit("menu/setItemWithParams", {
         name: "UIShowDataCards",
-        params: {
-          selectedCatalogue: selectedCatalogue
-        }
+        params: { selectedCatalogue: selectedCatalogue }
       });
     },
     showCatalogue(selectedCatalogue) {
@@ -71,8 +69,9 @@ export default {
       });
     },
     returnToCollections() {
-      this.$router.push({
-        name: "UIShowCollections"
+      this.$store.commit("menu/setItemWithParams", {
+        name: "UIShowCollections",
+        params: null
       });
     },
     setHelpText(message, active) {

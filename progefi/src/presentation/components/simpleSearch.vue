@@ -50,7 +50,7 @@ export default {
   data() {
     return {
       searchString: "",
-      selectedSearchOption: null,
+      selectedSearchOption: {name: null},
       searchOptions: [
         { name: "Búsqueda simple" },
         { name: "Búsqueda avanzada" }

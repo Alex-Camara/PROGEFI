@@ -166,17 +166,16 @@ export default {
     },
     returnToCatalogues() {
       this.setHelpText("", false);
-      this.$router.push({
+      this.$store.commit("menu/setItemWithParams", {
         name: "UIShowCatalogues",
-        params: {
-          selectedCollection: this.selectedCatalogue.getCollection()
-        }
+        params: { selectedCollection: this.selectedCatalogue.getCollection() }
       });
     },
     returnToCollections() {
       this.setHelpText("", false);
-      this.$router.push({
-        name: "UIShowCollections"
+      this.$store.commit("menu/setItemWithParams", {
+        name: "UIShowCollections",
+        params: null
       });
     }
   }

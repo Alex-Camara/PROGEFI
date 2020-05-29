@@ -45,7 +45,9 @@
               :src="collection.getInstituteLogoPath()"
               v-if="tag.i == 'instituteLogo'"
             />
-            <p v-if="tag.i != 'photocollect' && tag.i != 'instituteLogo'">{{ tag.getFullExampleTag() }}</p>
+            <p v-if="tag.i != 'photocollect' && tag.i != 'instituteLogo'">
+              {{ tag.getFullExampleTag() }}
+            </p>
           </grid-item>
         </grid-layout>
       </div>
@@ -129,7 +131,7 @@ export default {
       }
     }
   },
-  mounted(){
+  mounted() {
     this.setDatacardDimensions();
   },
   watch: {
@@ -140,15 +142,15 @@ export default {
         await this.setDragAndResizeControlsToFalse();
       }
     },
-    previewMode(newValue) {
-      if (!newValue) {
-        this.setDatacardDimensions();
-      }
+    previewMode() {
+      // if (!newValue) {
+      this.setDatacardDimensions();
+      // }
     },
     curators() {
       this.setValues();
     },
-    template(){
+    template() {
       this.setDatacardDimensions();
       this.originalTags = [];
       for (let i = 0; i < this.tags.length; i++) {
@@ -162,13 +164,12 @@ export default {
     visibilityChanged(isVisible) {
       if (isVisible) {
         this.setValues();
-        // this.setImages();
       }
     },
     getTagStyle(tag) {
       if (tag.i !== "photocollect" && tag.i !== "instituteLogo") {
         let style = tag.getStyle(this.template.getFontFamily());
-        if (!this.editMode){
+        if (!this.editMode) {
           style.backgroundColor = "";
         }
         return style;
@@ -176,16 +177,17 @@ export default {
         let style = tag.getStyle(this.template.getFontFamily());
         let tagHeight = this.getPreviewDimension(tag.h);
         let tagWidth =
-                (tag.w * (this.template.getWidth() - this.template.getMarginX() * 2)) /
-                90;
+          (tag.w *
+            (this.template.getWidth() - this.template.getMarginX() * 2)) /
+          90;
 
         let filePath;
-        if (tag.i === "photocollect"){
+        if (tag.i === "photocollect") {
           filePath = this.photoCollect.photoCollectPath;
-        } else{
-          filePath= this.collection.instituteLogoPath;
+        } else {
+          filePath = this.collection.instituteLogoPath;
         }
-        this.loadImage(filePath).then((image) =>{
+        this.loadImage(filePath).then(image => {
           if (image.width > tagWidth) {
             style.maxWidth = tagWidth + "px";
             style.height = "auto";
@@ -195,11 +197,10 @@ export default {
             style.width = "auto";
           }
           return style;
-
         });
       }
     },
-    setDragAndResizeControlsToFalse(){
+    setDragAndResizeControlsToFalse() {
       return new Promise(resolve => {
         for (let i = 0; i < this.tags.length; i++) {
           this.tags[i].setResizable(false);
@@ -208,11 +209,11 @@ export default {
         resolve();
       });
     },
-    setOriginalDragAndResizeControls(){
+    setOriginalDragAndResizeControls() {
       return new Promise(resolve => {
         for (let i = 0; i < this.tags.length; i++) {
           let fountTag = this.originalTags.find(
-                  x => x.tagName === this.tags[i].tagName
+            x => x.tagName === this.tags[i].tagName
           );
           this.tags[i].setResizable(fountTag.isResizable());
           this.tags[i].setDraggable(fountTag.isDraggable());
@@ -419,7 +420,19 @@ export default {
 
       if (this.datacard.getCurators().length > 0) {
         this.datacard.validate();
-        this.datacard.base64 = await this.generateDatacard();
+        try {
+          this.datacard.base64 = await this.generateDatacard();
+        } catch (e) {
+          var { remote } = require("electron");
+          var win = remote.getCurrentWindow();
+          win.webContents.session.clearCache(function() {
+            console.info(
+              win.webContents.session.getCacheSize(n => {
+                this.generateDatacard();
+              })
+            );
+          });
+        }
       } else {
         this.datacard.invalidate();
       }
@@ -434,38 +447,95 @@ export default {
         this.updateDatacard(this.datacard);
       }
     },
-    async createDatacard() {
-      try {
-        this.datacard.save();
-        this.$emit("exitComponent");
-        this.openToast(this.loadingFinishedMessage);
-      } catch (error) {
-        this.openToast("Ha ocurrido un error con la base de datos");
-      } finally {
-        await this.$store.dispatch(
-          "loading/setActive",
-          { active: false, message: null },
-          { root: true }
-        );
+    restoreToPreview() {
+      this.$emit("restorePreview");
+      if (this.datacard.getId === null){
+        this.datacard.creationDate = null;
       }
+      this.datacard.setPhotocollectPath(null);
     },
+    async createDatacard() {
+      // try {
+
+      this.datacard
+        .save()
+        .then(code => {
+          if (code === "file-error") {
+            this.openDialog(
+              "Ha ocurrido un error al tratar de modificar el archivo " +
+                this.datacard
+                  .getCatalogue()
+                  .getCollection()
+                  .getCataloguesFolderPath() +
+                ", ciérrelo antes de continuar..."
+            );
+            this.restoreToPreview();
+          } else {
+            this.$emit("exitComponent");
+            this.openToast(this.loadingFinishedMessage);
+          }
+        })
+        .catch(() => {
+          this.openDialog("Ha ocurrido un error con la base de datos");
+        })
+        .finally(async () => {
+          await this.$store.dispatch(
+            "loading/setActive",
+            { active: false, message: null },
+            { root: true }
+          );
+        });
+    },
+
     async updateDatacard() {
-      try {
-        this.datacard.update();
-        this.$emit("exitComponent");
-        this.openToast(this.loadingFinishedMessage);
-      } catch (error) {
-        this.openToast("Ha ocurrido un error con la base de datos");
-      } finally {
-        await this.$store.dispatch(
-          "loading/setActive",
-          { active: false, message: null },
-          { root: true }
-        );
-      }
+      this.datacard
+        .update()
+        .then(code => {
+          if (code === "file-error") {
+            this.openDialog(
+              "Ha ocurrido un error al tratar de modificar el archivo " +
+                this.datacard
+                  .getCatalogue()
+                  .getCollection()
+                  .getCataloguesFolderPath() +
+                ", ciérrelo antes de continuar..."
+            );
+            this.restoreToPreview();
+          } else {
+            this.$emit("exitComponent");
+            this.openToast(this.loadingFinishedMessage);
+          }
+        })
+        .catch(() => {
+          this.openDialog("Ha ocurrido un error con la base de datos");
+        })
+        .finally(async () => {
+          await this.$store.dispatch(
+            "loading/setActive",
+            { active: false, message: null },
+            { root: true }
+          );
+        });
+
+      // try {
+      //   this.datacard.update();
+      //   this.$emit("exitComponent");
+      //   this.openToast(this.loadingFinishedMessage);
+      // } catch (error) {
+      //   this.openToast("Ha ocurrido un error con la base de datos");
+      // } finally {
+      //   await this.$store.dispatch(
+      //     "loading/setActive",
+      //     { active: false, message: null },
+      //     { root: true }
+      //   );
+      // }
     },
     openToast(message) {
       this.$buefy.toast.open(message);
+    },
+    openDialog(message) {
+      this.$buefy.dialog.alert(message);
     },
     generateDatacard() {
       return new Promise(resolve => {
@@ -483,6 +553,16 @@ export default {
               resolve(base64data);
             };
           });
+      }).catch(() => {
+        var { remote } = require("electron");
+        var win = remote.getCurrentWindow();
+        win.webContents.session.clearCache(function() {
+          console.info(
+            win.webContents.session.getCacheSize(n => {
+              this.generateDatacard();
+            })
+          );
+        });
       });
     },
     setValues() {

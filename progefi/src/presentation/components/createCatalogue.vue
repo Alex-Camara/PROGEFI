@@ -65,8 +65,8 @@
         <textarea
           id="create_catalogue_description_input"
           class="textarea create_catalogue_input_elements"
-          rows="2"
-          maxlength="200"
+          rows="4"
+          maxlength="500"
           v-model="description"
         ></textarea>
       </b-field>

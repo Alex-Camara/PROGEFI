@@ -27,7 +27,7 @@
       <b-tabs v-model="activeTab" position="is-centered">
         <b-tab-item label="Imagen">
           <div>
-            <show-image v-bind:imagePath="datacard.getDatacardPath() + '/datacard.png'"></show-image>
+            <show-image v-bind:imagePath="datacard.getDatacardPath() + '/datacard.webp'"></show-image>
           </div>
         </b-tab-item>
 

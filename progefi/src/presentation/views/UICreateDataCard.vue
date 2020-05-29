@@ -68,7 +68,8 @@ export default {
       this.showNotification("No hay conexión a Internet", "is-warning");
     });
   },
-  mounted() {
+  async mounted() {
+    await this.clearCache()
     console.info(this.catalogue);
     this.showInternetStatus();
     if (this.datacardDraft) {
@@ -77,8 +78,9 @@ export default {
       // this.setCatalogue(this.catalogue);
     }
   },
-  beforeDestroy() {
-    this.resetStore(this.datacard);
+  async beforeDestroy() {
+    await this.clearCache()
+    this.resetStore();
   },
   beforeRouteLeave(to, from, next) {
     // Si la ruta destino tiene el parametro 'askToLeave',
@@ -121,11 +123,24 @@ export default {
     async setDatacard(datacardDraft) {
       this.disableGeneralDataFields = true;
       this.$store.commit("datacard/setDatacard", datacardDraft);
-      let photocollectPath = datacardDraft.getDatacardPath() + "/original.png";
+      let photocollectPath = datacardDraft.getDatacardPath() + "/original." + datacardDraft.getCollect().getPhotocollectFormat();
       await this.$store.dispatch(
         "addDatacard/setPhotocollectFilePath",
         photocollectPath
       );
+    },
+    clearCache(){
+      return new Promise((resolve) => {
+        var { remote} = require('electron');
+        var win = remote.getCurrentWindow();
+        win.webContents.session.clearCache(function () {
+          win.webContents.session.clearStorageData(function () {
+            console.info(win.webContents.session.getCacheSize(n => {
+              resolve()
+            }))
+          });
+        });
+      });
     },
     resetStore() {
       store.dispatch("resetStore");

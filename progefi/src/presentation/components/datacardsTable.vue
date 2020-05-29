@@ -36,10 +36,11 @@
         <template slot-scope="props">
           <b-table-column field label="Imagen" width="20">
             <div class="datacards_table_cells">
-              <img
-                id="datacards_table_photocollect_thumbnail"
-                :src="props.row.getPhotocollectPath()"
-              />
+<!--              <img-->
+<!--                id="datacards_table_photocollect_thumbnail"-->
+<!--                :src="props.row.getPhotocollectPath()"-->
+<!--              />-->
+              <img :src="getBase64Image(props.row.thumbnail)" />
             </div>
           </b-table-column>
           <b-table-column field="code" label="Código" width="30" sortable>
@@ -163,7 +164,8 @@ export default {
       sortOrder: "asc",
       loadMoreButton: "Cargar más fichas",
       offset: 0,
-      currentLength: 10
+      currentLength: 10,
+        searchActive: false
     };
   },
   async mounted() {
@@ -189,6 +191,7 @@ export default {
         Datacard.getFiltered(newValue)
           .then(result => {
             this.datacards = result;
+              this.searchActive = true;
             this.$emit("filteredDatacards", this.datacards);
           })
           .catch(() => {
@@ -199,11 +202,13 @@ export default {
           });
         if (this.datacards.length === 0) {
           this.datacardsNullMessage = "No se encontraron resultados...";
+            this.searchActive
           this.openToast("No se encontraron resultados...");
           this.$emit("loading", false);
         }
       } else {
         this.datacards = [];
+          this.searchActive = false;
         for (let i = 0; i < this.allDatacards.length; i++) {
           this.datacards.push(this.allDatacards[i]);
         }
@@ -211,12 +216,13 @@ export default {
       }
     },
     async simpleSearchCriteria(newValue) {
-      if (newValue !== null || newValue !== "") {
+      if (newValue !== null && newValue !== "") {
         this.$emit("loading", true);
         if (this.selectedCatalogue) {
           Datacard.getByCode(this.selectedCatalogue.getId(), newValue)
             .then(result => {
               this.datacards = result;
+                this.searchActive = true;
             })
             .catch(() => {
               this.openDialog("Ha ocurrido un error con la base de datos");
@@ -228,6 +234,7 @@ export default {
           Datacard.getByCode(null, newValue)
             .then(result => {
               this.datacards = result;
+                this.searchActive = true;
             })
             .catch(() => {
               this.openDialog("Ha ocurrido un error con la base de datos");
@@ -238,19 +245,22 @@ export default {
         }
         if (this.datacards.length === 0) {
           this.datacardsNullMessage = "No se encontraron resultados...";
+            this.searchActive = false;
           this.$emit("loading", false);
         }
       } else {
         this.datacards = [];
+          this.searchActive = false
         for (let i = 0; i < this.allDatacards.length; i++) {
           this.datacards.push(this.allDatacards[i]);
         }
+
       }
     }
   },
   computed: {
     disableLoadMoreButton: function() {
-      if (this.datacards.length >= this.offset) {
+      if (this.allDatacards.length >= this.offset && !this.searchActive) {
         return false;
       } else {
         return true;
@@ -306,13 +316,12 @@ export default {
       this.setHelpText("", false);
     },
     async loadMoreDatacards() {
-      let newDatacards = [];
-      newDatacards = await this.getSortedDatacards(
+        let newDatacards = await this.getSortedDatacards(
         this.sortField,
         this.sortOrder,
         this.offset
       );
-      await this.datacards.push(newDatacards[0]);
+        this.datacards = this.datacards.concat(newDatacards);
       this.offset += 10;
       this.currentLength = this.datacards.length;
     },
@@ -329,7 +338,7 @@ export default {
           ""
         )
       );
-      return "data:image/png;base64," + base64;
+      return "data:image/webp;base64," + base64;
     },
     getFormattedDate(date) {
       return moment(date).format("DD/MM/YYYY HH:mm");

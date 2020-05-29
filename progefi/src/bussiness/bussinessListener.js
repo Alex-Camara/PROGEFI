@@ -10,6 +10,7 @@ import CuratorHandler from "./handlers/curatorHandler.js";
 import TemplateHandler from "./handlers/templateHandler.js";
 import SexHandler from "./handlers/sexHandler.js";
 import LifeStageHandler from "./handlers/lifeStageHandler.js";
+import UserHandler from "./handlers/userHandler.js";
 
 const { ipcMain } = require("electron");
 
@@ -28,12 +29,13 @@ function listen() {
   var templateHandler = new TemplateHandler();
   var sexHandler = new SexHandler();
   var lifeStageHandler = new LifeStageHandler();
+  var userHandler = new UserHandler();
 
   ipcMain.on("savePhotoCollect", (event, photocollect) => {
     datacardHandler
       .savePhotoCollect(photocollect)
       .then(result => {
-        if (result == "not-supported-format") {
+        if (result === "not-supported-format") {
           event.reply("photoCollectNotSaved", result);
         } else {
           event.reply("photoCollectSaved", result);
@@ -84,8 +86,6 @@ function listen() {
 
   ipcMain.on("getDatacardsByCode", (event, catalogueId, code) => {
     datacardHandler.getDatacardsByCode(catalogueId, code, function(datacards) {
-      console.log("en bussiness");
-      console.log(datacards);
       event.reply("datacardsByCode", datacards);
     });
   });
@@ -165,12 +165,10 @@ function listen() {
   ipcMain.on(
     "getDatacardsCountByCollector",
     (event, collectorId, catalogueId) => {
-      console.log("entro");
       collectorHandler.getDatacardsCountByCollector(
         collectorId,
         catalogueId,
         function(count) {
-          console.log("cuenta: " + count);
           event.reply("datacardsCountByCollector", count);
         }
       );
@@ -226,6 +224,8 @@ function listen() {
         event.reply("imageMetadata", result);
       })
       .catch(error => {
+        console.log("falló extracción: ")
+        console.info(error)
         event.reply("imageMetadataFailed");
       });
   });
@@ -305,8 +305,6 @@ function listen() {
   });
 
   ipcMain.on("createTag", (event, tag) => {
-    console.log("listener");
-    console.info(tag);
     templateHandler.saveTag(tag, function(createdTag) {
       event.reply("tagCreated", createdTag);
     });
@@ -331,6 +329,11 @@ function listen() {
       event.reply("templateDeleted", deletedTemplate);
     });
   });
+  ipcMain.on("updateCatalogue", (event, catalogue) => {
+    catalogueHandler.updateCatalogue(catalogue, function(updatedCatalogue) {
+      event.reply("catalogueUpdated", updatedCatalogue);
+    });
+  });
   ipcMain.on(
     "exportDatacards",
     async (event, datacards, format, destinationDirectory) => {
@@ -344,8 +347,25 @@ function listen() {
   );
   ipcMain.on("decodeDatacard", async (event, base64) => {
     let decodedDatacard = await datacardHandler.decode(base64);
-    console.info(decodedDatacard);
     event.reply("datacardDecoded", decodedDatacard);
+  });
+
+  ipcMain.on("createUser", (event, user) => {
+    userHandler.save(user, function(savedUser) {
+      event.reply("userCreated", savedUser);
+    });
+  });
+
+  ipcMain.on("getUser", (event) => {
+    userHandler.get(function(userGot) {
+      event.reply("userGot", userGot);
+    });
+  });
+
+  ipcMain.on("validateCredentials", (event, user) => {
+    userHandler.validateCredentials(user, function(validatedUser) {
+      event.reply("credentialsValidated", validatedUser);
+    });
   });
 }
 

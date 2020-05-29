@@ -65,7 +65,7 @@ const curator = {
         resolve()
       })
     },
-    resetStore(state) {
+    reset(state) {
       Vue.set(state, "curator", new Curator());
       Vue.set(state, "curators", []);
       Vue.set(state, "selectedCurators", []);

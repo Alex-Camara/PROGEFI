@@ -69,31 +69,48 @@ class Catalogue {
     } catch (error) {
       return "error";
     }
-
-    let foundCatalogueName = catalogues.find(x => x.name === name.toString().trim());
-    if (foundCatalogueName) {
-      // debugger
-      this.name = name;
-      this.nameValid = {
-        isValid: false,
-        message: "Nombre ya en uso"
-      };
+    let foundCatalogue = catalogues.find(
+      x => x.name === name.toString().trim()
+    );
+    if (foundCatalogue) {
+      if (foundCatalogue.id === this.id) {
+        this.name = name;
+        this.nameValid = {
+          isValid: true,
+          message: null
+        };
+      } else {
+        this.name = name;
+        this.nameValid = {
+          isValid: false,
+          message: "Nombre ya en uso"
+        };
+      }
     } else {
       let regex = "^[a-zA-Z \\u00C0-\\u00FF]*$";
       await this.validate(name, "name", 3, 50, regex);
     }
   }
+
   async setCode(code) {
     let catalogues = await Catalogue.getAll();
-    let foundCatalogueCode = catalogues.find(x => x.code === code.toString().trim());
-    if (foundCatalogueCode) {
-
-      // debugger
-      this.code = code;
-      this.codeValid = {
-        isValid: false,
-        message: "Código ya en uso"
-      };
+    let foundCatalogue = catalogues.find(
+      x => x.code === code.toString().trim()
+    );
+    if (foundCatalogue) {
+      if (foundCatalogue.id === this.id) {
+        this.code = code;
+        this.codeValid = {
+          isValid: true,
+          message: null
+        };
+      } else {
+        this.code = code;
+        this.codeValid = {
+          isValid: false,
+          message: "Código ya en uso"
+        };
+      }
     } else {
       let regex = "^[a-zA-Z0-9 \\u00C0-\\u00FF\\_-]*$";
       await this.validate(code, "code", 2, 10, regex);
@@ -102,7 +119,7 @@ class Catalogue {
   async setDescription(description) {
     let regex =
       "^[a-zA-Z0-9 \\u00C0-\\u00FF \\/():_.,;{}\\[\\]ñ<<>>+=%#$\"'-\\«\\»]*$";
-    await this.validate(description, "description", 5, 350, regex);
+    await this.validate(description, "description", 5, 500, regex);
   }
   setNameValid(valid) {
     this.nameValid.isValid = valid.isValid;
@@ -173,12 +190,27 @@ class Catalogue {
       ipcRenderer.send("createCatalogue", this);
       ipcRenderer.once("catalogueCreated", createdCatalogue => {
         if (
-            createdCatalogue.hasOwnProperty("nativeError") &&
-            createdCatalogue.nativeError.code === "SQLITE_ERROR"
+          createdCatalogue.hasOwnProperty("nativeError") &&
+          createdCatalogue.nativeError.code === "SQLITE_ERROR"
         ) {
           reject();
         } else {
           resolve();
+        }
+      });
+    });
+  }
+  update() {
+    return new Promise((resolve, reject) => {
+      ipcRenderer.send("updateCatalogue", this);
+      ipcRenderer.once("catalogueUpdated", updatedCatalogue => {
+        if (
+          updatedCatalogue.hasOwnProperty("nativeError") &&
+          updatedCatalogue.nativeError.code === "SQLITE_ERROR"
+        ) {
+          reject();
+        } else {
+          resolve(updatedCatalogue);
         }
       });
     });
@@ -188,8 +220,8 @@ class Catalogue {
       ipcRenderer.send("deleteCatalogue", this.id);
       ipcRenderer.once("catalogueDeleted", deletedCatalogue => {
         if (
-            deletedCatalogue.hasOwnProperty("nativeError") &&
-            deletedCatalogue.nativeError.code === "SQLITE_ERROR"
+          deletedCatalogue.hasOwnProperty("nativeError") &&
+          deletedCatalogue.nativeError.code === "SQLITE_ERROR"
         ) {
           reject();
         } else {
@@ -205,8 +237,8 @@ class Catalogue {
       ipcRenderer.once("catalogues", (event, receivedCatalogues) => {
         console.info(receivedCatalogues);
         if (
-            receivedCatalogues.hasOwnProperty("nativeError") &&
-            receivedCatalogues.nativeError.code === "SQLITE_ERROR"
+          receivedCatalogues.hasOwnProperty("nativeError") &&
+          receivedCatalogues.nativeError.code === "SQLITE_ERROR"
         ) {
           reject();
         } else {

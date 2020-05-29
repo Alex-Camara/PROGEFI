@@ -31,7 +31,8 @@
         :editMode="editMode"
         :previewMode="previewMode"
         v-if="previewMode"
-        v-on:exitComponent="exitComponent()"
+        @exitComponent="exitComponent()"
+         @restorePreview="previewMode = true"
       ></preview-datacard>
 
       <preview-datacard
@@ -41,6 +42,7 @@
         ref="preview_datacard"
         v-if="!previewMode"
         v-on:exitComponent="exitComponent()"
+        @restorePreview="previewMode = true"
       ></preview-datacard>
     </div>
 

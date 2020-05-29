@@ -77,6 +77,17 @@ class CatalogueDaoImp {
     const deletedCatalogue = await Catalogue.query().deleteById(catalogueId);
     return deletedCatalogue;
   }
+  async update(catalogue) {
+    const updatedCatalogue = await Catalogue.query().updateAndFetchById(
+      catalogue.id,
+      {
+        code: catalogue.code,
+        name: catalogue.name,
+        description: catalogue.description
+      }
+    );
+    return updatedCatalogue;
+  }
 }
 
 export default CatalogueDaoImp;

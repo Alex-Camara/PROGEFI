@@ -6,7 +6,7 @@
       <!-- --------AddDataCard1 Component Header----- -->
       <div id="add_datacard_component_header">
         <information_helper :message="informationMessage"></information_helper>
-        <p class="subtitle_dark_gray is-5">{{title}}</p>
+        <p class="subtitle_dark_gray is-5">{{ title }}</p>
       </div>
 
       <!-- --------AddDataCard1 Component Content----- -->
@@ -15,19 +15,22 @@
           <b-upload v-model="file" accept="image/*">
             <a class="button is-secondary">
               <b-icon icon="upload"></b-icon>
-              <span>{{uploadButtonText}}</span>
+              <span>{{ uploadButtonText }}</span>
             </a>
           </b-upload>
           <span
             class="file-name"
             v-if="photoCollect && photoCollect.url != 'not-supported-format'"
-          >{{ photoCollect.name }}</span>
+            >{{ photoCollect.name }}</span
+          >
         </b-field>
       </div>
 
       <!-- --------AddDataCard1 Bottom Buttons----- -->
       <div id="add_datacard_next_button" @click="forwardStep()">
-        <button class="button" type="is-accent" :disabled="disableNextButton()">{{nextButtonText}}</button>
+        <button class="button" type="is-accent" :disabled="disableNextButton()">
+          {{ nextButtonText }}
+        </button>
       </div>
     </div>
 
@@ -42,7 +45,7 @@
         />
       </div>
       <div v-if="photoCollect.loading">
-        {{loadingMessage}}
+        {{ loadingMessage }}
         <progress class="progress is-small is-accent" max="100"></progress>
       </div>
     </div>
@@ -56,7 +59,7 @@ import informationHelper from "../../helpers/informationHelper";
 
 export default {
   components: {
-    "information_helper": informationHelper,
+    information_helper: informationHelper
   },
   data() {
     return {
@@ -64,7 +67,8 @@ export default {
       title: "Sube el archivo de la fotocolecta",
       uploadButtonText: "Selecciona para subir un archivo",
       icon: require("../../assets/question.png"),
-      informationMessage: "Los formatos permitidos son: jpeg, png, bmp y tiff...",
+      informationMessage:
+        "Los formatos permitidos son: jpeg, png, bmp y tiff...",
       loadingMessage: "Procesando imagen, espere...",
       nextButtonText: "Siguiente"
     };
@@ -75,12 +79,19 @@ export default {
       photoCollectPath: state => state.photoCollect.photoCollectPath,
       file: state => state.photoCollect.filePath
     }),
+    ...mapState("datacard", {
+      datacard: state => state.datacard
+    }),
     file: {
       get: function() {
         return this.photoCollect.fileObject;
       },
       set: function(newValue) {
+        // store.dispatch("addDatacard/setPhotoCollect", null);
         store.dispatch("addDatacard/setPhotoCollect", newValue);
+        this.datacard
+          .getCollect()
+          .setPhotocollectFormat(this.getFileExtension(newValue));
       }
     }
   },
@@ -102,7 +113,13 @@ export default {
       } else {
         return true;
       }
-      return false;
+    },
+    getFileExtension(file) {
+      let fileName = file.name;
+      let fileExtension =
+        fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length) ||
+        fileName;
+      return fileExtension;
     },
     openSnackBar(message) {
       this.$buefy.snackbar.open({

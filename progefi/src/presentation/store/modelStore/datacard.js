@@ -68,10 +68,11 @@ const datacard = {
     setCurators(state, curators) {
       state.datacard.setCurators(curators);
     },
-    resetStore(state) {
+    reset(state) {
       Vue.set(state, "datacard", new Datacard());
       Vue.set(state, "datacards", []);
     }
+
   },
   actions: {
     setCollectDate({ state, commit }, collectDate) {

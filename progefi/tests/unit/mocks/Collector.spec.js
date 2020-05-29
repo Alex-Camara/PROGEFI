@@ -18,6 +18,10 @@ const mockGetAll = jest.fn();
 mockGetAll.mockReturnValue([testCollector1, testCollector2]);
 Collector.getAll = mockGetAll;
 
+const mockGetByName = jest.fn();
+mockGetByName.mockReturnValue([testCollector1, testCollector2]);
+Collector.getAllByName = mockGetByName;
+
 // const mockVerifyDuplicateCode = jest.fn();
 // mockVerifyDuplicateCode.mockReturnValue("RRE");
 // testCollector1.verifyDuplicateCode = mockVerifyDuplicateCode;

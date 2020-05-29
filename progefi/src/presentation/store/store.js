@@ -27,7 +27,10 @@ const store = new Vuex.Store({
   actions: {
     resetStore({ commit }) {
       console.log('reseteando...')
-      commit('datacard/resetStore')
+      commit('datacard/reset')
+      commit('addDatacard/reset')
+      commit('curator/reset')
+      commit('metadata/resetMetadata')
     }
   }
 })

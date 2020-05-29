@@ -1,15 +1,17 @@
 <template>
   <div id="show_catalogue_container">
-    <p class="title">INFORMACIÓN:</p>
+    <p class="title">{{ title }}</p>
 
     <div class="gray_box show_catalogue_content">
       <div>
-        <div class="show_catalogue_attribute_div_title">
+        <div class="show_catalogue_attribute_div_title"
+             @mouseleave="setHelpText('', false)"
+             @mouseenter="setHelpText(helpTextCodeDisabled, true)">
           <required-field-helper
             v-if="editMode"
             :valid="isCodeValid"
           ></required-field-helper>
-          <p class="attribute_name">Código:</p>
+          <p class="attribute_name">{{ codeText }}</p>
         </div>
         <p class="attribute_value" v-if="!editMode">
           {{ catalogue.getCollection().getCode() + catalogue.getCode() }}
@@ -19,6 +21,7 @@
           id="show_catalogue_code_input"
           class="input show_catalogue_input_elements"
           v-model="code"
+          :disabled="catalogue.getDatacardCount() > 0"
         />
       </div>
     </div>
@@ -29,7 +32,7 @@
           v-if="editMode"
           :valid="isNameValid"
         ></required-field-helper>
-        <p class="attribute_name">Nombre:</p>
+        <p class="attribute_name">{{ nameText }}</p>
       </div>
       <div>
         <p class="attribute_value" v-if="!editMode">
@@ -50,7 +53,7 @@
           v-if="editMode"
           :valid="isDescriptionValid"
         ></required-field-helper>
-        <p class="attribute_name">Descripción:</p>
+        <p class="attribute_name">{{ descriptionText }}</p>
       </div>
       <div>
         <p class="attribute_value" v-if="!editMode">
@@ -68,7 +71,7 @@
 
     <div class="gray_box show_catalogue_content">
       <div>
-        <p class="attribute_name">Colección:</p>
+        <p class="attribute_name">{{ collectionText }}</p>
         <p class="attribute_value">
           {{ catalogue.getCollection().getName() }}
         </p>
@@ -84,6 +87,22 @@ export default {
   props: ["catalogue", "editMode"],
   components: {
     "required-field-helper": requiredFieldHelper
+  },
+  data() {
+    return {
+      title: "Información:",
+      nameText: "Nombre:",
+      codeText: "Código:",
+      descriptionText: "Descripción",
+      collectionText: "Colección",
+      helpTextCodeDisabled: ""
+    };
+  },
+  mounted() {
+    if (this.catalogue.getDatacardCount() > 0) {
+      this.helpTextCodeDisabled =
+        "No es posible modificar el código debido a la existencia de al menos una ficha en este catálogo...";
+    }
   },
   computed: {
     isNameValid: function() {
@@ -135,6 +154,9 @@ export default {
     }
   },
   methods: {
+    setHelpText(message, active) {
+      this.$store.dispatch("helpText/setActive", { active, message });
+    },
     addShakeEffect(elemenId) {
       let element = document.getElementById(elemenId);
       if (element != null) {

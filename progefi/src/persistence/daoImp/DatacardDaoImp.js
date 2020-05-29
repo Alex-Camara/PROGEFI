@@ -56,8 +56,6 @@ class DatacardDaoImp {
       .select("datacardPath")
       .findById(datacardId);
     const deletedDatacard = await datacard.$query().delete();
-    console.log("directorio a borrar:");
-    console.info(directoryToDelete);
     return directoryToDelete;
   }
   static async getNotValidatedByTemplateId(templateId) {
@@ -153,7 +151,6 @@ class DatacardDaoImp {
     let collectDates = searchCriteria.collectDates;
     filterValue = datacardFilter.catalogue.id;
     if (filterValue !== null) {
-      console.log("entró a catalogo");
       let idsToDelete = [];
       for (let i = 0; i < datacards.length; i++) {
         let actualValue = datacards[i].catalogue.id;
@@ -166,7 +163,6 @@ class DatacardDaoImp {
 
     filterValue = datacardFilter.collect.project.id;
     if (filterValue !== null) {
-      console.log("entró a proyecto");
       let idsToDelete = [];
       for (let i = 0; i < datacards.length; i++) {
         let actualValue = datacards[i].collect.project.id;
@@ -179,7 +175,6 @@ class DatacardDaoImp {
 
     filterValue = datacardFilter.collect.collector.id;
     if (filterValue !== null) {
-      console.log("entró a colector");
       let idsToDelete = [];
       for (let i = 0; i < datacards.length; i++) {
         let actualValue = datacards[i].collect.collector.id;
@@ -192,7 +187,6 @@ class DatacardDaoImp {
 
     filterValue = datacardFilter.curators[0];
     if (filterValue !== null && filterValue !== undefined) {
-      console.log("entró a curador");
       let idsToDelete = [];
       for (let i = 0; i < datacards.length; i++) {
         let curator = datacards[i].curators.filter(
@@ -208,7 +202,6 @@ class DatacardDaoImp {
 
     filterValue = datacardFilter.collect.country;
     if (filterValue !== null) {
-      console.log("entró a pais");
       let idsToDelete = [];
       for (let i = 0; i < datacards.length; i++) {
         let actualValue = datacards[i].collect.country;
@@ -221,7 +214,6 @@ class DatacardDaoImp {
 
     filterValue = datacardFilter.collect.countryState;
     if (filterValue !== null) {
-      console.log("entró a estado");
       let idsToDelete = [];
       for (let i = 0; i < datacards.length; i++) {
         let actualValue = datacards[i].collect.countryState;
@@ -234,7 +226,6 @@ class DatacardDaoImp {
 
     filterValue = datacardFilter.collect.municipality;
     if (filterValue !== null) {
-      console.log("entró a mucnicpio");
       let idsToDelete = [];
       for (let i = 0; i < datacards.length; i++) {
         let actualValue = datacards[i].collect.municipality;
@@ -247,7 +238,6 @@ class DatacardDaoImp {
 
     filterValue = datacardFilter.collect.locality;
     if (filterValue !== null) {
-      console.log("entró a licalidad");
       let idsToDelete = [];
       for (let i = 0; i < datacards.length; i++) {
         let actualValue = datacards[i].collect.locality;
@@ -260,7 +250,6 @@ class DatacardDaoImp {
 
     filterValue = datacardFilter.collect.climateType.code;
     if (filterValue !== null && filterValue !== "") {
-      console.log("entró a clima");
       let idsToDelete = [];
       for (let i = 0; i < datacards.length; i++) {
         let actualValue1 = datacards[i].collect.climateType.code;
@@ -434,6 +423,7 @@ class DatacardDaoImp {
     const newCollect = await Collect.query()
       .insert({
         collectDate: collect.collectDate,
+        photocollectFormat: collect.photocollectFormat,
         longitude: collect.longitude,
         latitude: collect.latitude,
         altitude: collect.altitude,
@@ -604,6 +594,7 @@ class DatacardDaoImp {
       .$query()
       .updateAndFetch({
         collectDate: collectToUpdate.collectDate,
+        photocollectFormat: collectToUpdate.photocollectFormat,
         longitude: collectToUpdate.longitude,
         latitude: collectToUpdate.latitude,
         altitude: collectToUpdate.altitude,

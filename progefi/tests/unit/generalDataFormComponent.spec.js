@@ -68,6 +68,9 @@ const store = new Vuex.Store({
         hasMetadata: false,
         collect: new Collect()
       }
+    },
+    modal: {
+      namespaced: true,
     }
   }
 });
@@ -139,6 +142,11 @@ describe("generalDataForm component", () => {
     store.state.datacard.datacard
       .getCollect()
       .getCollector().verifyDuplicateCode = mockVerifyDuplicateCode;
+
+    wrapper = shallowMount(generalDataForm, {
+      localVue,
+      mocks
+    });
 
     wrapper.vm.selectedCatalogue = testCatalogue1;
     await wrapper.vm.$nextTick();

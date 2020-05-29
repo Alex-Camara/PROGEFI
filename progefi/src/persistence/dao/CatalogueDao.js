@@ -26,6 +26,10 @@ class CatalogueDao {
         let deletedCatalogue = Promise.resolve(this.catalogueDaoImp.deleteCatalogue(catalogueId))
         return deletedCatalogue;
     }
+    update(catalogue){
+        let updatedCatalogue = Promise.resolve(this.catalogueDaoImp.update(catalogue))
+        return updatedCatalogue;
+    }
 }
 
 export default CatalogueDao;

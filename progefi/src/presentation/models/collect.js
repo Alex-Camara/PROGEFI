@@ -16,6 +16,7 @@ class Collect {
     this.collectDateValid = {};
     this.collectDateValid.isValid = true;
     this.collectDateValid.message = null;
+    this.photocollectFormat = null;
     this.latitude = -181;
     this.latitudeValid = {
       isValid: false,
@@ -61,7 +62,7 @@ class Collect {
   async setCollect(collect) {
     // debugger
     this.id = collect.id;
-
+    this.photocollectFormat = collect.photocollectFormat;
     await this.setAltitude(collect.altitude);
     await this.setLongitude(collect.longitude);
     await this.setLatitude(collect.latitude);
@@ -232,8 +233,14 @@ class Collect {
     project.valid = { isValid: true, message: null };
     this.project = project;
   }
+  setPhotocollectFormat(photocollectFormat){
+    this.photocollectFormat = photocollectFormat;
+  }
   getCollectDate() {
     return this.collectDate;
+  }
+  getPhotocollectFormat(){
+    return this.photocollectFormat;
   }
   getCollectDateValid() {
     return this.collectDateValid;

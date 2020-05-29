@@ -14,6 +14,7 @@ class DatacardHandler {
 
     this.imageFormat = null;
     this.folderPathName = null;
+    this.imageLoaded = false;
   }
   //Método usando durante la creación de la fotocolecta, se guarda la foto original el formato
   //original así como un duplicado en png para su manipulación.
@@ -37,13 +38,11 @@ class DatacardHandler {
       ) {
         //save original file
         await this.deleteFolderContent(datacardsFolderPath);
-        let originalPath = this.saveFile(
+        let copyFilePath = this.saveDuplicatedFile(
           photoCollect.filePath,
-          datacardsFolderPath,
-          imageFormat
+          datacardsFolderPath + "" + new Date().getTime() + "." + imageFormat
         );
-        let duplicatePath = this.saveDuplicatedFile(image, datacardsFolderPath);
-        return duplicatePath;
+        return copyFilePath;
       } else {
         console.log("formato no soportado");
         return "not-supported-format";
@@ -62,38 +61,35 @@ class DatacardHandler {
     }
     return folderName;
   }
-  saveFile(filePath, datacardsFolderPath, imageFormat) {
-    // console.info(filePath)
-    var originalPath = datacardsFolderPath + "/original." + "png";
+  async saveFile(filePath, datacardsFolderPath) {
+    var originalPath = datacardsFolderPath + "/original." + "webp";
     try {
-      fs.copyFileSync(filePath, originalPath);
-
-      //assign attribute to datacard object
-      this.datacard.setPhotoCollectPath(originalPath);
-      return originalPath;
+      const sharp = require("sharp");
+      sharp(filePath)
+        .webp({
+          nearLossless: true,
+          quality: 80,
+          reductionEffort: 5
+        })
+        .toFile(originalPath);
+      this.imageLoaded = true;
+      // this.datacard.setPhotoCollectPath(originalPath);
+      // return originalPath;
     } catch (error) {
+      console.info(error);
       return error;
     }
   }
 
-  async saveDuplicatedFile(image, photocollectsFolderPath) {
+  async saveDuplicatedFile(filePath, photocollectsFolderPath) {
     try {
-      var duplicatePath =
-        photocollectsFolderPath +
-        "/duplicate_" +
-        +new Date().getTime() +
-        ".png";
+      // var duplicatePath = photocollectsFolderPath + "/original." + imageFormat;
 
-      //await image.webp({ lossless: true, quality: 100 }).rotate().toFile(duplicatePath)
-      await image
-        .rotate()
-        .png()
-        .toFile(duplicatePath);
-
+      fs.copyFileSync(filePath, photocollectsFolderPath);
       //assign attribute to datacard object
-      this.datacard.setPhotoCollectDuplicatePath(duplicatePath);
+      this.datacard.setPhotoCollectPath(photocollectsFolderPath);
 
-      return duplicatePath;
+      return photocollectsFolderPath;
     } catch (error) {
       return error;
     }
@@ -102,7 +98,6 @@ class DatacardHandler {
     return new Promise((resolve, reject) => {
       try {
         var directory = photocollectsFolderPath;
-        console.info(directory);
         fs.readdir(directory, (err, files) => {
           if (err) reject(err);
           for (let i = 0; i < files.length; i++) {
@@ -141,7 +136,6 @@ class DatacardHandler {
     // write buffer to file
     try {
       fs.writeFileSync(file, bitmap, { encoding: "base64" });
-      console.log("******** File created from base64 encoded string ********");
     } catch (error) {
       console.log("ERROR EN GUARDAR LA DATACARD: " + error);
     }
@@ -149,14 +143,14 @@ class DatacardHandler {
   async createDatacard(datacard, result) {
     var datacardsFolderPath =
       path.resolve(".") + "/src/persistence/resources/datacards/";
+    var photocollectFolderPath =
+      path.resolve(".") + "/src/bussiness/photocollects/";
     datacardsFolderPath = this.createFolder(datacardsFolderPath);
     // console.log('saving datacard')
     // console.info(datacard)
-
-    let filePath = await this.saveFile(
+    this.saveDuplicatedFile(
       datacard.photocollectPath,
-      datacardsFolderPath,
-      this.imageFormat
+      datacardsFolderPath + "/original." + datacard.collect.photocollectFormat
     );
     // console.log(filePath)
 
@@ -165,26 +159,73 @@ class DatacardHandler {
       // Remove header
       let base64Image = base64String.split(";base64,").pop();
 
-      let datacardPath = datacardsFolderPath + "/datacard.png";
+      let datacardPath = datacardsFolderPath + "/datacard.webp";
+
+      this.base64Decode(base64Image, datacardPath);
+    }
+    this.updateCSVCatalogueFile(datacard)
+      .then(async () => {
+        datacard.datacardPath = datacardsFolderPath;
+        let createdDatacard = await this.datacardDao.createDatacard(datacard);
+        await this.deleteFolderContent(photocollectFolderPath);
+        result(createdDatacard);
+      })
+      .catch(() => {
+        console.log("file error");
+        result("file-error");
+      });
+  }
+  async updateDatacard(datacard, result) {
+    var photocollectFolderPath =
+      path.resolve(".") + "/src/bussiness/photocollects/";
+    //Cuando la fotocolecta no haya cambiado, no tiene sentdio volver a guardarla
+    if (datacard.photocollectPath != "do-not-save") {
+      this.saveDuplicatedFile(
+        datacard.photocollectPath,
+        datacard.datacardPath +
+          "/original." +
+          datacard.collect.photocollectFormat
+      );
+      // console.log(filePath)
+    }
+    //Solo si la ficha se va a validar, se guarda la ficha
+    if (datacard.validated) {
+      let base64String = datacard.base64; // Not a real image
+      // Remove header
+      let base64Image = base64String.split(";base64,").pop();
+
+      let datacardPath = datacard.datacardPath + "/datacard.webp";
 
       this.base64Decode(base64Image, datacardPath);
     }
 
-    datacard.datacardPath = datacardsFolderPath;
-    let createdDatacard = await this.datacardDao.createDatacard(datacard);
-    result(createdDatacard);
+    this.updateCSVCatalogueFile(datacard)
+      .then(async () => {
+        let updatedDatacard = await this.datacardDao.updateDatacard(datacard);
+        await this.deleteFolderContent(photocollectFolderPath);
+        result(updatedDatacard);
+      })
+      .catch(() => {
+        console.log("file error");
+        result("file-error");
+      });
   }
   getThumbnails(datacard) {
     return new Promise(async resolve => {
       const sharp = require("sharp");
-      // console.info(datacards[0])
-      // console.log('datacardPath: ' + datacard.datacardPath)
-      sharp(datacard.datacardPath + "/original.png")
+      sharp(
+        datacard.datacardPath +
+          "/original." +
+          datacard.collect.photocollectFormat
+      )
         .resize({ height: 50 })
         .toBuffer()
         .then(data => {
           // console.info(data)
           resolve(data);
+        })
+        .catch(() => {
+          resolve("");
         });
     });
   }
@@ -194,9 +235,9 @@ class DatacardHandler {
         catalogueId,
         searchString
       );
-      // for (let i = 0; i < datacards.length; i++) {
-      //   datacards[i].thumbnail = await this.getThumbnails(datacards[i])
-      // }
+      for (let i = 0; i < datacards.length; i++) {
+        datacards[i].thumbnail = await this.getThumbnails(datacards[i]);
+      }
       return datacards;
     } catch (error) {
       return error;
@@ -204,20 +245,20 @@ class DatacardHandler {
   }
   async getDatacardsByCode(catalogueId, code, result) {
     // try {
-      let datacards = await this.datacardDao.getByCode(
-          catalogueId,
-          code
-      );
-      result(datacards);
+    let datacards = await this.datacardDao.getByCode(catalogueId, code);
+    for (let i = 0; i < datacards.length; i++) {
+      datacards[i].thumbnail = await this.getThumbnails(datacards[i]);
+    }
+    result(datacards);
     // } catch (error) {
     //   result(error);
     // }
   }
   async getAllDatacards(result) {
     let datacards = await this.datacardDao.getAllDatacards();
-    // for (let i = 0; i < datacards.length; i++) {
-    //   datacards[i].thumbnail = await this.getThumbnails(datacards[i])
-    // }
+    for (let i = 0; i < datacards.length; i++) {
+      datacards[i].thumbnail = await this.getThumbnails(datacards[i]);
+    }
     result(datacards);
   }
   async getSortedDatacards(catalogueId, field, order, limit, offset, result) {
@@ -228,16 +269,16 @@ class DatacardHandler {
       limit,
       offset
     );
-    // for (let i = 0; i < datacards.length; i++) {
-    //   datacards[i].thumbnail = await this.getThumbnails(datacards[i])
-    // }
+    for (let i = 0; i < datacards.length; i++) {
+      datacards[i].thumbnail = await this.getThumbnails(datacards[i]);
+    }
     result(datacards);
   }
   async getFilteredDatacards(searchCritera, result) {
     let datacards = await this.datacardDao.getFiltered(searchCritera);
-    // for (let i = 0; i < datacards.length; i++) {
-    //   datacards[i].thumbnail = await this.getThumbnails(datacards[i])
-    // }
+    for (let i = 0; i < datacards.length; i++) {
+      datacards[i].thumbnail = await this.getThumbnails(datacards[i]);
+    }
     result(datacards);
   }
   async deleteDatacard(datacardId, result) {
@@ -246,30 +287,6 @@ class DatacardHandler {
     await this.deleteFolderContent(deletedDatacardPath);
     fs.rmdirSync(deletedDatacardPath);
     result(deletedDatacardPath);
-  }
-  async updateDatacard(datacard, result) {
-    //Cuando la fotocolecta no haya cambiado, no tiene sentdio volver a guardarla
-    if (datacard.photocollectPath != "do-not-save") {
-      let filePath = await this.saveFile(
-        datacard.photocollectPath,
-        datacard.datacardPath,
-        this.imageFormat
-      );
-      // console.log(filePath)
-    }
-    //Solo si la ficha se va a validar, se guarda la ficha
-    if (datacard.validated) {
-      let base64String = datacard.base64; // Not a real image
-      // Remove header
-      let base64Image = base64String.split(";base64,").pop();
-
-      let datacardPath = datacard.datacardPath + "/datacard.png";
-
-      this.base64Decode(base64Image, datacardPath);
-    }
-
-    let updatedDatacard = await this.datacardDao.updateDatacard(datacard);
-    result(updatedDatacard);
   }
   getImageMetadata() {
     var datacardWithMetadata = this.extractMetadata()
@@ -280,7 +297,6 @@ class DatacardHandler {
         var longitude = null;
         var latitude = null;
         var altitude = null;
-
         if (
           (result.gps.hasOwnProperty("GPSLongitudeRef") &&
             result.gps.hasOwnProperty("GPSLatitudeRef")) ||
@@ -293,7 +309,6 @@ class DatacardHandler {
             DMSLongitude,
             longitudeReference
           );
-
           //obtener y darle formato a la longitud
           var latitudeReference = result.gps.GPSLatitudeRef;
           var DMSLatitude = result.gps.GPSLatitude;
@@ -304,13 +319,11 @@ class DatacardHandler {
 
           var altitude = result.gps.GPSAltitude.toFixed(6);
         }
-
         //obtener los demas parametros
         var collectDate = fullSplitCollectDate[0];
         var collectHour = fullSplitCollectDate[1];
         var device = result.image.Make;
         var model = result.image.Model;
-
         this.datacard.setMetadata(
           device,
           model,
@@ -320,7 +333,6 @@ class DatacardHandler {
           collectDate,
           collectDate + " " + collectHour
         );
-        console.info(result);
         return this.datacard;
       })
       .catch(error => {
@@ -340,11 +352,8 @@ class DatacardHandler {
         },
         function(error, exifData) {
           if (!error) {
-            // console.log('metadatos')
-            // console.info(exifData)
             resolve(exifData);
           } else {
-            console.log("error en extracción de metadatos " + error);
             reject(error);
           }
         }
@@ -461,9 +470,97 @@ class DatacardHandler {
 
       const json2csvParser = new Parser({ fields, transforms, withBOM: true });
       const csv = json2csvParser.parse(datacards);
-      console.info(csv);
       fs.writeFileSync(destinationFileName, csv, "utf8");
       resolve();
+    });
+  }
+  updateCSVCatalogueFile(datacard) {
+    return new Promise(async (resolve, reject) => {
+      if (!datacard.validated) {
+        console.info("NO ENTRO A ACTUALIZAR CSV");
+        resolve();
+        return
+      }
+      console.info("ENTRO A ACTUALIZAR CSV (flujo normal)");
+      let fields = [
+        "ID",
+        "Especie",
+        "Proyecto",
+        "Código de colección",
+        "Código de catálogo",
+        "Código de la ficha",
+        "Fecha de colecta",
+        "Fecha de creación",
+        "Localidad",
+        "Municipio",
+        "Estado",
+        "País",
+        "Longitud",
+        "Latitud",
+        "Altitud",
+        "Dispositvo",
+        "Modelo",
+        "Colector",
+        "Código Colector",
+        "Tipo de vegetación",
+        "Tipo de clima",
+        "Observaciones generales",
+        "Curador 1",
+        "Curador 2"
+      ];
+      let curator2 = "";
+      if (datacard.curators[1] !== undefined) {
+        curator2 = datacard.curators[1].name;
+      }
+
+      let data = {
+        ID: datacard.id,
+        Especie: datacard.collect.specimen.species.scientificName,
+        Proyecto: datacard.collect.project.name,
+        "Código de colección": datacard.catalogue.collection.code,
+        "Código de catálogo": datacard.catalogue.code,
+        "Código de la ficha": datacard.code,
+        "Fecha de colecta": datacard.collect.collectDate,
+        "Fecha de creación": datacard.creationDate,
+        Localidad: datacard.collect.locality,
+        Municipio: datacard.collect.municipality,
+        Estado: datacard.collect.countryState,
+        País: datacard.collect.country,
+        Longitud: datacard.collect.longitude,
+        Latitud: datacard.collect.latitude,
+        Altitud: datacard.collect.altitude,
+        Dispositvo: datacard.collect.model.device.name,
+        Modelo: datacard.collect.model.name,
+        Colector: datacard.collect.collector.name,
+        "Código Colector": datacard.collectorCode,
+        "Tipo de vegetación": datacard.collect.vegetationType.name,
+        "Tipo de clima": datacard.collect.climateType.code,
+        "Observaciones generales": datacard.collect.specimen.observations,
+        "Curador 1": datacard.curators[0].name,
+        "Curador 2": curator2
+      };
+
+      let cataloguesFolderPath =
+        datacard.catalogue.collection.cataloguesFolderPath +
+        "/" +
+        datacard.catalogue.name +
+        ".csv";
+      const { parse } = require("json2csv");
+
+      try {
+        let csv;
+        if (!fs.existsSync(cataloguesFolderPath)) {
+          csv = parse(data, { fields: fields, withBOM: true });
+          fs.writeFileSync(cataloguesFolderPath, csv + "\n", "utf8");
+        } else {
+          csv = parse(data, { header: false, withBOM: true });
+          fs.appendFileSync(cataloguesFolderPath, csv + "\n", "utf8");
+        }
+        resolve();
+      } catch (error) {
+        console.info(error);
+        reject(error);
+      }
     });
   }
   async decode(base64) {
@@ -472,7 +569,7 @@ class DatacardHandler {
       const steggy = require("steggy");
       base64 = base64.split(";base64,").pop();
       // var bitmap = new Buffer(base64, "base64");
-      var tempPath = path.resolve(".") + "/src/bussiness/temp.png";
+      var tempPath = path.resolve(".") + "/src/bussiness/temp.webp";
       self.base64Decode(base64, tempPath);
       const image = fs.readFileSync(tempPath);
 
@@ -491,11 +588,10 @@ class DatacardHandler {
 
     try {
       for (let i = 0; i < datacards.length; i++) {
-        console.info(datacards[i])
         let destinationFileName =
           destinationDirectory + "/" + datacards[i].code + ".png";
         let original = fs.readFileSync(
-          datacards[i].datacardPath + "/datacard.png"
+          datacards[i].datacardPath + "/datacard.webp"
         );
         let code = datacards[i].code;
         let collector = datacards[i].collect.collector.name;
@@ -534,7 +630,7 @@ class DatacardHandler {
           for (let i = 0; i < datacards.length; i++) {
             let destinationFileName =
               destinationDirectory + "/" + datacards[i].code;
-            await sharp(datacards[i].datacardPath + "/datacard.png")
+            await sharp(datacards[i].datacardPath + "/datacard.webp")
               .jpeg({
                 quality: 100,
                 chromaSubsampling: "4:4:4"
@@ -556,7 +652,7 @@ class DatacardHandler {
           for (let i = 0; i < datacards.length; i++) {
             let destinationFileName =
               destinationDirectory + "/" + datacards[i].code;
-            let data = await sharp(datacards[i].datacardPath + "/datacard.png")
+            let data = await sharp(datacards[i].datacardPath + "/datacard.webp")
               .tiff({
                 quality: 100,
                 compression: "lzw"
@@ -572,7 +668,7 @@ class DatacardHandler {
             let destinationFileName =
               destinationDirectory + "/" + datacards[i].code + ".bmp";
 
-            Jimp.read(datacards[i].datacardPath + "/datacard.png")
+            Jimp.read(datacards[i].datacardPath + "/datacard.webp")
               .then(datacard => {
                 return datacard.write(destinationFileName);
               })
@@ -594,7 +690,7 @@ class DatacardHandler {
               const doc = new PDFDocument({ layout: "landscape" });
               doc.pipe(fs.createWriteStream(destinationFileName)); // write to PDF
 
-              doc.image(datacards[i].datacardPath + "/datacard.png", 0, 15, {
+              doc.image(datacards[i].datacardPath + "/datacard.webp", 0, 15, {
                 width: 800,
                 align: "center",
                 valign: "center",

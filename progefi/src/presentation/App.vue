@@ -1,10 +1,10 @@
 <template>
-  <div id="main-container">
+  <div id="main-container" v-if="!enterCredentials">
     <div id="main-header" class="sticky">
-      <UINavBar></UINavBar>
+      <ui-nav-bar></ui-nav-bar>
     </div>
     <div id="main-menu" class="stickyMenu">
-      <UIMenu id="UIMenu"></UIMenu>
+      <ui-menu id="UIMenu" :user="user"></ui-menu>
     </div>
     <div id="main-content">
       <transition name="fade">
@@ -12,10 +12,13 @@
       </transition>
     </div>
     <div id="main-footer" class="stickyFooter">
-      <UIFooter></UIFooter>
+      <ui-footer></ui-footer>
     </div>
     <modal-helper></modal-helper>
     <loading-helper></loading-helper>
+  </div>
+  <div v-else id="main-enter-container">
+    <ui-enter :user="user" @succesful-login="logIn($event)"></ui-enter>
   </div>
 </template>
 
@@ -23,19 +26,37 @@
 import UINavBar from "./views/UINavBar.vue";
 import UIMenu from "./views/UIMenu.vue";
 import UIFooter from "./views/UIFooter.vue";
+import UIEnter from "./views/UIEnter.vue";
 import modalHelper from "./helpers/modalHelper.vue";
 import Collection from "./models/collection";
-// import { Titlebar, Color } from 'custom-electron-titlebar'
+import User from "./models/user";
+const { ipcRenderer } = require("electron");
 
 export default {
   components: {
-    UINavBar,
-    UIMenu,
-    UIFooter,
+    "ui-nav-bar": UINavBar,
+    "ui-menu": UIMenu,
+    "ui-footer": UIFooter,
+    "ui-enter": UIEnter,
     "modal-helper": modalHelper
   },
   data() {
-    return {};
+    return {
+      enterCredentials: true,
+      user: new User()
+    };
+  },
+  async created() {
+    let userGot = await User.get();
+    if (userGot.length > 0) {
+      this.user.setUser(userGot[0]);
+      if (this.user.isKeepingSession()){
+        this.enterCredentials = false;
+        ipcRenderer.send("maximize");
+        ipcRenderer.once("maximized", async (event) => {
+        });
+      }
+    }
   },
   async mounted() {
     let collection = await Collection.getAll();
@@ -43,6 +64,15 @@ export default {
       this.$store.commit("menu/disableAllExceptSelected", "Colección");
     } else {
       this.$store.commit("menu/setItemByName", "Fichas de fotocolecta");
+    }
+  },
+  methods:{
+    logIn(user){
+      this.user = user;
+      this.enterCredentials = false;
+      ipcRenderer.send("maximize");
+      ipcRenderer.once("maximized", async (event) => {
+      });
     }
   }
 };

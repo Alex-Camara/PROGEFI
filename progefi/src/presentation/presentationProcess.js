@@ -1,10 +1,24 @@
 'use strict'
 
+const vueCliPlugIn = require('vue-cli-plugin-electron-builder/lib')
+const createProtocol = vueCliPlugIn.createProtocol;
+const installVueDevtools = vueCliPlugIn.installVueDevtools;
+
 function createPresentationProcess (BrowserWindow) {
   console.log('capa de presentación :D')
+  const electron = require('electron');
+  var screenElectron = electron.screen;
+  var mainScreen = screenElectron.getPrimaryDisplay();
+  var dimensions = mainScreen.size;
+  // let partialHeight = Math.round(70 * dimensions.height / 100);
+  let partialWidth = Math.round(70 * dimensions.width / 100);
+
+  let partialHeight = Math.round(67 * partialWidth / 100);
+  console.info("partial height: " + partialHeight)
+  console.info("partial width: " + partialWidth)
   var presentationProcess = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    width: partialWidth,
+    height: partialHeight,
     webPreferences: {
       webSecurity: false,
       nodeIntegration: true
@@ -20,54 +34,6 @@ function createPresentationProcess (BrowserWindow) {
     // Load the index.html when not in development
     presentationProcess.loadURL('app://./index.html')
   }
-
-  /*presentationProcess.webContents.session.on(
-    'will-download',
-    (event, item, webContents) => {
-        console.log(item.getMimeType())
-        console.info(item)
-        console.info(event)
-        if (item.getMimeType() === "image/png") {
-            event.preventDefault()
-            
-        }
-
-      // Set the save path, making Electron not to prompt a save dialog.
-      /*item.setSavePath('/tmp/save.png')
-
-      item.on('updated', (event, state) => {
-        console.log('item: ')
-        console.info(item.session)
-        console.info(item.item)
-        console.info(event)
-        console.info(state)
-        if (state === 'interrupted') {
-          console.log('Download is interrupted but can be resumed')
-        } else if (state === 'progressing') {
-          if (item.isPaused()) {
-            console.log('Download is paused')
-          } else {
-            var fs = require('fs')
-            console.log(`Received bytes: ${item.getReceivedBytes()}`)
-
-            try {
-              fs.writeFileSync('myfile.png', item)
-            } catch (e) {
-              alert('Failed to save the file !')
-            }
-          }
-        }
-      })
-      item.once('done', (event, state) => {
-        if (state === 'completed') {
-          console.log('Download successfully')
-        } else {
-          console.log(`Download failed: ${state}`)
-        }
-      })
-    }
-  )*/
-
   presentationProcess.on('closed', () => {
     presentationProcess = null
   })

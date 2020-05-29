@@ -30,7 +30,6 @@ class Datacard {
     this.code = datacard.code;
     this.collectorCode = datacard.collectorCode;
     this.datacardPath = datacard.datacardPath;
-    this.photocollectPath = datacard.datacardPath + "/original.png";
     this.validated = datacard.validated;
     this.creationDate = new Date(datacard.creationDate);
     this.thumbnail = datacard.thumbnail;
@@ -46,6 +45,8 @@ class Datacard {
     let newCollect = new Collect();
     await newCollect.setCollect(datacard.collect);
     this.collect = newCollect;
+
+    this.photocollectPath = datacard.datacardPath + "/original."+ this.collect.getPhotocollectFormat();
 
     for (let i = 0; i < datacard.curators.length; i++) {
       let curator = new Curator();
@@ -201,7 +202,10 @@ class Datacard {
           createdDatacard.nativeError.code === "SQLITE_ERROR"
         ) {
           reject();
-        } else {
+        }  else if (createdDatacard === "file-error"){
+          resolve("file-error")
+        }
+        else {
           resolve();
         }
       });
@@ -216,6 +220,8 @@ class Datacard {
           updatedDatacard.nativeError.code === "SQLITE_ERROR"
         ) {
           reject();
+        } else if (updatedDatacard === "file-error"){
+          resolve("file-error")
         } else {
           resolve();
         }
@@ -293,7 +299,7 @@ class Datacard {
         limit,
         offset
       );
-      ipcRenderer.once("sortedDatacards", (event, receivedDatacards) => {
+      ipcRenderer.once("sortedDatacards", async (event, receivedDatacards) => {
         console.info(receivedDatacards);
         if (
           receivedDatacards.hasOwnProperty("nativeError") &&
@@ -304,7 +310,7 @@ class Datacard {
           let datacards = [];
           for (let i = 0; i < receivedDatacards.length; i++) {
             let newDatacard = new Datacard();
-            newDatacard.setDatacard(receivedDatacards[i]);
+            await newDatacard.setDatacard(receivedDatacards[i]);
             datacards.push(newDatacard);
           }
           resolve(datacards);
@@ -360,7 +366,7 @@ class Datacard {
   static getSortedByScientificName(catalogueId, order, limit) {
     return new Promise((resolve, reject) => {
       ipcRenderer.send("getSortedDatacards", catalogueId, order, limit);
-      ipcRenderer.once("sortedDatacards", (event, receivedDatacards) => {
+      ipcRenderer.once("sortedDatacards", async (event, receivedDatacards) => {
         console.info(receivedDatacards);
         if (
           receivedDatacards.hasOwnProperty("nativeError") &&
@@ -371,7 +377,7 @@ class Datacard {
           let datacards = [];
           for (let i = 0; i < receivedDatacards.length; i++) {
             let newDatacard = new Datacard();
-            newDatacard.setDatacard(receivedDatacards[i]);
+            await newDatacard.setDatacard(receivedDatacards[i]);
             datacards.push(newDatacard);
           }
           resolve(datacards);

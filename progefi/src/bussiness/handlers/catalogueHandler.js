@@ -21,6 +21,10 @@ class CatalogueHandler {
         let deletedCatalogue = await this.catalogueDao.deleteCatalogue(catalogueId);
         result(deletedCatalogue);
     }
+    async updateCatalogue(catalogue, result){
+        let updatedCatalogue = await this.catalogueDao.update(catalogue);
+        result(updatedCatalogue);
+    }
 }
 
 export default CatalogueHandler;

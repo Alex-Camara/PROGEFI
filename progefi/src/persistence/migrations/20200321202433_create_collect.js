@@ -10,6 +10,7 @@ exports.up = function(knex) {
       table.string("countryState");
       table.string("municipality");
       table.string("locality");
+        table.string("photocollectFormat");
       table.string("customClimateTypeCode");
       table.string("customVegetationTypeName");
       table

@@ -4,7 +4,7 @@
       <p class="menu-label">Usuario</p>
       <ul class="menu-list">
         <li>
-          <a id="menu-item">Cristian Alejandro</a>
+          <a id="menu-item">{{user.getName()}}</a>
         </li>
       </ul>
       <p class="menu-label">Fichas</p>
@@ -25,6 +25,7 @@
 <script>
 import { mapState } from "vuex";
 export default {
+  props:["user"],
   computed: {
     ...mapState("menu", {
       items: state => state.items

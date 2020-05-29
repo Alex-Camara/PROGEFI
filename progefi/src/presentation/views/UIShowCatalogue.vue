@@ -4,7 +4,7 @@
       <p
         class="component_title_return"
         v-if="catalogue"
-        @click="returnToCollections()"
+        @click="returnToCollection()"
       >
         {{ returnToCollectionTitle }}
       </p>
@@ -31,7 +31,7 @@
       id="ui_show_catalogue_delete_button"
       class="float_button_delete"
       v-if="catalogue"
-      @click="deleteCatalogue()"
+      @click="setCancelAction()"
       @mouseleave="setHelpText('', false)"
       @mouseenter="setHelpText(helpTextDelete, true)"
     >
@@ -50,7 +50,7 @@
       class="float_button"
       id="ui_show_catalogue_edit_button"
       v-if="catalogue"
-      @click="editCatalogue()"
+      @click="setEditAction()"
       @mouseleave="setHelpText('', false)"
       @mouseenter="setHelpText(helpTextEdit, true)"
     >
@@ -87,29 +87,103 @@ export default {
       title: "",
       helpTextEdit: "Editar...",
       helpTextDelete: "Eliminar...",
-      editMode: false
+      editMode: false,
+      auxiliarCatalogue: new Catalogue()
     };
   },
   mounted() {
     if (this.catalogue != null) {
       this.title = this.catalogue.getName();
+      this.auxiliarCatalogue.setCatalogue(this.catalogue);
     } else {
       this.title = "Agregar catálogo";
     }
   },
+  computed: {
+    isCatalogueValid: function() {
+      return (
+        this.catalogue.getNameValid().isValid &&
+        this.catalogue.getCodeValid().isValid &&
+        this.catalogue.getDescriptionValid().isValid
+      );
+    }
+  },
+  watch: {
+    isCatalogueValid(newValue) {
+      if (this.editMode) {
+        let createButtonElement = document.getElementById(
+          "ui_show_catalogue_edit_button"
+        );
+        if (newValue) {
+          createButtonElement.classList.remove("float_button_disabled");
+        } else {
+          createButtonElement.classList.add("float_button_disabled");
+        }
+      }
+    }
+  },
   methods: {
     returnToCollection() {
-      this.$router.push({
-        name: "UIShowCollections"
+      this.$store.commit("menu/setItemWithParams", {
+        name: "UIShowCollections",
+        params: null
       });
     },
     returnToCatalogues() {
-      this.$router.push({
+      this.$store.commit("menu/setItemWithParams", {
         name: "UIShowCatalogues",
-        params: {
-          selectedCollection: this.catalogue.getCollection()
-        }
+        params: {selectedCollection: this.catalogue.getCollection()}
       });
+    },
+    setCancelAction() {
+      if (this.editMode) {
+        this.editMode = false;
+        this.modifyButton();
+        this.catalogue.setCatalogue(this.auxiliarCatalogue);
+      } else {
+        this.deleteCatalogue();
+      }
+    },
+    setEditAction() {
+      if (this.editMode) {
+        this.updateCatalogue();
+      } else {
+        this.editMode = true;
+
+        this.modifyButton();
+      }
+    },
+    editCatalogue() {
+      this.editMode = !this.editMode;
+      this.modifyButton();
+    },
+    async updateCatalogue() {
+      await this.$store.dispatch("loading/setActive", {
+        active: true,
+        message: "Actualizando el catálogo..."
+      });
+
+      this.catalogue
+        .update()
+        .then(async () => {
+          await this.$store.dispatch("loading/setActive", {
+            active: false,
+            message: null
+          });
+          this.openToast("El catálogo ha sido actualizado");
+        })
+        .catch(async error => {
+          console.info(error);
+          await this.$store.dispatch("loading/setActive", {
+            active: false,
+            message: null
+          });
+          this.openDialog("Ha ocurrido un error con la base de datos");
+        })
+        .finally(() => {
+          this.editMode = false;
+          this.modifyButton();
+        });
     },
     async deleteCatalogue() {
       let answer = await this.openDialog("¿Deseas eliminar el catálogo?");
@@ -180,10 +254,6 @@ export default {
     setHelpText(message, active) {
       this.$store.dispatch("helpText/setActive", { active, message });
     },
-    editCatalogue() {
-      this.editMode = !this.editMode;
-      this.modifyButton();
-    },
     modifyButton() {
       let deleteButton = document.getElementById(
         "ui_show_catalogue_delete_button"
@@ -194,25 +264,27 @@ export default {
         this.helpTextDelete = "Cancelar edición...";
         editButton.classList.toggle("float_button_lateral");
         deleteButton.classList.remove("float_button_delete");
-        deleteButton.classList.add(
-          "float_button",
-          "float_cancel_style"
-        );
+        deleteButton.classList.add("float_button", "float_cancel_style");
       } else {
         this.helpTextEdit = "Editar...";
         this.helpTextDelete = "Eliminar...";
         editButton.classList.remove("float_button_lateral");
+        editButton.classList.remove("float_button_disabled");
         editButton.classList.add("float_button");
-        deleteButton.classList.remove(
-          "float_button",
-          "float_cancel_style"
-        );
+        deleteButton.classList.remove("float_button", "float_cancel_style");
         deleteButton.classList.add("float_button_delete");
       }
     }
   }
 };
 </script>
+
+<style lang="scss" scoped>
+  .float_button_disabled {
+    pointer-events: none !important;
+    opacity: 0.7 !important;
+  }
+</style>
 
 <style lang="scss">
 @import "../style/style.scss";

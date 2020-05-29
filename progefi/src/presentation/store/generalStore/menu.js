@@ -81,6 +81,27 @@ const menu = {
       }
       state.selectedItem = item;
     },
+    setItemWithParams(state, { name, params }) {
+      let item = null;
+      for (var i = 0; i < state.items.length; i++) {
+        if (name === state.items[i].name) {
+          item = state.items[i];
+          state.items[i].classObject["is-active"] = true;
+        } else {
+          state.items[i].classObject["is-active"] = false;
+        }
+      }
+      if (router.currentRoute.name !== item.name) {
+        if (params !== null) {
+          router.push({ name: item.name, params: params });
+        } else {
+          router.push({ name: item.name });
+        }
+      } else {
+        router.push({ params: params });
+      }
+      state.selectedItem = item;
+    },
     disableAllExceptSelected(state, name) {
       let item = null;
       for (var i = 0; i < state.items.length; i++) {
@@ -91,17 +112,18 @@ const menu = {
         } else {
           state.items[i].classObject["disabled_item"] = true;
         }
-        // if (router.currentRoute.name !== item.name) {
-        //   router.push({ name: item.name, params: item.params });
-        // } else {
-        //   router.push({ params: item.params });
-        // }
+        if (router.currentRoute.name !== item.name) {
+          router.push({ name: item.name, params: item.params });
+        } else {
+          router.push({ params: item.params });
+        }
+
         state.selectedItem = item;
       }
     },
     enableAll(state) {
       for (var i = 0; i < state.items.length; i++) {
-          state.items[i].classObject["disabled_item"] = false;
+        state.items[i].classObject["disabled_item"] = false;
       }
     }
   }
