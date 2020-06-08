@@ -17,7 +17,7 @@ const datacard = {
   state: {
     datacard: new Datacard(),
     datacards: [],
-    curators: [],
+    // curatos: [],
     selectedCurators: [],
     tempCollectorCode: null,
     requiredValues: {
@@ -29,7 +29,11 @@ const datacard = {
       // debugger;
       Vue.set(state, "datacard", datacard);
     },
+    setUser(state, user){
+      state.datacard.setUser(user);
+    },
     setTempCollectorCode(state, code) {
+
       state.tempCollectorCode = code;
     },
     setCollectDate(state, collectDate) {
@@ -65,9 +69,9 @@ const datacard = {
         .getSpecies()
         .setScientificName(scientificName);
     },
-    setCurators(state, curators) {
-      state.datacard.setCurators(curators);
-    },
+    // setCurators(state, curators) {
+    //   state.datacard.setCurators(curators);
+    // },
     reset(state) {
       Vue.set(state, "datacard", new Datacard());
       Vue.set(state, "datacards", []);

@@ -246,7 +246,7 @@ class Collect {
     return this.collectDateValid;
   }
   getFormattedCollectDate() {
-    return moment(this.collectDate).format("DD/MM/YYYY HH:mm");
+    return moment(this.collectDate).format("DD/MM/YYYY");
   }
   getFormattedCollectHour() {
     // debugger
@@ -428,7 +428,8 @@ class Collect {
   }
   validateLocation(testValue, testValueName, minLimit, maxLimit) {
     return new Promise(resolve => {
-      let regex = "^[^_{}+(),.;:!#$%&()\\[\\]=?¡+¿¡*|°@<>~¨^`¬\\d]+$";
+      let regex = "^[^_{}+();:!#$%&()\\[\\]=?¡+¿¡*|°@<>~¨^`¬\\d]+$";
+
       var validator = new Validator();
       validator
         .testValidationOne(testValue, minLimit, maxLimit, true, regex)

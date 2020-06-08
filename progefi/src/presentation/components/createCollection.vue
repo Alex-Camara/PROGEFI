@@ -39,6 +39,34 @@
     <div class="gray_box create_collection_content">
       <div class="create_collection_attribute_div_title">
         <required-field-helper
+                :name="entityTitle"
+                :valid="isEntityNameValid"
+        ></required-field-helper>
+      </div>
+      <input
+              id="create_collection_research_area_input"
+              class="input create_collection_input_elements"
+              v-model="entityName"
+      />
+    </div>
+
+    <div class="gray_box create_collection_content">
+      <div class="create_collection_attribute_div_title">
+        <required-field-helper
+                :name="entityAcronymTitle"
+                :valid="isEntityAcronymValid"
+        ></required-field-helper>
+      </div>
+      <input
+              id="create_collection_research_area_acronym_input"
+              class="input create_collection_input_elements"
+              v-model="entityAcronym"
+      />
+    </div>
+
+    <div class="gray_box create_collection_content">
+      <div class="create_collection_attribute_div_title">
+        <required-field-helper
           :name="instituteNameTitle"
           :valid="isInstituteNameValid"
         ></required-field-helper>
@@ -61,34 +89,6 @@
         id="create_collection_institute_acronym_input"
         class="input create_collection_input_elements"
         v-model="instituteAcronym"
-      />
-    </div>
-
-    <div class="gray_box create_collection_content">
-      <div class="create_collection_attribute_div_title">
-        <required-field-helper
-          :name="areaTitle"
-          :valid="isResearchAreaValid"
-        ></required-field-helper>
-      </div>
-      <input
-        id="create_collection_research_area_input"
-        class="input create_collection_input_elements"
-        v-model="researchArea"
-      />
-    </div>
-
-    <div class="gray_box create_collection_content">
-      <div class="create_collection_attribute_div_title">
-        <required-field-helper
-          :name="acronymAreaTitle"
-          :valid="isResearchAreaAcronymValid"
-        ></required-field-helper>
-      </div>
-      <input
-        id="create_collection_research_area_acronym_input"
-        class="input create_collection_input_elements"
-        v-model="researchAreaAcronym"
       />
     </div>
 
@@ -126,6 +126,7 @@
       </b-field>
 
       <div class="space"></div>
+
 
       <div v-if="collection.getInstituteLogoPath() !== null">
         <img
@@ -192,8 +193,8 @@ export default {
       codeTitle: "Código:",
       instituteNameTitle: "Instituto:",
       acronymTitle: "Acrónimo del instituto:",
-      areaTitle: "Área de investigación:",
-      acronymAreaTitle: "Acrónimo del área de investigación:",
+      entityTitle: "Nombre de la entidad:",
+      entityAcronymTitle: "Acrónimo de la entidad:",
       instituteLogoTitle: "Logo de la institución:",
       catalogueNumberTitle: "Número de catálogos:",
       descriptionTitle: "Descripción: ",
@@ -205,12 +206,19 @@ export default {
       helpTextCode:
         "Este es el código inicial que tendrá el código de los catálogos.",
       helpTextDestinationDirectory:
-        "Directorio donde se guardará el archivo csv generado por catálogo."
+        "Directorio donde se guardará el archivo csv generado por catálogo.",
+      notSupportedFormatMessage: "Formato no soportado",
     };
   },
   watch: {
     file(newValue) {
-      this.instituteLogoPath = newValue.path;
+      let isFileExtensionCorrect = this.checkFileExtension(this.file);
+      if (isFileExtensionCorrect) {
+        this.instituteLogoPath = newValue.path;
+      } else {
+        this.openDialog(this.notSupportedFormatMessage);
+        this.file = null;
+      }
     }
   },
   computed: {
@@ -229,8 +237,8 @@ export default {
     isInstituteNameValid: function() {
       return this.collection.getInstituteNameValid();
     },
-    isResearchAreaValid: function() {
-      return this.collection.getResearchAreaValid();
+    isEntityNameValid: function() {
+      return this.collection.getEntityNameValid();
     },
     isDescriptionValid: function() {
       return this.collection.getDescriptionValid();
@@ -241,8 +249,8 @@ export default {
     isCataloguesFolderPathValid: function() {
       return this.collection.getCataloguesFolderPathValid();
     },
-    isResearchAreaAcronymValid: function() {
-      return this.collection.getResearchAreaAcronymValid();
+    isEntityAcronymValid: function() {
+      return this.collection.getEntityAcronymValid();
     },
     name: {
       get: function() {
@@ -301,33 +309,33 @@ export default {
         await this.collection.setInstituteAcronym(newValue);
       }
     },
-    researchAreaAcronym: {
+    entityAcronym: {
       get: function() {
-        let researchAreaAcronym = this.collection.getResearchAreaAcronym();
+        let entityAcronym = this.collection.getEntityAcronym();
         if (
-          this.collection.getResearchAreaAcronymValid().message ===
+          this.collection.getEntityAcronymValid().message ===
           "temporary error"
         ) {
           this.addShakeEffect("create_collection_research_area_acronym_input");
         }
-        return researchAreaAcronym;
+        return entityAcronym;
       },
       set: async function(newValue) {
-        await this.collection.setResearchAreaAcronym(newValue);
+        await this.collection.setEntityAcronym(newValue);
       }
     },
-    researchArea: {
+    entityName: {
       get: function() {
-        let researchArea = this.collection.getResearchArea();
+        let entityName = this.collection.getEntityName();
         if (
-          this.collection.getResearchAreaValid().message === "temporary error"
+          this.collection.getEntityNameValid().message === "temporary error"
         ) {
           this.addShakeEffect("create_collection_research_area_input");
         }
-        return researchArea;
+        return entityName;
       },
       set: async function(newValue) {
-        await this.collection.setResearchArea(newValue);
+        await this.collection.setEntityName(newValue);
       }
     },
     description: {
@@ -365,6 +373,20 @@ export default {
     setDirectory(event) {
       let destinationDirectory = event.path[0].files[0].path;
       this.cataloguesFolderPath = destinationDirectory;
+    },
+    checkFileExtension(file) {
+      let fileName = file.name;
+      let fileExtension =
+        fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length) ||
+        fileName;
+      return (
+        fileExtension === "png" ||
+        fileExtension === "jpeg" ||
+        fileExtension === "jpg"
+      );
+    },
+    openDialog(message) {
+      this.$buefy.dialog.alert(message);
     },
     setHelpText(message, active) {
       this.$store.dispatch("helpText/setActive", { active, message });

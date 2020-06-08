@@ -78,6 +78,7 @@ export default {
         "Colector",
         "Creador de la ficha",
         "Curador",
+        "Instituto",
         "Fecha de creación",
         "Fecha de captura"
       ],
@@ -108,6 +109,7 @@ export default {
         this.loading = false;
         this.file = null;
         this.trackData = null;
+        this.rigthSideTitle = "Datos recuperados:";
       }
     },
     checkFileExtension(file){

@@ -109,7 +109,7 @@ export default {
     getTagStyle(tag) {
       if (tag.i !== "photocollect" && tag.i !== "instituteLogo") {
         let style = tag.getStyle(this.template.getFontFamily());
-        if (!this.editMode){
+        if (!this.editMode) {
           style.backgroundColor = "";
         }
         return style;
@@ -139,7 +139,6 @@ export default {
         previewWidth = this.truncate(previewWidth, 1);
 
         tag.setExampleValue(previewWidth + " x " + previewHeight);
-
 
         return style;
       }
@@ -249,7 +248,7 @@ export default {
         console.info(this.partialHeight);
         layoutDOMElement.style.backgroundColor = "white!important";
         layoutDOMElement.style.width =
-                this.partialWidth - marginX * 2 + "px!important";
+          this.partialWidth - marginX * 2 + "px!important";
         resolve();
       });
     },
@@ -282,21 +281,21 @@ export default {
       var index = this.originalTags.findIndex(x => x.tagName === tag.tagName);
       this.originalTags.splice(index, 1);
     },
-    async prepareTemplateCreation(){
-        this.setRealTemplateSize();
-        this.setRealFontSize();
-        await this.setRealMargins();
-        this.isDraggable = false;
-        this.isResizable = false;
-        let self = this;
-        this.$store.dispatch("loading/setActive", {
-          active: true,
-          message: this.loadingMessage
-        });
-        setTimeout(async function () {
-          //se obtiene el archivo de la fotocolecta y se asignan los datos a la ficha
-          self.createTemplate();
-        }, 3000);
+    async prepareTemplateCreation() {
+      this.setRealTemplateSize();
+      this.setRealFontSize();
+      await this.setRealMargins();
+      this.isDraggable = false;
+      this.isResizable = false;
+      let self = this;
+      this.$store.dispatch("loading/setActive", {
+        active: true,
+        message: this.loadingMessage
+      });
+      setTimeout(async function() {
+        //se obtiene el archivo de la fotocolecta y se asignan los datos a la ficha
+        self.createTemplate();
+      }, 3000);
     },
     async createTemplate() {
       this.template.base64 = await this.generateTemplateFile();

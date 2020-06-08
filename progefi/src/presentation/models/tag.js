@@ -2,6 +2,7 @@
 import Validator from "../validators/validator";
 import { ipcRenderer } from "electron";
 
+
 class Tag {
   constructor() {
     this.id = null;
@@ -97,8 +98,8 @@ class Tag {
   setTemplate(template) {
     this.template = template;
   }
-  setFontSize(fontSize) {
-    this.fontSize = fontSize;
+  async setFontSize(fontSize) {
+    await this.validateDimension(fontSize, "fontSize", 1, 80, 9);
   }
   setFontWeight(fontWeight) {
     this.fontWeight = fontWeight;
@@ -292,6 +293,56 @@ class Tag {
             resolve();
           } else {
             this[testValueName + "Valid"] = { isValid: false, message: error };
+            resolve();
+          }
+        });
+    });
+  }
+  validateDimension(
+    testValue,
+    testValueName,
+    minLimit,
+    maxLimit,
+    decimalMaxLimit
+  ) {
+    return new Promise(resolve => {
+      var validator = new Validator();
+      validator
+        .testValidationTwo(testValue, minLimit, maxLimit, decimalMaxLimit, true)
+        .then(() => {
+          this[testValueName] = testValue;
+          this[testValueName + "Valid"] = { isValid: true, message: null };
+          resolve();
+        })
+        .catch(error => {
+          // cuando el campo es requerido y esta vacío
+          if (error == "Campo requerido") {
+            this[testValueName] = testValue;
+            this[testValueName + "Valid"] = { isValid: false, message: error };
+            resolve();
+            // cuando el campo esta vacío, pero no es error porque el campo no es requerido
+          } else if (error == "Campo vacío") {
+            this[testValueName] = testValue;
+            this[testValueName + "Valid"] = {
+              isValid: true,
+              message: "temporary error"
+            };
+            resolve();
+            // cuando solo se ha ingresado un - para un número negativo
+          } else if (error == "Ingresa un número") {
+            this[testValueName] = testValue;
+            this[testValueName + "Valid"] = { isValid: false, message: error };
+            resolve();
+            // cuando hubo un error y solo se informa, no se refleja en el estado
+          } else if (this[testValueName] == "" || this[testValueName] == "-") {
+            this[testValueName + "Valid"] = { isValid: false, message: error };
+            resolve();
+            // cuando hubo un error y solo se informa, no se refleja en el estado
+          } else {
+            this[testValueName + "Valid"] = {
+              isValid: true,
+              message: "temporary error"
+            };
             resolve();
           }
         });

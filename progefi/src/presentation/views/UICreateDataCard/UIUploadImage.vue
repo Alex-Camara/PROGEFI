@@ -12,7 +12,7 @@
       <!-- --------AddDataCard1 Component Content----- -->
       <div id="add_datacard_component_content">
         <b-field class="file">
-          <b-upload v-model="file" accept="image/*">
+          <b-upload v-model="file">
             <a class="button is-secondary">
               <b-icon icon="upload"></b-icon>
               <span>{{ uploadButtonText }}</span>
@@ -92,12 +92,13 @@ export default {
         this.datacard
           .getCollect()
           .setPhotocollectFormat(this.getFileExtension(newValue));
+        // debugger
       }
     }
   },
   watch: {
     photoCollectPath(newValue) {
-      if (newValue == "not-supported-format") {
+      if (newValue === "not-supported-format") {
         this.file = null;
         this.openSnackBar("¡Formato no soportado!");
       }
@@ -119,7 +120,17 @@ export default {
       let fileExtension =
         fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length) ||
         fileName;
-      return fileExtension;
+      if (
+        fileExtension === "jpeg" ||
+        fileExtension === "jpg" ||
+        fileExtension === "png" ||
+        fileExtension === "bmp" ||
+        fileExtension === "webp"
+      ) {
+        return fileExtension;
+      } else {
+        return "webp";
+      }
     },
     openSnackBar(message) {
       this.$buefy.snackbar.open({

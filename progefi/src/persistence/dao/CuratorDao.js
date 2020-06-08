@@ -14,9 +14,9 @@ class CuratorDao {
         let curators = Promise.resolve(this.curatorDaoImp.getAllByName(selectedCurator));
         return curators;
     }
-    getDatacardCurators(datacardId){
-        let curators = Promise.resolve(this.curatorDaoImp.getDatacardCurators(datacardId));
-        return curators;
+    getByName(name) {
+        let curator = Promise.resolve(this.curatorDaoImp.getByName(name));
+        return curator;
     }
     createCurator(curator) {
         let createdCurator = Promise.resolve(this.curatorDaoImp.createCurator(curator));

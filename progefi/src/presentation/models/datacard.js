@@ -5,6 +5,8 @@ import Catalogue from "./catalogue";
 import Curator from "./curator";
 import Collect from "./collect";
 import Template from "./template";
+import User from "./user";
+import Collector from "./collector";
 
 class Datacard {
   constructor() {
@@ -14,16 +16,16 @@ class Datacard {
     this.formattedDate = null;
     this.formattedHour = null;
     this.base64 = null;
-    this.curators = [];
+    this.curator = new Curator();
     this.collectorCode = null;
     this.creationDate = null;
     this.catalogue = new Catalogue();
-    this.curators = [];
     this.thumbnail = null;
     this.datacardPath = null;
     this.collect = new Collect();
     this.template = new Template();
     this.tempCollectorCode = null;
+    this.user = new User();
   }
   async setDatacard(datacard) {
     this.id = datacard.id;
@@ -46,12 +48,19 @@ class Datacard {
     await newCollect.setCollect(datacard.collect);
     this.collect = newCollect;
 
-    this.photocollectPath = datacard.datacardPath + "/original."+ this.collect.getPhotocollectFormat();
+    let newUser = new User();
+    newUser.setUser(datacard.user);
+    this.user = newUser;
 
-    for (let i = 0; i < datacard.curators.length; i++) {
-      let curator = new Curator();
-      curator.setCurator(datacard.curators[i]);
-      this.curators.push(curator);
+    this.photocollectPath =
+      datacard.datacardPath +
+      "/original." +
+      this.collect.getPhotocollectFormat();
+
+    if (datacard.curator){
+      let newCurator = new Curator();
+      newCurator.setCurator(datacard.curator);
+      this.curator = newCurator;
     }
   }
   setCollect(collect) {
@@ -73,11 +82,30 @@ class Datacard {
       catalogue.getDatacardCount()
     );
   }
-  setCurators(curators) {
-    this.curators = curators;
+  setCurator(curator) {
+    return new Promise(async resolve => {
+      if (curator.hasOwnProperty("id")) {
+        curator.valid = {isValid: true, message: null};
+        this.curator = curator;
+        resolve(curator);
+      } else {
+        let existingCurator = await Curator.getExisting(curator);
+        if (existingCurator.length > 0) {
+          existingCurator.setValid = {isValid: true, message: null};
+          this.curator = existingCurator;
+          resolve(existingCurator);
+        } else {
+          await this.curator.setName(curator);
+          resolve(this.curator);
+        }
+      }
+
+    });
   }
-  addCurator(curator) {
-    this.curators.push(curator);
+  setUser(user) {
+    let newUser = new User();
+    newUser.setUser(user);
+    this.user = newUser;
   }
   setTemplate(template) {
     this.template = template;
@@ -119,14 +147,17 @@ class Datacard {
   getFormattedDate() {
     return this.formattedDate;
   }
-  getCurators() {
-    return this.curators;
+  getCurator() {
+    return this.curator;
   }
   getFormattedHour() {
     return this.formattedHour;
   }
   getTemplate() {
     return this.template;
+  }
+  getUser() {
+    return this.user;
   }
   isValidated() {
     return this.validated;
@@ -148,16 +179,6 @@ class Datacard {
   }
   getCollect() {
     return this.collect;
-  }
-  getFormattedCurators() {
-    let curatorsName = "";
-    for (let i = 0; i < this.curators.length; i++) {
-      curatorsName += this.curators[i].getName();
-      if (i !== this.curators.length - 1) {
-        curatorsName += " | ";
-      }
-    }
-    return curatorsName;
   }
   generateCode(collectionCode, catalogueCode, datacardCountInCatalogue) {
     let codeWithZeroes = datacardCountInCatalogue.toString().padStart(5, "0");
@@ -185,10 +206,10 @@ class Datacard {
       this.collectorCode = baseCollectorCode + " 0001";
     }
   }
-  saveCurators() {
+  saveCurator() {
     return new Promise(async resolve => {
-      for (let i = 0; i < this.curators.length; i++) {
-        await this.curators[i].save();
+      if (this.curator.getId() !== null) {
+        await this.curator.save();
       }
       resolve();
     });
@@ -202,10 +223,9 @@ class Datacard {
           createdDatacard.nativeError.code === "SQLITE_ERROR"
         ) {
           reject();
-        }  else if (createdDatacard === "file-error"){
-          resolve("file-error")
-        }
-        else {
+        } else if (createdDatacard === "file-error") {
+          resolve("file-error");
+        } else {
           resolve();
         }
       });
@@ -220,8 +240,8 @@ class Datacard {
           updatedDatacard.nativeError.code === "SQLITE_ERROR"
         ) {
           reject();
-        } else if (updatedDatacard === "file-error"){
-          resolve("file-error")
+        } else if (updatedDatacard === "file-error") {
+          resolve("file-error");
         } else {
           resolve();
         }
@@ -341,13 +361,13 @@ class Datacard {
       });
     });
   }
-  static getByCode(catalogueId, code){
+  static getByCode(catalogueId, code) {
     return new Promise((resolve, reject) => {
       ipcRenderer.send("getDatacardsByCode", catalogueId, code);
       ipcRenderer.once("datacardsByCode", (event, receivedDatacards) => {
         if (
-            receivedDatacards.hasOwnProperty("nativeError") &&
-            receivedDatacards.nativeError.code === "SQLITE_ERROR"
+          receivedDatacards.hasOwnProperty("nativeError") &&
+          receivedDatacards.nativeError.code === "SQLITE_ERROR"
         ) {
           reject();
         } else {

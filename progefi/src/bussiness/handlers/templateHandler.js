@@ -18,7 +18,7 @@ class TemplateHandler {
     let base64Image = base64String.split(";base64,").pop();
 
     let templatePath =
-      templatesFolderPath + "/template" + +new Date().getTime() + ".png";
+      templatesFolderPath + "/template" + new Date().getTime() + ".png";
 
     this.base64Decode(base64Image, templatePath);
 

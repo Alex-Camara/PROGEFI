@@ -1,18 +1,16 @@
 "use strict";
 
 const Collect = require("../models/Collect");
-const VegetationType = require("../models/VegetationType");
 const Species = require("../models/Species");
 const Specimen = require("../models/Specimen");
-const ClimateType = require("../models/ClimateType");
 const Datacard = require("../models/Datacard");
-const Datacard_has_curators = require("../models/Datacard_has_curators");
+// const Datacard_has_curators = require("../models/Datacard_has_curators");
 
 class DatacardDaoImp {
   async getDatacardsInCatalogue(catalogueId, searchString) {
     const datacards = await Datacard.query()
       .withGraphFetched(
-        "[collect.[collector, project, model.device, climateType, vegetationType.vegetalFormation, specimen.[species, sex, lifeStage]], catalogue.collection, curators, template.[tags]]"
+        "[user, curator,collect.[collector, project, model.device, climateType, vegetationType.vegetalFormation, specimen.[species, sex, lifeStage]], catalogue.collection, template.[tags]]"
       )
       .where("catalogueId", catalogueId)
       .where("code", "like", "%" + searchString + "%")
@@ -27,7 +25,7 @@ class DatacardDaoImp {
     if (catalogueId !== null) {
       datacards = await Datacard.query()
         .withGraphFetched(
-          "[collect.[collector, project, model.device, climateType, vegetationType.vegetalFormation, specimen.[species, sex, lifeStage]], catalogue.collection, curators, template.[tags]]"
+          "[user, curator,collect.[collector, project, model.device, climateType, vegetationType.vegetalFormation, specimen.[species, sex, lifeStage]], catalogue.collection, template.[tags]]"
         )
         .where("catalogueId", catalogueId)
         .where("code", "like", "%" + code + "%")
@@ -37,7 +35,7 @@ class DatacardDaoImp {
     } else {
       datacards = await Datacard.query()
         .withGraphFetched(
-          "[collect.[collector, project, model.device, climateType, vegetationType.vegetalFormation, specimen.[species, sex, lifeStage]], catalogue.collection, curators, template.[tags]]"
+          "[user, curator,collect.[collector, project, model.device, climateType, vegetationType.vegetalFormation, specimen.[species, sex, lifeStage]], catalogue.collection, template.[tags]]"
         )
         .where("code", "like", "%" + code + "%")
         .catch(error => {
@@ -71,7 +69,7 @@ class DatacardDaoImp {
     // console.log("recuperando fichas...");
     const datacards = await Datacard.query()
       .withGraphFetched(
-        "[collect.[collector, project, model.device, climateType, vegetationType.vegetalFormation, specimen.[species, sex, lifeStage]], catalogue.collection, curators, template.[tags]]"
+        "[user, curator,collect.[collector, project, model.device, climateType, vegetationType.vegetalFormation, specimen.[species, sex, lifeStage]], catalogue.collection, template.[tags]]"
       )
       .catch(error => {
         console.info(error);
@@ -80,6 +78,8 @@ class DatacardDaoImp {
     return datacards;
   }
   async getSortedDatacards(catalogueId, field, order, limit, offset) {
+    console.info(offset)
+    console.info(limit)
     let orderByQuery = "";
     switch (field) {
       case "scientificName": {
@@ -113,7 +113,8 @@ class DatacardDaoImp {
       datacards = await Datacard.query()
         .joinRelated("[collect.[specimen.species, collector, project]]")
         .withGraphFetched(
-          "[collect.[collector, project, model.device, climateType, vegetationType.vegetalFormation, specimen.[species, sex, lifeStage]], catalogue.collection, curators, template.[tags]]"
+          "[user, curator" +
+            ",collect.[collector, project, model.device, climateType, vegetationType.vegetalFormation, specimen.[species, sex, lifeStage]], catalogue.collection, template.[tags]]"
         )
         .where("catalogueId", catalogueId)
         .orderBy(orderByQuery, order)
@@ -127,7 +128,7 @@ class DatacardDaoImp {
       datacards = await Datacard.query()
         .joinRelated("[collect.[specimen.species, collector, project]]")
         .withGraphFetched(
-          "[collect.[collector, project, model.device, climateType, vegetationType.vegetalFormation, specimen.[species, sex, lifeStage]], catalogue.collection, curators, template.[tags]]"
+          "[user, curator,collect.[collector, project, model.device, climateType, vegetationType.vegetalFormation, specimen.[species, sex, lifeStage]], catalogue.collection, template.[tags]]"
         )
         .orderBy(orderByQuery, order)
         .limit(limit)
@@ -143,7 +144,7 @@ class DatacardDaoImp {
   async getFiltered(searchCriteria) {
     let datacards = await Datacard.query()
       .withGraphFetched(
-        "[collect.[collector, project, model.device, climateType, vegetationType.vegetalFormation, specimen.[species, sex, lifeStage]], catalogue.collection, curators, template.[tags]]"
+        "[user, curator,collect.[collector, project, model.device, climateType, vegetationType.vegetalFormation, specimen.[species, sex, lifeStage]], catalogue.collection, template.[tags]]"
       );
     let filterValue = null;
     let datacardFilter = searchCriteria.datacard;
@@ -185,19 +186,18 @@ class DatacardDaoImp {
       datacards = datacards.filter(item => !idsToDelete.includes(item.id));
     }
 
-    filterValue = datacardFilter.curators[0];
-    if (filterValue !== null && filterValue !== undefined) {
+    filterValue = datacardFilter.curator.id;
+    if (filterValue !== null) {
       let idsToDelete = [];
       for (let i = 0; i < datacards.length; i++) {
-        let curator = datacards[i].curators.filter(
-          curator => curator.id === filterValue.id
-        );
-        if (curator.length === 0) {
+        let actualValue = datacards[i].curator.id;
+        if (actualValue !== filterValue) {
           idsToDelete.push(datacards[i].id);
         }
       }
       datacards = datacards.filter(item => !idsToDelete.includes(item.id));
     }
+
     filterValue = null;
 
     filterValue = datacardFilter.collect.country;
@@ -454,25 +454,14 @@ class DatacardDaoImp {
         collectorCode: datacard.collectorCode,
         catalogueId: datacard.catalogue.id,
         templateId: datacard.template.id,
-        collectId: newCollect.id
+        collectId: newCollect.id,
+        userId: datacard.user.id,
+        curatorId: datacard.curator.id
       })
       .catch(error => {
         console.info(error);
         return error;
       });
-
-    for (let i = 0; i < datacard.curators.length; i++) {
-      await Datacard_has_curators.query()
-        .insert({
-          datacardId: newDatacard.id,
-          curatorId: datacard.curators[i].id
-        })
-        .catch(error => {
-          console.info(error);
-          return error;
-        });
-    }
-
     return newDatacard;
   }
   async updateDatacard(datacard) {
@@ -549,8 +538,8 @@ class DatacardDaoImp {
         console.info(error);
         return error;
       });
-    // console.info(oldSpecimen)
-    let updatedSpecimen = await oldSpecimen
+
+    await oldSpecimen
       .$query()
       .updateAndFetch({
         observations: specimenToUpdate.observations,
@@ -632,24 +621,13 @@ class DatacardDaoImp {
         collectorCode: datacard.collectorCode,
         catalogueId: datacard.catalogue.id,
         collectId: updatedCollect.id,
-        templateId: datacard.template.id
+        templateId: datacard.template.id,
+        curatorId: datacard.curator.id
       })
       .catch(error => {
         console.info(error);
         return error;
       });
-
-    for (let i = 0; i < datacard.curators.length; i++) {
-      await Datacard_has_curators.query()
-        .insert({
-          datacardId: datacard.id,
-          curatorId: datacard.curators[i].id
-        })
-        .catch(error => {
-          console.info(error);
-          return error;
-        });
-    }
 
     return updatedDatacard;
   }

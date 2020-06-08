@@ -135,10 +135,10 @@ class Template {
     await this.validateString(backgroundColor, "backgroundColor", 7, 7, regex);
   }
   async setHeight(height) {
-    await this.validateDimension(height, "height", 1, 10000, 9);
+    await this.validateDimension(height, "height", 1, 34015, 99);
   }
   async setWidth(width) {
-    await this.validateDimension(width, "width", 1, 10000, 9);
+    await this.validateDimension(width, "width", 1, 34015, 99);
   }
   async setMarginX(marginX) {
     await this.validateDimension(marginX, "marginX", 0, this.width / 3, 0);
@@ -226,14 +226,34 @@ class Template {
   getHeight() {
     return this.height;
   }
+  getHeightInMilimeters() {
+    let mm = this.height/3.7795275591;
+    mm = mm.toFixed(0);
+    return mm;
+  }
   getWidth() {
     return this.width;
+  }
+  getWidthInMilimeters() {
+    let mm = this.width/3.7795275591;
+    mm = Math.round(mm);
+    return mm;
   }
   getMarginX() {
     return this.marginX;
   }
+  getMarginXInMilimeters() {
+    let mm = this.marginX/3.7795275591;
+    mm = Math.round(mm);
+    return mm;
+  }
   getMarginY() {
     return this.marginY;
+  }
+  getMarginYInMilimeters() {
+    let mm = this.marginY/3.7795275591;
+    mm = Math.round(mm);
+    return mm;
   }
   getBackgroundColor() {
     return this.backgroundColor;
@@ -435,6 +455,7 @@ class Template {
             resolve();
             // cuando hubo un error y solo se informa, no se refleja en el estado
           } else {
+            debugger
             this[testValueName + "Valid"] = {
               isValid: true,
               message: "temporary error"

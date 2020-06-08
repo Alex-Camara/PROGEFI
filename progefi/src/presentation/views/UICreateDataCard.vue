@@ -4,19 +4,27 @@
     <!-- --------AddDataCard Component Header----- -->
     <div id="create_datacard_component_header">
       <div id="create_datacard_component_title">
-        <p class="component_title">{{title}}</p>
+        <p class="component_title">{{ title }}</p>
       </div>
     </div>
 
     <!-- --------AddDataCard Component Content----- -->
     <div id="create_datacard_component_content">
       <div>
-        <b-steps size="is-small" type="is-secondary" :has-navigation="false" v-model="activeStep">
+        <b-steps
+          size="is-small"
+          type="is-secondary"
+          :has-navigation="false"
+          v-model="activeStep"
+        >
           <b-step-item label="Subir fotografía" :clickable="true">
             <UIUploadImage></UIUploadImage>
           </b-step-item>
           <b-step-item label="Datos generales" :clickable="true">
-            <UIGeneralData :catalogue="catalogue" :disableFields="disableGeneralDataFields"></UIGeneralData>
+            <UIGeneralData
+              :catalogue="catalogue"
+              :disableFields="disableGeneralDataFields"
+            ></UIGeneralData>
           </b-step-item>
           <b-step-item label="Datos geográficos" :clickable="true">
             <UIGeographicalData></UIGeographicalData>
@@ -25,7 +33,9 @@
             <UITaxonomicalData></UITaxonomicalData>
           </b-step-item>
           <b-step-item label="Validación" :clickable="true">
-            <UIValidateData v-on:exitComponent="exitComponent()"></UIValidateData>
+            <UIValidateData
+              v-on:exitComponent="exitComponent()"
+            ></UIValidateData>
           </b-step-item>
         </b-steps>
       </div>
@@ -69,17 +79,18 @@ export default {
     });
   },
   async mounted() {
-    await this.clearCache()
+    await this.clearCache();
     console.info(this.catalogue);
     this.showInternetStatus();
     if (this.datacardDraft) {
       this.setDatacard(this.datacardDraft);
-    } else if (this.catalogue) {
-      // this.setCatalogue(this.catalogue);
+      this.$store.commit("datacard/setUser", this.user);
+    } else {
+      this.$store.commit("datacard/setUser", this.user);
     }
   },
   async beforeDestroy() {
-    await this.clearCache()
+    await this.clearCache();
     this.resetStore();
   },
   beforeRouteLeave(to, from, next) {
@@ -91,6 +102,7 @@ export default {
           next();
         } else {
           next(false);
+          this.$store.commit("menu/setSelected", "UIShowDataCards");
         }
       });
     } else {
@@ -98,6 +110,9 @@ export default {
     }
   },
   computed: {
+    ...mapState("user", {
+      user: state => state.user
+    }),
     title: function() {
       if (!this.datacardDraft) {
         return "Agregar ficha";
@@ -123,21 +138,26 @@ export default {
     async setDatacard(datacardDraft) {
       this.disableGeneralDataFields = true;
       this.$store.commit("datacard/setDatacard", datacardDraft);
-      let photocollectPath = datacardDraft.getDatacardPath() + "/original." + datacardDraft.getCollect().getPhotocollectFormat();
+      let photocollectPath =
+        datacardDraft.getDatacardPath() +
+        "/original." +
+        datacardDraft.getCollect().getPhotocollectFormat();
       await this.$store.dispatch(
         "addDatacard/setPhotocollectFilePath",
         photocollectPath
       );
     },
-    clearCache(){
-      return new Promise((resolve) => {
-        var { remote} = require('electron');
+    clearCache() {
+      return new Promise(resolve => {
+        var { remote } = require("electron");
         var win = remote.getCurrentWindow();
-        win.webContents.session.clearCache(function () {
-          win.webContents.session.clearStorageData(function () {
-            console.info(win.webContents.session.getCacheSize(n => {
-              resolve()
-            }))
+        win.webContents.session.clearCache(function() {
+          win.webContents.session.clearStorageData(function() {
+            console.info(
+              win.webContents.session.getCacheSize(n => {
+                resolve();
+              })
+            );
           });
         });
       });
@@ -153,19 +173,22 @@ export default {
         this.showNotification("No hay conexión a Internet", "is-warning");
       }
     },
-    async exitComponent(){
-      if (this.catalogue){
+    async exitComponent() {
+      if (this.catalogue) {
         await this.$router.push({
           name: "UIShowCatalogues",
           params: { askToLeave: false }
         });
-      } else{
+      } else {
         await this.$router.push({
           name: "UIShowDataCards",
-          params: { askToLeave: false, selectedCatalogue: this.catalogue, reload: true }
+          params: {
+            askToLeave: false,
+            selectedCatalogue: this.catalogue,
+            reload: true
+          }
         });
       }
-
     },
     showNotification(message, type) {
       this.$buefy.notification.open({
@@ -177,7 +200,7 @@ export default {
       });
     },
     showDialog() {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         let f = this.$buefy.dialog.confirm({
           message: "¿Deseas salir de esta ventana? Tu trabajo no se guardará",
           confirmText: "Cancelar",
@@ -241,4 +264,4 @@ export default {
   width: 15px;
   margin-right: 10px;
 }
-</style> 
+</style>

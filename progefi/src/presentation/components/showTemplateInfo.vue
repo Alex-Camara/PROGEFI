@@ -173,7 +173,7 @@
           </div>
 <!--          <div>-->
             <p id="show_template_height_value" class="attribute_value" v-if="!editMode">
-              {{ template.getHeight() + " px" }}
+              {{ template.getHeight() + " mm" }}
             </p>
             <input
               id="show_template_height_input"
@@ -196,7 +196,7 @@
             <p class="attribute_name">{{widthField}}</p>
           </div>
             <p id="show_template_width_value" class="attribute_value" v-if="!editMode">
-              {{ template.getWidth() + " px" }}
+              {{ template.getWidth() + " mm" }}
             </p>
             <input
               id="show_template_width_input"
@@ -218,7 +218,7 @@
             <p class="attribute_name">{{marginXField}}</p>
           </div>
           <p id="show_template_x_margin_value" class="attribute_value" v-if="!editMode">
-            {{ template.getMarginX()}}
+            {{ template.getMarginX() + " mm"}}
           </p>
           <input
                   id="show_template_x_margin_input"
@@ -240,7 +240,7 @@
             <p class="attribute_name">{{marginYField}}</p>
           </div>
           <p id="show_template_y_margin_value" class="attribute_value" v-if="!editMode">
-            {{ template.getMarginY()}}
+            {{ template.getMarginY() + " mm"}}
           </p>
           <input
                   id="show_template_y_margin_input"
@@ -391,49 +391,57 @@ export default {
     },
     height: {
       get: function() {
-        let height = this.template.getHeight();
+        let height = this.template.getHeightInMilimeters();
         if (this.template.getHeightValid().message == "temporary error") {
           this.addShakeEffect("create_template_font_color_input");
         }
         return height;
       },
       set: function(newValue) {
+        newValue = newValue * 3.7795275591;
+        newValue = Math.round(newValue);
         this.template.setHeight(newValue);
       }
     },
     width: {
       get: function() {
-        let height = this.template.getWidth();
+        let height = this.template.getWidthInMilimeters();
         if (this.template.getWidthValid().message == "temporary error") {
           this.addShakeEffect("create_template_font_color_input");
         }
         return height;
       },
       set: function(newValue) {
+        newValue = newValue * 3.7795275591;
+        newValue = Math.round(newValue);
         this.template.setWidth(newValue);
       }
     },
     marginX: {
       get: function() {
-        let marginX = this.template.getMarginX();
+        let marginX = this.template.getMarginXInMilimeters();
         if (this.template.getMarginXValid().message == "temporary error") {
           this.addShakeEffect("show_template_x_margin_input");
         }
         return marginX;
       },
       set: function(newValue) {
+        newValue = newValue * 3.7795275591;
+        newValue = Math.round(newValue);
         this.template.setMarginX(newValue);
       }
     },
     marginY: {
       get: function() {
-        let marginY = this.template.getMarginY();
+        let marginY = this.template.getMarginYInMilimeters();
         if (this.template.getMarginYValid().message == "temporary error") {
           this.addShakeEffect("show_template_y_margin_input");
         }
         return marginY;
       },
       set: function(newValue) {
+        newValue = newValue * 3.7795275591;
+        newValue = Math.round(newValue);
         this.template.setMarginY(newValue);
       }
     },

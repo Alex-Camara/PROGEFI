@@ -13,6 +13,7 @@ class Datacard extends Model {
     const Template = require('./Template');
     const Catalogue = require('./Catalogue');
     const Curator = require('./Curator');
+    const User = require('./User');
     return {
       collect: {
         relation: Model.BelongsToOneRelation,
@@ -22,24 +23,28 @@ class Datacard extends Model {
           to: 'Collect.id'
         }
       },
-      curators: {
-        relation: Model.ManyToManyRelation,
-        modelClass: Curator,
-        join: {
-          from: 'Datacard.id',
-          through: {
-            from: 'Datacard_has_curators.datacardId',
-            to: 'Datacard_has_curators.curatorId'
-          },
-          to: 'Curator.id'
-        }
-      },
       catalogue: {
         relation: Model.BelongsToOneRelation,
         modelClass: Catalogue,
         join: {
           from: 'Datacard.catalogueId',
           to: 'Catalogue.id'
+        }
+      },
+      user: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: User,
+        join: {
+          from: 'Datacard.userId',
+          to: 'User.id'
+        }
+      },
+      curator: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Curator,
+        join: {
+          from: 'Datacard.curatorId',
+          to: 'Curator.id'
         }
       },
       template: {

@@ -83,7 +83,7 @@
           </b-table-column>
           <b-table-column field="curator" label="Curador" width="20">
             <div class="datacards_table_cells">
-              {{ props.row.getFormattedCurators() }}
+              {{ props.row.getCurator().getName() }}
             </div>
           </b-table-column>
           <b-table-column
@@ -322,6 +322,7 @@ export default {
         this.offset
       );
         this.datacards = this.datacards.concat(newDatacards);
+        this.allDatacards = this.datacards;
       this.offset += 10;
       this.currentLength = this.datacards.length;
     },

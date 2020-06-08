@@ -33,13 +33,13 @@ class Collection {
       isValid: false,
       message: "Campo requerido"
     };
-    this.researchAreaAcronym = "";
-    this.researchAreaAcronymValid = {
+    this.entityAcronym = "";
+    this.entityAcronymValid = {
       isValid: false,
       message: "Campo requerido"
     };
-    this.researchArea = "";
-    this.researchAreaValid = {
+    this.entityName = "";
+    this.entityNameValid = {
       isValid: false,
       message: "Campo requerido"
     };
@@ -69,16 +69,16 @@ class Collection {
     this.instituteAcronym = collection.instituteAcronym;
     this.instituteLogoPath = collection.instituteLogoPath;
     this.cataloguesFolderPath = collection.cataloguesFolderPath;
-    this.researchArea = collection.researchArea;
+    this.entityName = collection.entityName;
     this.cataloguesNumber = collection.cataloguesNumber;
-    this.researchAreaAcronym = collection.researchAreaAcronym;
+    this.entityAcronym = collection.entityAcronym;
 
     this.nameValid = { isValid: true, message: null };
     this.codeValid = { isValid: true, message: null };
     this.descriptionValid = { isValid: true, message: null };
     this.setValid({ isValid: true, message: null });
-    this.researchAreaValid = { isValid: true, message: null };
-    this.researchAreaAcronymValid = { isValid: true, message: null };
+    this.entityNameValid = { isValid: true, message: null };
+    this.entityAcronymValid = { isValid: true, message: null };
     this.cataloguesFolderPathValid = { isValid: true, message: null };
     this.instituteNameValid = { isValid: true, message: null };
     this.instituteAcronymValid = { isValid: true, message: null };
@@ -114,11 +114,11 @@ class Collection {
       true
     );
   }
-  async setResearchAreaAcronym(researchAreaAcronym) {
+  async setEntityAcronym(entityAcronym) {
     let regex = "^[a-zA-Z \\u00C0-\\u00FF]*$";
     await this.validate(
-      researchAreaAcronym,
-      "researchAreaAcronym",
+        entityAcronym,
+      "entityAcronym",
       2,
       20,
       regex,
@@ -129,9 +129,9 @@ class Collection {
     let regex = "^[a-zA-Z \\u00C0-\\u00FF]*$";
     await this.validate(instituteName, "instituteName", 5, 100, regex, true);
   }
-  async setResearchArea(researchArea) {
+  async setEntityName(entityName) {
     let regex = "^[a-zA-Z0-9 \\u00C0-\\u00FF\\_-]*$";
-    await this.validate(researchArea, "researchArea", 5, 100, regex, true);
+    await this.validate(entityName, "entityName", 5, 100, regex, true);
   }
   async setDescription(description) {
     let regex =
@@ -200,14 +200,14 @@ class Collection {
   getInstituteLogoPath() {
     return this.instituteLogoPath;
   }
-  getResearchArea() {
-    return this.researchArea;
+  getEntityName() {
+    return this.entityName;
   }
   getInstituteAcronym() {
     return this.instituteAcronym;
   }
-  getResearchAreaAcronym() {
-    return this.researchAreaAcronym;
+  getEntityAcronym() {
+    return this.entityAcronym;
   }
   getInstituteName() {
     return this.instituteName;
@@ -242,11 +242,11 @@ class Collection {
   getInstituteLogoPathValid() {
     return this.instituteLogoPathValid;
   }
-  getResearchAreaValid() {
-    return this.researchAreaValid;
+  getEntityNameValid() {
+    return this.entityNameValid;
   }
-  getResearchAreaAcronymValid() {
-    return this.researchAreaAcronymValid;
+  getEntityAcronymValid() {
+    return this.entityAcronymValid;
   }
   getCataloguesFolderPathValid() {
     return this.cataloguesFolderPathValid;

@@ -1,7 +1,11 @@
 {
   "name": "progefi",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
+  "description": "Electron desktop app to create, manage and export photocollect datacards",
+  "author": {
+    "name": "Alejandro Cámara Árciga"
+  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -15,7 +19,7 @@
     "test:unit": "vue-cli-service test:unit",
     "test:unit:debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --no-cache --runInBand"
   },
-  "main": "mainProcess.js",
+  "main": "background.js",
   "dependencies": {
     "@babel/runtime": "^7.6.2",
     "@caohenghu/vue-colorpicker": "^1.2.4",
@@ -33,11 +37,14 @@
     "core-js": "^3.2.1",
     "csv-write-stream": "^2.0.0",
     "csv-writer": "^1.6.0",
+    "dcraw": "^1.0.3",
+    "dcrawr": "^1.0.0",
     "dom-to-image": "^2.6.0",
     "electron-ipc-mock": "0.0.3",
     "element-ui": "^2.13.0",
     "exif": "^0.6.0",
     "exif-js": "^2.3.0",
+    "extractd": "^1.1.9",
     "file-loader": "^4.2.0",
     "file-saver": "^2.0.2",
     "font-manager": "^0.3.1",
@@ -97,7 +104,7 @@
     "node-sass": "^4.13.1",
     "sass-loader": "^7.3.1",
     "ts-node": "^8.4.1",
-    "vue-cli-plugin-electron-builder": "^1.4.0",
+    "vue-cli-plugin-electron-builder": "^1.4.6",
     "vue-jest": "^3.0.5",
     "vue-template-compiler": "^2.6.10",
     "vuex-mock-store": "0.0.8"
@@ -117,5 +124,17 @@
       "^.+\\.(js|jsx)?$": "<rootDir>/node_modules/babel-jest"
     },
     "preset": "@vue/cli-plugin-unit-jest"
-  }
+  },
+  "build": {
+    "appId": "com.uv.progefi",
+    "productName": "PROGEFI",
+    "copyright": "Copyright © 2020"
+  },
+  "keywords": [
+    "datacard",
+    "photocollect",
+    "collect",
+    "biology",
+    "ecology"
+  ]
 }

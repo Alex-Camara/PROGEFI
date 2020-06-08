@@ -32,6 +32,7 @@ export default {
   },
   async mounted() {
     this.templates = await Template.getAll();
+    this.$emit("templateCount", this.templates.length);
   },
   methods: {
     showTemplate(template) {

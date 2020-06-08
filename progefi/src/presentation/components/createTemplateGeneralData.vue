@@ -1,10 +1,16 @@
 <template>
-  <div id="create_template_general_data_container" @click="closeColorPickersAndAutocompletes()">
+  <div
+    id="create_template_general_data_container"
+    @click="closeColorPickersAndAutocompletes()"
+  >
     <!-- <p class="title">DATOS DE LA PLANTILLA:</p> -->
     <div id="create_template_general_data_name" class="gray_box">
       <b-field id="create_template_name_input_field" custom-class="is-small">
         <template slot="label">
-          <required-field-helper :name="'Nombre:'" :valid="isNameValid"></required-field-helper>
+          <required-field-helper
+            :name="nameText"
+            :valid="isNameValid"
+          ></required-field-helper>
         </template>
         <input id="create_template_name_input" class="input" v-model="name" />
       </b-field>
@@ -12,34 +18,43 @@
 
     <div id="create_template_general_data_font" class="gray_box">
       <b-field
-              id="create_template_general_data_font_family_field"
-              class="autocomplete_box_field"
-              custom-class="is-small"
-              label="Fuente:"
+        id="create_template_general_data_font_family_field"
+        class="autocomplete_box_field"
+        custom-class="is-small"
+        label="Fuente:"
       >
         <template slot="label">
-          <required-field-helper :name="'Fuente:'" :valid="isFontFamilyValid"></required-field-helper>
+          <required-field-helper
+            :name="fontText"
+            :valid="isFontFamilyValid"
+          ></required-field-helper>
         </template>
         <input
-                id="create_template_general_data_font_family_input"
-                placeholder
-                class="input"
-                v-model="fontFamily"
-                @click.stop="autocompleteFontFamilyStatus =true"
-                @focus="autocompleteFontFamilyStatus =true"
-                @keyup="searchFontFamily($event)"
+          id="create_template_general_data_font_family_input"
+          placeholder
+          class="input"
+          v-model="fontFamily"
+          @click.stop="autocompleteFontFamilyStatus = true"
+          @focus="autocompleteFontFamilyStatus = true"
+          @keyup="searchFontFamily($event)"
         />
         <div
-                class="autocomplete_box"
-                v-if="autocompleteFontFamilyStatus && filteredFontFamilies != undefined && filteredFontFamilies.length > 0"
+          class="autocomplete_box"
+          v-if="
+            autocompleteFontFamilyStatus &&
+              filteredFontFamilies != undefined &&
+              filteredFontFamilies.length > 0
+          "
         >
           <ul class="autocomplete_list">
             <li
-                    v-for="fontFamily in filteredFontFamilies"
-                    :key="fontFamily"
-                    :value="fontFamily"
-                    @click="setFontFamily(fontFamily)"
-            >{{fontFamily}}</li>
+              v-for="fontFamily in filteredFontFamilies"
+              :key="fontFamily"
+              :value="fontFamily"
+              @click="setFontFamily(fontFamily)"
+            >
+              {{ fontFamily }}
+            </li>
           </ul>
         </div>
       </b-field>
@@ -48,9 +63,15 @@
     <div id="create_template_general_data_color" class="gray_box">
       <div class="container_flex">
         <div>
-          <b-field id="create_template_background_color_input_field" custom-class="is-small">
+          <b-field
+            id="create_template_background_color_input_field"
+            custom-class="is-small"
+          >
             <template slot="label">
-              <required-field-helper :name="'Color de fondo:'" :valid="isBackgroundColorValid"></required-field-helper>
+              <required-field-helper
+                :name="backgroundColorText"
+                :valid="isBackgroundColorValid"
+              ></required-field-helper>
             </template>
             <div class="container_flex">
               <div
@@ -68,18 +89,31 @@
             </div>
           </b-field>
 
-          <div class="color_picker" @click.stop v-if="isBackgroundColorPickerVisible">
+          <div
+            class="color_picker"
+            @click.stop
+            v-if="isBackgroundColorPickerVisible"
+          >
             <a class="delete" @click="showBackgroundColorPicker(false)"></a>
-            <color-picker v-model="backgroundColorPicker" @input="setBackgroundColor($event)" />
+            <color-picker
+              v-model="backgroundColorPicker"
+              @input="setBackgroundColor($event)"
+            />
           </div>
         </div>
 
         <div class="space"></div>
 
         <div>
-          <b-field id="create_template_font_color_input_field" custom-class="is-small">
+          <b-field
+            id="create_template_font_color_input_field"
+            custom-class="is-small"
+          >
             <template slot="label">
-              <required-field-helper :name="'Color del texto:'" :valid="isFontColorValid"></required-field-helper>
+              <required-field-helper
+                :name="fontColorText"
+                :valid="isFontColorValid"
+              ></required-field-helper>
             </template>
             <div class="container_flex">
               <div
@@ -99,66 +133,110 @@
 
           <div class="color_picker" @click.stop v-if="isFontColorPickerVisible">
             <a class="delete" @click="showFontColorPicker(false)"></a>
-            <color-picker v-model="fontColorPicker" @input="setFontColor($event)" />
+            <color-picker
+              v-model="fontColorPicker"
+              @input="setFontColor($event)"
+            />
           </div>
         </div>
       </div>
     </div>
 
-    <div id="create_template_general_data_dimensions_field" class="container_flex container_100_width">
-    <div id="create_template_general_data_dimensions" class="gray_box">
-      <div class="container_flex">
-    <b-field id="create_template_height_input_field" custom-class="is-small">
-      <template slot="label">
-        <required-field-helper :name="'Alto:'" :valid="isHeightValid"></required-field-helper>
-      </template>
-      <input id="create_template_height_input" class="input create_template_input_width" v-model="height" />
-    </b-field>
-
-      <div class="space"></div>
-
-      <b-field id="create_template_width_input_field" custom-class="is-small">
-        <template slot="label">
-          <required-field-helper :name="'Ancho:'" :valid="isWidthValid"></required-field-helper>
-        </template>
-        <input id="create_template_width_input" class="input create_template_input_width" v-model="width" />
-      </b-field>
-
-        <div class="space"></div>
-
-        <b-field id="create_template_x_margin_input_field" custom-class="is-small">
-          <template slot="label">
-            <required-field-helper :name="'Margen (X):'" :valid="isMarginXValid"></required-field-helper>
-          </template>
-          <input id="create_template_margin_x_input" class="input create_template_input_width" v-model="marginX" />
-        </b-field>
-
-        <div class="space"></div>
-
-        <b-field id="create_template_y_margin_input_field" custom-class="is-small">
-          <template slot="label">
-            <required-field-helper :name="'Margen (Y):'" :valid="isMarginYValid"></required-field-helper>
-          </template>
-          <input id="create_template_margin_y_input" class="input create_template_input_width" v-model="marginY" />
-        </b-field>
-<!--      </div>-->
-
-    </div>
-  </div>
-
-      <div id="create_template_general_data_font_size" class="gray_box">
+    <div
+      id="create_template_general_data_dimensions_field"
+      class="container_flex container_100_width"
+    >
+      <div id="create_template_general_data_dimensions" class="gray_box">
         <div class="container_flex">
-          <b-field id="create_template_font_size_input_field" custom-class="is-small">
-            <template slot="label">
-              <required-field-helper :name="'Tamaño de fuente:'" :valid="isFontSizeValid"></required-field-helper>
-            </template>
-            <input id="create_template_font_size_input" class="input create_template_input_width" v-model="fontSize" />
-          </b-field>
+          <div class="container_flex_column">
+            <required-field-helper
+              :name="heightText"
+              :valid="isHeightValid"
+            ></required-field-helper>
+            <div class="container_flex">
+              <input
+                id="create_template_height_input"
+                class="input create_template_input_width"
+                v-model="height"
+              />
+              <span class="button is-static">mm</span>
+            </div>
+          </div>
+
+          <div class="space"></div>
+
+          <div class="container_flex_column">
+            <required-field-helper
+              :name="widthText"
+              :valid="isWidthValid"
+            ></required-field-helper>
+            <div class="container_flex">
+              <input
+                id="create_template_width_input"
+                class="input create_template_input_width"
+                v-model="width"
+              />
+              <span class="button is-static">mm</span>
+            </div>
+          </div>
+
+          <div class="space"></div>
+
+          <div class="container_flex_column">
+            <required-field-helper
+              :name="marginXText"
+              :valid="isMarginXValid"
+            ></required-field-helper>
+            <div class="container_flex">
+              <input
+                id="create_template_margin_x_input"
+                class="input create_template_input_width"
+                v-model="marginX"
+              />
+              <span class="button is-static">mm</span>
+            </div>
+          </div>
+
+          <div class="space"></div>
+          <div class="container_flex_column">
+            <required-field-helper
+              :name="marginYText"
+              :valid="isMarginYValid"
+            ></required-field-helper>
+            <div class="container_flex">
+              <input
+                id="create_template_margin_y_input"
+                class="input create_template_input_width"
+                v-model="marginY"
+              />
+              <span class="button is-static">mm</span>
+            </div>
+          </div>
         </div>
       </div>
 
-    </div>
+      <div id="create_template_general_data_font_size" class="gray_box">
+        <div class="container_flex">
+          <b-field
+            id="create_template_font_size_input_field"
+            custom-class="is-small"
+          >
+            <template slot="label">
+              <required-field-helper
+                :name="fontSizeText"
+                :valid="isFontSizeValid"
+              ></required-field-helper>
+            </template>
 
+            <input
+              id="create_template_font_size_input"
+              class="input create_template_input_width"
+              v-model="fontSize"
+            />
+          </b-field>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -179,7 +257,16 @@ export default {
       isBackgroundColorPickerVisible: false,
       isFontColorPickerVisible: false,
       filteredFontFamilies: [],
-      autocompleteFontFamilyStatus: false
+      autocompleteFontFamilyStatus: false,
+      nameText: "Nombre:",
+      fontText: "Fuente:",
+      backgroundColorText: "Color de fondo:",
+      fontColorText: "Color del texto:",
+      heightText: "Alto:",
+      widthText: "Ancho:",
+      marginXText: "Margen X:",
+      marginYText: "Margen Y:",
+      fontSizeText: "Tamaño de fuente:"
     };
   },
   computed: {
@@ -229,7 +316,7 @@ export default {
       get: function() {
         let backgroundColor = this.template.getBackgroundColor();
         if (
-                this.template.getBackgroundColorValid().message == "temporary error"
+          this.template.getBackgroundColorValid().message == "temporary error"
         ) {
           this.addShakeEffect("create_template_background_color_input");
         }
@@ -255,49 +342,58 @@ export default {
     },
     height: {
       get: function() {
-        let height = this.template.getHeight();
+        let height = this.template.getHeightInMilimeters();
         if (this.template.getHeightValid().message == "temporary error") {
           this.addShakeEffect("create_template_height_input");
         }
         return height;
       },
       set: function(newValue) {
+        newValue = newValue * 3.7795275591;
+        newValue = Math.round(newValue);
         this.template.setHeight(newValue);
       }
     },
+
     width: {
       get: function() {
-        let height = this.template.getWidth();
+        let height = this.template.getWidthInMilimeters();
         if (this.template.getWidthValid().message == "temporary error") {
           this.addShakeEffect("create_template_width_input");
         }
         return height;
       },
       set: function(newValue) {
+        newValue = newValue * 3.7795275591;
+        newValue = Math.round(newValue);
         this.template.setWidth(newValue);
       }
     },
     marginX: {
       get: function() {
-        let marginX = this.template.getMarginX();
+        let marginX = this.template.getMarginXInMilimeters();
         if (this.template.getMarginXValid().message == "temporary error") {
           this.addShakeEffect("create_template_margin_x_input");
         }
         return marginX;
       },
       set: function(newValue) {
+        newValue = newValue * 3.7795275591;
+        newValue = Math.round(newValue);
         this.template.setMarginX(newValue);
       }
     },
     marginY: {
       get: function() {
-        let marginY = this.template.getMarginY();
+        let marginY = this.template.getMarginYInMilimeters();
         if (this.template.getMarginYValid().message == "temporary error") {
           this.addShakeEffect("create_template_margin_y_input");
         }
         return marginY;
       },
       set: function(newValue) {
+        newValue = newValue * 3.7795275591;
+        newValue = Math.round(newValue);
         this.template.setMarginY(newValue);
       }
     },
@@ -409,17 +505,17 @@ export default {
   margin-top: 20px;
 }
 
-#create_template_general_data_dimensions_field{
+#create_template_general_data_dimensions_field {
   width: 100%;
   display: flex;
   justify-content: space-between;
 }
 
-#create_template_general_data_dimensions{
+#create_template_general_data_dimensions {
   margin-top: 20px;
 }
 
-#create_template_general_data_font_size{
+#create_template_general_data_font_size {
   margin-top: 20px;
 }
 
@@ -474,8 +570,8 @@ export default {
 /*  width: 100px;*/
 /*}*/
 
-.create_template_input_width{
-  width: 100px !important;
+.create_template_input_width {
+  width: 80px !important;
 }
 
 .color_picker {

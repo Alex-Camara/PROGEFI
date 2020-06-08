@@ -28,9 +28,9 @@ class Species {
   async setScientificName(scientificName) {
     return new Promise(resolve => {
       var validator = new Validator();
-      let regex = "^[a-zA-Z \\u00C0-\\u00FF]*$";
+      let regex = "^[a-zA-Z \\u00C0-\\u00FF -]*$";
       validator
-        .testValidationOne(scientificName, 5, 50, this.required, regex)
+        .testValidationOne(scientificName, 2, 50, this.required, regex)
         .then(() => {
           this.scientificName = scientificName;
           this.scientificNameValid = { isValid: true, message: null };

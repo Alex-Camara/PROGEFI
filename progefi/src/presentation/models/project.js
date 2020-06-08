@@ -48,8 +48,8 @@ class Project {
         message: "Proyecto ya registrado"
       };
     } else {
-      let regex = "^[a-zA-Z0-9 \\u00C0-\\u00FF /():_-]*$";
-      await this.validate(name, "name", 3, 30, regex);
+      let regex = "^[a-zA-Z0-9 \\u00C0-\\u00FF \\,\\./():_-]*$";
+      await this.validate(name, "name", 3, 100, regex);
     }
   }
   getId() {

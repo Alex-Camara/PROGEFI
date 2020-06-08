@@ -22,6 +22,21 @@
 
     <div class="gray_box show_collection_content">
       <div class="show_collection_attribute_div_title">
+        <p class="attribute_name">{{entityTitle}}</p>
+      </div>
+      <p class="attribute_value">{{ collection.getEntityName() }}</p>
+    </div>
+
+    
+    <div class="gray_box show_collection_content">
+      <div class="show_collection_attribute_div_title">
+        <p class="attribute_name">{{entityAcronymTitle}}</p>
+      </div>
+      <p class="attribute_value">{{ collection.getEntityAcronym() }}</p>
+    </div>
+
+    <div class="gray_box show_collection_content">
+      <div class="show_collection_attribute_div_title">
         <p class="attribute_name">{{instituteNameTitle}}</p>
       </div>
       <p class="attribute_value">{{ collection.getInstituteName() }}</p>
@@ -33,20 +48,6 @@
         <p class="attribute_name">{{instituteAcronymTitle}}</p>
       </div>
       <p class="attribute_value">{{ collection.getInstituteAcronym() }}</p>
-    </div>
-
-    <div class="gray_box show_collection_content">
-      <div class="show_collection_attribute_div_title">
-        <p class="attribute_name">{{researchAreaTitle}}</p>
-      </div>
-      <p class="attribute_value">{{ collection.getResearchArea() }}</p>
-    </div>
-
-    <div class="gray_box show_collection_content">
-      <div class="show_collection_attribute_div_title">
-        <p class="attribute_name">{{researchAreaAcronymTitle}}</p>
-      </div>
-      <p class="attribute_value">{{ collection.getResearchAreaAcronym() }}</p>
     </div>
 
     <div class="gray_box show_collection_content">
@@ -93,8 +94,8 @@ export default {
       collectionCodeTitle: "Código: ",
       instituteNameTitle: "Instituto:",
       instituteAcronymTitle: "Acrónimo del instituto:",
-      researchAreaTitle: "Área de investigación:",
-      researchAreaAcronymTitle: "Acrónimo del área de investigación:",
+      entityTitle: "Nombre de la entidad:",
+      entityAcronymTitle: "Acrónimo de la entidad:",
       instituteLogoTitle: "Logo de la institución:",
       catalogueNumberTitle: "Número de catálogos:",
       descriptionTitle: "Descripción: ",

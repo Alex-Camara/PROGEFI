@@ -28,8 +28,8 @@ class CollectionDaoImp {
         description: collection.description,
         instituteName: collection.instituteName,
         instituteAcronym: collection.instituteAcronym,
-        researchAreaAcronym: collection.researchAreaAcronym,
-        researchArea: collection.researchArea,
+        entityAcronym: collection.entityAcronym,
+          entityName: collection.entityName,
         instituteLogoPath: collection.instituteLogoPath,
         cataloguesFolderPath: collection.cataloguesFolderPath
       })
@@ -48,8 +48,8 @@ class CollectionDaoImp {
           description: collection.description,
           instituteName: collection.instituteName,
           instituteAcronym: collection.instituteAcronym,
-          researchAreaAcronym: collection.researchAreaAcronym,
-          researchArea: collection.researchArea,
+          entityAcronym: collection.entityAcronym,
+          entityName: collection.entityName,
           instituteLogoPath: collection.instituteLogoPath,
           cataloguesFolderPath: collection.cataloguesFolderPath
       })

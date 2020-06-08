@@ -13,15 +13,13 @@ class CuratorHandler {
         let curators = await this.curatorDao.getAllByName(selectedCurator);
         result(curators);
     }
-    async getDatacardCurators(datacardId) {
-        return new Promise(async (resolve) => {
-            let curators = await this.curatorDao.getDatacardCurators(datacardId);
-            resolve(curators);
-        });
-    }
     async createCurator(curator, result) {
         let createdCurator = await this.curatorDao.createCurator(curator);
         result(createdCurator);
+    }
+    async getCuratorByName(curatorName, result){
+        let curator = await this.curatorDao.getByName(curatorName)
+        result(curator)
     }
 }
 

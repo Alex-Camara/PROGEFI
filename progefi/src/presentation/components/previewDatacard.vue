@@ -39,13 +39,13 @@
             <img
               id="preview_datacard_photocollect"
               :src="photoCollect.photoCollectPath"
-              v-if="tag.i == 'photocollect'"
+              v-if="tag.i === 'photocollect'"
             />
             <img
               :src="collection.getInstituteLogoPath()"
-              v-if="tag.i == 'instituteLogo'"
+              v-if="tag.i === 'instituteLogo'"
             />
-            <p v-if="tag.i != 'photocollect' && tag.i != 'instituteLogo'">
+            <p v-if="tag.i !== 'photocollect' && tag.i !== 'instituteLogo'">
               {{ tag.getFullExampleTag() }}
             </p>
           </grid-item>
@@ -88,6 +88,7 @@ export default {
     ...mapState("template", {}),
     ...mapState("datacard", {
       datacard: state => state.datacard,
+      user: state => state.datacard.getUser(),
       template: state => state.datacard.getTemplate(),
       fontSizes: state => state.datacard.getTemplate().getFontSizes(),
       tagColors: state => state.datacard.getTemplate().getTagColors(),
@@ -98,7 +99,7 @@ export default {
       catalogue: state => state.datacard.getCatalogue(),
       collection: state => state.datacard.getCatalogue().getCollection(),
       collector: state => state.datacard.getCollect().getCollector(),
-      curators: state => state.datacard.getCurators(),
+      curator: state => state.datacard.getCurator(),
       device: state =>
         state.datacard
           .getCollect()
@@ -115,9 +116,8 @@ export default {
     ...mapState("addDatacard", {
       photoCollect: state => state.photoCollect
     }),
-    ...mapState("curator", {
-      curatorState: state => state,
-      curatorsName: state => state.selectedCuratorsName
+    ...mapState("user", {
+      user: state => state.user
     }),
     layoutHeight: {
       get: function() {
@@ -147,7 +147,7 @@ export default {
       this.setDatacardDimensions();
       // }
     },
-    curators() {
+    curator() {
       this.setValues();
     },
     template() {
@@ -324,7 +324,7 @@ export default {
 
     setLoadingMessage() {
       return new Promise(resolve => {
-        if (this.datacard.getCurators().length > 0) {
+        if (this.datacard.getCurator().getName() !== null) {
           this.loadingMessage = "Creando ficha de fotocolecta...";
           this.loadingFinishedMessage = "¡Ficha de fotocolecta creada!";
           resolve();
@@ -408,7 +408,8 @@ export default {
         .getCollect()
         .getCollector()
         .save();
-      await this.datacard.saveCurators();
+      await this.datacard.saveCurator();
+
       if (
         this.datacard.getPhotocollectPath() ===
         this.photoCollect.photoCollectPath
@@ -418,7 +419,7 @@ export default {
         this.datacard.setPhotocollectPath(this.photoCollect.photoCollectPath);
       }
 
-      if (this.datacard.getCurators().length > 0) {
+      if (this.datacard.getCurator().getName() !== null) {
         this.datacard.validate();
         try {
           this.datacard.base64 = await this.generateDatacard();
@@ -449,7 +450,7 @@ export default {
     },
     restoreToPreview() {
       this.$emit("restorePreview");
-      if (this.datacard.getId === null){
+      if (this.datacard.getId === null) {
         this.datacard.creationDate = null;
       }
       this.datacard.setPhotocollectPath(null);
@@ -516,20 +517,6 @@ export default {
             { root: true }
           );
         });
-
-      // try {
-      //   this.datacard.update();
-      //   this.$emit("exitComponent");
-      //   this.openToast(this.loadingFinishedMessage);
-      // } catch (error) {
-      //   this.openToast("Ha ocurrido un error con la base de datos");
-      // } finally {
-      //   await this.$store.dispatch(
-      //     "loading/setActive",
-      //     { active: false, message: null },
-      //     { root: true }
-      //   );
-      // }
     },
     openToast(message) {
       this.$buefy.toast.open(message);
@@ -588,32 +575,28 @@ export default {
       }
     },
     assignTag(tagName, fullTag, model, modelAttribute) {
-      if (tagName === "curator") {
-        return fullTag + this.datacard.getFormattedCurators();
-      } else {
-        if (modelAttribute != null) {
-          try {
-            let rawModelAttributes = modelAttribute.split(".");
-            let modelAttributes = [];
-            let finalAttribute = null;
-            for (let i = 0; i < rawModelAttributes.length; i++) {
-              let element = rawModelAttributes[i];
-              element = element.charAt(0).toUpperCase() + element.slice(1);
-              element = "get" + element;
-              modelAttributes.push(element);
-            }
-
-            for (let j = 0; j < modelAttributes.length; j++) {
-              if (j === 0) {
-                finalAttribute = this[model][modelAttributes[j]]();
-              } else {
-                finalAttribute = finalAttribute[modelAttributes[j]]();
-              }
-            }
-            return finalAttribute;
-          } catch (err) {
-            debugger;
+      if (modelAttribute != null) {
+        try {
+          let rawModelAttributes = modelAttribute.split(".");
+          let modelAttributes = [];
+          let finalAttribute = null;
+          for (let i = 0; i < rawModelAttributes.length; i++) {
+            let element = rawModelAttributes[i];
+            element = element.charAt(0).toUpperCase() + element.slice(1);
+            element = "get" + element;
+            modelAttributes.push(element);
           }
+
+          for (let j = 0; j < modelAttributes.length; j++) {
+            if (j === 0) {
+              finalAttribute = this[model][modelAttributes[j]]();
+            } else {
+              finalAttribute = finalAttribute[modelAttributes[j]]();
+            }
+          }
+          return finalAttribute;
+        } catch (err) {
+          debugger;
         }
       }
     }

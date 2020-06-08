@@ -7,8 +7,8 @@ exports.up = function (knex) {
             table.string('description');
             table.string('instituteName');
             table.string('instituteAcronym');
-            table.string('researchArea');
-            table.string('researchAreaAcronym');
+            table.string('entityName');
+            table.string('entityAcronym');
             table.string('instituteLogoPath');
             table.string('cataloguesFolderPath');
         })

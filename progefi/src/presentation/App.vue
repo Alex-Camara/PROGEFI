@@ -52,6 +52,7 @@ export default {
       this.user.setUser(userGot[0]);
       if (this.user.isKeepingSession()){
         this.enterCredentials = false;
+        this.$store.commit("user/setUser", userGot[0]);
         ipcRenderer.send("maximize");
         ipcRenderer.once("maximized", async (event) => {
         });
@@ -69,6 +70,7 @@ export default {
   methods:{
     logIn(user){
       this.user = user;
+      this.$store.commit("user/setUser", user);
       this.enterCredentials = false;
       ipcRenderer.send("maximize");
       ipcRenderer.once("maximized", async (event) => {

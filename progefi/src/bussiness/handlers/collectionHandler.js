@@ -13,7 +13,7 @@ class CollectionHandler {
   async save(collection, result) {
     var destinationFolder =
       path.resolve(".") +
-      "/src/persistence/resources/institute_logos/logo.webp";
+      "/src/persistence/resources/institute_logos/" + new Date().getTime() + ".webp";
     const sharp = require("sharp");
     await sharp(collection.instituteLogoPath)
       .webp({
@@ -29,7 +29,7 @@ class CollectionHandler {
   async update(collection, result) {
     var destinationFolder =
       path.resolve(".") +
-      "/src/persistence/resources/institute_logos/logo.webp";
+        "/src/persistence/resources/institute_logos/" + new Date().getTime() + ".webp";
     const sharp = require("sharp");
     await sharp(collection.instituteLogoPath)
       .webp({

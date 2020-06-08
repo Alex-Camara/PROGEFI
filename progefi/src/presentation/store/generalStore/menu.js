@@ -125,6 +125,18 @@ const menu = {
       for (var i = 0; i < state.items.length; i++) {
         state.items[i].classObject["disabled_item"] = false;
       }
+    },
+    setSelected(state, name){
+      let item = null;
+      for (var i = 0; i < state.items.length; i++) {
+        if (name === state.items[i].name) {
+          item = state.items[i];
+          state.items[i].classObject["is-active"] = true;
+        } else {
+          state.items[i].classObject["is-active"] = false;
+        }
+      }
+      state.selectedItem = item;
     }
   }
 };

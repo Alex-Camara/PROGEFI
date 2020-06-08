@@ -14,7 +14,7 @@ const vueCliPlugIn = require('vue-cli-plugin-electron-builder/lib');
 const createProtocol = vueCliPlugIn.createProtocol;
 const installVueDevtools = vueCliPlugIn.installVueDevtools;
 
-const isDevelopment = process.env.NODE_ENV !== 'production'
+const isDevelopment = process.env.NODE_ENV === 'production'
 
 let win;
 
@@ -80,6 +80,8 @@ app.on("activate", () => {
     createWindow();
   }
 });
+
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

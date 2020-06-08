@@ -14,6 +14,11 @@ const template = {
     },
     setActiveStep(state, step){
       state.activeStep = step;
+    },
+    reset(state){
+      state.tagToCreate = null;
+      state.tagToDelete = null;
+      state.activeStep = 0;
     }
   },
   actions: {}

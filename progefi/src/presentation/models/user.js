@@ -72,6 +72,9 @@ class User {
   getPasswordConfirmationValid() {
     return this.passwordConfirmationValid;
   }
+  getFullName(){
+    return this.name + " " + this.lastName;
+  }
   isKeepingSession() {
     return this.keepSession;
   }

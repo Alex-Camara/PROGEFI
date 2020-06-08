@@ -566,6 +566,7 @@ export default {
 }
 
 #project_select_field {
+  width: 400px;
   grid-row: 2 / 3;
   grid-column: 1 / 3;
 }

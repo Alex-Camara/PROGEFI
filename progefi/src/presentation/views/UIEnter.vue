@@ -6,7 +6,7 @@
     <div id="ui_enter_container_content">
       <div id="ui_enter_container_content_introduction">
         <div id="ui_enter_container_information">
-          <p id="title">{{title}}</p>
+          <p id="title">{{ title }}</p>
           <p class="text">{{ purposeText }}</p>
           <p class="subtitle_text">{{ subtitleText }}</p>
           <p class="text">{{ featureListText }}</p>
@@ -30,7 +30,7 @@ import register from "../components/register";
 import login from "../components/logIn";
 export default {
   name: "UIEnter",
-  props:["user"],
+  props: ["user"],
   components: {
     register: register,
     login
@@ -41,8 +41,8 @@ export default {
       purposeText:
         "PROGEFI es una herramienta de software desarrollada por la Universidad " +
         "Veracruzana (UV). Esta aplicación se realizó a través de una colaboración " +
-        "entre la Facultad de Estadística e Informática y el Instituto de " +
-        "Investigaciones Biológicas de la UV.",
+        "entre la Facultad de Estadística e Informática a través de la Licenciatura en" +
+        " Ingeniería de Software y el Instituto de Investigaciones Biológicas de la UV.",
       subtitleText: "¿Qué características te ofrece?",
       featureListText:
         "PROGEFI te permite crear fichas provenientes de fotocolecta o de fotografías que aporten algún avistamiento sobre una especie determinada. Las fichas creadas por PROGEFI pueden ser personalizadas para mostrar datos de la institución que se desee, así como su apariencia. PROGEFI ofrece las siguientes características:",
@@ -54,8 +54,8 @@ export default {
       ]
     };
   },
-  methods:{
-    openSession(user){
+  methods: {
+    openSession(user) {
       this.$emit("succesful-login", user);
     }
   }
@@ -63,12 +63,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  html,
-  body {
-    margin: 0;
-    height: 100%;
-    overflow: hidden;
-  }
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
 #title {
   font-size: 35px;
   font-weight: bold;
@@ -96,7 +96,6 @@ li {
 </style>
 
 <style lang="scss">
-
 #ui_enter_container_background {
   position: fixed;
   z-index: -1;

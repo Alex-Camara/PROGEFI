@@ -432,17 +432,12 @@ export default {
     },
     selectedCurator: {
       get: function() {
-        if (this.datacard.getCurators().length > 0) {
-          return this.datacard.getCurators()[0].getId();
-        } else {
-          return null;
-        }
+        return this.datacard
+        .getCurator()
+        .getId()
       },
       set: async function(newValue) {
-        let curator = new Curator();
-        curator.setId(newValue);
-        this.datacard.getCurators().pop();
-        this.datacard.getCurators().push(curator);
+        await this.datacard.getCurator().setId(newValue);
       }
     },
     selectedClimateType: {

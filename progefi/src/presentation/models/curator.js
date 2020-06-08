@@ -118,6 +118,22 @@ class Curator {
       });
     });
   }
+  static getExisting(curator) {
+    return new Promise(async resolve => {
+      ipcRenderer.send("getCuratorByName", curator);
+      ipcRenderer.once("curatorByName", async (event, receivedCurator) => {
+        // debugger
+        if (receivedCurator.length > 0) {
+          let newCurator = new Curator();
+          await newCurator.setCurator(receivedCurator[0]);
+          // debugger
+          resolve(newCurator);
+        } else {
+          resolve([]);
+        }
+      });
+    });
+  }
 }
 
 export default Curator;

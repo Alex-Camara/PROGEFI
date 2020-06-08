@@ -10,18 +10,6 @@ const curator = {
     selectedCuratorsName: ""
   },
   getters: {
-    // curatorsName: state => {
-    //   let curators = state.curators;
-    //   let curatorsName = [];
-    //   for (let i = 0; i < curators.length; i++) {
-    //     let name = curators[i].getName();
-    //     let nameExists = state.selectedCurators.find(x => x.name === name);
-    //     if (!nameExists) {
-    //       curatorsName.push(name);
-    //     }
-    //   }
-    //   return curatorsName;
-    // },
     selectedCuratorsName: state => {
       let curators = state.selectedCurators;
       let curatorsName = [];
@@ -118,7 +106,6 @@ const curator = {
     },
     addCurator({ state, commit }) {
       return new Promise(async (resolve) => {
-        // let curator = state.curator.toLowerCase()
         let foundCurator = state.selectedCurators.find(function (element) {
           let curatorInCurators = element.name.toString().toLowerCase();
           let curator = state.curator.name.toString().toLowerCase();
@@ -139,29 +126,7 @@ const curator = {
     async deleteCurator({state, commit}, curator) {
       await commit("deleteCurator", curator);
       return state.selectedCurators
-    },
-    // createCurators({ state }) {
-    //   return new Promise((resolve) => {
-    //     let curators = [];
-    //     for (let i = 0; i < state.selectedCurators.length; i++) {
-    //       //si el curador ya tiene id, entonces ya existe, solo se regresa el id
-    //       if (state.selectedCurators[i].getId() != null) {
-    //         curators.push(state.selectedCurators[i]);
-    //       } else {
-    //         ipcRenderer.send(
-    //           "createCurator",
-    //           state.selectedCurators[i].getName()
-    //         );
-    //         ipcRenderer.once("curatorCreated", (event, createdCurator) => {
-    //           let newCurator = new Curator();
-    //           newCurator.setCurator(createdCurator);
-    //           curators.push(createdCurator);
-    //         });
-    //       }
-    //     }
-    //     resolve(curators);
-    //   });
-    // }
+    }
   }
 };
 

@@ -1,6 +1,6 @@
 <template>
   <div id="create_tag_container" class="gray_box">
-    <div id="create_tag_fields_title">{{title}}</div>
+    <div id="create_tag_fields_title">{{ title }}</div>
     <div id="create_tag_fields">
       <b-field
         id="create_tag_before_tag_input_field"
@@ -174,17 +174,21 @@
       </b-field>
 
       <div id="create_tag_add_tag_button_div">
-        <button id="create_tag_add_tag_button" class="button is-secondary" :disabled="disabledAddTagButton" @click="createTag">
-         {{addTagButtonText}}
+        <button
+          id="create_tag_add_tag_button"
+          class="button is-secondary"
+          :disabled="disabledAddTagButton"
+          @click="createTag"
+        >
+          {{ addTagButtonText }}
         </button>
       </div>
-
     </div>
 
     <hr />
 
     <div id="create_tag_preview">
-      <p>{{previewTagText}}</p>
+      <p>{{ previewTagText }}</p>
 
       <!-- <div> -->
       <div id="create_tag_preview_tag" :style="getTagStyle()">
@@ -280,11 +284,11 @@ export default {
           example: "Colección fotográfica de vertebrados"
         },
         {
-          tagName: "researchArea",
+          tagName: "entityName",
           model: "datacard",
-          modelAttribute: "catalogue.collection.researchArea",
-          tagPlaceholder: "Área de investigación",
-          example: "Instituto de Investigaciones Biológicas"
+          modelAttribute: "catalogue.collection.entityName",
+          tagPlaceholder: "Nombre de la entidad",
+          example: "Universidad Veracruzana"
         },
         {
           tagName: "catalogue",
@@ -385,6 +389,13 @@ export default {
           example: "Christian Alejandro Delfín Alfonso"
         },
         {
+          tagName: "creator",
+          model: "user",
+          modelAttribute: "fullName",
+          tagPlaceholder: "Creador de la ficha",
+          example: "María Julíeta Carmen Quiroz"
+        },
+        {
           tagName: "collectorCode",
           model: "datacard",
           modelAttribute: "collectorCode",
@@ -427,18 +438,25 @@ export default {
           example: "Fotocolecta"
         },
         {
-          tagName: "researchAreaAcronym",
+          tagName: "entityAcronym",
           model: "datacard",
-          modelAttribute: "catalogue.collection.researchAreaAcronym",
-          tagPlaceholder: "Acrónimo del área de investigación",
-          example: "IIB-UV"
+          modelAttribute: "catalogue.collection.entityAcronym",
+          tagPlaceholder: "Acrónimo de la entidad",
+          example: "UV"
         },
         {
           tagName: "instituteAcronym",
           model: "datacard",
           modelAttribute: "catalogue.collection.instituteAcronym",
           tagPlaceholder: "Acrónimo del instituto",
-          example: "UV"
+          example: "IIBUV"
+        },
+        {
+          tagName: "instituteName",
+          model: "datacard",
+          modelAttribute: "catalogue.collection.instituteName",
+          tagPlaceholder: "Nombre del instituto",
+          example: "Instituto de Investigaciones Biológicas"
         },
         {
           tagName: "instituteLogo",
@@ -460,8 +478,10 @@ export default {
       helpTextTextCenter: "Texto alineado al centro",
       helpTextTextLeft: "Texto alineado a la izquierda",
       helpTextTextRight: "Texto alineado a la derecha",
-      helpTextDrag: "Selecciona para establecer si la etiqueta va a poder ser arrastrada",
-      helpTextResize: "Selecciona para establecer si la etiqueta va a poder ser redimensionada",
+      helpTextDrag:
+        "Selecciona para establecer si la etiqueta va a poder ser arrastrada",
+      helpTextResize:
+        "Selecciona para establecer si la etiqueta va a poder ser redimensionada"
     };
   },
   mounted() {
@@ -504,8 +524,12 @@ export default {
     fullTag: function() {
       return this.tag.getFullExampleTag();
     },
-    disabledAddTagButton: function(){
-      return !(this.isTagAfterValid.isValid && this.isTagBeforeValid.isValid && this.isTagNameValid.isValid);
+    disabledAddTagButton: function() {
+      return !(
+        this.isTagAfterValid.isValid &&
+        this.isTagBeforeValid.isValid &&
+        this.isTagNameValid.isValid
+      );
     },
     tagBefore: {
       get: function() {
@@ -533,11 +557,12 @@ export default {
         this.tag.setModelAttribute(newValue.modelAttribute);
       }
     },
+
     tagAfter: {
       get: function() {
         let tagAfter = this.tag.getTagAfter();
         // debugger;
-        if (this.tag.getTagAfterValid().message == "temporary error") {
+        if (this.tag.getTagAfterValid().message != null) {
           this.addShakeEffect("create_tag_after_tag_input");
         }
         return tagAfter;
@@ -549,7 +574,7 @@ export default {
     fontSize: {
       get: function() {
         let fontSize = this.tag.getFontSize();
-        if (this.tag.getFontSizeValid().message == "temporary error") {
+        if (this.tag.getFontSizeValid().message != null) {
           this.addShakeEffect("create_tag_font_size_input");
         }
         return fontSize;
@@ -622,7 +647,7 @@ export default {
   methods: {
     async createTag() {
       //Vuelve las etiquetas estaticas para que su orden no se vea alterado por la nueva etiqueta
-      for (let i=0; i<this.tags.length; i++){
+      for (let i = 0; i < this.tags.length; i++) {
         this.tags[i].setStatic(true);
       }
       this.assignedTagNames.push(this.selectedTagName);
@@ -662,80 +687,96 @@ export default {
       let element = document.getElementById(
         "create_tag_style_font_weight_italics"
       );
-      if (this.fontStyle === "italic") {
-        this.fontStyle = "normal";
-        element.classList.remove("create_tag_style_button_selected");
-      } else {
-        this.fontStyle = "italic";
-        element.classList.add("create_tag_style_button_selected");
+      if (element !== null) {
+        if (this.fontStyle === "italic") {
+          this.fontStyle = "normal";
+          element.classList.remove("create_tag_style_button_selected");
+        } else {
+          this.fontStyle = "italic";
+          element.classList.add("create_tag_style_button_selected");
+        }
       }
     },
     setFontStyle() {
       let element = document.getElementById(
         "create_tag_style_font_weight_italics"
       );
-      if (this.fontStyle === "italic") {
-        element.classList.add("create_tag_style_button_selected");
-      } else {
-        element.classList.remove("create_tag_style_button_selected");
+      if (element !== null) {
+        if (this.fontStyle === "italic") {
+          element.classList.add("create_tag_style_button_selected");
+        } else {
+          element.classList.remove("create_tag_style_button_selected");
+        }
       }
     },
     changeFontWeight() {
       let element = document.getElementById(
         "create_tag_style_font_weight_bold"
       );
-      if (this.fontWeight === "bold") {
-        this.fontWeight = "normal";
-        element.classList.remove("create_tag_style_button_selected");
-      } else {
-        this.fontWeight = "bold";
-        element.classList.add("create_tag_style_button_selected");
+      if (element !== null) {
+        if (this.fontWeight === "bold") {
+          this.fontWeight = "normal";
+          element.classList.remove("create_tag_style_button_selected");
+        } else {
+          this.fontWeight = "bold";
+          element.classList.add("create_tag_style_button_selected");
+        }
       }
     },
     setFontWeight() {
       let element = document.getElementById(
         "create_tag_style_font_weight_bold"
       );
-      if (this.fontWeight === "bold") {
-        element.classList.add("create_tag_style_button_selected");
-      } else {
-        element.classList.remove("create_tag_style_button_selected");
+      if (element !== null) {
+        if (this.fontWeight === "bold") {
+          element.classList.add("create_tag_style_button_selected");
+        } else {
+          element.classList.remove("create_tag_style_button_selected");
+        }
       }
     },
     setResizableButtonStyle() {
       let element = document.getElementById("create_tag_style_resize");
-      if (this.resizable) {
-        element.classList.add("create_tag_style_button_selected");
-      } else {
-        element.classList.remove("create_tag_style_button_selected");
+      if (element !== null) {
+        if (this.resizable) {
+          element.classList.add("create_tag_style_button_selected");
+        } else {
+          element.classList.remove("create_tag_style_button_selected");
+        }
       }
     },
     setResizable() {
       let element = document.getElementById("create_tag_style_resize");
-      if (this.resizable) {
-        this.resizable = false;
-        element.classList.remove("create_tag_style_button_selected");
-      } else {
-        this.resizable = true;
-        element.classList.add("create_tag_style_button_selected");
+      if (element !== null) {
+        if (this.resizable) {
+          this.resizable = false;
+          element.classList.remove("create_tag_style_button_selected");
+        } else {
+          this.resizable = true;
+          element.classList.add("create_tag_style_button_selected");
+        }
       }
     },
     setDraggableButtonStyle() {
       let element = document.getElementById("create_tag_style_drag");
-      if (this.resizable) {
-        element.classList.add("create_tag_style_button_selected");
-      } else {
-        element.classList.remove("create_tag_style_button_selected");
+      if (element !== null) {
+        if (this.resizable) {
+          element.classList.add("create_tag_style_button_selected");
+        } else {
+          element.classList.remove("create_tag_style_button_selected");
+        }
       }
     },
     setDraggable() {
       let element = document.getElementById("create_tag_style_drag");
-      if (this.draggable) {
-        this.draggable = false;
-        element.classList.remove("create_tag_style_button_selected");
-      } else {
-        this.draggable = true;
-        element.classList.add("create_tag_style_button_selected");
+      if (element !== null) {
+        if (this.draggable) {
+          this.draggable = false;
+          element.classList.remove("create_tag_style_button_selected");
+        } else {
+          this.draggable = true;
+          element.classList.add("create_tag_style_button_selected");
+        }
       }
     },
     setTextAlignment(textAlignment) {
@@ -748,23 +789,32 @@ export default {
       let elementTextRight = document.getElementById(
         "create_tag_style_font_alignment_right"
       );
-
-      if (textAlignment === "left") {
-        elementTextCenter.classList.remove("create_tag_style_button_selected");
-        elementTextRight.classList.remove("create_tag_style_button_selected");
-        elementTextLeft.classList.add("create_tag_style_button_selected");
+      if (
+        elementTextLeft !== null &&
+        elementTextCenter !== null &&
+        elementTextRight !== null
+      ) {
+        if (textAlignment === "left") {
+          elementTextCenter.classList.remove(
+            "create_tag_style_button_selected"
+          );
+          elementTextRight.classList.remove("create_tag_style_button_selected");
+          elementTextLeft.classList.add("create_tag_style_button_selected");
+        }
+        if (textAlignment === "center") {
+          elementTextLeft.classList.remove("create_tag_style_button_selected");
+          elementTextRight.classList.remove("create_tag_style_button_selected");
+          elementTextCenter.classList.add("create_tag_style_button_selected");
+        }
+        if (textAlignment === "right") {
+          elementTextLeft.classList.remove("create_tag_style_button_selected");
+          elementTextCenter.classList.remove(
+            "create_tag_style_button_selected"
+          );
+          elementTextRight.classList.add("create_tag_style_button_selected");
+        }
+        this.textAlignment = textAlignment;
       }
-      if (textAlignment === "center") {
-        elementTextLeft.classList.remove("create_tag_style_button_selected");
-        elementTextRight.classList.remove("create_tag_style_button_selected");
-        elementTextCenter.classList.add("create_tag_style_button_selected");
-      }
-      if (textAlignment === "right") {
-        elementTextLeft.classList.remove("create_tag_style_button_selected");
-        elementTextCenter.classList.remove("create_tag_style_button_selected");
-        elementTextRight.classList.add("create_tag_style_button_selected");
-      }
-      this.textAlignment = textAlignment;
     },
     getTagDimensions() {
       return new Promise(resolve => {

@@ -3,13 +3,33 @@
     <div id="sex_helper_container" class="box">
       <div id="sex_helper_container_header">
         <div id="sex_helper_container_header_title">
-          <required-field-helper id="sex_helper_required_field" :name="null" :valid="isSexValid"></required-field-helper>
-          <b id="sex_helper_container_header_title_value" class="is-size-6" v-text="title"></b>
-          <b id="sex_helper_container_header_value" class="is-size-6" v-if="sex">{{ sex }}</b>
-          <img id="sex_helper_checked_icon" src="../assets/checked.png" v-if="sex" />
+          <required-field-helper
+            id="sex_helper_required_field"
+            :name="null"
+            :valid="isSexValid"
+          ></required-field-helper>
+          <b
+            id="sex_helper_container_header_title_value"
+            class="is-size-6"
+            v-text="title"
+          ></b>
+          <b
+            id="sex_helper_container_header_value"
+            class="is-size-6"
+            v-if="sex"
+            >{{ sex }}</b
+          >
+          <img
+            id="sex_helper_checked_icon"
+            src="../assets/checked.png"
+            v-if="sex"
+          />
         </div>
 
-        <div id="sex_helper_container_header_addOption" v-on:click="addOption()">
+        <div
+          id="sex_helper_container_header_addOption"
+          v-on:click="addOption()"
+        >
           <b-tooltip label="Agregar otra opción" position="is-top">
             <img
               id="sex_helper_container_header_addOption_icon"
@@ -26,10 +46,10 @@
             v-for="sex in sexes"
             :key="sex.getName()"
             :value="sex.getName()"
-            v-on:click="setSex(sex)"
+            v-on:click="setSex($event, sex)"
           >
             <img id="sex_helper_list_item_icon" :src="sex.getIconPath()" />
-            <div id="sex_helper_list_item_text">{{sex.getName()}}</div>
+            <div id="sex_helper_list_item_text">{{ sex.getName() }}</div>
           </li>
         </ul>
       </div>
@@ -67,7 +87,7 @@ export default {
           .getSexValid()
     }),
     ...mapState("modal", {
-      saveSexValue: state => state.saveSexValue,
+      saveSexValue: state => state.saveSexValue
     }),
     sex: {
       get: function() {
@@ -78,13 +98,16 @@ export default {
         return sex.getName();
       },
       set: function(newValue) {
-        this.datacard.getCollect().getSpecimen().setSex(newValue);
+        this.datacard
+          .getCollect()
+          .getSpecimen()
+          .setSex(newValue);
       }
     }
   },
-  watch:{
-    saveSexValue(newValue){
-      if (newValue){
+  watch: {
+    saveSexValue(newValue) {
+      if (newValue) {
         this.sex = this.modalSex;
       }
       this.modalSex = new Sex();
@@ -92,7 +115,11 @@ export default {
     }
   },
   methods: {
-    setSex(sex) {
+    setSex(event, sex) {
+      if (document.querySelector('#sex_helper_list_item .selected_dot') !== null) {
+        document.querySelector('#sex_helper_list_item .selected_dot').classList.remove('selected_dot');
+      }
+      event.currentTarget.childNodes[0].classList.add("selected_dot");
       this.sex = sex;
     },
     addOption() {
@@ -103,11 +130,27 @@ export default {
         getter: "getName",
         setter: "setName",
         getterValid: "getNameValid"
-      })
+      });
     }
   }
 };
 </script>
+
+<style scoped lang="scss">
+@import "../style/style.scss";
+.selected_dot {
+  height: 35px!important;
+  width: 35px!important;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.selected_dot + #sex_helper_list_item_text {
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+</style>
 
 <style lang="scss">
 @import "../style/style.scss";
@@ -184,10 +227,11 @@ export default {
 }
 
 #sex_helper_list_item_icon {
-  height: 40px;
-  width: 40px;
+  height: 25px;
+  width: 25px;
   transition: 0.2s;
   justify-self: center;
+  margin: auto;
 }
 
 #sex_helper_list_item_text {
@@ -196,8 +240,8 @@ export default {
 }
 
 #sex_helper_list_item_icon:hover {
-  height: 45px;
-  width: 45px;
+  height: 35px;
+  width: 35px;
   transition: 0.2s;
   cursor: pointer;
   // filter: hue-rotate(180deg);

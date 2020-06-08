@@ -16,7 +16,8 @@
             @focus="autocompleteCuratorStatus = true"
             @click.stop="autocompleteCuratorStatus = true"
           />
-          <div class="autocomplete_box"
+          <div
+            class="autocomplete_box"
             v-if="autocompleteCuratorStatus && curators.length > 0"
           >
             <ul class="autocomplete_list">
@@ -46,27 +47,17 @@
 
       <div id="curators_tags" class="box">
         <div id="curators_tags_title">
-          <information_helper :message="informationMessage"></information_helper>
+          <information_helper
+            :message="informationMessage"
+          ></information_helper>
           <b>Curadores:</b>
         </div>
 
-        <div>
-          <ul id="curators_tags_list">
-            <li
-              id="curators_tags_list_item"
-              v-for="selectedCurator in selectedCuratorsName"
-              :key="selectedCurator"
-              :value="selectedCurator"
-            >
-              <span id="curators_tags_list_item_tag" class="tag is-secondary">
-                {{ selectedCurator }}
-                <button
-                  class="delete is-small"
-                  @click="deleteCurator(selectedCurator)"
-                ></button>
-              </span>
-            </li>
-          </ul>
+        <div class="container_flex">
+          <span id="curators_tags_list_item_tag" class="tag is-secondary" v-if="datacard.getCurator().getName() !== null">
+            {{ datacard.getCurator().getName() }}
+            <button class="delete is-small" @click="deleteCurator()"></button>
+          </span>
         </div>
       </div>
     </div>
@@ -74,58 +65,61 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
+import { mapState } from "vuex";
 import informationHelper from "../helpers/informationHelper";
+import Curator from "../models/curator";
+import Datacard from "../models/datacard";
 
 export default {
-  components:{
-    "information_helper": informationHelper,
+  components: {
+    information_helper: informationHelper
   },
   data() {
     return {
       autocompleteCuratorStatus: false,
-      informationMessage: "Solo puedes agregar dos curadores..."
+      curators: [],
+      auxiliarDatacard: new Datacard(),
+      informationMessage: "Solo puedes agregar un curador..."
     };
   },
   computed: {
-    ...mapState("curator", {
-      curatorState: state => state,
-      curator: state => state.curator,
-      curators: state => state.curators,
-      isCuratorValid: state => state.curator.valid.isValid
-    }),
     ...mapState("datacard", {
       datacard: state => state.datacard
     }),
-    ...mapGetters("curator", ["selectedCuratorsName"]),
+    isCuratorValid: function() {
+      return this.auxiliarDatacard.getCurator().getValid().isValid;
+    },
     selectedCurator: {
-
       get: function() {
-        // this.curator;
-        // debugger;
         if (
-          !this.curator.valid.isValid || this.curator.valid.message === "temporary error"
+          !this.isCuratorValid ||
+          this.datacard.getCurator().getValid().message === "temporary error"
         ) {
           this.addShakeEffect("validate_input");
         }
-        return this.curator.getName();
+        return this.auxiliarDatacard.getCurator().getName();
       },
-      set: function(newValue) {
-        this.$store.dispatch("curator/setCurator", newValue);
+      set: async function(newValue) {
+        if (this.datacard.getCurator().getName() === null) {
+          let curator = await this.auxiliarDatacard.setCurator(newValue);
+          this.curators = await Curator.getAllByName(curator.getName());
+        } else {
+          this.auxiliarDatacard.setCurator(new Curator());
+          this.auxiliarDatacard
+            .getCurator()
+            .setValid({ isValid: false, message: "temporary error" });
+        }
       }
     }
   },
   methods: {
     async addCurator() {
-      let selectedCurators = await this.$store.dispatch("curator/addCurator");
-      this.datacard.setCurators(selectedCurators)
-      this.$store.commit("datacard/setDatacard", this.datacard);
-      this.selectedCurator = "";
+      this.datacard.setCurator(this.auxiliarDatacard.getCurator());
+      await this.auxiliarDatacard.setCurator(new Curator());
+      this.curators = [];
     },
-    deleteCurator(curator) {
-      let selectedCurators = this.$store.dispatch("curator/deleteCurator", curator);
-      this.datacard.setCurators(selectedCurators)
-      this.$store.commit("datacard/setDatacard", this.datacard);
+    deleteCurator() {
+      this.datacard.setCurator(new Curator());
     },
     setCurator(event, curator) {
       this.selectedCurator = curator;
@@ -197,7 +191,7 @@ export default {
   // align-self: center;
 }
 
-#curators_tags_title{
+#curators_tags_title {
   display: flex;
   align-items: center;
 }
@@ -222,7 +216,7 @@ export default {
 }
 
 #curators_tags_list_item_tag {
-  margin-right: 5px;
+  margin: auto;
 }
 
 .shake_field {

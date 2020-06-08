@@ -66,17 +66,18 @@
 
         <div class="show_datacard_info_attributes_div">
           <p class="attribute_name">Curador:</p>
-          <div v-for="curator in datacard.getCurators()" :key="curator.getId()">
-            <p class="attribute_value">
-              |{{ curator.getName() }}|
-              <!-- <span class="space"></span> -->
-            </p>
-          </div>
+          <p class="attribute_value">
+            {{
+            datacard
+            .getCurator()
+            .getName()
+            }}
+          </p>
         </div>
 
         <div class="show_datacard_info_attributes_div">
           <p class="attribute_name">Creador de la ficha:</p>
-          <p class="attribute_value">Christian Alejandro Delfín Alfonso</p>
+          <p class="attribute_value">{{datacard.getUser().getName() + " " + datacard.getUser().getLastName()}}</p>
         </div>
 
         <div class="show_datacard_info_attributes_div">
@@ -117,7 +118,7 @@
           <div class="show_datacard_info_attributes_div">
             <p class="attribute_name">Fecha de colecta:</p>
             <p class="attribute_value">
-              {{ datacard.getCollect().getFormattedCollectDate() }}
+              {{ datacard.getCollect().getFormattedCollectDate() + " " + datacard.getCollect().getFormattedCollectHour() }}
             </p>
           </div>
         </div>

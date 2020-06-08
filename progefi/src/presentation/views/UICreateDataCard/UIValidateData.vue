@@ -4,7 +4,9 @@
     <div id="validateData_component_header">
       <information_helper :message="informationMessage"></information_helper>
       <p class="subtitle_dark_gray is-5">Validación</p>
+      {{user.name}}
     </div>
+
 
     <!-- --------TaxonomicalData Component Content----- -->
     <div id="validateData_component_content" class="box">
@@ -86,12 +88,13 @@ export default {
       template: state => state.template
     }),
     ...mapState("datacard", {
-      curators: state => state.datacard.getCurators()
+      curator: state => state.datacard.getCurator(),
+      user: state => state.datacard.getUser()
     })
   },
   watch: {
-    curators() {
-      if (this.curators.length > 0) {
+    curator() {
+      if (this.curator.getName() !== null) {
         // this.$refs.preview_datacard.setValues();
         this.textInButton = "Generar ficha";
       } else {

@@ -5,12 +5,14 @@
     </div>
 
     <div id="show_templates_component_content">
-      <templates-table @showTemplate="showTemplate($event)"></templates-table>
+      <templates-table
+        @showTemplate="showTemplate($event)"
+        @templateCount="setTemplateCount($event)"
+      ></templates-table>
 
       <div class="float_button" v-on:click="createTemplate()">
         <img class="float_button_icon" :src="require('../assets/plus.png')" />
       </div>
-
     </div>
   </div>
 </template>
@@ -21,17 +23,33 @@ export default {
   components: {
     "templates-table": templatesTable
   },
+  data() {
+    return {
+      templateCount: 0,
+      templateLimitMessage: "No se pueden registrar más de 15 plantillas..."
+    };
+  },
   methods: {
     createTemplate() {
-      this.$router.push({
-        name: "UICreateTemplate"
-      });
+      if (!this.templateCount >= 15) {
+        this.openDialog(this.templateLimitMessage);
+      } else {
+        this.$router.push({
+          name: "UICreateTemplate"
+        });
+      }
     },
-    showTemplate(template){
+    showTemplate(template) {
       this.$router.push({
         name: "UIShowTemplate",
-        params: {template}
+        params: { template }
       });
+    },
+    setTemplateCount(count) {
+      this.templateCount = count;
+    },
+    openDialog(message) {
+      this.$buefy.dialog.alert(message);
     }
   }
 };

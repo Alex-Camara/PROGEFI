@@ -40,9 +40,9 @@ export default {
         this.collection.getNameValid().isValid &&
         this.collection.getCodeValid().isValid &&
         this.collection.getDescriptionValid().isValid &&
-        this.collection.getResearchAreaAcronymValid().isValid &&
+        this.collection.getEntityNameValid().isValid &&
         this.collection.getInstituteLogoPathValid().isValid &&
-        this.collection.getResearchAreaValid().isValid &&
+        this.collection.getEntityAcronymValid().isValid &&
         this.collection.getInstituteAcronymValid().isValid &&
         this.collection.getCataloguesFolderPathValid().isValid &&
         this.collection.getInstituteNameValid().isValid

@@ -91,6 +91,7 @@ class Validator {
   }
   testValidationOne (testValue, minLimit, maxLimit, isRequired, regex) {
     return new Promise((resolve, reject) => {
+      testValue = testValue.toString().trim()
       this.isEmpty(testValue, isRequired)
         .then(res => {
           this.applyRegex(testValue, regex)

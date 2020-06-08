@@ -8,16 +8,28 @@
             :name="null"
             :valid="isLifeStageValid"
           ></required-field-helper>
-          <b id="lifeStage_helper_container_header_title_value" class="is-size-6">{{title}}</b>
+          <b
+            id="lifeStage_helper_container_header_title_value"
+            class="is-size-6"
+            >{{ title }}</b
+          >
           <b
             id="lifeStage_helper_container_header_value"
             class="is-size-6"
             v-if="lifeStage"
-          >{{ lifeStage }}</b>
-          <img id="lifeStage_helper_checked_icon" src="../assets/checked.png" v-if="lifeStage" />
+            >{{ lifeStage }}</b
+          >
+          <img
+            id="lifeStage_helper_checked_icon"
+            src="../assets/checked.png"
+            v-if="lifeStage"
+          />
         </div>
 
-        <div id="lifeStage_helper_container_header_addOption" v-on:click="addOption()">
+        <div
+          id="lifeStage_helper_container_header_addOption"
+          v-on:click="addOption()"
+        >
           <b-tooltip label="Agregar otra opción" position="is-top">
             <img
               id="lifeStage_helper_container_header_addOption_icon"
@@ -34,10 +46,13 @@
             v-for="lifeStage in lifeStages"
             :key="lifeStage.getName()"
             :value="lifeStage.getName()"
-            v-on:click="setLifeStage(lifeStage)"
+            v-on:click="setLifeStage($event, lifeStage)"
           >
-            <img id="lifeStage_helper_list_item_icon" :src="lifeStage.getIconPath()" />
-            <div id="lifeStage_helper_list_item_text">{{lifeStage.getName()}}</div>
+            <!--            <img id="lifeStage_helper_list_item_icon" :src="lifeStage.getIconPath()" />-->
+            <div id="lifeStage_helper_list_item_icon" class="dot"></div>
+            <div id="lifeStage_helper_list_item_text">
+              {{ lifeStage.getName() }}
+            </div>
           </li>
         </ul>
       </div>
@@ -76,7 +91,7 @@ export default {
           .getLifeStageValid()
     }),
     ...mapState("modal", {
-      saveLifeStageValue: state => state.saveLifeStageValue,
+      saveLifeStageValue: state => state.saveLifeStageValue
     }),
     lifeStage: {
       get: function() {
@@ -87,13 +102,16 @@ export default {
         return lifeStage.getName();
       },
       set: function(newValue) {
-        this.datacard.getCollect().getSpecimen().setLifeStage(newValue);
+        this.datacard
+          .getCollect()
+          .getSpecimen()
+          .setLifeStage(newValue);
       }
     }
   },
-  watch:{
-    saveLifeStageValue(newValue){
-      if (newValue){
+  watch: {
+    saveLifeStageValue(newValue) {
+      if (newValue) {
         this.lifeStage = this.modalLifeStage;
       }
       this.modalLifeStage = new LifeStage();
@@ -102,7 +120,11 @@ export default {
   },
   methods: {
     getLifeStages() {},
-    setLifeStage(lifeStage) {
+    setLifeStage(event, lifeStage) {
+      if (document.querySelector('#lifeStage_helper_list_item .selected_dot') !== null) {
+        document.querySelector('#lifeStage_helper_list_item .selected_dot').classList.remove('selected_dot');
+      }
+      event.currentTarget.childNodes[0].classList.add("selected_dot");
       this.lifeStage = lifeStage;
     },
     addOption() {
@@ -113,11 +135,51 @@ export default {
         getter: "getName",
         setter: "setName",
         getterValid: "getNameValid"
-      })
+      });
     }
   }
 };
 </script>
+
+<style scoped lang="scss">
+  @import "../style/style.scss";
+.dot {
+  height: 25px;
+  width: 25px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  transition: 0.2s;
+  justify-self: center;
+  margin: auto;
+}
+.dot:hover {
+  height: 35px;
+  width: 35px;
+  background-color: $secondary;
+  transition: 0.2s;
+  cursor: pointer;
+}
+  .dot:hover + #lifeStage_helper_list_item_text {
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .selected_dot{
+    height: 35px;
+    width: 35px;
+    background-color: $secondary;
+    transition: 0.2s;
+    cursor: pointer;
+  }
+
+  .selected_dot + #lifeStage_helper_list_item_text {
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+</style>
 
 <style lang="scss">
 @import "../style/style.scss";
@@ -196,26 +258,26 @@ export default {
   justify-content: center;
 }
 
-#lifeStage_helper_list_item_icon {
-  height: 40px;
-  width: 40px;
-  //border-radius: 50%;
-  //background-color: white;
-  transition: 0.2s;
-  justify-self: center;
-}
+/*#lifeStage_helper_list_item_icon {*/
+/*  height: 40px;*/
+/*  width: 40px;*/
+/*  //border-radius: 50%;*/
+/*  //background-color: white;*/
+/*  transition: 0.2s;*/
+/*  justify-self: center;*/
+/*}*/
 
 #lifeStage_helper_list_item_text {
   text-align: center;
   font-size: 14px;
 }
 
-#lifeStage_helper_list_item_icon:hover {
-  height: 45px;
-  width: 45px;
-  transition: 0.2s;
-  cursor: pointer;
-}
+/*#lifeStage_helper_list_item_icon:hover {*/
+/*  height: 45px;*/
+/*  width: 45px;*/
+/*  transition: 0.2s;*/
+/*  cursor: pointer;*/
+/*}*/
 
 #lifeStage_helper_list_item_icon:hover + #lifeStage_helper_list_item_text {
   font-weight: bold;

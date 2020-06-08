@@ -156,6 +156,12 @@ function listen() {
     });
   });
 
+  ipcMain.on("getCuratorByName", (event, curatorName) => {
+    curatorHandler.getCuratorByName(curatorName, function(recevedCurator) {
+      event.reply("curatorByName", recevedCurator);
+    });
+  });
+
   ipcMain.on("verifyDuplicateCollectorCode", (event, code) => {
     collectorHandler.verifyDuplicateCode(code, function(isDuplicated) {
       event.reply("collectorCodeVerified", isDuplicated);
