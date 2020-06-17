@@ -10,11 +10,11 @@ class SexDaoImp {
         const sexes = await Sex.query();
 
         //var resourcesPath = 
-        var fullPath = require('path').resolve(__dirname, '..') + this.resourcesPath;
-
-        for (let i = 0; i < sexes.length; i++) {
-            sexes[i].iconPath = fullPath + sexes[i].iconPath;
-        }
+        // var fullPath = require('path').resolve(__dirname, '..') + this.resourcesPath;
+        //
+        // for (let i = 0; i < sexes.length; i++) {
+        //     sexes[i].iconPath = fullPath + sexes[i].iconPath;
+        // }
 
         return sexes;
     }
@@ -22,8 +22,8 @@ class SexDaoImp {
         const sex = await Sex.query()
             .where('id', sexId);
 
-        var fullPath = require('path').resolve(__dirname, '..') + this.resourcesPath;
-        sex.iconPath = fullPath + sex.iconPath;
+        // var fullPath = require('path').resolve(__dirname, '..') + this.resourcesPath;
+        // sex.iconPath = fullPath + sex.iconPath;
         return sex[0];
     }
 }

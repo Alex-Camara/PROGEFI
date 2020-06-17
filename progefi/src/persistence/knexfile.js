@@ -9,6 +9,13 @@ module.exports = {
     connection:{
       //filename: path.resolve('.') + '/progefiDB.db'
     filename: path.resolve('.') + './src/persistence/progefiDB.db'
+    },
+    migrations: {
+      directory: path.resolve('.') + '/src/persistence/migrations'
+    },
+    seeds: {
+      // directory: path.resolve('.') + '/testSeeds'
+      directory: path.resolve('.') + '/src/persistence/productionSeeds'
     }
   }
 }

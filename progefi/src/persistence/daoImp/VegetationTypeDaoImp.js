@@ -1,6 +1,5 @@
 "use strict";
 
-const fs = require("fs");
 const VegetationType = require("../models/VegetationType");
 const VegetalFormation = require("../models/VegetalFormation");
 
@@ -17,14 +16,6 @@ class VegetationTypeDaoImp {
         "vegetationType.vegetalFormationId",
         "vegetalFormation.id"
       );
-
-    var resourcesPath = "/src/persistence/resources/";
-    var fullPath = require("path").resolve(__dirname, "..") + resourcesPath;
-
-    for (let i = 0; i < vegetationTypes.length; i++) {
-      vegetationTypes[i].vegetalFormationImagePath =
-        fullPath + vegetationTypes[i].vegetalFormationImagePath;
-    }
 
     return vegetationTypes;
   }
@@ -46,14 +37,6 @@ class VegetationTypeDaoImp {
   async getVegetalFormations() {
     let vegetalFormations = await VegetalFormation.query().eager("[vegetationTypes]");
 
-    var resourcesPath = "/src/persistence/resources/";
-    var fullPath = require("path").resolve(__dirname, "..") + resourcesPath;
-
-    for (let i = 0; i < vegetalFormations.length; i++) {
-      vegetalFormations[i].imagePath =
-        fullPath + vegetalFormations[i].imagePath;
-    }
-    // console.info(vegetalFormations);
     return vegetalFormations;
   }
 }

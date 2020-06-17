@@ -16,7 +16,9 @@ class UserDaoImp {
       });
   }
   async get() {
-    let user = await User.query();
+    let user = await User.query().catch(error => {
+        return error;
+    });;
     return user;
   }
   async updateKeepSession(user) {
@@ -24,7 +26,9 @@ class UserDaoImp {
       .findById(user.id)
       .patch({
         keepSession: user.keepSession
-      });
+      }).catch(error => {
+            return error;
+        });;
     return updatedUser;
   }
 }
