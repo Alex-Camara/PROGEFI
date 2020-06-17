@@ -1,3 +1,4 @@
+import path from "path";
 <template>
   <div>
     <div id="template_helper_container" class="gray_box">
@@ -31,7 +32,10 @@
           </div>
           <div id="template_helper_container_content_template_sample">
             <b id="sample_image_text">Muestra:</b>
-            <img id="sample_image" :src="selectedTemplate.getSamplePath()" />
+            <img
+              id="sample_image"
+              :src="getImage(selectedTemplate.getSamplePath())"
+            />
           </div>
         </div>
       </div>
@@ -42,6 +46,7 @@
 <script>
 import { mapState } from "vuex";
 import Template from "../models/template";
+import path from "path";
 
 export default {
   data() {
@@ -71,6 +76,25 @@ export default {
       },
       set: function(newValue) {
         this.datacard.setTemplate(newValue);
+      }
+    }
+  },
+  methods: {
+    getImage(templatePathName) {
+      if (templatePathName !== null) {
+        if (process.env.NODE_ENV !== "production") {
+          let relativePath =
+            path.join(__dirname, "..", "..", "..", "..", "..", "..") +
+            "/src/persistence/resources/template_samples/" +
+            templatePathName;
+          return "file://" + relativePath;
+        } else {
+          let relativePath =
+            path.join(__dirname, "..", "..") +
+            "/src/persistence/resources/template_samples/" +
+            templatePathName;
+          return "file://" + relativePath;
+        }
       }
     }
   }

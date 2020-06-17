@@ -35,12 +35,12 @@ class UserHandler {
         storedUser.hash
       );
       if (validPassword) {
-        user.id = storedUser.id;
-        user.credentialsValid = true;
+        // user.id = storedUser.id;
+        storedUser.credentialsValid = true;
         if (user.keepSession){
           await this.userDao.updateKeepSession(user);
         }
-        result(user);
+        result(storedUser);
       } else {
         user.credentialsValid = false;
         result(user);

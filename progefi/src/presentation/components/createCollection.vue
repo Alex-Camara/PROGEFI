@@ -39,28 +39,28 @@
     <div class="gray_box create_collection_content">
       <div class="create_collection_attribute_div_title">
         <required-field-helper
-                :name="entityTitle"
-                :valid="isEntityNameValid"
+          :name="entityTitle"
+          :valid="isEntityNameValid"
         ></required-field-helper>
       </div>
       <input
-              id="create_collection_research_area_input"
-              class="input create_collection_input_elements"
-              v-model="entityName"
+        id="create_collection_research_area_input"
+        class="input create_collection_input_elements"
+        v-model="entityName"
       />
     </div>
 
     <div class="gray_box create_collection_content">
       <div class="create_collection_attribute_div_title">
         <required-field-helper
-                :name="entityAcronymTitle"
-                :valid="isEntityAcronymValid"
+          :name="entityAcronymTitle"
+          :valid="isEntityAcronymValid"
         ></required-field-helper>
       </div>
       <input
-              id="create_collection_research_area_acronym_input"
-              class="input create_collection_input_elements"
-              v-model="entityAcronym"
+        id="create_collection_research_area_acronym_input"
+        class="input create_collection_input_elements"
+        v-model="entityAcronym"
       />
     </div>
 
@@ -127,7 +127,6 @@
 
       <div class="space"></div>
 
-
       <div v-if="collection.getInstituteLogoPath() !== null">
         <img
           id="create_collection_logo_image"
@@ -149,12 +148,9 @@
       </div>
 
       <div>
-        <label
-          id="create_collection_directory_input_label"
-          for="create_collection_directory_input"
-        >
+        <label id="create_collection_directory_input_label">
           <div class="container_flex">
-            <a class="button is-secondary">
+            <a class="button is-secondary" v-on:click="setDirectory">
               <b-icon icon="upload"></b-icon>
               <span>{{ loadDirectoryMessage }}</span>
             </a>
@@ -163,15 +159,6 @@
             }}</span>
           </div>
         </label>
-        <input
-          id="create_collection_directory_input"
-          class="input"
-          type="file"
-          webkitdirectory
-          directory
-          multiples
-          v-on:change="setDirectory($event)"
-        />
       </div>
     </div>
   </div>
@@ -207,7 +194,7 @@ export default {
         "Este es el código inicial que tendrá el código de los catálogos.",
       helpTextDestinationDirectory:
         "Directorio donde se guardará el archivo csv generado por catálogo.",
-      notSupportedFormatMessage: "Formato no soportado",
+      notSupportedFormatMessage: "Formato no soportado"
     };
   },
   watch: {
@@ -313,8 +300,7 @@ export default {
       get: function() {
         let entityAcronym = this.collection.getEntityAcronym();
         if (
-          this.collection.getEntityAcronymValid().message ===
-          "temporary error"
+          this.collection.getEntityAcronymValid().message === "temporary error"
         ) {
           this.addShakeEffect("create_collection_research_area_acronym_input");
         }
@@ -370,9 +356,12 @@ export default {
     }
   },
   methods: {
-    setDirectory(event) {
-      let destinationDirectory = event.path[0].files[0].path;
-      this.cataloguesFolderPath = destinationDirectory;
+    async setDirectory() {
+      const { dialog } = require("electron").remote;
+      var path = await dialog.showOpenDialog({
+        properties: ["openDirectory"]
+      });
+      this.cataloguesFolderPath = path.filePaths[0];
     },
     checkFileExtension(file) {
       let fileName = file.name;
@@ -443,14 +432,6 @@ export default {
 #create_collection_directory_input_label {
   display: inline-block;
   cursor: pointer;
-}
-
-input[type="file"]#create_collection_directory_input {
-  position: absolute;
-  z-index: -1;
-  top: 6px;
-  left: 0;
-  font-size: 15px;
 }
 
 #create_collection_logo_image {

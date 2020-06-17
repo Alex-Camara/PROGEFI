@@ -30,10 +30,9 @@ const datacard = {
       Vue.set(state, "datacard", datacard);
     },
     setUser(state, user){
-      state.datacard.setUser(user);
+      state.datacard.user = user;
     },
     setTempCollectorCode(state, code) {
-
       state.tempCollectorCode = code;
     },
     setCollectDate(state, collectDate) {

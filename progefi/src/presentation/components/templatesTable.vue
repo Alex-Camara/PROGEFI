@@ -7,12 +7,12 @@
     <div id="templates_table_table_container">
       <div
         id="templates_table_container_elements"
-        v-for="template in templates"
+        v-for="(template, index) in templates"
         :key="template.getId()"
         @click="showTemplate(template)"
       >
         <div>
-          <img id="templates_table_container_sample_image" :src="template.getSamplePath()" />
+          <img id="templates_table_container_sample_image" :src="getImage(index)"/>
         </div>
         <div id="templates_table_element_title">{{template.getName()}}</div>
       </div>
@@ -22,6 +22,7 @@
 
 <script>
 import Template from "../models/template";
+import path from 'path';
 export default {
   data() {
     return {
@@ -37,6 +38,17 @@ export default {
   methods: {
     showTemplate(template) {
       this.$emit("showTemplate", template);
+    },
+    getImage(index){
+      if (process.env.NODE_ENV !== 'production'){
+        let relativePath = path.join(__dirname, '..', '..', '..', '..', '..', '..') + '/src/persistence/resources/template_samples/' + this.templates[index].getSamplePath();
+        let src = "file://" + relativePath;
+        return src;
+      } else{
+        let relativePath = path.join(__dirname, '..', '..') + '/src/persistence/resources/template_samples/' + this.templates[index].getSamplePath();
+        let src = "file://" + relativePath;
+        return src;
+      }
     }
   }
 };

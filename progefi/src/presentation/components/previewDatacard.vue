@@ -116,9 +116,6 @@ export default {
     ...mapState("addDatacard", {
       photoCollect: state => state.photoCollect
     }),
-    ...mapState("user", {
-      user: state => state.user
-    }),
     layoutHeight: {
       get: function() {
         let layoutHeight = this.partialHeight + 128;
@@ -164,6 +161,8 @@ export default {
     visibilityChanged(isVisible) {
       if (isVisible) {
         this.setValues();
+        console.info(this.user)
+        console.info(this.user.getFullName())
       }
     },
     getTagStyle(tag) {
@@ -439,7 +438,7 @@ export default {
       }
 
       //se va a crear por primera vez
-      if (this.datacard.getCreationDate() == null) {
+      if (this.datacard.getCollect().getId() == null) {
         this.datacard.setCreationDate();
         this.createDatacard(this.datacard);
       } else {
@@ -450,6 +449,7 @@ export default {
     },
     restoreToPreview() {
       this.$emit("restorePreview");
+      // TODO Verificar si se queda o se quita
       if (this.datacard.getId === null) {
         this.datacard.creationDate = null;
       }

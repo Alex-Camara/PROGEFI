@@ -84,9 +84,11 @@ export default {
     this.showInternetStatus();
     if (this.datacardDraft) {
       this.setDatacard(this.datacardDraft);
-      this.$store.commit("datacard/setUser", this.user);
+      // this.$store.commit("datacard/setUser", this.user);
+      this.datacard.setUser(this.user);
     } else {
-      this.$store.commit("datacard/setUser", this.user);
+      // this.$store.commit("datacard/setUser", this.user);
+      this.datacard.setUser(this.user);
     }
   },
   async beforeDestroy() {
@@ -99,6 +101,7 @@ export default {
     if (to.params.askToLeave || to.params.askToLeave == undefined) {
       this.showDialog().then(answer => {
         if (answer) {
+
           next();
         } else {
           next(false);
@@ -112,6 +115,9 @@ export default {
   computed: {
     ...mapState("user", {
       user: state => state.user
+    }),
+    ...mapState("datacard", {
+      datacard: state => state.datacard
     }),
     title: function() {
       if (!this.datacardDraft) {
@@ -151,19 +157,12 @@ export default {
       return new Promise(resolve => {
         var { remote } = require("electron");
         var win = remote.getCurrentWindow();
-        win.webContents.session.clearCache(function() {
-          win.webContents.session.clearStorageData(function() {
-            console.info(
-              win.webContents.session.getCacheSize(n => {
-                resolve();
-              })
-            );
-          });
-        });
+        win.webContents.session.clearCache();
+        resolve();
       });
     },
     resetStore() {
-      store.dispatch("resetStore");
+      this.$store.dispatch("resetStore");
     },
     showDatacards() {
       router.push({ name: "UIShowDataCards" });

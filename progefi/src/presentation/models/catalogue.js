@@ -88,7 +88,7 @@ class Catalogue {
       }
     } else {
       let regex = "^[a-zA-Z \\u00C0-\\u00FF]*$";
-      await this.validate(name, "name", 3, 50, regex);
+      await this.validate(name, "name", 3, 50, true, regex);
     }
   }
 
@@ -113,13 +113,13 @@ class Catalogue {
       }
     } else {
       let regex = "^[a-zA-Z0-9 \\u00C0-\\u00FF\\_-]*$";
-      await this.validate(code, "code", 2, 10, regex);
+      await this.validate(code, "code", 2, 10,true, regex);
     }
   }
   async setDescription(description) {
     let regex =
       "^[a-zA-Z0-9 \\u00C0-\\u00FF \\/():_.,;{}\\[\\]ñ<<>>+=%#$\"'-\\«\\»]*$";
-    await this.validate(description, "description", 5, 500, regex);
+    await this.validate(description, "description", 1, 500, false, regex);
   }
   setNameValid(valid) {
     this.nameValid.isValid = valid.isValid;
@@ -253,12 +253,12 @@ class Catalogue {
       });
     });
   }
-  validate(testValue, testValueName, minLimit, maxLimit, regex) {
+  validate(testValue, testValueName, minLimit, maxLimit, isRequired, regex) {
     return new Promise(async resolve => {
       // debugger;
       var validator = new Validator();
       validator
-        .testValidationOne(testValue, minLimit, maxLimit, true, regex)
+        .testValidationOne(testValue, minLimit, maxLimit, isRequired, regex)
         .then(() => {
           this[testValueName] = testValue;
           this[testValueName + "Valid"] = { isValid: true, message: null };

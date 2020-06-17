@@ -5,12 +5,12 @@
         <b-field
           id="validate_field"
           custom-class="is-small is-centered"
-          label="Ingresa el/los curadores:"
+          :label="title"
         >
           <!-- <b-tooltip label="Nombre del curador" position="is-top" animated> -->
           <input
             id="validate_input"
-            placeholder="Nombre del curador..."
+            :placeholder="curatorNameText"
             class="input"
             v-model="selectedCurator"
             @focus="autocompleteCuratorStatus = true"
@@ -50,7 +50,7 @@
           <information_helper
             :message="informationMessage"
           ></information_helper>
-          <b>Curadores:</b>
+          <b>{{curatorsTagText}}</b>
         </div>
 
         <div class="container_flex">
@@ -79,6 +79,9 @@ export default {
       autocompleteCuratorStatus: false,
       curators: [],
       auxiliarDatacard: new Datacard(),
+      title: "Ingresa el curador:",
+      curatorNameText: "Nombre del curador...",
+      curatorsTagText: "Curador:",
       informationMessage: "Solo puedes agregar un curador..."
     };
   },

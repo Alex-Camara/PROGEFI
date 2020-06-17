@@ -49,6 +49,11 @@
 <script>
 import { mapState } from "vuex";
 import requiredFieldHelper from "./requiredFieldHelper";
+import Project from "../models/project";
+import VegetationType from "../models/vegetationType";
+import ClimateType from "../models/climateType";
+import Sex from "../models/sex";
+import LifeStage from "../models/lifeStage";
 
 export default {
   name: "modal-helper",
@@ -72,7 +77,7 @@ export default {
       getterValue: state => state.getter,
       getterValidValue: state => state.getterValid,
       setter: state => state.setter,
-      modalState: state => state
+      modalState: state => state,
    }),
     isValid: function() {
       if (this.model) {
@@ -126,18 +131,23 @@ export default {
     },
     saveProjectValue: {
       get: function() {
-        return this.modal.state.saveProjectValue;
+        console.info("obteniendo ")
+        return this.modalState.saveProjectValue;
       },
       set: function(newValue) {
+        console.info("guardando proyecto")
         this.$store.commit("modal/setSaveProjectValue", newValue);
+        console.info("proyecto guardado")
       }
     }
   },
   watch: {
     active(newValue) {
       if (newValue) {
+        console.log("active: " + newValue)
         this.openModal();
       } else {
+        console.log("active: " + newValue)
         this.closeModalWindow();
       }
     },
@@ -149,14 +159,20 @@ export default {
   },
   methods: {
     save() {
+      console.info("entró al método save")
+      console.info(this.model)
+      console.info(this.model.constructor.name)
       this.setSaveValues(true);
     },
     closeModal() {
+      console.info("cerrando modal")
       this.setSaveValues(false);
+      // this.closeModalWindow();
       // this.$store.commit("modal/reset");
     },
     setSaveValues(save) {
-      switch (this.model.constructor.name) {
+      let modelClassName = this.getModelClassName(this.model);
+      switch (modelClassName) {
         case "Sex":
           this.saveSexValue = save;
           break;
@@ -170,8 +186,29 @@ export default {
           this.saveLifeStageValue = save;
           break;
         case "Project":
+          console.info("switch save proyecto");
+          console.info(save)
           this.saveProjectValue = save;
+          console.log("this.saveProjectValue: ")
+          console.info(this.saveProjectValue)
           break;
+      }
+    },
+    getModelClassName(model){
+      if (model instanceof Project){
+        return "Project"
+      }
+      if (model instanceof VegetationType){
+        return "VegetationType"
+      }
+      if (model instanceof ClimateType){
+        return "ClimateType"
+      }
+      if (model instanceof Sex){
+        return "Sex"
+      }
+      if (model instanceof LifeStage){
+        return "LifeStage"
       }
     },
     openModal() {
@@ -179,8 +216,10 @@ export default {
       element.classList.add("is-active");
     },
     closeModalWindow() {
+      console.info("close modal window")
       var element = document.getElementById("modal");
       element.classList.remove("is-active");
+      console.info("class active desactivada")
     },
     addShakeEffect() {
       let element = document.getElementById("modal_input");

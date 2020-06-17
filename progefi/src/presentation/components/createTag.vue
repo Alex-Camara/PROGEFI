@@ -384,8 +384,8 @@ export default {
         {
           tagName: "curator",
           model: "datacard",
-          modelAttribute: "curator",
-          tagPlaceholder: "Curador(es)",
+          modelAttribute: "curator.previewName",
+          tagPlaceholder: "Curador",
           example: "Christian Alejandro Delfín Alfonso"
         },
         {
@@ -408,6 +408,13 @@ export default {
           modelAttribute: "formattedCreationDate",
           tagPlaceholder: "Fecha de creación",
           example: "20/01/2020"
+        },
+        {
+          tagName: "creationHour",
+          model: "datacard",
+          modelAttribute: "formattedCreationHour",
+          tagPlaceholder: "Hora de creación",
+          example: "10:34"
         },
         {
           tagName: "code",

@@ -22,23 +22,12 @@
             aria-role="listitem"
             v-for="option in imageExportOptions"
             :key="option.format"
-            @click="openFileExplorer(option.format)"
+            @click="setDirectory(option.format)"
           >
             <label
-              for="show_datacard_options_export_input"
-              id="show_datacard_options_export_option"
             >
               {{ option.format }}
             </label>
-            <input
-              id="show_datacard_options_export_input"
-              class="show_datacard_options_export_input_class"
-              type="file"
-              webkitdirectory
-              directory
-              multiples
-              v-on:change="setDirectory($event)"
-            />
           </b-dropdown-item>
 
           <p class="export_button_option_information">Información</p>
@@ -47,23 +36,12 @@
             aria-role="listitem"
             v-for="option in dataExportOptions"
             :key="option.format"
-            @click="openFileExplorer(option.format)"
+            @click="setDirectory(option.format)"
           >
             <label
-              for="show_datacard_options_export_input"
-              id="show_datacard_options_export_option"
             >
               {{ option.format }}
             </label>
-            <input
-              id="show_datacard_options_export_input"
-              class="show_datacard_options_export_input_class"
-              type="file"
-              webkitdirectory
-              directory
-              multiples
-              v-on:change="setDirectory($event)"
-            />
           </b-dropdown-item>
         </b-dropdown>
       </div>
@@ -97,8 +75,14 @@ export default {
     showDatacards() {
       this.$router.go(-1);
     },
-    async setDirectory(event) {
-      let destinationDirectory = event.path[0].files[0].path;
+    async setDirectory(format) {
+      this.selectedExportationFormat = format;
+      const { dialog } = require("electron").remote;
+      var path = await dialog.showOpenDialog({
+        properties: ["openDirectory"]
+      });
+      let destinationDirectory = path.filePaths[0];
+      // let destinationDirectory = event.path[0].files[0].path;
       try {
         await this.$store.dispatch(
           "loading/setActive",
@@ -121,9 +105,6 @@ export default {
           { root: true }
         );
       }
-    },
-    openFileExplorer(format) {
-      this.selectedExportationFormat = format;
     },
     openToast(message) {
       this.$buefy.toast.open(message);

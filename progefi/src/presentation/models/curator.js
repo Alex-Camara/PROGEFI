@@ -61,6 +61,13 @@ class Curator {
   getName() {
     return this.name;
   }
+  getPreviewName(){
+    if (this.name == null){
+      return "Pendiente";
+    } else{
+      return this.name;
+    }
+  }
   getValid() {
     return this.valid;
   }

@@ -4,7 +4,6 @@
     <div id="validateData_component_header">
       <information_helper :message="informationMessage"></information_helper>
       <p class="subtitle_dark_gray is-5">Validación</p>
-      {{user.name}}
     </div>
 
 

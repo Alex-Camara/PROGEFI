@@ -57,7 +57,7 @@
           >
             <div id="select_vegetation_vegetal_formation_list_element">
               <div id="select_vegetation_vegetal_formation_bubble">
-                <img :src="vegetalFormation.getImagePath()" />
+                <img :src="require('../assets/' + vegetalFormation.getImagePath())" />
               </div>
               <div
                 id="select_vegetation_vegetal_formation_bubble_text"
@@ -98,7 +98,6 @@
 import { mapState } from "vuex";
 import requiredFieldHelper from "../helpers/requiredFieldHelper.vue";
 import VegetalFormation from "../models/vegetalFormation";
-import LifeStage from "../models/lifeStage";
 import VegetationType from "../models/vegetationType";
 
 export default {
@@ -172,6 +171,9 @@ export default {
         this.selectedVegetalFormation = vegetalFormation.getName();
         this.selectedVegetationTypes = vegetalFormation.getVegetationTypes();
       }
+    },
+    getImage(index){
+
     },
     setSelectedVegetationType(vegetationType) {
       this.selectedVegetationType = vegetationType;

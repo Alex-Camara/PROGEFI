@@ -73,6 +73,9 @@ class User {
     return this.passwordConfirmationValid;
   }
   getFullName(){
+    console.log("objeto")
+    console.info(this.name)
+    console.info(this.lastName)
     return this.name + " " + this.lastName;
   }
   isKeepingSession() {
@@ -148,7 +151,7 @@ class User {
         } else {
           if (user.credentialsValid) {
             this.setUser(user)
-            resolve();
+            resolve(this);
           } else {
             reject("invalid-credentials");
           }

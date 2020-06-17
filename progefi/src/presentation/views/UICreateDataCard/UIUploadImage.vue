@@ -12,7 +12,7 @@
       <!-- --------AddDataCard1 Component Content----- -->
       <div id="add_datacard_component_content">
         <b-field class="file">
-          <b-upload v-model="file">
+          <b-upload v-model="file" accept="image/*">
             <a class="button is-secondary">
               <b-icon icon="upload"></b-icon>
               <span>{{ uploadButtonText }}</span>
@@ -40,7 +40,7 @@
       <div id="add_datacard_component_image">
         <img
           id="uploaded_image"
-          v-if="photoCollect.photoCollectPath != 'not-supported-format'"
+          v-if="photoCollect.photoCollectPath != 'not-supported-format' && photoCollect.photoCollectPath"
           :src="photoCollect.photoCollectPath"
         />
       </div>

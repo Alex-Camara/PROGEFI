@@ -87,7 +87,35 @@ export default {
         this.openDialog("Ha ocurrido un error con la base de datos");
       });
   },
-  computed: {},
+  computed: {
+    isCollectionValid: function() {
+      return (
+        this.collection.getNameValid().isValid &&
+        this.collection.getCodeValid().isValid &&
+        this.collection.getDescriptionValid().isValid &&
+        this.collection.getInstituteNameValid().isValid &&
+        this.collection.getInstituteAcronymValid().isValid &&
+        this.collection.getEntityAcronymValid().isValid &&
+        this.collection.getEntityNameValid().isValid &&
+        this.collection.getInstituteLogoPathValid().isValid &&
+        this.collection.getCataloguesFolderPathValid().isValid
+      );
+    }
+  },
+  watch: {
+    isCollectionValid(newValue) {
+      if (this.editMode) {
+        let createButtonElement = document.getElementById(
+                "ui_show_collection_edit_button"
+        );
+        if (newValue) {
+          createButtonElement.classList.remove("float_button_disabled");
+        } else {
+          createButtonElement.classList.add("float_button_disabled");
+        }
+      }
+    }
+  },
   methods: {
     editCollection() {
       if (this.editMode) {
@@ -114,12 +142,12 @@ export default {
         editButton.classList.remove("float_button");
         editButton.classList.add("float_button_lateral");
         editIcon.src = this.commitIcon;
-        this.helpTextEdit = "Guardar cambios..."
+        this.helpTextEdit = "Guardar cambios...";
       } else {
         editButton.classList.remove("float_button_lateral");
         editButton.classList.add("float_button");
         editIcon.src = this.editIcon;
-        this.helpTextEdit = "Editar colección..."
+        this.helpTextEdit = "Editar colección...";
       }
     },
     async updateCollection() {
@@ -137,8 +165,8 @@ export default {
           });
           this.openToast("La colección ha sido actualizada");
         })
-        .catch(async (error) => {
-          console.info(error)
+        .catch(async error => {
+          console.info(error);
           await this.$store.dispatch("loading/setActive", {
             active: false,
             message: null
@@ -158,6 +186,14 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+  .float_button_disabled {
+    pointer-events: none !important;
+    opacity: 0.7 !important;
+  }
+</style>
+
 
 <style lang="scss">
 #show_collections_component {

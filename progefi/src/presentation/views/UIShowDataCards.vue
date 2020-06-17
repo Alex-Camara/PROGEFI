@@ -74,6 +74,7 @@
 import simpleSearch from "../components/simpleSearch.vue";
 import datacardsTable from "../components/datacardsTable.vue";
 import advancedSearch from "../components/advancedSearch";
+import Template from "../models/template";
 export default {
   name: "UIShowDataCards",
   props: ["selectedCatalogue"],
@@ -89,6 +90,7 @@ export default {
       returnToCollectionTitle: "",
       searchString: null,
       helpText: "Agregar una ficha...",
+      notTemplatesErrorText: "Para crear una nueva ficha de fotocolecta debes crear por lo menos una plantilla.",
       reload: true,
       advancedSearchCriteria: null,
       simpleSearchCriteria: null,
@@ -116,13 +118,19 @@ export default {
   },
 
   methods: {
-    createDataCard() {
-      this.$router.push({
-        name: "UICreateDataCard",
-        params: {
-          catalogue: this.selectedCatalogue
-        }
-      });
+    async createDataCard() {
+      let templates = await Template.getAll();
+      if (templates.length > 0){
+        this.$router.push({
+          name: "UICreateDataCard",
+          params: {
+            catalogue: this.selectedCatalogue
+          }
+        });
+      } else{
+        this.openDialog(this.notTemplatesErrorText);
+      }
+
     },
     showDatacard(selectedDatacard) {
       this.setHelpText("", false);
@@ -177,7 +185,10 @@ export default {
         name: "UIShowCollections",
         params: null
       });
-    }
+    },
+    openDialog(message) {
+      this.$buefy.dialog.alert(message);
+    },
   }
 };
 </script>

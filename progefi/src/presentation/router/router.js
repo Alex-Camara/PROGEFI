@@ -16,7 +16,7 @@ import UICreateCollection from '../views/UICreateCollection'
 Vue.use(Router)
 
 export default new Router({
-  mode: 'history',
+  mode: 'hash',
   routes: [{
     path: '/UIShowDataCards',
     name: 'UIShowDataCards',

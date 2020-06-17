@@ -1,12 +1,8 @@
 'use strict'
 
 
-// import PresentationProcess from './presentation/presentationProcess'
-// import BussinessProcess from './bussiness/bussinessListener'
 import BussinessProcess from './bussiness/bussinessListener';
 const { ipcMain } = require("electron");
-
-
 
 const electron = require('electron');
 const app = electron.app;
@@ -19,9 +15,7 @@ const createProtocol = vueCliPlugIn.createProtocol;
 const installVueDevtools = vueCliPlugIn.installVueDevtools;
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
-
 let win;
-
 
 
 protocol.registerSchemesAsPrivileged([
@@ -35,7 +29,6 @@ protocol.registerSchemesAsPrivileged([
 ])
 
 
-
 function createWindow() {
   // Create the browser window.
   console.log('hola')
@@ -45,8 +38,6 @@ function createWindow() {
   let partialWidth = Math.round(70 * dimensions.width / 100);
 
   let partialHeight = Math.round(67 * partialWidth / 100);
-  // console.info("partial height: " + partialHeight)
-  // console.info("partial width: " + partialWidth)
   win = new BrowserWindow({
     width: partialWidth,
     height: partialHeight,
@@ -96,14 +87,14 @@ app.on("activate", () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", async () => {
-  // if (isDevelopment && !process.env.IS_TEST) {
+  if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
     try {
       await installVueDevtools();
     } catch (e) {
       console.error("Vue Devtools failed to install:", e.toString());
     }
-  // }
+  }
   createWindow();
   win.setMenu(null);
   win.webContents.openDevTools();

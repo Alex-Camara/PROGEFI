@@ -52,6 +52,7 @@ const modal = {
       state.saveProjectValue = value;
     },
     reset(state){
+      console.log("entró a reset")
       state.active = false;
       state.model = "";
       state.setter = "";
@@ -64,6 +65,8 @@ const modal = {
       state.saveVegetationTypeValue = "";
       state.saveLifeStageValue = "";
       state.saveProjectValue = "";
+      console.log("reset realizadó: ")
+      console.info(state)
     }
   },
   actions: {

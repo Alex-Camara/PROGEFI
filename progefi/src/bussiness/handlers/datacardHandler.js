@@ -71,66 +71,6 @@ class DatacardHandler {
     }
     return folderName;
   }
-  // async transformToWebpFormat(filePath, destinationFolderPath) {
-  //   try {
-
-      // const dcraw = require('dcrawr');
-      // const { promisify } = require('util');
-      // const { execFile } = require('child_process');
-      //
-      // promisify(execFile)(dcraw, ['-c', filePath], {
-      //   // hide the extra window on Windows
-      //   windowsHide: true,
-      //   // we want the raw data, not a string
-      //   encoding: 'buffer',
-      //   // 8-bit PPMs are roughly 3x bigger than the original raw file
-      //   // so you should set this number fairly high
-      //   maxBuffer: 1024 * 1024 * 100
-      // })
-      //     .then(async result => {
-      //       // don't use the sync method... you get the idea though
-      //       // fs.writeFileSync('./my-image.ppm', result.stdout);
-      //       const sharp = require("sharp");
-      //       await sharp(result)
-      //         .png()
-      //         .toFile(destinationFolderPath);
-      //     }).catch(err => {
-      //   console.error(err);
-      // });
-
-
-      // console.info(filePath)
-      // const dcraw = require('dcraw');
-      // const buf = fs.readFileSync(filePath);
-      // console.info(buf)
-      // const tiffFile = dcraw(buf, { exportAsTiff: true });
-      // console.info(tiffFile)
-      // fs.writeFileSync(destinationFolderPath, tiffFile)
-      // return destinationFolderPath;
-      // const buf = fs.readFileSync(filePath);
-
-      // const sharp = require("sharp");
-      // await sharp(buf)
-      //   //   .resize(5200, 3400)
-      //   // .jpeg({
-      //   //   quality: 100
-      //   // })
-      //     // .then(data => {
-      //     //
-      //     // })
-      //     .tiff()
-      //   .toFile(destinationFolderPath);
-  //
-  //     const extractd = require('extractd');
-  //     const done = await extractd.generate(filePath);
-  //     console.info(done)
-  //
-  //     return done;
-  //   } catch (error) {
-  //     console.info(error);
-  //     return error;
-  //   }
-  // }
   async saveDuplicatedFile(filePath, photocollectsFolderPath) {
     try {
       fs.copyFileSync(filePath, photocollectsFolderPath);

@@ -52,7 +52,7 @@
               <img
                 id="select_climate_type_container_content_indeterminate_bubble"
                 v-if="climateType.getCode() === 'Indeterminado'"
-                :src="climateType.getColorCode()"
+                :src="require('../assets/indeterminate.png')"
               />
             </li>
           </ul>
@@ -68,7 +68,6 @@ import { mapState } from "vuex";
 import requiredFieldHelper from "../helpers/requiredFieldHelper.vue";
 import ClimateType from "../models/climateType";
 import informationHelper from "../helpers/informationHelper";
-import Sex from "../models/sex";
 
 export default {
   components: {

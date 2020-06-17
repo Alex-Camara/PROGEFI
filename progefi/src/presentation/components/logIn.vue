@@ -127,9 +127,9 @@ export default {
     logIn() {
       this.user
         .validateCredentials()
-        .then(() => {
-          this.openToast("¡Bienvenido! " + this.user.getName());
-          this.$emit("succesful-login", this.user);
+        .then(user => {
+          this.openToast("¡Bienvenido! " + user.getName());
+          this.$emit("succesful-login", user);
         })
         .catch(error => {
           if (error === "db-error") {

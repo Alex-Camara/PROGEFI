@@ -6,7 +6,6 @@ import Curator from "./curator";
 import Collect from "./collect";
 import Template from "./template";
 import User from "./user";
-import Collector from "./collector";
 
 class Datacard {
   constructor() {
@@ -26,6 +25,7 @@ class Datacard {
     this.template = new Template();
     this.tempCollectorCode = null;
     this.user = new User();
+    this.setCreationDate();
   }
   async setDatacard(datacard) {
     this.id = datacard.id;
@@ -103,9 +103,12 @@ class Datacard {
     });
   }
   setUser(user) {
-    let newUser = new User();
-    newUser.setUser(user);
-    this.user = newUser;
+    // let newUser = new User();
+    // newUser.setUser(user);
+    console.info("estableciendo usuario en datacard")
+    console.info(user)
+    this.user = user;
+    console.info(this.user)
   }
   setTemplate(template) {
     this.template = template;
@@ -142,7 +145,10 @@ class Datacard {
     return this.creationDate;
   }
   getFormattedCreationDate() {
-    return moment(this.creationDate).format("DD/MM/YYYY HH:mm");
+    return moment(this.creationDate).format("DD/MM/YYYY");
+  }
+  getFormattedCreationHour() {
+    return moment(this.creationDate).format("HH:mm");
   }
   getFormattedDate() {
     return this.formattedDate;
@@ -208,7 +214,7 @@ class Datacard {
   }
   saveCurator() {
     return new Promise(async resolve => {
-      if (this.curator.getId() !== null) {
+      if (this.curator.getId() === null) {
         await this.curator.save();
       }
       resolve();

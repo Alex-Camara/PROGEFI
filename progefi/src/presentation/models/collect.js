@@ -252,6 +252,9 @@ class Collect {
     // debugger
     return moment(this.collectDate).format("HH:mm");
   }
+  getId(){
+    return this.id;
+  }
   getLongitude() {
     return this.longitude;
   }

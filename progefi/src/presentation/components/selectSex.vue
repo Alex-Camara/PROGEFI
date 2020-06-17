@@ -43,12 +43,12 @@
         <ul id="sex_helper_list">
           <li
             id="sex_helper_list_item"
-            v-for="sex in sexes"
+            v-for="(sex, index) in sexes"
             :key="sex.getName()"
             :value="sex.getName()"
             v-on:click="setSex($event, sex)"
           >
-            <img id="sex_helper_list_item_icon" :src="sex.getIconPath()" />
+            <img id="sex_helper_list_item_icon" :src="getImage(index)"/>
             <div id="sex_helper_list_item_text">{{ sex.getName() }}</div>
           </li>
         </ul>
@@ -70,11 +70,15 @@ export default {
     return {
       sexes: [],
       title: "Sexo: ",
-      modalSex: new Sex()
+      modalSex: new Sex(),
+      // sexesImages: []
     };
   },
   async mounted() {
     this.sexes = await Sex.getAll();
+    // for (let i = 0; i < this.sexes.length; i++) {
+    //   this.sexesImages[i] = require('../assets/' + this.sexes[i].getIconPath());
+    // }
     // this.$store.dispatch("speciesData/getSexes");
   },
   computed: {
@@ -121,6 +125,9 @@ export default {
       }
       event.currentTarget.childNodes[0].classList.add("selected_dot");
       this.sex = sex;
+    },
+    getImage(index){
+      return require("../assets/" + this.sexes[index].getIconPath());
     },
     addOption() {
       this.$store.dispatch("modal/openModal", {

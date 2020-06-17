@@ -47,16 +47,21 @@ export default {
     };
   },
   async created() {
-    let userGot = await User.get();
-    if (userGot.length > 0) {
-      this.user.setUser(userGot[0]);
-      if (this.user.isKeepingSession()){
-        this.enterCredentials = false;
-        this.$store.commit("user/setUser", userGot[0]);
-        ipcRenderer.send("maximize");
-        ipcRenderer.once("maximized", async (event) => {
-        });
+    let isDatabaseCreated = await this.verifyDatabaseExistence();
+    if (isDatabaseCreated) {
+      let userGot = await User.get();
+      if (userGot.length > 0) {
+        this.user.setUser(userGot[0]);
+        if (this.user.isKeepingSession()) {
+          this.enterCredentials = false;
+          this.$store.commit("user/setUser", this.user);
+          ipcRenderer.send("maximize");
+          ipcRenderer.once("maximized", async event => {
+          });
+        }
       }
+    } else{
+      this.openToast("Ha ocurrido un error con la base de datos");
     }
   },
   async mounted() {
@@ -67,15 +72,34 @@ export default {
       this.$store.commit("menu/setItemByName", "Fichas de fotocolecta");
     }
   },
-  methods:{
-    logIn(user){
+  methods: {
+    logIn(user) {
       this.user = user;
       this.$store.commit("user/setUser", user);
       this.enterCredentials = false;
       ipcRenderer.send("maximize");
-      ipcRenderer.once("maximized", async (event) => {
+      ipcRenderer.once("maximized", async event => {});
+    },
+    verifyDatabaseExistence() {
+      return new Promise((resolve, reject) => {
+        ipcRenderer.send("doesDatabaseExist");
+        ipcRenderer.once("databaseExists", async (event, exists) => {
+          if (
+            exists.hasOwnProperty("nativeError") &&
+            exists.nativeError.code === "SQLITE_ERROR"
+          ) {
+            reject();
+          } else if (exists) {
+            resolve(true);
+          } else {
+            resolve(false);
+          }
+        });
       });
-    }
+    },
+    openToast(message) {
+      this.$buefy.toast.open(message);
+    },
   }
 };
 </script>

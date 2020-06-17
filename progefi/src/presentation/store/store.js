@@ -2,7 +2,6 @@ import Vue from "vue";
 import Vuex from "vuex";
 import datacard from "./modelStore/datacard";
 import metadata from "./generalStore/metadata";
-import curator from "./modelStore/curator";
 import modal from "./generalStore/modal";
 import loading from "./generalStore/loading";
 import addDatacard from "./generalStore/addDatacard";
@@ -17,7 +16,6 @@ const store = new Vuex.Store({
   modules: {
     datacard,
     metadata,
-    curator,
     modal,
     loading,
     addDatacard,
@@ -31,7 +29,6 @@ const store = new Vuex.Store({
       console.log("reseteando...");
       commit("datacard/reset");
       commit("addDatacard/reset");
-      commit("curator/reset");
       commit("metadata/resetMetadata");
     }
   }

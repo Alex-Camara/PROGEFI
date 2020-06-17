@@ -12,7 +12,7 @@
       <b-tabs v-model="activeTab" position="is-centered">
         <b-tab-item label="Imagen muestra">
           <div>
-            <show-image :image-path="samplePath"></show-image>
+            <show-image :image-path="getImage()"></show-image>
           </div>
         </b-tab-item>
         <b-tab-item label="Información">
@@ -25,7 +25,6 @@
         </b-tab-item>
       </b-tabs>
     </div>
-
 
     <div
       id="ui_show_template_delete_button"
@@ -71,6 +70,8 @@
 import showTemplateInfo from "../components/showTemplateInfo";
 import showImage from "../components/showImage";
 import Template from "../models/template";
+import path from "path";
+
 export default {
   props: ["template"],
   components: {
@@ -136,6 +137,26 @@ export default {
         name: "UIShowTemplates"
       });
     },
+    getImage() {
+      if (this.template) {
+        if (process.env.NODE_ENV !== "production") {
+          let relativePath =
+            path.join(__dirname, "..", "..", "..", "..", "..", "..") +
+            "/src/persistence/resources/template_samples/" +
+            this.template.getSamplePath();
+          let src = "file://" + relativePath;
+          return src;
+        } else {
+          let relativePath =
+            path.join(__dirname, "..", "..") +
+            "/src/persistence/resources/template_samples/" +
+            this.template.getSamplePath();
+          let src = "file://" + relativePath;
+          return src;
+        }
+      }
+    },
+
     editTemplate() {
       if (this.editMode) {
         this.editMode = !this.editMode;
@@ -191,9 +212,15 @@ export default {
     },
     getDatacardCountPhrase(datacardCount) {
       if (datacardCount === 1) {
-        return datacardCount + " FICHA sin validar asociada, por favor primero valida la ficha o cambia su plantilla asociada";
+        return (
+          datacardCount +
+          " FICHA sin validar asociada, por favor primero valida la ficha o cambia su plantilla asociada"
+        );
       } else {
-        return datacardCount + " FICHAS sin validar asociadas, por favor primero valida las fichas o cambia sus plantillas asociadas";
+        return (
+          datacardCount +
+          " FICHAS sin validar asociadas, por favor primero valida las fichas o cambia sus plantillas asociadas"
+        );
       }
     },
     openInformationDialog(message) {

@@ -166,6 +166,12 @@ export default {
   justify-content: center;
 }
 
+#catalogues_table_table{
+  margin:auto;
+  justify-content: center;
+  width: 80%;
+}
+
 #catalogues_table_table_catalogue_name {
   font-weight: bolder;
   text-transform: uppercase;

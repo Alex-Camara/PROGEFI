@@ -11,6 +11,8 @@ import TemplateHandler from "./handlers/templateHandler.js";
 import SexHandler from "./handlers/sexHandler.js";
 import LifeStageHandler from "./handlers/lifeStageHandler.js";
 import UserHandler from "./handlers/userHandler.js";
+const Knex = require("knex");
+const KnexConfig = require('../persistence/knexfile');
 
 const { ipcMain } = require("electron");
 
@@ -97,7 +99,7 @@ function listen() {
   });
 
   ipcMain.on("getFonts", event => {
-    var fontManager = require("font-manager");
+    var fontManager = require("font-scanner");
     var fonts = fontManager.getAvailableFontsSync();
     event.reply("fonts", fonts);
   });
@@ -230,8 +232,8 @@ function listen() {
         event.reply("imageMetadata", result);
       })
       .catch(error => {
-        console.log("falló extracción: ")
-        console.info(error)
+        console.log("falló extracción: ");
+        console.info(error);
         event.reply("imageMetadataFailed");
       });
   });
@@ -362,7 +364,7 @@ function listen() {
     });
   });
 
-  ipcMain.on("getUser", (event) => {
+  ipcMain.on("getUser", event => {
     userHandler.get(function(userGot) {
       event.reply("userGot", userGot);
     });
@@ -371,6 +373,23 @@ function listen() {
   ipcMain.on("validateCredentials", (event, user) => {
     userHandler.validateCredentials(user, function(validatedUser) {
       event.reply("credentialsValidated", validatedUser);
+    });
+  });
+  
+  ipcMain.on("doesDatabaseExist", (event) => {
+    userHandler.get(async function(userGot) {
+      if (
+        userGot.hasOwnProperty("nativeError") &&
+        userGot.nativeError.code === "SQLITE_ERROR"
+      ) {
+        let knex = require('knex')(KnexConfig.development)
+        await knex.migrate.latest().then(() => {
+          return knex.seed.run();
+        });
+        event.reply("databaseExists", true);
+      } else{
+        event.reply("databaseExists", true);
+      }
     });
   });
 }

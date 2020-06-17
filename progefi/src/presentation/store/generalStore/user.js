@@ -1,9 +1,10 @@
 import User from "../../models/user";
+import Vue from "vue";
 
 const user = {
   namespaced: true,
   state: {
-    user: new User(),
+    user: new User()
   },
   mutations: {
     setUser(state, user) {

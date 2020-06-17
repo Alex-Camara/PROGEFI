@@ -463,6 +463,8 @@ export default {
       }
     },
     async saveProjectValue(newValue) {
+      console.log("watcher: ")
+      console.info(newValue)
       if (newValue) {
         await this.$store.dispatch(
           "loading/setActive",
@@ -471,6 +473,7 @@ export default {
         );
         let newProject = new Project();
         newProject.setProject(this.modalProject);
+        console.log("guardando proyecto en watcher ")
         newProject
           .save()
           .then(async () => {
@@ -489,8 +492,10 @@ export default {
       }else{
         this.selectedProject = new Project();
       }
+      console.log("reseteando watcher ")
       this.modalProject = new Project();
       this.$store.commit("modal/reset");
+      console.log("watcher reseteado")
     }
   },
   methods: {

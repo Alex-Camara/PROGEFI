@@ -17,12 +17,14 @@ class TemplateHandler {
     // Remove header
     let base64Image = base64String.split(";base64,").pop();
 
+    let templateName = "template" + new Date().getTime() + ".png";
+
     let templatePath =
-      templatesFolderPath + "/template" + new Date().getTime() + ".png";
+      templatesFolderPath + templateName;
 
     this.base64Decode(base64Image, templatePath);
 
-    template.samplePath = templatePath;
+    template.samplePath = templateName;
     let createdTemplate = await this.templateDAO.save(template);
     result(createdTemplate);
   }
@@ -43,7 +45,10 @@ class TemplateHandler {
     result(updatedTemplate);
   }
   async delete(templateId, result){
+    var templatesFolderPath =
+        path.resolve(".") + "/src/persistence/resources/template_samples/";
     let directoryToDelete = await this.templateDAO.delete(templateId);
+    directoryToDelete = templatesFolderPath + directoryToDelete;
     fs.unlinkSync(directoryToDelete);
     result(directoryToDelete);
   }
