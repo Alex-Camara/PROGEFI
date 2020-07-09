@@ -20,7 +20,16 @@ PROGEFI te permite crear fichas provenientes de fotocolecta o de fotografías qu
 Como parte del desarrollo de la primera versión de PROGEFI, se compiló un manual de usuario organizado en las funciones disponibles que ofrece el sistema. 
 El manual puede ser consultado en la siguiente liga:
 
-<div style="background-color:red; text-align: center; width: 200px; height: 30px; justify-content: center;">Hola</div>
+<div class="green">Click me</div>
+
+<style lang="css">
+button {
+background-color: lawngreen;
+width: 300px;
+pointer: cursor;
+font-weigth: bold;
+}
+</style>
 
 
 
