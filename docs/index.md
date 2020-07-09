@@ -1,6 +1,6 @@
 <h1>PROGEFI</h1>
 
- ![Alt text](https://github.com/Alex-Camara/PROGEFI/blob/master/src/presentation/assets/back.png)
+ ![Logo](https://github.com/Alex-Camara/PROGEFI/blob/master/src/presentation/assets/back.png)
 
 <h2>Programa Generador de Fichas de Fotocolecta</h2>
 
@@ -22,7 +22,7 @@ PROGEFI te permite crear fichas provenientes de fotocolecta o de fotografías qu
 Como parte del desarrollo de la primera versión de PROGEFI, se compiló un manual de usuario organizado en las funciones disponibles que ofrece el sistema. 
 El manual puede ser consultado en la siguiente liga:
 
-<button name="button">Click me</button>
+<button name="button" class="green">Click me</button>
 
 
 
