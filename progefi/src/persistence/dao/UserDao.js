@@ -14,8 +14,8 @@ class UserDao {
     let user = Promise.resolve(this.userDaoImp.get());
     return user;
   }
-  updateKeepSession(user){
-    let updatedUser = Promise.resolve(this.userDaoImp.updateKeepSession(user));
+  updateKeepSession(userId, keepSession){
+    let updatedUser = Promise.resolve(this.userDaoImp.updateKeepSession(userId, keepSession));
     return updatedUser;
   }
 }

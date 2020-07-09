@@ -21,11 +21,15 @@ class UserDaoImp {
     });;
     return user;
   }
-  async updateKeepSession(user) {
+  async updateKeepSession(userId, keepSession) {
+      console.log("user id")
+      console.info(userId)
+      console.log("user session")
+      console.info(keepSession)
     let updatedUser = await User.query()
-      .findById(user.id)
+      .findById(userId)
       .patch({
-        keepSession: user.keepSession
+        keepSession: keepSession
       }).catch(error => {
             return error;
         });;
