@@ -1,6 +1,4 @@
-<h1>PROGEFI</h1>
-
- ![Alt text](https://github.com/Alex-Camara/PROGEFI/blob/master/src/presentation/assets/back.png)
+ ![Logo](https://github.com/Alex-Camara/PROGEFI/blob/master/build/icono.png)
 
 <h2>Programa Generador de Fichas de Fotocolecta</h2>
 
@@ -23,6 +21,12 @@ Como parte del desarrollo de la primera versión de PROGEFI, se compiló un manu
 El manual puede ser consultado en la siguiente liga:
 
 <button name="button">Click me</button>
+
+<style lang="css">
+button {
+background-color: lawngreen;
+}
+</style>
 
 
 
