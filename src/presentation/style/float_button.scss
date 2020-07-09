@@ -1,0 +1,175 @@
+.float_button {
+    display: block;
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    bottom: 40px;
+    right: 40px;
+    background-color: $accent;
+    color: $white;
+    border-radius: 50px;
+    text-align: center;
+    box-shadow: 2px 2px 3px #999;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.2s;
+    padding-top: 20px;
+    &:hover {
+        transition: 0.2s;
+        background-color: #FF3D00;
+        width: 64px;
+        height: 64px;
+        bottom: 38px;
+        right: 38px;
+        padding-top: 23.3px;
+    }
+    &:active {
+        transition: 0.2s;
+        background-color: #FF3D00;
+        width: 66px;
+        height: 66px;
+        bottom: 37px;
+        right: 37px;
+        padding-top: 23.3px;
+    }
+}
+
+.float_button_icon {
+    transition: 0.2s;
+    width: 20px;
+    height: 20px;
+}
+
+.float_button:hover+.float_button_icon {
+    transition: 0.2s;
+    width: 80px;
+    height: 80px;
+    margin-top: 90px;
+}
+
+.float_button_delete {
+    display: block;
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    bottom: 120px;
+    right: 40px;
+    background-color: $danger-light;
+    color: $white;
+    border-radius: 50px;
+    text-align: center;
+    box-shadow: 2px 2px 3px #999;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.2s;
+    padding-top: 20px;
+    &:hover {
+        transition: 0.2s;
+        background-color: $danger;
+        width: 64px;
+        height: 64px;
+        bottom: 118px;
+        right: 38px;
+        padding-top: 23.3px;
+    }
+    &:active {
+        transition: 0.2s;
+        background-color: $danger;
+        width: 66px;
+        height: 66px;
+        bottom: 117px;
+        right: 37px;
+        padding-top: 23.3px;
+    }
+}
+
+.float_button_delete {
+    display: block;
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    bottom: 120px;
+    right: 40px;
+    background-color: $danger-light;
+    color: $white;
+    border-radius: 50px;
+    text-align: center;
+    box-shadow: 2px 2px 3px #999;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.2s;
+    padding-top: 20px;
+    &:hover {
+        transition: 0.2s;
+        background-color: $danger;
+        width: 64px;
+        height: 64px;
+        bottom: 118px;
+        right: 38px;
+        padding-top: 23.3px;
+    }
+    &:active {
+        transition: 0.2s;
+        background-color: $danger;
+        width: 66px;
+        height: 66px;
+        bottom: 117px;
+        right: 37px;
+        padding-top: 23.3px;
+    }
+}
+
+.float_button_lateral {
+    display: block;
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    bottom: 40px;
+    right: 120px;
+    background-color: $secondary;
+    color: $white;
+    border-radius: 50px;
+    text-align: center;
+    box-shadow: 2px 2px 3px #999;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.2s;
+    padding-top: 20px;
+    &:hover {
+        transition: 0.2s;
+        background-color: #00E676;
+        width: 64px;
+        height: 64px;
+        bottom: 38px;
+        right: 118px;
+        padding-top: 23.3px;
+    }
+    &:active {
+        transition: 0.2s;
+        background-color: #00E676;
+        width: 66px;
+        height: 66px;
+        bottom: 37px;
+        right: 117px;
+        padding-top: 23.3px;
+    }
+    &:disabled{
+        pointer-events: none;
+        opacity: 0.7;
+    }
+}
+
+.float_cancel_style {
+    background-color: $danger-light !important;
+}
+.float_cancel_style:hover {
+    background-color: $danger !important;
+}

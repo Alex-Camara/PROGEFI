@@ -1,0 +1,28 @@
+.autocomplete_box_field {
+    display: flex;
+    flex-direction: column;
+}
+
+.autocomplete_list {
+    height: 200px;
+    overflow: hidden;
+    overflow-y: scroll;
+    z-index: 1;
+}
+
+.autocomplete_list li {
+    padding: 5px;
+    padding-left: 10px;
+}
+
+.autocomplete_list li:hover {
+    background-color: $secondary;
+    cursor: pointer;
+}
+
+.autocomplete_box {
+    position: relative;
+    z-index: 20;
+    box-shadow: 1px 1px 7px 0px rgba(0, 0, 0, 0.35);
+    background-color: white;
+}

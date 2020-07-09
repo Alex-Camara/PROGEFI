@@ -1,0 +1,77 @@
+.body::selection {
+    background-color: $accent;
+}
+
+.title {
+    font-size: 16px !important;
+    font-weight: bold;
+    margin-bottom: 10px !important;
+}
+
+.subtitle {
+    font-size: 16px !important;
+    font-weight: bold;
+    margin-bottom: 10px !important;
+    margin-top: 10px !important;
+    background-color: $secondary;
+    border-radius: 10px 10px 10px 10px;
+    border-color: $secondary;
+    padding: 5px 5px 5px 5px;
+}
+
+.subtitle_dark_gray {
+    font-size: 20px !important;
+    font-weight: bold;
+    //color: $dark;
+}
+
+.attribute_name {
+    font-size: 16px;
+    font-weight: bold;
+    margin-right: 8px;
+    line-height: 30px;
+}
+
+.attribute_value {
+    font-size: 16px;
+    font-weight: normal;
+    line-height: 30px;
+}
+
+.space {
+    width: 50px;
+}
+
+.component_title {
+    font-size: 24px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.component_title_return {
+    font-size: 24px;
+    margin-left: 10px;
+    margin-right: 10px;
+    color: $primary;
+    cursor: pointer;
+}
+
+.component_title_small {
+    font-size: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.component_title_return_small {
+    font-size: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+    color: $primary;
+    cursor: pointer;
+}
+
+.component_title_separator {
+    height: 5px;
+    width: 10px;
+    align-self: center;
+}
