@@ -32,20 +32,36 @@ box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);" >Manual de usuario</div>
 
 **PROGEFI** esta disponible para los principales sistemas operativos: Windows, MacOS y Linux a través de Ubuntu. Selecciona la descarga correspondiente a tu sistema operativo:
 
-<div style="display: flex; background-color: #29B6F6; padding-top: 8px; width: 400px; height: 40px; justify-content: center; cursor: pointer; border-radius: 7px; font-weight: bold; -webkit-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
+<div style="display: flex; justify-content: space-evenly; height: 200px">
+
+<div style="display: flex; flex-direction: column; ">
+<div style="border-radius: 50%; background-color: #29B6F6; width: 100px; height: 100px; -webkit-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
+-moz-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
+box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);transition: 0.2s;" onmouseover=" this.style.width='105px'; this.style.height='105px'" onmouseleave="this.style.width='100px'; this.style.height='100px'">
+<img src="windows.png" alt="Windows" style="height: 80px"; margin: auto; />
+</div>
+<b style="align-self: center">Windows</b>
+</div>
+
+<div style="display: flex; flex-direction: column; ">
+<div style="border-radius: 50%; background-color: #ECEFF1; width: 100px; height: 100px;-webkit-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
 -moz-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
 box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);transition: 0.2s;"
-onmouseover=" this.style.width='410px'" onmouseleave="this.style.width='400px'">Windows 7 o superior</div>
+onmouseover=" this.style.width='105px'; this.style.height='105px'" onmouseleave="this.style.width='100px'; this.style.height='100px'">
+</div>
+<b style="align-self: center">MacOS</b>
+</div>
 
-
-<div style="display: flex; background-color: #ECEFF1; color: black; margin-top: 15px; padding-top: 8px; width: 400px; height: 40px; justify-content: center; cursor: pointer;border-radius: 7px; font-weight: bold; -webkit-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
+<div style="display: flex; flex-direction: column; ">
+<div style="border-radius: 50%; background-color: #FF6D00; width: 100px; height: 100px;-webkit-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
 -moz-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
 box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);transition: 0.2s;"
-onmouseover=" this.style.width='410px'" onmouseleave="this.style.width='400px'">MacOs</div>
+onmouseover=" this.style.width='105px'; this.style.height='105px'" onmouseleave="this.style.width='100px'; this.style.height='100px'">
+</div>
+<b style="align-self: center">Ubuntu</b>
+</div>
 
-<div style="display: flex; background-color: #FF6D00; margin-top: 15px; padding-top: 8px; width: 400px; height: 40px; justify-content: center; cursor: pointer;border-radius: 7px; font-weight: bold; -webkit-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
--moz-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56); transition: 0.2s;" onmouseover=" this.style.width='410px'" onmouseleave="this.style.width='400px'" >Ubuntu</div>
+</div>
 
 ****
 
