@@ -1,5 +1,5 @@
-<div style="display: flex; justify-content: center;">
-<img src="icono.png" alt="PROGEFI" width="20"/><img src="uv.png" alt="Universidad Veracruzana" width="20" />
+<div align="center">
+<img src="icono.png" alt="PROGEFI" width="30"/><img src="uv.png" alt="Universidad Veracruzana" width="30" />
 </div>
 
 <h2>Programa Generador de Fichas de Fotocolecta</h2>
