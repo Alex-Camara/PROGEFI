@@ -7,7 +7,8 @@
 
 <h3>¿Qué es?</h3>
 
-**PROGEFI** es una herramienta de software desarrollada por la [Universidad Veracruzana (UV)](https://www.uv.mx). Esta aplicación se realizó mendiante una colaboración entre la Facultad de Estadística e Informática a través de la Licenciatura en Ingeniería de Software y el Instituto de Investigaciones Biológicas de la UV
+**PROGEFI** es una herramienta de software desarrollada por la [Universidad Veracruzana (UV)](https://www.uv.mx). Esta aplicación se realizó mendiante una colaboración entre la Facultad de Estadística e Informática a través de la Licenciatura en Ingeniería de Software y el Instituto de Investigaciones Biológicas de la UV.
+
 ****
 <h3>¿Qué características te ofrece?</h3>
 
@@ -70,7 +71,23 @@ onmouseover=" this.style.width='105px'; this.style.height='105px'" onmouseleave=
 
 ****
 <h3>Contacto</h3>
-Gmail: arcamsoft@gmail.com
+
+<a href="mailto:arcamsoft@gmail.com">arcamsoft@gmail.com</a>
+
+<div style="display:flex;">
+<img src="twitter.png" alt="Twitter" style="height: 16px; margin-right: 7px;" />
+<a href="https://twitter.com/lis_uv?s=20">LIS UV</a>
+</div>
+
+<div style="display:flex;margin-top:10px;">
+<img src="facebook.png" alt="Facebook" style="height: 16px; margin-right: 7px;" />
+<a href="https://www.facebook.com/Lis-UV-1214389321920066/">LIS UV</a>
+</div>
+
 ****
 <h3>Repositorio</h3>
+
+<div style="display:flex;margin-top;">
+<img src="github.png" alt="github" style="height: 16px; margin-right: 7px;" />
 [Repositorio PROGEFI](https://github.com/Alex-Camara/PROGEFI)
+</div>
