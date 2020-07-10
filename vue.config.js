@@ -41,7 +41,10 @@ module.exports = {
           "icon": 'build/icono.icns'
         },
         linux:{
-          "target": "deb",
+          "target": [
+            "AppImage",
+            "deb"
+          ],
           "category": "Utility"
         }
       }
