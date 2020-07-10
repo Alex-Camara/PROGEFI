@@ -73,7 +73,7 @@ onmouseover=" this.style.width='105px'; this.style.height='105px'" onmouseleave=
 <h3>Contacto</h3>
 
 <div style="display:flex;">
-<img src="twitter.png" alt="Twitter" style="height: 16px; margin-right: 7px;" />
+<img src="gmail.png" alt="Gmail" style="height: 16px; margin-right: 7px; align-items: center;" />
 <a href="mailto:arcamsoft@gmail.com">arcamsoft@gmail.com</a>
 </div>
 
@@ -82,7 +82,7 @@ onmouseover=" this.style.width='105px'; this.style.height='105px'" onmouseleave=
 <a href="https://twitter.com/lis_uv?s=20">LIS UV</a>
 </div>
 
-<div style="display:flex;margin-top:10px;">
+<div style="display:flex;margin-top:10px; align-items: center;">
 <img src="facebook.png" alt="Facebook" style="height: 16px; margin-right: 7px;" />
 <a href="https://www.facebook.com/Lis-UV-1214389321920066/">LIS UV</a>
 </div>
@@ -90,7 +90,7 @@ onmouseover=" this.style.width='105px'; this.style.height='105px'" onmouseleave=
 ****
 <h3>Repositorio</h3>
 
-<div style="display:flex; margin-top: 10px; ">
+<div style="display:flex; margin-top: 10px; align-items: center;">
 <img src="github.png" alt="github" style="height: 16px; margin-right: 7px;" />
 <a href="https://github.com/Alex-Camara/PROGEFI">Repositorio PROGEFI</a>
 </div>
