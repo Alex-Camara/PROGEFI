@@ -39,6 +39,10 @@ module.exports = {
         mac:{
           "target": "dmg",
           "icon": 'build/icono.icns'
+        },
+        linux:{
+          "target": "deb",
+          "category": "Utility"
         }
       }
     }
