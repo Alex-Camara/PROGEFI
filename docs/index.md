@@ -1,7 +1,5 @@
  <div style="display: flex; justify-content: center;">
  <img src="icono.png" style="height: 80px" />
-
- ![Logo](./icono.png)
 </div>
 
 <h2>Programa Generador de Fichas de Fotocolecta</h2>
@@ -24,19 +22,19 @@ PROGEFI te permite crear fichas provenientes de fotocolecta o de fotografías qu
 Como parte del desarrollo de la primera versión de PROGEFI, se compiló un manual de usuario organizado en las funciones disponibles que ofrece el sistema. 
 El manual puede ser consultado en la siguiente liga:
 
-<div style="display: flex; background-color: #69F0AE; padding-top: 8px; width: 200px; height: 40px; justify-content: center; cursor: pointer;" >Manual de usuario</div>
+<div style="display: flex; background-color: #69F0AE; padding-top: 8px; width: 400px; height: 40px; justify-content: center; cursor: pointer;border-radius: 7px; font-weight: bold;" >Manual de usuario</div>
 
 ****
 <h3>Descargas</h3>
 
 **PROGEFI** esta disponible para los principales sistemas operativos: Windows, MacOS y Linux a través de Ubuntu.
 
-<div style="display: flex; background-color: #90CAF9; padding-top: 8px; width: 200px; height: 40px; justify-content: center; cursor: pointer;" >Windows 7 o superior</div>
+<div style="display: flex; background-color: #90CAF9; padding-top: 8px; width: 400px; height: 40px; justify-content: center; cursor: pointer; border-radius: 7px; font-weight: bold;" >Windows 7 o superior</div>
 
 
-<div style="display: flex; background-color: #CFD8DC; margin-top: 15px; padding-top: 8px; width: 200px; height: 40px; justify-content: center; cursor: pointer;" >MacOs</div>
+<div style="display: flex; background-color: #CFD8DC; margin-top: 15px; padding-top: 8px; width: 400px; height: 40px; justify-content: center; cursor: pointer;border-radius: 7px; font-weight: bold;" >MacOs</div>
 
-<div style="display: flex; background-color: #FF7043; margin-top: 15px; padding-top: 8px; width: 200px; height: 40px; justify-content: center; cursor: pointer;" >Ubuntu</div>
+<div style="display: flex; background-color: #FF7043; margin-top: 15px; padding-top: 8px; width: 400px; height: 40px; justify-content: center; cursor: pointer;border-radius: 7px; font-weight: bold;" >Ubuntu</div>
 
 ****
 
