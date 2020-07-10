@@ -7,9 +7,10 @@ module.exports = {
     client: 'sqlite3',
     useNullAsDefault: true,
     connection:{
-      //filename: path.resolve('.') + '/progefiDB.db'
-      filename: path.join(__dirname, "src", "persistence", "progefiDB.db")
-    // filename: path.resolve('.') + './src/persistence/progefiDB.db'
+      // filename: path.resolve('.') + '/progefiDB.db'
+      filename: path.resolve('.') + '/src/persistence/progefiDB.db'
+      // filename: path.join(__dirname, "src", "persistence", "progefiDB.db")
+    // filename: path.resolve('.') + '/src/persistence/progefiDB.db'
     },
     migrations: {
       directory: path.join(__dirname, "src", "persistence", "migrations")
