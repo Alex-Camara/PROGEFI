@@ -42,7 +42,7 @@ onclick="window.open('Manual de usuario.pdf')"
 <div style="display: flex; border-radius: 50%; background-color: #29B6F6; width: 100px; height: 100px; -webkit-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
 -moz-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
 box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);transition: 0.4s;cursor: pointer;align-items: center; justify-content: center;" onmouseover=" this.style.backgroundColor='#18FFFF'" onmouseleave=" this.style.backgroundColor='#29B6F6'" onclick="window.open('https://github.com/Alex-Camara/PROGEFI/releases/download/v1.0/progefi_v1.0.exe')">
-<img src="windows.png" alt="Windows" style="height: 40px ;margin: auto;align-self: center; background-color: this.style.backgroundColor;" />
+<img src="windows.png" alt="Windows" style="height: 40px ;margin: auto;align-self: center; background-color: rgba(0, 0, 0, 0)" />
 </div>
 <b style="align-self: center">Windows</b>
 </div>
