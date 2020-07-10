@@ -58,7 +58,7 @@ onmouseover=" this.style.width='105px'; this.style.height='105px'" onmouseleave=
 -moz-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
 box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);transition: 0.2s;cursor: pointer; align-items: center; justify-content: center;"
 onmouseover=" this.style.width='105px'; this.style.height='105px'" onmouseleave="this.style.width='100px'; this.style.height='100px'">
-<img src="ubuntu.png" alt="Ubuntu" style="height: 80px; background-color: #FF6D00;" />
+<img src="ubuntu.png" alt="Ubuntu" style="height: 40px; background-color: #FF6D00; align-self: center;" />
 </div>
 <b style="align-self: center">Ubuntu</b>
 </div>
