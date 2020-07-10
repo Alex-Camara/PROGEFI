@@ -25,19 +25,21 @@ El manual puede ser consultado en la siguiente liga:
 
 <div style="display: flex; background-color: #69F0AE; padding-top: 8px; width: 400px; height: 40px; justify-content: center; cursor: pointer;border-radius: 7px; font-weight: bold; -webkit-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
 -moz-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);" >Manual de usuario</div>
+box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);transition: 0.4s;"
+onmouseover=" this.style.width='405px';" onmouseleave="this.style.width='400px';"
+>Manual de usuario</div>
 
 ****
 <h3>Descargas</h3>
 
 **PROGEFI** esta disponible para los principales sistemas operativos: Windows, MacOS y Linux a través de Ubuntu. Selecciona la descarga correspondiente a tu sistema operativo:
 
-<div style="display: flex; justify-content: space-evenly; height: 200px">
+<div style="display: flex; justify-content: space-evenly; height: 200px; margin-top: 20px">
 
 <div style="display: flex; flex-direction: column; ">
 <div style="display: flex; border-radius: 50%; background-color: #29B6F6; width: 100px; height: 100px; -webkit-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
 -moz-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);transition: 0.1s;cursor: pointer;align-items: center; justify-content: center;" onmouseover=" this.style.width='105px'; this.style.height='105px'" onmouseleave="this.style.width='100px'; this.style.height='100px'">
+box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);transition: 0.4s;cursor: pointer;align-items: center; justify-content: center;" onmouseover=" this.style.width='105px'; this.style.height='105px'" onmouseleave="this.style.width='100px'; this.style.height='100px'" onclick="window.open('progefi_Setup_0.1.0.exe')">
 <img src="windows.png" alt="Windows" style="height: 40px ;margin: auto;align-self: center;background-color: #29B6F6;" />
 </div>
 <b style="align-self: center">Windows</b>
@@ -46,7 +48,7 @@ box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);transition: 0.1s;cursor: pointer
 <div style="display: flex; flex-direction: column; ">
 <div style="display: flex; border-radius: 50%; background-color: #ECEFF1; width: 100px; height: 100px;-webkit-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
 -moz-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);transition: 0.1s; cursor: pointer; align-items: center; justify-content: center;"
+box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);transition: 0.2s; cursor: pointer; align-items: center; justify-content: center;"
 onmouseover=" this.style.width='105px'; this.style.height='105px'" onmouseleave="this.style.width='100px'; this.style.height='100px'">
 <img src="mac.png" alt="Mac OS" style="height: 40px ;margin: auto;align-self: center; background-color: #ECEFF1;" />
 </div>
@@ -56,7 +58,7 @@ onmouseover=" this.style.width='105px'; this.style.height='105px'" onmouseleave=
 <div style="display: flex; flex-direction: column; ">
 <div style="display: flex; border-radius: 50%; background-color: #FF6D00; width: 100px; height: 100px;-webkit-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
 -moz-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);transition: 0.1s;cursor: pointer; align-items: center; justify-content: center;"
+box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);transition: .4s;cursor: pointer; align-items: center; justify-content: center;"
 onmouseover=" this.style.width='105px'; this.style.height='105px'" onmouseleave="this.style.width='100px'; this.style.height='100px'">
 <img src="ubuntu.png" alt="Ubuntu" style="height: 40px; background-color: #FF6D00; align-self: center;" />
 </div>
@@ -66,8 +68,10 @@ onmouseover=" this.style.width='105px'; this.style.height='105px'" onmouseleave=
 </div>
 
 ****
-
 <h3>Contacto</h3>
-
+Gmail: arcamsoft@gmail.com
+****
+<h3>Repositorio</h3>
+https://github.com/Alex-Camara/PROGEFI
 
 
