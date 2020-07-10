@@ -7,7 +7,7 @@
 
 <h3>¿Qué es?</h3>
 
-**PROGEFI** es una herramienta de software desarrollada por la [Universidad Veracruzana (UV)](www.uv.mx). Esta aplicación se realizó a través de una colaboración entre la Facultad de Estadística e Informática a través de la Licenciatura en Ingeniería de Software y el Instituto de Investigaciones Biológicas de la UV
+**PROGEFI** es una herramienta de software desarrollada por la [Universidad Veracruzana (UV)](https://www.uv.mx). Esta aplicación se realizó a través de una colaboración entre la Facultad de Estadística e Informática a través de la Licenciatura en Ingeniería de Software y el Instituto de Investigaciones Biológicas de la UV
 ****
 <h3>¿Qué características te ofrece?</h3>
 
@@ -27,6 +27,7 @@ El manual puede ser consultado en la siguiente liga:
 -moz-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
 box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);transition: 0.4s;"
 onmouseover=" this.style.width='405px';" onmouseleave="this.style.width='400px';"
+onclick="window.open('Manual de usuario.pdf')"
 >Manual de usuario</div>
 
 ****
@@ -34,7 +35,7 @@ onmouseover=" this.style.width='405px';" onmouseleave="this.style.width='400px';
 
 **PROGEFI** esta disponible para los principales sistemas operativos: Windows, MacOS y Linux a través de Ubuntu. Selecciona la descarga correspondiente a tu sistema operativo:
 
-<div style="display: flex; justify-content: space-evenly; height: 200px; margin-top: 20px">
+<div style="display: flex; justify-content: space-evenly; height: 200px; margin-top: 40px">
 
 <div style="display: flex; flex-direction: column; ">
 <div style="display: flex; border-radius: 50%; background-color: #29B6F6; width: 100px; height: 100px; -webkit-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
@@ -72,6 +73,4 @@ onmouseover=" this.style.width='105px'; this.style.height='105px'" onmouseleave=
 Gmail: arcamsoft@gmail.com
 ****
 <h3>Repositorio</h3>
-https://github.com/Alex-Camara/PROGEFI
-
-
+[Repositorio PROGEFI](https://github.com/Alex-Camara/PROGEFI)
