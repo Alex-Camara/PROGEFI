@@ -1,5 +1,6 @@
  <div style="display: flex; justify-content: center;">
- <img src="icono.png" style="height: 80px" />
+ <img src="icono.png" alt="PROGEFI" style="height: 80px" />
+ <img src="uv.png" alt="Universidad Veracruzana" style="height: 80px" />
 </div>
 
 <h2>Programa Generador de Fichas de Fotocolecta</h2>
@@ -22,19 +23,29 @@ PROGEFI te permite crear fichas provenientes de fotocolecta o de fotografías qu
 Como parte del desarrollo de la primera versión de PROGEFI, se compiló un manual de usuario organizado en las funciones disponibles que ofrece el sistema. 
 El manual puede ser consultado en la siguiente liga:
 
-<div style="display: flex; background-color: #69F0AE; padding-top: 8px; width: 400px; height: 40px; justify-content: center; cursor: pointer;border-radius: 7px; font-weight: bold;" >Manual de usuario</div>
+<div style="display: flex; background-color: #69F0AE; padding-top: 8px; width: 400px; height: 40px; justify-content: center; cursor: pointer;border-radius: 7px; font-weight: bold; -webkit-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
+-moz-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
+box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);" >Manual de usuario</div>
 
 ****
 <h3>Descargas</h3>
 
-**PROGEFI** esta disponible para los principales sistemas operativos: Windows, MacOS y Linux a través de Ubuntu.
+**PROGEFI** esta disponible para los principales sistemas operativos: Windows, MacOS y Linux a través de Ubuntu. Selecciona la descarga correspondiente a tu sistema operativo:
 
-<div style="display: flex; background-color: #90CAF9; padding-top: 8px; width: 400px; height: 40px; justify-content: center; cursor: pointer; border-radius: 7px; font-weight: bold;" >Windows 7 o superior</div>
+<div style="display: flex; background-color: #29B6F6; padding-top: 8px; width: 400px; height: 40px; justify-content: center; cursor: pointer; border-radius: 7px; font-weight: bold; -webkit-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
+-moz-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
+box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);transition: 0.2s;"
+onmouseover=" this.style.width='410px'" onmouseleave="this.style.width='400px'">Windows 7 o superior</div>
 
 
-<div style="display: flex; background-color: #CFD8DC; margin-top: 15px; padding-top: 8px; width: 400px; height: 40px; justify-content: center; cursor: pointer;border-radius: 7px; font-weight: bold;" >MacOs</div>
+<div style="display: flex; background-color: #ECEFF1; color: black; margin-top: 15px; padding-top: 8px; width: 400px; height: 40px; justify-content: center; cursor: pointer;border-radius: 7px; font-weight: bold; -webkit-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
+-moz-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
+box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);transition: 0.2s;"
+onmouseover=" this.style.width='410px'" onmouseleave="this.style.width='400px'">MacOs</div>
 
-<div style="display: flex; background-color: #FF7043; margin-top: 15px; padding-top: 8px; width: 400px; height: 40px; justify-content: center; cursor: pointer;border-radius: 7px; font-weight: bold;" >Ubuntu</div>
+<div style="display: flex; background-color: #FF6D00; margin-top: 15px; padding-top: 8px; width: 400px; height: 40px; justify-content: center; cursor: pointer;border-radius: 7px; font-weight: bold; -webkit-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
+-moz-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
+box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56); transition: 0.2s;" onmouseover=" this.style.width='410px'" onmouseleave="this.style.width='400px'" >Ubuntu</div>
 
 ****
 
