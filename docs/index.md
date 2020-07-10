@@ -1,4 +1,7 @@
+ <div style="display: flex; justify-content: center;">
+ <img src="icono.png" style="height: 80px" />
  ![Logo](./icono.png)
+</div>
 
 <h2>Programa Generador de Fichas de Fotocolecta</h2>
 
