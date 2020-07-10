@@ -37,8 +37,8 @@ box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);" >Manual de usuario</div>
 <div style="display: flex; flex-direction: column; ">
 <div style="border-radius: 50%; background-color: #29B6F6; width: 100px; height: 100px; -webkit-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
 -moz-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);transition: 0.2s;" onmouseover=" this.style.width='105px'; this.style.height='105px'" onmouseleave="this.style.width='100px'; this.style.height='100px'">
-<img src="windows.png" alt="Windows" style="height: 80px"; margin: auto; />
+box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);transition: 0.2s;cursor: pointer;" onmouseover=" this.style.width='105px'; this.style.height='105px'" onmouseleave="this.style.width='100px'; this.style.height='100px'">
+<img src="windows.png" alt="Windows" style="height: 80px ;margin: auto;" />
 </div>
 <b style="align-self: center">Windows</b>
 </div>
@@ -46,17 +46,19 @@ box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);transition: 0.2s;" onmouseover="
 <div style="display: flex; flex-direction: column; ">
 <div style="border-radius: 50%; background-color: #ECEFF1; width: 100px; height: 100px;-webkit-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
 -moz-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);transition: 0.2s;"
+box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);transition: 0.2s; cursor: pointer;"
 onmouseover=" this.style.width='105px'; this.style.height='105px'" onmouseleave="this.style.width='100px'; this.style.height='100px'">
+<img src="mac.png" alt="Mac OS" style="height: 80px ;margin: auto;" />
 </div>
-<b style="align-self: center">MacOS</b>
+<b style="align-self: center">Mac OS</b>
 </div>
 
 <div style="display: flex; flex-direction: column; ">
 <div style="border-radius: 50%; background-color: #FF6D00; width: 100px; height: 100px;-webkit-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
 -moz-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);transition: 0.2s;"
+box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);transition: 0.2s;cursor: pointer;"
 onmouseover=" this.style.width='105px'; this.style.height='105px'" onmouseleave="this.style.width='100px'; this.style.height='100px'">
+<img src="ubuntu.png" alt="Ubuntu" style="height: 80px ;margin: auto;" />
 </div>
 <b style="align-self: center">Ubuntu</b>
 </div>
