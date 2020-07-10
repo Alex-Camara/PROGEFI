@@ -1,5 +1,8 @@
 <div style="display: flex; justify-content: center;">
- <img src="icono.png" alt="PROGEFI" style="height: 30px; width: 30px;" />
+<div style="height: 10px; width: 10px;">
+<img src="icono.png" alt="PROGEFI" style="height: 10px; width: 10px;"/>
+</div>
+ 
  <img src="uv.png" alt="Universidad Veracruzana" style="height: 80px" />
 </div>
 
