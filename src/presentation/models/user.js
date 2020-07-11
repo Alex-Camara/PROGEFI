@@ -134,7 +134,7 @@ class User {
     return new Promise((resolve, reject) => {
       ipcRenderer.send("createUser", this);
       ipcRenderer.once("userCreated", (event, createdUser) => {
-        debugger
+        console.info(createdUser)
         if (
           createdUser.hasOwnProperty("nativeError") &&
           createdUser.nativeError.code === "SQLITE_ERROR"
