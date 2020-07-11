@@ -38,7 +38,10 @@ module.exports = {
         },
         mac:{
           "target": "dmg",
-          "icon": 'build/icono.icns'
+          "icon": 'build/icono.icns',
+          "extraResources": [
+            "./build/databaseFolder"
+          ],
         },
         linux:{
           "target": [
