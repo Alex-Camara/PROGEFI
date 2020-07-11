@@ -8,8 +8,8 @@ module.exports = {
     useNullAsDefault: true,
     connection:{
       // filename: path.resolve('.') + '/progefiDB.db'
-      filename: path.resolve(__dirname, "progefiDB.db")
-      // filename: path.resolve('.') + '/src/persistence/progefiDB.db'
+      // filename: path.resolve(__dirname, "progefiDB.db")
+      filename: path.resolve('.') + '/src/persistence/progefiDB.db'
       // filename: path.join(__dirname, "src", "persistence", "progefiDB.db")
     // filename: path.resolve('.') + '/src/persistence/progefiDB.db'
     },
