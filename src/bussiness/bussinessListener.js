@@ -361,14 +361,8 @@ function listen() {
 
   ipcMain.on("createUser", (event, user) => {
     userHandler.save(user, function(savedUser) {
-      // if (
-      //     savedUser.hasOwnProperty("nativeError") &&
-      //     savedUser.nativeError.code === "SQLITE_ERROR"
-      // ){
-      // } else{
       savedUser.location = path.resolve('.')
         event.reply("userCreated", savedUser);
-      // }
     });
   });
 
@@ -397,6 +391,8 @@ function listen() {
         userGot.nativeError.code === "SQLITE_ERROR"
       ) {
         let knex = require('knex')(KnexConfig.development)
+        console.info(path.resolve(__dirname))
+        console.info(path.resolve(KnexConfig.development.connection.filename))
         await knex.migrate.latest().then(() => {
           return knex.seed.run();
         });
