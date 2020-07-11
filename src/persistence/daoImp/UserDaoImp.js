@@ -3,6 +3,7 @@
 import path from "path";
 
 const User = require("../models/User");
+const log = require('electron-log');
 const KnexConfig = require('../knexfile');
 
 class UserDaoImp {
@@ -15,8 +16,9 @@ class UserDaoImp {
         hash: user.hash
       })
       .catch(error => {
-          console.info(path.resolve(__dirname))
-          console.info(path.resolve(KnexConfig.development.connection.filename))
+          log.info(path.resolve(__dirname))
+          log.info(path.resolve(KnexConfig.development.connection.filename))
+          log.error(error)
         return error;
       });
   }

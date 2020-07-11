@@ -39,6 +39,7 @@
     "core-js": "^3.2.1",
     "dom-to-image": "^2.6.0",
     "electron-ipc-mock": "0.0.3",
+    "electron-log": "^4.2.2",
     "exif": "^0.6.0",
     "file-loader": "^4.2.0",
     "file-saver": "^2.0.2",
