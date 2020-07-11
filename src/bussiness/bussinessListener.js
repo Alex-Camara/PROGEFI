@@ -361,14 +361,14 @@ function listen() {
 
   ipcMain.on("createUser", (event, user) => {
     userHandler.save(user, function(savedUser) {
-      if (
-          savedUser.hasOwnProperty("nativeError") &&
-          savedUser.nativeError.code === "SQLITE_ERROR"
-      ){
-        savedUser.location = __dirname
-      } else{
+      // if (
+      //     savedUser.hasOwnProperty("nativeError") &&
+      //     savedUser.nativeError.code === "SQLITE_ERROR"
+      // ){
+      // } else{
+      savedUser.location = __dirname
         event.reply("userCreated", savedUser);
-      }
+      // }
     });
   });
 
