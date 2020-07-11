@@ -366,7 +366,7 @@ function listen() {
       //     savedUser.nativeError.code === "SQLITE_ERROR"
       // ){
       // } else{
-      savedUser.location = __dirname
+      savedUser.location = path.resolve('.')
         event.reply("userCreated", savedUser);
       // }
     });
