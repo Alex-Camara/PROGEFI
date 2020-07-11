@@ -3,7 +3,7 @@
 import path from "path";
 
 const User = require("../models/User");
-const KnexConfig = require('./knexfile');
+const KnexConfig = require('../knexfile');
 
 class UserDaoImp {
   constructor() {}
