@@ -87,7 +87,7 @@ export default {
   },
   mounted() {
     console.info(__dirname + " where file resides");
-    console.info( "\\.\\/" + " current working resides");
+    console.log("Current directory: ${process.cwd()}");
   },
   computed: {
     isNameValid: function() {
