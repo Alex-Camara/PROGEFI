@@ -1,6 +1,9 @@
 "use strict";
 
+import path from "path";
+
 const User = require("../models/User");
+const KnexConfig = require('../persistence/knexfile');
 
 class UserDaoImp {
   constructor() {}
@@ -12,6 +15,8 @@ class UserDaoImp {
         hash: user.hash
       })
       .catch(error => {
+          console.info(path.resolve(__dirname))
+          console.info(path.resolve(KnexConfig.development.connection.filename))
         return error;
       });
   }
