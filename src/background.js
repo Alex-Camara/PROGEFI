@@ -51,12 +51,13 @@ function createWindow() {
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
-    if (!process.env.IS_TEST) win.webContents.openDevTools();
-  } else {
+    // if (!process.env.IS_TEST)
+      win.webContents.openDevTools();
+  // } else {
     createProtocol("app");
     // Load the index.html when not in development
     win.loadURL("app://./index.html");
-  }
+  // }
 
   win.on("closed", () => {
     win = null;

@@ -40,7 +40,7 @@ export default {
       title: "PROGEFI",
       purposeText:
         "PROGEFI es una herramienta de software desarrollada por la Universidad " +
-        "Veracruzana (UV). Esta aplicación se realizó a través de una colaboración " +
+        "Veracruzana (UV). Esta aplicación se realizó mediante una colaboración " +
         "entre la Facultad de Estadística e Informática a través de la Licenciatura en" +
         " Ingeniería de Software y el Instituto de Investigaciones Biológicas de la UV.",
       subtitleText: "¿Qué características te ofrece?",
