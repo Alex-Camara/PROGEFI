@@ -54,6 +54,7 @@ function createWindow() {
     // if (!process.env.IS_TEST)
       win.webContents.openDevTools();
   } else {
+    win.webContents.openDevTools();
     createProtocol("app");
     // Load the index.html when not in development
     win.loadURL("app://./index.html");
