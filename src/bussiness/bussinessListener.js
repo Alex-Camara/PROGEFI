@@ -360,6 +360,9 @@ function listen() {
   });
 
   ipcMain.on("createUser", (event, user) => {
+    let knex = require('knex')(KnexConfig.development)
+    console.info(path.resolve(__dirname))
+    console.info(path.resolve(KnexConfig.development.connection.filename))
     userHandler.save(user, function(savedUser) {
       savedUser.location = path.resolve('.')
         event.reply("userCreated", savedUser);
