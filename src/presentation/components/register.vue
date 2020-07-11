@@ -70,7 +70,7 @@
 
 <script>
 import requiredFieldHelper from "../helpers/requiredFieldHelper";
-const { ipcRenderer } = require("electron");
+import path from "path";
 
 export default {
   name: "register",
@@ -84,6 +84,10 @@ export default {
       registerButtonText: "Registrar",
       confirmation: ""
     };
+  },
+  mounted() {
+    console.info(__dirname + " where file resides");
+    console.info( "\\.\\/" + " current working resides");
   },
   computed: {
     isNameValid: function() {
