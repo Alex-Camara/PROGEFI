@@ -87,7 +87,10 @@ export default {
   },
   mounted() {
     console.info(__dirname + " where file resides");
-    console.log("Current directory: ${process.cwd()}");
+    let relativePath =
+            path.join(__dirname, "..", "..", "..", "..", "..", "..")
+
+    console.info(relativePath)
   },
   computed: {
     isNameValid: function() {
