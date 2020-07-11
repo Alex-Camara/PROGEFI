@@ -13,6 +13,7 @@ import LifeStageHandler from "./handlers/lifeStageHandler.js";
 import UserHandler from "./handlers/userHandler.js";
 const Knex = require("knex");
 const KnexConfig = require('../persistence/knexfile');
+import path from "path";
 
 const { ipcMain } = require("electron");
 
@@ -360,7 +361,14 @@ function listen() {
 
   ipcMain.on("createUser", (event, user) => {
     userHandler.save(user, function(savedUser) {
-      event.reply("userCreated", savedUser);
+      if (
+          savedUser.hasOwnProperty("nativeError") &&
+          savedUser.nativeError.code === "SQLITE_ERROR"
+      ){
+        savedUser.location = __dirname
+      } else{
+        event.reply("userCreated", savedUser);
+      }
     });
   });
 

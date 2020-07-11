@@ -85,13 +85,6 @@ export default {
       confirmation: ""
     };
   },
-  mounted() {
-    console.info(__dirname + " where file resides");
-    let relativePath =
-            path.join(__dirname, "..", "..", "..", "..", "..", "..")
-
-    console.info(relativePath)
-  },
   computed: {
     isNameValid: function() {
       return this.user.getNameValid();
