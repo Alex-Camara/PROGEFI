@@ -125,9 +125,17 @@ ipcMain.on("minimize", () => {
 });
 
 ipcMain.on("maximize", (event) => {
-  win.maximize();
-  win.setResizable(false);
-  win.setMovable(false)
+  // win.maximize();
+  // win.setResizable(false);
+  // win.setMovable(false)
+  var screenElectron = electron.screen;
+  var mainScreen = screenElectron.getPrimaryDisplay();
+  var dimensions = mainScreen.size;
+  let partialWidth = Math.round(90 * dimensions.width / 100);
+
+  let partialHeight = Math.round(90 * partialWidth / 100);
+
+  win.setSize(partialWidth, partialHeight);
   event.reply("maximized")
 });
 
