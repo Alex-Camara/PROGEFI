@@ -1,5 +1,6 @@
 "use strict";
 const path = require("path");
+var os = require('os');
 import CollectionDAO from "../../persistence/dao/CollectionDao";
 
 class CollectionHandler {
@@ -11,9 +12,17 @@ class CollectionHandler {
     result(collection);
   }
   async save(collection, result) {
-    var destinationFolder =
-      path.resolve(".") +
-      "/src/persistence/resources/institute_logos/" + new Date().getTime() + ".webp";
+    var destinationFolder;
+
+    if (os.platform() === "win32"){
+      destinationFolder =
+          path.resolve(".") +
+          "/src/persistence/resources/institute_logos/" + new Date().getTime() + ".webp";
+    } else{
+      destinationFolder =
+          path.resolve(".") +
+          "../../src/persistence/resources/institute_logos/" + new Date().getTime() + ".webp";
+    }
     const sharp = require("sharp");
     await sharp(collection.instituteLogoPath)
       .webp({
