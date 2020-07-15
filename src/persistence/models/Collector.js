@@ -2,6 +2,7 @@ const { Model } = require('objection')
 const Knex = require('knex')
 const KnexConfig = require('../knexfile')
 Model.knex(Knex(KnexConfig.development))
+var os = require("os");
 
 class Collector extends Model {
   constructor() {

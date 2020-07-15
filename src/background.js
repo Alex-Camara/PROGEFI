@@ -125,9 +125,11 @@ ipcMain.on("minimize", () => {
 });
 
 ipcMain.on("maximize", (event) => {
+  var os = require("os");
   // win.maximize();
   // win.setResizable(false);
   // win.setMovable(false)
+  win.resizable(true);
   var screenElectron = electron.screen;
   var mainScreen = screenElectron.getPrimaryDisplay();
   var dimensions = mainScreen.size;
@@ -136,6 +138,10 @@ ipcMain.on("maximize", (event) => {
   let partialHeight = Math.round(90 * dimensions.height / 100);
 
   win.setSize(partialWidth, partialHeight);
+
+  if (os.platform !== "darwin"){
+    win.maximize();
+  }
   event.reply("maximized")
 });
 

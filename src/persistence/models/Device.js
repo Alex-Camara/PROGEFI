@@ -4,6 +4,7 @@ const {
 const Knex = require('knex')
 const KnexConfig = require('../knexfile');
 Model.knex(Knex(KnexConfig.development));
+var os = require("os");
 
 class Device extends Model {
     constructor() {
