@@ -360,9 +360,8 @@ function listen() {
   });
 
   ipcMain.on("createUser", (event, user) => {
-    let knex = require('knex')(KnexConfig.development)
     console.info(path.resolve(__dirname))
-    console.info(path.resolve(KnexConfig.development.connection.filename))
+    console.info(path.resolve(KnexConfig.productionLinux.connection.filename))
     userHandler.save(user, function(savedUser) {
       savedUser.location = path.resolve('.')
         event.reply("userCreated", savedUser);
@@ -389,16 +388,16 @@ function listen() {
   
   ipcMain.on("doesDatabaseExist", (event) => {
     userHandler.get(async function(userGot) {
-      if (
-        userGot.hasOwnProperty("nativeError") &&
-        userGot.nativeError.code === "SQLITE_ERROR"
-      ) {
-        let knex = require('knex')(KnexConfig.development)
-        console.info(path.resolve(__dirname))
-        console.info(path.resolve(KnexConfig.development.connection.filename))
-        await knex.migrate.latest().then(() => {
-          return knex.seed.run();
-        });
+      // if (
+      //   userGot.hasOwnProperty("nativeError") &&
+      //   userGot.nativeError.code === "SQLITE_ERROR"
+      // ) {
+      //   let knex = require('knex')(KnexConfig.development)
+      //   console.info(path.resolve(__dirname))
+      //   console.info(path.resolve(KnexConfig.development.connection.filename))
+      //   await knex.migrate.latest().then(() => {
+      //     return knex.seed.run();
+      //   });
         event.reply("databaseExists", true);
       } else{
         event.reply("databaseExists", true);
