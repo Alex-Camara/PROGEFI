@@ -9,19 +9,19 @@ class User extends Model {
     super();
     if (process.env.NODE_ENV !== "production") {
       if (os.platform() === "darwin") {
-        Model.knex(Knex(KnexConfig.development));
+        Model.knex(Knex(KnexConfig.developmentDarwin));
       } else if (os.platform() === "linux") {
         Model.knex(Knex(KnexConfig.developmentLinux));
-      } else if (os.platform() === "linux") {
-        Model.knex(Knex(KnexConfig.developmentLinux));
+      } else if (os.platform() === "win32") {
+        Model.knex(Knex(KnexConfig.developmentWindows));
       }
     } else {
       if (os.platform() === "darwin") {
-        Model.knex(Knex(KnexConfig.development));
+        Model.knex(Knex(KnexConfig.productionDarwin));
       } else if (os.platform() === "linux") {
-        Model.knex(Knex(KnexConfig.developmentLinux));
-      } else if (os.platform() === "linux") {
-        Model.knex(Knex(KnexConfig.developmentLinux));
+        Model.knex(Knex(KnexConfig.productionLinux));
+      } else if (os.platform() === "win32") {
+        Model.knex(Knex(KnexConfig.productionWindows));
       }
     }
   }

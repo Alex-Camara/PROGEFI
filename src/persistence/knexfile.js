@@ -3,7 +3,33 @@
 const path = require('path')
 
 module.exports = {
-  development: {
+  developmentWindows: {
+    client: 'sqlite3',
+    useNullAsDefault: true,
+    connection:{
+      filename: path.resolve(__dirname, '../../src/persistence/progefiDB.db')
+    },
+    migrations: {
+      directory: path.resolve(__dirname, '../../src/persistence/migrations')
+    },
+    seeds: {
+      directory: path.resolve(__dirname, '../../src/persistence/productionSeeds')
+    }
+  },
+  developmentLinux: {
+    client: 'sqlite3',
+    useNullAsDefault: true,
+    connection:{
+      filename: path.resolve(__dirname, '../src/persistence/progefiDB.db')
+    },
+    migrations: {
+      directory: path.resolve(__dirname, '../src/persistence/migrations')
+    },
+    seeds: {
+      directory: path.resolve(__dirname, '../src/persistence/productionSeeds')
+    }
+  },
+  developmentDarwin: {
     client: 'sqlite3',
     useNullAsDefault: true,
     connection:{
@@ -24,20 +50,33 @@ module.exports = {
       directory: path.resolve(__dirname, '../../src/persistence/productionSeeds')
     }
   },
-  developmentLinux: {
+  productionWindows: {
     client: 'sqlite3',
     useNullAsDefault: true,
     connection:{
-      filename: path.resolve(__dirname, '../src/persistence/progefiDB.db')
+      filename: path.resolve(__dirname, '../../src/persistence/progefiDB.db')
     },
     migrations: {
-      directory: path.resolve(__dirname, '../src/persistence/migrations')
+      directory: path.resolve(__dirname, '../../src/persistence/migrations')
     },
     seeds: {
-      directory: path.resolve(__dirname, '../src/persistence/productionSeeds')
+      directory: path.resolve(__dirname, '../../src/persistence/productionSeeds')
     }
   },
-  production: {
+  productionLinux: {
+    client: 'sqlite3',
+    useNullAsDefault: true,
+    connection:{
+      filename: path.resolve(__dirname, '../../src/persistence/progefiDB.db')
+    },
+    migrations: {
+      directory: path.resolve(__dirname, '../../src/persistence/progefiDB.db')
+    },
+    seeds: {
+      directory: path.resolve(__dirname, '../../src/persistence/progefiDB.db')
+    }
+  },
+  productionDarwin: {
     client: 'sqlite3',
     useNullAsDefault: true,
     connection:{

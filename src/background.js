@@ -133,7 +133,7 @@ ipcMain.on("maximize", (event) => {
   var dimensions = mainScreen.size;
   let partialWidth = Math.round(90 * dimensions.width / 100);
 
-  let partialHeight = Math.round(90 * partialWidth / 100);
+  let partialHeight = Math.round(90 * dimensions.height / 100);
 
   win.setSize(partialWidth, partialHeight);
   event.reply("maximized")
