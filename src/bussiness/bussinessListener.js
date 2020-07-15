@@ -398,10 +398,10 @@ function listen() {
       //   await knex.migrate.latest().then(() => {
       //     return knex.seed.run();
       //   });
+      //   event.reply("databaseExists", true);
+      // } else{
         event.reply("databaseExists", true);
-      } else{
-        event.reply("databaseExists", true);
-      }
+      // }
     });
   });
 }
