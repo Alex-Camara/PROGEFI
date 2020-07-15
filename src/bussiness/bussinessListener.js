@@ -11,7 +11,6 @@ import TemplateHandler from "./handlers/templateHandler.js";
 import SexHandler from "./handlers/sexHandler.js";
 import LifeStageHandler from "./handlers/lifeStageHandler.js";
 import UserHandler from "./handlers/userHandler.js";
-const Knex = require("knex");
 const KnexConfig = require('../persistence/knexfile');
 import path from "path";
 
