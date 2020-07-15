@@ -4,7 +4,7 @@
   "private": false,
   "main": "background.js",
   "description": "Electron desktop app to create, manage and export photocollect datacards",
-  "author": "Alejandro Cámara Árciga",
+  "author": {"name": "Alejandro Cámara Árciga", "email":  "arcamsoft@gmail.com"},
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",

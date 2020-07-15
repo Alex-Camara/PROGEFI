@@ -65,7 +65,6 @@
 </template>
 
 <script>
-import UIDataDistribution from "./UICreateTemplate/UIDataDistribution.vue";
 import Template from "../models/template";
 import createTemplateGeneralData from "../components/createTemplateGeneralData";
 import templateThumbnail from "../components/templateThumbnail";
@@ -76,7 +75,6 @@ import store from "../store/store";
 
 export default {
   components: {
-    "ui-data-distribution": UIDataDistribution,
     "create-template-general-data": createTemplateGeneralData,
     "template-thumbnail": templateThumbnail,
     "create-tag": createTag,
