@@ -4,7 +4,7 @@ const {
 const Knex = require('knex')
 const KnexConfig = require('../knexfile');
 var os = require("os");
-Model.knex(Knex(KnexConfig.development));
+// Model.knex(Knex(KnexConfig.development));
 
 class LifeStage extends Model {
     constructor() {
