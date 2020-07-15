@@ -7,6 +7,7 @@ var os = require("os");
 class User extends Model {
   constructor() {
     super();
+
     if (process.env.NODE_ENV !== "production") {
       if (os.platform() === "darwin") {
         Model.knex(Knex(KnexConfig.developmentDarwin));
