@@ -129,7 +129,7 @@ ipcMain.on("maximize", (event) => {
   // win.maximize();
   // win.setResizable(false);
   // win.setMovable(false)
-  win.resizable(true);
+  win.setResizable(true);
   var screenElectron = electron.screen;
   var mainScreen = screenElectron.getPrimaryDisplay();
   var dimensions = mainScreen.size;
