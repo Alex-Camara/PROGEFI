@@ -13,6 +13,7 @@ import LifeStageHandler from "./handlers/lifeStageHandler.js";
 import UserHandler from "./handlers/userHandler.js";
 const KnexConfig = require('../persistence/knexfile');
 import path from "path";
+import * as electron from "electron";
 
 const { ipcMain } = require("electron");
 
@@ -387,20 +388,40 @@ function listen() {
   
   ipcMain.on("doesDatabaseExist", (event) => {
     userHandler.get(async function(userGot) {
-      // if (
-      //   userGot.hasOwnProperty("nativeError") &&
-      //   userGot.nativeError.code === "SQLITE_ERROR"
-      // ) {
-      //   let knex = require('knex')(KnexConfig.development)
-      //   console.info(path.resolve(__dirname))
-      //   console.info(path.resolve(KnexConfig.development.connection.filename))
-      //   await knex.migrate.latest().then(() => {
-      //     return knex.seed.run();
-      //   });
-      //   event.reply("databaseExists", true);
-      // } else{
+      if (
+        userGot.hasOwnProperty("nativeError") &&
+        userGot.nativeError.code === "SQLITE_ERROR"
+      ) {
+        const app = electron.app;
+        const log = require('electron-log');
+        var os = require("os");
+        let knex;
+        if (process.env.NODE_ENV !== "production") {
+          if (os.platform() === "darwin") {
+            knex = require('knex')(KnexConfig.developmentDarwin);
+          } else if (os.platform() === "linux") {
+            knex = require('knex')(KnexConfig.developmentLinux);
+          } else if (os.platform() === "win32") {
+            knex = require('knex')(KnexConfig.developmentWindows);
+          }
+        } else {
+          if (os.platform() === "darwin") {
+            knex = require('knex')(KnexConfig.productionDarwin);
+          } else if (os.platform() === "linux") {
+            KnexConfig.productionLinux.filename = app.getPath("userData") + "/progefiDB.db";
+            knex = require('knex')(KnexConfig.productionLinux);
+          } else if (os.platform() === "win32") {
+            knex = require('knex')(KnexConfig.productionWindows);
+          }
+        }
+        log.info("filename" + knex.filename)
+        await knex.migrate.latest().then(() => {
+          return knex.seed.run();
+        });
         event.reply("databaseExists", true);
-      // }
+      } else{
+        event.reply("databaseExists", true);
+      }
     });
   });
 }

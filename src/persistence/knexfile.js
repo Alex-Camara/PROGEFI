@@ -1,6 +1,9 @@
 // Update with your config settings.
 
+import * as electron from "electron";
+
 const path = require('path')
+const app = electron.app;
 
 module.exports = {
   developmentWindows: {
