@@ -24,6 +24,19 @@ module.exports = {
       directory: path.resolve(__dirname, '../../src/persistence/productionSeeds')
     }
   },
+  developmentLinux: {
+    client: 'sqlite3',
+    useNullAsDefault: true,
+    connection:{
+      filename: path.resolve(__dirname, '../src/persistence/progefiDB.db')
+    },
+    migrations: {
+      directory: path.resolve(__dirname, '../src/persistence/migrations')
+    },
+    seeds: {
+      directory: path.resolve(__dirname, '../src/persistence/productionSeeds')
+    }
+  },
   production: {
     client: 'sqlite3',
     useNullAsDefault: true,

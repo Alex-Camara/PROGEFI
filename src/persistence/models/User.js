@@ -12,7 +12,7 @@ class User extends Model {
         if (os.platform() === "darwin"){
             Model.knex(Knex(KnexConfig.development));
         } else{
-            Model.knex(Knex(KnexConfig.production));
+            Model.knex(Knex(KnexConfig.developmentLinux));
         }
     }
     static get tableName() {
