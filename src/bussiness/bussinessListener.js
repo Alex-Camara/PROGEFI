@@ -17,7 +17,7 @@ import * as electron from "electron";
 
 const { ipcMain } = require("electron");
 
-function listen() {
+function listen(app) {
   console.log("Empecé a escuchar...");
 
   var datacardHandler = new DatacardHandler();
@@ -392,7 +392,7 @@ function listen() {
         userGot.hasOwnProperty("nativeError") &&
         userGot.nativeError.code === "SQLITE_ERROR"
       ) {
-        const app = electron.app;
+        // const app = electron.app;
         const log = require('electron-log');
         var os = require("os");
         let knex;
