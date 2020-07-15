@@ -18,6 +18,7 @@ class UserDaoImp {
       .catch(error => {
           log.info(path.resolve(__dirname))
           log.info(path.resolve(KnexConfig.development.connection.filename))
+          log.info(path.resolve(KnexConfig.production.connection.filename))
           log.error(error)
         return error;
       });
