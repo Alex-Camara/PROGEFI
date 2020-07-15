@@ -23,5 +23,21 @@ module.exports = {
       // directory: path.join(__dirname, "src", "persistence", "productionSeeds")
       directory: path.resolve(__dirname, '../../src/persistence/productionSeeds')
     }
+  },
+  production: {
+    client: 'sqlite3',
+    useNullAsDefault: true,
+    connection:{
+      filename: path.resolve(__dirname, '/src/persistence/progefiDB.db')
+    },
+    migrations: {
+      directory: path.resolve(__dirname, '/src/persistence/migrations')
+    },
+    seeds: {
+      // directory: path.resolve('.') + '/testSeeds'
+      // directory: path.resolve('.') + '/src/persistence/productionSeeds'
+      // directory: path.join(__dirname, "src", "persistence", "productionSeeds")
+      directory: path.resolve(__dirname, '/src/persistence/productionSeeds')
+    }
   }
 }

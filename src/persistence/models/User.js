@@ -4,8 +4,17 @@ const {
 const Knex = require('knex')
 const KnexConfig = require('../knexfile');
 Model.knex(Knex(KnexConfig.development));
+var os = require('os');
 
 class User extends Model {
+    constructor() {
+        super();
+        if (os.platform() === "darwin"){
+            Model.knex(Knex(KnexConfig.development));
+        } else{
+            Model.knex(Knex(KnexConfig.production));
+        }
+    }
     static get tableName() {
         return 'User';
     }
