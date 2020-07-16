@@ -29,7 +29,7 @@ class CollectionHandler {
     } else{
       destinationFolder =
           path.resolve(__dirname, "..") +
-          "../../src/persistence/resources/institute_logos/" + new Date().getTime() + ".webp";
+          "/src/persistence/resources/institute_logos/" + new Date().getTime() + ".webp";
     }
 
     log.info("directorio del logo: ")
