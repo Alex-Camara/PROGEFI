@@ -28,6 +28,9 @@ module.exports = {
         "appId": "progefi",
         "compression": "store",
         "afterPack": "./build/afterPack.js",
+        "extraResources": [
+          "./build/src"
+        ],
         extraFiles: [
           {
             "from": "./build/src",
@@ -46,7 +49,6 @@ module.exports = {
         },
         linux:{
           "target": [
-            "AppImage",
             "deb"
           ],
           "category": "Utility"

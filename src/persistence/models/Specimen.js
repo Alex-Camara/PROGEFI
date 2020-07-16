@@ -21,6 +21,7 @@ class Specimen extends Model {
       if (os.platform() === "darwin") {
         Model.knex(Knex(KnexConfig.productionDarwin));
       } else if (os.platform() === "linux") {
+
         Model.knex(Knex(KnexConfig.productionLinux));
       } else if (os.platform() === "win32") {
         Model.knex(Knex(KnexConfig.productionWindows));
