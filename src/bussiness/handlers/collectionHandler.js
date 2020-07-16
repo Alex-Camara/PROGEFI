@@ -19,13 +19,16 @@ class CollectionHandler {
     log.info("directorio actual: ")
     log.info(__dirname)
 
+    log.info("directorio nuevo: ")
+    log.info(path.resolve(__dirname, ".."))
+
     if (os.platform() === "win32"){
       destinationFolder =
-          path.resolve(__dirname) +
+          path.resolve(__dirname, "..") +
           "/src/persistence/resources/institute_logos/" + new Date().getTime() + ".webp";
     } else{
       destinationFolder =
-          path.resolve(__dirname) +
+          path.resolve(__dirname, "..") +
           "../../src/persistence/resources/institute_logos/" + new Date().getTime() + ".webp";
     }
     const sharp = require("sharp");
