@@ -1,44 +1,43 @@
-'use strict'
+"use strict";
 
-
-import BussinessProcess from './bussiness/bussinessListener';
-const KnexConfig = require('./persistence/knexfile');
+import BussinessProcess from "./bussiness/bussinessListener";
+const KnexConfig = require("./persistence/knexfile");
 const { ipcMain } = require("electron");
-const log = require('electron-log');
+const log = require("electron-log");
 
-const electron = require('electron');
+const electron = require("electron");
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const protocol = electron.protocol;
 
-const vueCliPlugIn = require('vue-cli-plugin-electron-builder/lib');
+const vueCliPlugIn = require("vue-cli-plugin-electron-builder/lib");
 const createProtocol = vueCliPlugIn.createProtocol;
 
 const installVueDevtools = vueCliPlugIn.installVueDevtools;
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
+const isDevelopment = process.env.NODE_ENV !== "production";
 let win;
+let storageRoute = app.getPath("userData");
 
 protocol.registerSchemesAsPrivileged([
   {
-    scheme: 'app',
+    scheme: "app",
     privileges: {
       secure: true,
       standard: true
     }
   }
-])
-
+]);
 
 function createWindow() {
   // Create the browser window.
-  console.log('hola')
+  console.log("hola");
   var screenElectron = electron.screen;
   var mainScreen = screenElectron.getPrimaryDisplay();
   var dimensions = mainScreen.size;
-  let partialWidth = Math.round(70 * dimensions.width / 100);
+  let partialWidth = Math.round((70 * dimensions.width) / 100);
 
-  let partialHeight = Math.round(67 * partialWidth / 100);
+  let partialHeight = Math.round((67 * partialWidth) / 100);
   win = new BrowserWindow({
     width: partialWidth,
     height: partialHeight,
@@ -49,12 +48,11 @@ function createWindow() {
     }
   });
 
-
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
     // if (!process.env.IS_TEST)
-      win.webContents.openDevTools();
+    win.webContents.openDevTools();
   } else {
     win.webContents.openDevTools();
     createProtocol("app");
@@ -84,8 +82,6 @@ app.on("activate", () => {
   }
 });
 
-
-
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -102,16 +98,28 @@ app.on("ready", async () => {
   win.setMenu(null);
   win.setResizable(false);
   // process.setFdLimit(12000);
-  app.commandLine.appendSwitch ("disable-http-cache");
+  app.commandLine.appendSwitch("disable-http-cache");
 
-  KnexConfig.productionLinux.filename = app.getPath("userData") + "/progefiDB.db";
-  let knex = require('knex')(KnexConfig.productionLinux)
-    log.info("nuevo camino: ")
-  log.info(knex)
+  let databasePath = app.getPath("userData") + "/progefiDB.db";
+
+  KnexConfig.productionLinux.filename = databasePath;
+  KnexConfig.productionWindows.filename = databasePath;
+  KnexConfig.productionDarwin.filename = databasePath;
+  KnexConfig.developmentWindows.filename = databasePath;
+  KnexConfig.developmentDarwin.filename = databasePath;
+  KnexConfig.developmentLinux.filename = databasePath;
+
+  let knex = require("knex")(KnexConfig.developmentWindows);
+
+  log.info("user data: ");
+  log.info(app.getPath("userData"));
+  log.info("nuevo camino: ");
+  log.info(KnexConfig.developmentWindows);
+
   //   console.info(path.resolve(KnexConfig.development.connection.filename))
-    await knex.migrate.latest().then(() => {
-      return knex.seed.run();
-    });
+  await knex.migrate.latest().then(() => {
+    return knex.seed.run();
+  });
 });
 
 if (isDevelopment) {
@@ -122,20 +130,18 @@ if (isDevelopment) {
       }
     });
   } else {
-
     process.on("SIGTERM", () => {
       app.quit();
     });
-
   }
 }
 
 ipcMain.on("minimize", () => {
-  app.relaunch()
+  app.relaunch();
   app.exit();
 });
 
-ipcMain.on("maximize", (event) => {
+ipcMain.on("maximize", event => {
   var os = require("os");
   // win.maximize();
   // win.setResizable(false);
@@ -144,20 +150,20 @@ ipcMain.on("maximize", (event) => {
   var screenElectron = electron.screen;
   var mainScreen = screenElectron.getPrimaryDisplay();
   var dimensions = mainScreen.size;
-  let partialWidth = Math.round(90 * dimensions.width / 100);
+  let partialWidth = Math.round((90 * dimensions.width) / 100);
 
-  let partialHeight = Math.round(90 * dimensions.height / 100);
+  let partialHeight = Math.round((90 * dimensions.height) / 100);
 
   win.setSize(partialWidth, partialHeight);
 
-  if (os.platform !== "darwin"){
+  if (os.platform !== "darwin") {
     win.maximize();
   }
-  event.reply("maximized")
+  event.reply("maximized");
 });
 
 function listenToProcesses() {
-  BussinessProcess.listen()
+  BussinessProcess.listen(storageRoute);
 }
 
-listenToProcesses()
+listenToProcesses();

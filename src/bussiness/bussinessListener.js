@@ -16,8 +16,9 @@ import path from "path";
 
 const { ipcMain } = require("electron");
 
-function listen() {
+function listen(app2) {
   console.log("Empecé a escuchar...");
+  console.info(app2);
 
   var datacardHandler = new DatacardHandler();
   var catalogueHandler = new CatalogueHandler();

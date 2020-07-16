@@ -10,10 +10,10 @@ module.exports = {
       filename: path.resolve(__dirname, '../../src/persistence/progefiDB.db')
     },
     migrations: {
-      directory: path.resolve(__dirname, '../../src/persistence/migrations')
+      directory: path.resolve(__dirname, '../src/persistence/migrations')
     },
     seeds: {
-      directory: path.resolve(__dirname, '../../src/persistence/productionSeeds')
+      directory: path.resolve(__dirname, '../src/persistence/productionSeeds')
     }
   },
   developmentLinux: {
