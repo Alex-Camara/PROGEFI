@@ -117,9 +117,18 @@ app.on("ready", async () => {
   log.info(KnexConfig.developmentWindows);
 
   //   console.info(path.resolve(KnexConfig.development.connection.filename))
-  await knex.migrate.latest().then(() => {
-    return knex.seed.run();
-  });
+  await knex.migrate
+    .latest()
+    .then(() => {
+      return knex.seed.run().catch(err => {
+        log.info("error: ");
+        log.error(err);
+      });
+    })
+    .catch(err => {
+      log.info("error: ");
+      log.error(err);
+    });
 });
 
 if (isDevelopment) {
