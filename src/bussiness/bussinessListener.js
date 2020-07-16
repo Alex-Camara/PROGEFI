@@ -11,11 +11,11 @@ import TemplateHandler from "./handlers/templateHandler.js";
 import SexHandler from "./handlers/sexHandler.js";
 import LifeStageHandler from "./handlers/lifeStageHandler.js";
 import UserHandler from "./handlers/userHandler.js";
+const Knex = require("knex");
 const KnexConfig = require('../persistence/knexfile');
 import path from "path";
 
 const { ipcMain } = require("electron");
-// const electron = require('electron');
 
 function listen() {
   console.log("Empecé a escuchar...");
@@ -36,23 +36,23 @@ function listen() {
 
   ipcMain.on("savePhotoCollect", (event, photocollect) => {
     datacardHandler
-      .savePhotoCollect(photocollect)
-      .then(result => {
-        if (result === "not-supported-format") {
-          event.reply("photoCollectNotSaved", result);
-        } else {
-          event.reply("photoCollectSaved", result);
-        }
-      })
-      .catch(error => {
-        console.log(error);
-      });
+        .savePhotoCollect(photocollect)
+        .then(result => {
+          if (result === "not-supported-format") {
+            event.reply("photoCollectNotSaved", result);
+          } else {
+            event.reply("photoCollectSaved", result);
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
   });
 
   ipcMain.on("getDatacards", async (event, catalogueId, searchString) => {
     let datacards = await datacardHandler.getDatacardsInCatalogue(
-      catalogueId,
-      searchString
+        catalogueId,
+        searchString
     );
     event.reply("datacards", datacards);
   });
@@ -64,24 +64,24 @@ function listen() {
   });
 
   ipcMain.on(
-    "getSortedDatacards",
-    (event, catalogueId, field, order, limit, offset) => {
-      datacardHandler.getSortedDatacards(
-        catalogueId,
-        field,
-        order,
-        limit,
-        offset,
-        async function(datacards) {
-          event.reply("sortedDatacards", datacards);
-        }
-      );
-    }
+      "getSortedDatacards",
+      (event, catalogueId, field, order, limit, offset) => {
+        datacardHandler.getSortedDatacards(
+            catalogueId,
+            field,
+            order,
+            limit,
+            offset,
+            async function(datacards) {
+              event.reply("sortedDatacards", datacards);
+            }
+        );
+      }
   );
 
   ipcMain.on("getFilteredDatacards", (event, searchCriteria) => {
     datacardHandler.getFilteredDatacards(searchCriteria, async function(
-      datacards
+        datacards
     ) {
       event.reply("filteredDatacards", datacards);
     });
@@ -172,16 +172,16 @@ function listen() {
   });
 
   ipcMain.on(
-    "getDatacardsCountByCollector",
-    (event, collectorId, catalogueId) => {
-      collectorHandler.getDatacardsCountByCollector(
-        collectorId,
-        catalogueId,
-        function(count) {
-          event.reply("datacardsCountByCollector", count);
-        }
-      );
-    }
+      "getDatacardsCountByCollector",
+      (event, collectorId, catalogueId) => {
+        collectorHandler.getDatacardsCountByCollector(
+            collectorId,
+            catalogueId,
+            function(count) {
+              event.reply("datacardsCountByCollector", count);
+            }
+        );
+      }
   );
 
   ipcMain.on("getCurators", event => {
@@ -228,15 +228,15 @@ function listen() {
 
   ipcMain.on("getImageMetadata", event => {
     datacardHandler
-      .getImageMetadata()
-      .then(result => {
-        event.reply("imageMetadata", result);
-      })
-      .catch(error => {
-        console.log("falló extracción: ");
-        console.info(error);
-        event.reply("imageMetadataFailed");
-      });
+        .getImageMetadata()
+        .then(result => {
+          event.reply("imageMetadata", result);
+        })
+        .catch(error => {
+          console.log("falló extracción: ");
+          console.info(error);
+          event.reply("imageMetadataFailed");
+        });
   });
 
   ipcMain.on("getClimateTypes", event => {
@@ -253,7 +253,7 @@ function listen() {
 
   ipcMain.on("getVegetalFormations", async event => {
     await vegetationTypeHandler.getVegetalFormations(function(
-      vegetalFormations
+        vegetalFormations
     ) {
       event.reply("vegetalFormations", vegetalFormations);
     });
@@ -344,15 +344,15 @@ function listen() {
     });
   });
   ipcMain.on(
-    "exportDatacards",
-    async (event, datacards, format, destinationDirectory) => {
-      let exportedFile = await datacardHandler.export(
-        datacards,
-        format,
-        destinationDirectory
-      );
-      event.reply("datacardsExported", exportedFile);
-    }
+      "exportDatacards",
+      async (event, datacards, format, destinationDirectory) => {
+        let exportedFile = await datacardHandler.export(
+            datacards,
+            format,
+            destinationDirectory
+        );
+        event.reply("datacardsExported", exportedFile);
+      }
   );
   ipcMain.on("decodeDatacard", async (event, base64) => {
     let decodedDatacard = await datacardHandler.decode(base64);
@@ -364,7 +364,7 @@ function listen() {
     console.info(path.resolve(KnexConfig.productionLinux.connection.filename))
     userHandler.save(user, function(savedUser) {
       savedUser.location = path.resolve('.')
-        event.reply("userCreated", savedUser);
+      event.reply("userCreated", savedUser);
     });
   });
 
@@ -385,49 +385,27 @@ function listen() {
       event.reply("loggedOut", keepSession);
     });
   });
-  
+
   ipcMain.on("doesDatabaseExist", (event) => {
     userHandler.get(async function(userGot) {
-      if (
-        userGot.hasOwnProperty("nativeError") &&
-        userGot.nativeError.code === "SQLITE_ERROR"
-      ) {
-        // const app = electron.app;
-        const log = require('electron-log');
-        var os = require("os");
-        let knex;
-        if (process.env.NODE_ENV !== "production") {
-          if (os.platform() === "darwin") {
-            knex = require('knex')(KnexConfig.developmentDarwin);
-          } else if (os.platform() === "linux") {
-            knex = require('knex')(KnexConfig.developmentLinux);
-          } else if (os.platform() === "win32") {
-            knex = require('knex')(KnexConfig.developmentWindows);
-          }
-        } else {
-          if (os.platform() === "darwin") {
-            knex = require('knex')(KnexConfig.productionDarwin);
-          } else if (os.platform() === "linux") {
-
-            // const app = electron.app;
-            // KnexConfig.productionLinux.filename = electron.app.getPath("userData") + "/progefiDB.db";
-            knex = require('knex')(KnexConfig.productionLinux);
-          } else if (os.platform() === "win32") {
-            knex = require('knex')(KnexConfig.productionWindows);
-          }
-        }
-        log.info("filename" + knex.filename)
-        await knex.migrate.latest().then(() => {
-          return knex.seed.run();
-        });
-        event.reply("databaseExists", true);
-      } else{
-        event.reply("databaseExists", true);
-      }
+      // if (
+      //   userGot.hasOwnProperty("nativeError") &&
+      //   userGot.nativeError.code === "SQLITE_ERROR"
+      // ) {
+      //   let knex = require('knex')(KnexConfig.development)
+      //   console.info(path.resolve(__dirname))
+      //   console.info(path.resolve(KnexConfig.development.connection.filename))
+      //   await knex.migrate.latest().then(() => {
+      //     return knex.seed.run();
+      //   });
+      //   event.reply("databaseExists", true);
+      // } else{
+      event.reply("databaseExists", true);
+      // }
     });
   });
 }
 
 export default {
   listen
-};
+}
