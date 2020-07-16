@@ -410,7 +410,7 @@ function listen() {
           } else if (os.platform() === "linux") {
 
             // const app = electron.app;
-            KnexConfig.productionLinux.filename = electron.app.getPath("userData") + "/progefiDB.db";
+            // KnexConfig.productionLinux.filename = electron.app.getPath("userData") + "/progefiDB.db";
             knex = require('knex')(KnexConfig.productionLinux);
           } else if (os.platform() === "win32") {
             knex = require('knex')(KnexConfig.productionWindows);

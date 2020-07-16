@@ -8,6 +8,7 @@ const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const protocol = electron.protocol;
+const KnexConfig = require('../persistence/knexfile');
 
 const vueCliPlugIn = require('vue-cli-plugin-electron-builder/lib');
 const createProtocol = vueCliPlugIn.createProtocol;
