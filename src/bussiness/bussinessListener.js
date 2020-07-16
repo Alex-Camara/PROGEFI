@@ -13,7 +13,6 @@ import LifeStageHandler from "./handlers/lifeStageHandler.js";
 import UserHandler from "./handlers/userHandler.js";
 const KnexConfig = require('../persistence/knexfile');
 import path from "path";
-import * as electron from "electron";
 
 const { ipcMain } = require("electron");
 
