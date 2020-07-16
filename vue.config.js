@@ -29,9 +29,6 @@ module.exports = {
         "compression": "store",
         "afterPack": "./build/afterPack.js",
         "extraResources": [
-          "!./build${/*src}"
-        ],
-        extraFiles: [
           {
             "from": "./build/src",
             "to": "src"
