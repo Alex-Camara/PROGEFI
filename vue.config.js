@@ -24,8 +24,8 @@ module.exports = {
       nodeIntegration: true,
       externals: ['sharp', 'pdfkit', 'objection', 'knex'],
       builderOptions: {
-        "productName": "progefi",
-        "appId": "progefi",
+        "productName": "PROGEFI",
+        "appId": "PROGEFI",
         "compression": "store",
         "afterPack": "./build/afterPack.js",
         "extraResources": [

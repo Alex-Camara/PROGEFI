@@ -1,5 +1,7 @@
 "use strict";
 const path = require("path");
+const electron = require("electron")
+const log = require("electron-log");
 var os = require('os');
 import CollectionDAO from "../../persistence/dao/CollectionDao";
 
@@ -14,13 +16,16 @@ class CollectionHandler {
   async save(collection, result) {
     var destinationFolder;
 
+    log.info("directorio actual: ")
+    log.info(__dirname)
+
     if (os.platform() === "win32"){
       destinationFolder =
-          path.resolve(".") +
+          path.resolve(__dirname) +
           "/src/persistence/resources/institute_logos/" + new Date().getTime() + ".webp";
     } else{
       destinationFolder =
-          path.resolve(".") +
+          path.resolve(__dirname) +
           "../../src/persistence/resources/institute_logos/" + new Date().getTime() + ".webp";
     }
     const sharp = require("sharp");
