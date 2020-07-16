@@ -16,7 +16,7 @@ import path from "path";
 
 const { ipcMain } = require("electron");
 
-function listen(app) {
+function listen() {
   console.log("Empecé a escuchar...");
 
   var datacardHandler = new DatacardHandler();
@@ -407,6 +407,8 @@ function listen(app) {
           if (os.platform() === "darwin") {
             knex = require('knex')(KnexConfig.productionDarwin);
           } else if (os.platform() === "linux") {
+            const electron = require('electron');
+            const app = electron.app;
             KnexConfig.productionLinux.filename = app.getPath("userData") + "/progefiDB.db";
             knex = require('knex')(KnexConfig.productionLinux);
           } else if (os.platform() === "win32") {
