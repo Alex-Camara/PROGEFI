@@ -4,6 +4,7 @@
 import BussinessProcess from './bussiness/bussinessListener';
 const KnexConfig = require('./persistence/knexfile');
 const { ipcMain } = require("electron");
+const log = require('electron-log');
 
 const electron = require('electron');
 const app = electron.app;
@@ -105,7 +106,8 @@ app.on("ready", async () => {
 
   KnexConfig.productionLinux.filename = app.getPath("userData") + "/progefiDB.db";
   let knex = require('knex')(KnexConfig.productionLinux)
-  //   console.info(path.resolve(__dirname))
+    log.info("nuevo camino: ")
+  log.info(knex)
   //   console.info(path.resolve(KnexConfig.development.connection.filename))
     await knex.migrate.latest().then(() => {
       return knex.seed.run();
