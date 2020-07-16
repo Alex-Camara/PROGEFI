@@ -15,7 +15,7 @@ const KnexConfig = require('../persistence/knexfile');
 import path from "path";
 
 const { ipcMain } = require("electron");
-const electron = require('electron');
+// const electron = require('electron');
 
 function listen() {
   console.log("Empecé a escuchar...");
