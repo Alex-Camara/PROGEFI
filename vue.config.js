@@ -27,7 +27,6 @@ module.exports = {
         "productName": "PROGEFI",
         "appId": "PROGEFI",
         "compression": "store",
-        "afterAllArtifactBuild": "./build/afterPack.js",
         "extraResources": [
           {
             "from": "./build/src",
