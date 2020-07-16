@@ -102,12 +102,12 @@ app.on("ready", async () => {
 
   let databasePath = app.getPath("userData") + "/progefiDB.db";
 
-  KnexConfig.productionLinux.filename = databasePath;
-  KnexConfig.productionWindows.filename = databasePath;
-  KnexConfig.productionDarwin.filename = databasePath;
-  KnexConfig.developmentWindows.filename = databasePath;
-  KnexConfig.developmentDarwin.filename = databasePath;
-  KnexConfig.developmentLinux.filename = databasePath;
+  KnexConfig.productionLinux.connection.filename = databasePath;
+  KnexConfig.productionWindows.connection.filename = databasePath;
+  KnexConfig.productionDarwin.connection.filename = databasePath;
+  KnexConfig.developmentWindows.connection.filename = databasePath;
+  KnexConfig.developmentDarwin.connection.filename = databasePath;
+  KnexConfig.developmentLinux.connection.filename = databasePath;
 
   let knex = require("knex")(KnexConfig.developmentWindows);
 
