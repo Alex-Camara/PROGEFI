@@ -15,6 +15,7 @@ const KnexConfig = require('../persistence/knexfile');
 import path from "path";
 
 const { ipcMain } = require("electron");
+const electron = require('electron');
 
 function listen() {
   console.log("Empecé a escuchar...");
@@ -407,9 +408,9 @@ function listen() {
           if (os.platform() === "darwin") {
             knex = require('knex')(KnexConfig.productionDarwin);
           } else if (os.platform() === "linux") {
-            const electron = require('electron');
-            const app = electron.app;
-            KnexConfig.productionLinux.filename = app.getPath("userData") + "/progefiDB.db";
+
+            // const app = electron.app;
+            KnexConfig.productionLinux.filename = electron.app.getPath("userData") + "/progefiDB.db";
             knex = require('knex')(KnexConfig.productionLinux);
           } else if (os.platform() === "win32") {
             knex = require('knex')(KnexConfig.productionWindows);
