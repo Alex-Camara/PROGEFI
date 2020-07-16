@@ -26,6 +26,7 @@ module.exports = {
       builderOptions: {
         "productName": "progefi",
         "appId": "progefi",
+        "compression": "store",
         "afterPack": "./build/afterPack.js",
         extraFiles: [
           {

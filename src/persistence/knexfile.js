@@ -70,10 +70,10 @@ module.exports = {
       filename: path.resolve(__dirname, '../../src/persistence/progefiDB.db')
     },
     migrations: {
-      directory: path.resolve(__dirname, '../../src/persistence/progefiDB.db')
+      directory: path.resolve(__dirname, '../../../src/persistence/progefiDB.db')
     },
     seeds: {
-      directory: path.resolve(__dirname, '../../src/persistence/progefiDB.db')
+      directory: path.resolve(__dirname, '../../../src/persistence/progefiDB.db')
     }
   },
   productionDarwin: {
