@@ -27,7 +27,7 @@ module.exports = {
         "productName": "PROGEFI",
         "appId": "PROGEFI",
         "compression": "store",
-        "afterPack": "./build/afterPack.js",
+        "afterAllArtifactBuild": "./build/afterPack.js",
         "extraResources": [
           {
             "from": "./build/src",
@@ -39,10 +39,7 @@ module.exports = {
         },
         mac:{
           "target": "dmg",
-          "icon": 'build/icono.icns',
-          "extraResources": [
-            "./build/databaseFolder"
-          ],
+          "icon": 'build/icono.icns'
         },
         linux:{
           "target": [

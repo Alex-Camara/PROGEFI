@@ -31,17 +31,25 @@ class CollectionHandler {
           path.resolve(__dirname, "..") +
           "../../src/persistence/resources/institute_logos/" + new Date().getTime() + ".webp";
     }
+
+    log.info("directorio del logo: ")
+    log.info(destinationFolder)
     const sharp = require("sharp");
-    await sharp(collection.instituteLogoPath)
-      .webp({
-        nearLossless: true,
-        quality: 80,
-        reductionEffort: 5
-      })
-      .toFile(destinationFolder);
-    collection.instituteLogoPath = destinationFolder;
-    let createdCollection = await this.collectionDAO.save(collection);
-    result(createdCollection);
+
+    try {
+      await sharp(collection.instituteLogoPath)
+          .webp({
+            nearLossless: true,
+            quality: 80,
+            reductionEffort: 5
+          })
+          .toFile(destinationFolder);
+      collection.instituteLogoPath = destinationFolder;
+      let createdCollection = await this.collectionDAO.save(collection);
+      result(createdCollection);
+    } catch (e) {
+      log.error("error de sharp " + e)
+    }
   }
   async update(collection, result) {
     var destinationFolder =
