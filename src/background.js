@@ -2,6 +2,7 @@
 
 
 import BussinessProcess from './bussiness/bussinessListener';
+const KnexConfig = require('./persistence/knexfile');
 const { ipcMain } = require("electron");
 
 const electron = require('electron');
@@ -101,6 +102,14 @@ app.on("ready", async () => {
   win.setResizable(false);
   // process.setFdLimit(12000);
   app.commandLine.appendSwitch ("disable-http-cache");
+
+  KnexConfig.productionLinux.filename = app.getPath("userData") + "/progefiDB.db";
+  let knex = require('knex')(KnexConfig.productionLinux)
+  //   console.info(path.resolve(__dirname))
+  //   console.info(path.resolve(KnexConfig.development.connection.filename))
+    await knex.migrate.latest().then(() => {
+      return knex.seed.run();
+    });
 });
 
 if (isDevelopment) {
