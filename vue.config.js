@@ -29,7 +29,7 @@ module.exports = {
         "compression": "store",
         "afterPack": "./build/afterPack.js",
         "extraResources": [
-          "./build/src"
+          "!./build${/*src}"
         ],
         extraFiles: [
           {
