@@ -145,8 +145,8 @@ ipcMain.on("maximize", (event) => {
   event.reply("maximized")
 });
 
-function listenToProcesses(app) {
+function listenToProcesses() {
   BussinessProcess.listen(app)
 }
 
-listenToProcesses(app)
+listenToProcesses()
