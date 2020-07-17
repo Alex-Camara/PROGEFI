@@ -130,10 +130,11 @@
       <div v-if="collection.getInstituteLogoPath() !== null">
         <img
           id="create_collection_logo_image"
-          src="file:///home/alex/Documentos/PROGEFI/src/presistence/resources/institute_logos/1594955842005.webp"
+          :src="'file:///home/alex/Documentos/PROGEFI/src/presistence/resources/institute_logos/1594955842005.webp'"
           alt="jenjkdnjen"
         />
       </div>
+      {{__dirname}}
     </div>
 
     <div class="gray_box create_collection_content">
@@ -167,6 +168,7 @@
 
 <script>
 import requiredFieldHelper from "../helpers/requiredFieldHelper";
+import path from "path";
 
 export default {
   name: "createCollection",
