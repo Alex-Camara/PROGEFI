@@ -23,10 +23,10 @@ class DatacardHandler {
   async savePhotoCollect(photoCollect) {
     log.info("entró a save photocollect")
 
-    log.info(path.resolve("."))
+    log.info(path.resolve(__dirname, ".."))
     const sharp = require("sharp");
     var datacardsFolderPath =
-      path.resolve(".") + "/src/bussiness/photocollects/";
+        path.resolve(__dirname, "..") + "/src/bussiness/photocollects/";
 
     log.info("datacardsFolderPath: " + datacardsFolderPath)
     const buf = fs.readFileSync(photoCollect.filePath);

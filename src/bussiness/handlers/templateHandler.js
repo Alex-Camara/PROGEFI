@@ -14,7 +14,7 @@ class TemplateHandler {
 
     log.info("Guardando template...")
     var templatesFolderPath =
-      path.resolve(".") + "/src/persistence/resources/template_samples/";
+        path.resolve(__dirname, "..") + "/src/persistence/resources/template_samples/";
     log.info("template folder path: " + templatesFolderPath)
     let base64String = template.base64; // Not a real image
     // Remove header
