@@ -130,10 +130,10 @@
       <div v-if="collection.getInstituteLogoPath() !== null">
         <img
           id="create_collection_logo_image"
-          :src="require('../../persistence/resources/institute_logos/1590783242255.webp')"
+          :src="'file:///home/alex/Documentos/PROGEFI/src/presistence/resources/institute_logos/1594955842005.webp'"
           alt="jenjkdnjen"
         />
-        {{"directorio: " + dire}}
+        {{"directorio: " + __dirname}}
       </div>
     </div>
 
@@ -198,7 +198,7 @@ export default {
       helpTextDestinationDirectory:
         "Directorio donde se guardará el archivo csv generado por catálogo.",
       notSupportedFormatMessage: "Formato no soportado",
-      dire: path.resolve(".")
+
     };
   },
   watch: {
@@ -367,14 +367,6 @@ export default {
       });
       this.cataloguesFolderPath = path.filePaths[0];
     },
-    // getLogoImage(){
-    //   if (this.instituteLogoPath !== ""){
-    //     // 'file:///home/alex/Documentos/PROGEFI/src/presistence/resources/institute_logos/1594955842005.webp'"
-    //     // return require('./src/persistence/resources/institute_logos/1590783242255.webp')
-    //   } else{
-    //     return ""
-    //   }
-    // },
     checkFileExtension(file) {
       let fileName = file.name;
       let fileExtension =
