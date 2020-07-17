@@ -131,6 +131,7 @@
         <img
           id="create_collection_logo_image"
           src="/home/alex/Documentos/PROGEFI/src/presistence/resources/institute_logos/1594955842005.webp"
+          alt="jenjkdnjen"
         />
       </div>
     </div>
