@@ -1,8 +1,8 @@
 "use strict";
 const path = require("path");
-const electron = require("electron")
+const electron = require("electron");
 const log = require("electron-log");
-var os = require('os');
+var os = require("os");
 import CollectionDAO from "../../persistence/dao/CollectionDao";
 
 class CollectionHandler {
@@ -16,71 +16,60 @@ class CollectionHandler {
   async save(collection, result) {
     var destinationFolder;
 
-    log.info("collection: ")
-    log.info(collection)
+    log.info("collection: ");
+    log.info(collection);
 
-    log.info("directorio actual: ")
-    log.info(__dirname)
+    log.info("directorio actual: ");
+    log.info(__dirname);
 
-    log.info("directorio nuevo: ")
-    log.info(path.resolve(__dirname, ".."))
+    log.info("directorio nuevo: ");
+    log.info(path.resolve(__dirname, ".."));
 
-    if (os.platform() === "win32"){
+    if (os.platform() === "win32") {
       destinationFolder =
-          path.resolve(__dirname, "..") +
-          "/src/persistence/resources/institute_logos/" + new Date().getTime() + ".webp";
-    } else{
-      destinationFolder =
-          path.resolve(__dirname, "..") +
-          "/src/persistence/resources/institute_logos/" + new Date().getTime() + ".webp";
+        path.resolve(__dirname, "..") +
+        "/src/persistence/resources/institute_logos/" +
+        new Date().getTime() +
+        ".webp";
+    } else {
+      // destinationFolder =
+      //   path.resolve(__dirname, "..") +
+      //   "/src/persistence/resources/institute_logos/" +
+      //   new Date().getTime() +
+      //   ".webp";
+      destinationFolder = electron.app.getPath("userData")+ new Date().getTime() + ".webp";
     }
 
-    log.info("directorio del logo: ")
-    log.info(destinationFolder)
+    log.info("directorio del logo: ");
+    log.info(destinationFolder);
     const sharp = require("sharp");
 
-    // try {
-    //   await sharp(collection.instituteLogoPath)
-    //       .webp({
-    //         nearLossless: true,
-    //         quality: 80,
-    //         reductionEffort: 5
-    //       })
-    //       .toFile(destinationFolder).catch(e=>{
-    //         log.error("error de sharp " + e)
-    //       });
-    //
-    //   log.info("finaliza sharp ")
-    //   collection.instituteLogoPath = destinationFolder;
-    //   let createdCollection = await this.collectionDAO.save(collection);
-    //   result(createdCollection);
-    // } catch (e) {
-    //   log.error("error de sharp " + e)
-    // }
-      sharp(collection.instituteLogoPath)
-          .webp({
-            nearLossless: true,
-            quality: 80,
-            reductionEffort: 5
-          })
-          .toFile(destinationFolder).catch(err=>{
-            log.error("error de sharp " + err)
-          })
-          .then(async res =>{
-            log.info("finaliza sharp ")
-            collection.instituteLogoPath = destinationFolder;
-            let createdCollection = await this.collectionDAO.save(collection);
-            result(createdCollection);
-          }).catch(err=>{
-        log.error("error de sharp " + err)
+    sharp(collection.instituteLogoPath)
+      .webp({
+        nearLossless: true,
+        quality: 80,
+        reductionEffort: 5
+      })
+      .toFile(destinationFolder)
+      .catch(err => {
+        log.error("error de sharp " + err);
+      })
+      .then(async () => {
+        log.info("finaliza sharp ");
+        collection.instituteLogoPath = destinationFolder;
+        let createdCollection = await this.collectionDAO.save(collection);
+        result(createdCollection);
+      })
+      .catch(err => {
+        log.error("error de sharp " + err);
       });
-
-
   }
   async update(collection, result) {
     var destinationFolder =
       path.resolve(".") +
-        "/src/persistence/resources/institute_logos/" + new Date().getTime() + ".webp";
+      "/src/persistence/resources/institute_logos/" +
+      new Date().getTime() +
+      ".webp";
     const sharp = require("sharp");
     await sharp(collection.instituteLogoPath)
       .webp({
