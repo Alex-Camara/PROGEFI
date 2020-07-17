@@ -16,6 +16,9 @@ class CollectionHandler {
   async save(collection, result) {
     var destinationFolder;
 
+    log.info("collection: ")
+    log.info(collection)
+
     log.info("directorio actual: ")
     log.info(__dirname)
 
