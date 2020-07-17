@@ -130,7 +130,7 @@
       <div v-if="collection.getInstituteLogoPath() !== null">
         <img
           id="create_collection_logo_image"
-          :src="collection.getInstituteLogoPath()"
+          :src="getLogoPathImage()"
         />
       </div>
     </div>
@@ -362,6 +362,13 @@ export default {
         properties: ["openDirectory"]
       });
       this.cataloguesFolderPath = path.filePaths[0];
+    },
+    getLogoPathImage(){
+      if (this.instituteLogoPath !== ""){
+        return require(this.instituteLogoPath);
+      } else{
+        return ""
+      }
     },
     checkFileExtension(file) {
       let fileName = file.name;
