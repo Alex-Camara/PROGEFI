@@ -365,7 +365,7 @@ export default {
     },
     getLogoPathImage(){
       if (this.instituteLogoPath !== ""){
-        return require(this.instituteLogoPath);
+        return require(this.instituteLogoPath + '');
       } else{
         return ""
       }
