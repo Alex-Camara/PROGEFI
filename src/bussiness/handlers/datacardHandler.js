@@ -22,6 +22,8 @@ class DatacardHandler {
   //original así como un duplicado en png para su manipulación.
   async savePhotoCollect(photoCollect) {
     log.info("entró a save photocollect")
+
+    log.info(path.resolve("."))
     const sharp = require("sharp");
     var datacardsFolderPath =
       path.resolve(".") + "/src/bussiness/photocollects/";
