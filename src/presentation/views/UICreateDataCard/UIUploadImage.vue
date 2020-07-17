@@ -106,7 +106,7 @@ export default {
   methods: {
     getImage() {
       if (this.photoCollect.photoCollectPath !== ""){
-        let src = "file://" + this.photoCollect.photoCollectPath;
+        let src = "file:///" + this.photoCollect.photoCollectPath;
         return src
       } else{
         return ""
