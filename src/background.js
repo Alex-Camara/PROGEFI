@@ -131,10 +131,10 @@ app.on("ready", async () => {
       log.error(err);
     });
 
-  protocol.registerFileProtocol('file', (request, callback) => {
-    const pathname = request.url.replace('file:///', '');
-    callback(pathname);
-  });
+  // protocol.registerFileProtocol('file', (request, callback) => {
+  //   const pathname = request.url.replace('file:///', '');
+  //   callback(pathname);
+  // });
 
   // protocol.interceptFileProtocol('file', function(req, callback) {
   //   var url = req.url.substr(7);
@@ -143,6 +143,13 @@ app.on("ready", async () => {
   //   if (error)
   //     console.error('Failed to register protocol')
   // })
+});
+
+app.whenReady().then(() => {
+  protocol.registerFileProtocol('file', (request, callback) => {
+    const pathname = decodeURI(request.url.replace('file:///', ''));
+    callback(pathname);
+  });
 });
 
 if (isDevelopment) {
