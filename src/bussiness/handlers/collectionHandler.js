@@ -43,7 +43,11 @@ class CollectionHandler {
             quality: 80,
             reductionEffort: 5
           })
-          .toFile(destinationFolder);
+          .toFile(destinationFolder).catch(e=>{
+            log.error("error de sharp " + e)
+          });
+
+      log.info("finaliza sharp ")
       collection.instituteLogoPath = destinationFolder;
       let createdCollection = await this.collectionDAO.save(collection);
       result(createdCollection);
