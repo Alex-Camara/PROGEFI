@@ -140,8 +140,7 @@ export default {
     getImage() {
       if (this.template) {
         if (process.env.NODE_ENV !== "production") {
-          let relativePath =
-            path.join(__dirname, "..", "..", "..", "..", "..", "..") +
+          let relativePath = path.resolve(".") +
             "/src/persistence/resources/template_samples/" +
             this.template.getSamplePath();
           let src = "file://" + relativePath;

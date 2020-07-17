@@ -130,10 +130,8 @@
       <div v-if="collection.getInstituteLogoPath() !== null">
         <img
           id="create_collection_logo_image"
-          :src="'file:///home/alex/Documentos/PROGEFI/src/presistence/resources/institute_logos/1594955842005.webp'"
-          alt="jenjkdnjen"
+          :src="getImage()"
         />
-        {{"directorio: " + __dirname}}
       </div>
     </div>
 
@@ -360,6 +358,14 @@ export default {
     }
   },
   methods: {
+    getImage() {
+      if (this.instituteLogoPath !== ""){
+        let src = "file://" + this.instituteLogoPath;
+        return src
+      } else{
+        return ""
+      }
+    },
     async setDirectory() {
       const { dialog } = require("electron").remote;
       var path = await dialog.showOpenDialog({
