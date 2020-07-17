@@ -32,37 +32,40 @@ class CollectionHandler {
         new Date().getTime() +
         ".webp";
     } else {
-      // destinationFolder =
-      //   path.resolve(__dirname, "..") +
-      //   "/src/persistence/resources/institute_logos/" +
-      //   new Date().getTime() +
-      //   ".webp";
-      destinationFolder = electron.app.getPath("userData")+ new Date().getTime() + ".webp";
+      destinationFolder =
+        path.resolve(__dirname, "..") +
+        "/src/persistence/resources/institute_logos/" +
+        new Date().getTime() +
+        ".webp";
+      // destinationFolder = electron.app.getPath("userData")+ new Date().getTime() + ".webp";
     }
 
     log.info("directorio del logo: ");
     log.info(destinationFolder);
     const sharp = require("sharp");
 
-    sharp(collection.instituteLogoPath)
-      .webp({
-        nearLossless: true,
-        quality: 80,
-        reductionEffort: 5
-      })
-      .toFile(destinationFolder)
-      .catch(err => {
-        log.error("error de sharp " + err);
-      })
-      .then(async () => {
-        log.info("finaliza sharp ");
-        collection.instituteLogoPath = destinationFolder;
-        let createdCollection = await this.collectionDAO.save(collection);
-        result(createdCollection);
-      })
-      .catch(err => {
-        log.error("error de sharp " + err);
-      });
+    let createdCollection = await this.collectionDAO.save(collection);
+    result(createdCollection);
+
+    // sharp(collection.instituteLogoPath)
+    //   .webp({
+    //     nearLossless: true,
+    //     quality: 80,
+    //     reductionEffort: 5
+    //   })
+    //   .toFile(destinationFolder)
+    //   .catch(err => {
+    //     log.error("error de sharp " + err);
+    //   })
+    //   .then(async () => {
+    //     log.info("finaliza sharp ");
+    //     collection.instituteLogoPath = destinationFolder;
+    //     let createdCollection = await this.collectionDAO.save(collection);
+    //     result(createdCollection);
+    //   })
+    //   .catch(err => {
+    //     log.error("error de sharp " + err);
+    //   });
   }
   async update(collection, result) {
     var destinationFolder =
