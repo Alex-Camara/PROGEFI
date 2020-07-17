@@ -109,6 +109,7 @@ export default {
   },
   methods: {
     getImage(path) {
+      log.info("path: " + path)
       if (path !== ""){
         log.info("path: " + path)
         let src = "file://" + path;
