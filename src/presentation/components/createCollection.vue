@@ -130,7 +130,7 @@
       <div v-if="collection.getInstituteLogoPath() !== null">
         <img
           id="create_collection_logo_image"
-          src="/home/alex/Documentos/PROGEFI/src/presistence/resources/institute_logos/1594955842005.webp"
+          src="file:///home/alex/Documentos/PROGEFI/src/presistence/resources/institute_logos/1594955842005.webp"
           alt="jenjkdnjen"
         />
       </div>
