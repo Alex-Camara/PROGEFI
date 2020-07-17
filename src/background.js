@@ -129,6 +129,11 @@ app.on("ready", async () => {
       log.info("error: ");
       log.error(err);
     });
+
+  protocol.registerFileProtocol('file', (request, callback) => {
+    const pathname = request.url.replace('file:///', '');
+    callback(pathname);
+  });
 });
 
 if (isDevelopment) {
