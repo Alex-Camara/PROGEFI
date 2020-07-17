@@ -2,7 +2,8 @@
 
 import BussinessProcess from "./bussiness/bussinessListener";
 const KnexConfig = require("./persistence/knexfile");
-const { ipcMain } = require("electron");
+const { ipcMain } = require("electron")
+const path = require('path');
 const log = require("electron-log");
 
 const electron = require("electron");
@@ -130,10 +131,18 @@ app.on("ready", async () => {
       log.error(err);
     });
 
-  protocol.registerFileProtocol('file', (request, callback) => {
-    const pathname = request.url.replace('file:///', '');
-    callback(pathname);
-  });
+  // protocol.registerFileProtocol('file', (request, callback) => {
+  //   const pathname = request.url.replace('file:///', '');
+  //   callback(pathname);
+  // });
+
+  protocol.interceptFileProtocol('file', function(req, callback) {
+    var url = req.url.substr(7);
+    callback({path: path.normalize(__dirname + url)})
+  },function (error) {
+    if (error)
+      console.error('Failed to register protocol')
+  })
 });
 
 if (isDevelopment) {
