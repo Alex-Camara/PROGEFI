@@ -25,7 +25,7 @@
           </b-field>
 
           <div id="track_datacard_image" v-if="file">
-            <img :src="file.path" />
+            <img :src="getImage(file.path)" />
           </div>
         </div>
       </div>
@@ -39,9 +39,9 @@
         </div>
 
         <progress
-                id="trac_datacard_progress"
-                class="progress is-accent"
-                v-if="loading"
+          id="trac_datacard_progress"
+          class="progress is-accent"
+          v-if="loading"
         ></progress>
         <div v-if="trackData">
           <div v-for="(title, index) in trackDataTitles" :key="index">
@@ -84,13 +84,22 @@ export default {
       ],
       loading: false,
       notSupportedFormatMessage: "Formato no soportado",
-      notTrackingDataMessage: "El archivo no contiene información de rastreo compatible"
+      notTrackingDataMessage:
+        "El archivo no contiene información de rastreo compatible"
     };
   },
   methods: {
+    getImage(path) {
+      if (path !== "") {
+        let src = "file://" + path;
+        return src;
+      } else {
+        return "";
+      }
+    },
     async loadFile() {
       this.loading = true;
-      this.rigthSideTitle = "Descifrando información..."
+      this.rigthSideTitle = "Descifrando información...";
       let isFileExtensionCorrect = this.checkFileExtension(this.file);
       if (isFileExtensionCorrect) {
         let base64 = await this.convertToBase64(this.file);
@@ -104,7 +113,7 @@ export default {
           this.loading = false;
           this.rigthSideTitle = "Datos recuperados:";
         }
-      } else{
+      } else {
         this.openDialog(this.notSupportedFormatMessage);
         this.loading = false;
         this.file = null;
@@ -112,9 +121,11 @@ export default {
         this.rigthSideTitle = "Datos recuperados:";
       }
     },
-    checkFileExtension(file){
+    checkFileExtension(file) {
       let fileName = file.name;
-      let fileExtension = fileName.substring(fileName.lastIndexOf('.')+1, fileName.length) || fileName;
+      let fileExtension =
+        fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length) ||
+        fileName;
       return fileExtension === "png";
     },
     convertToBase64(file) {
@@ -127,15 +138,15 @@ export default {
     },
     openDialog(message) {
       this.$buefy.dialog.alert(message);
-    },
+    }
   }
 };
 </script>
 
 <style scoped>
-  .container_flex{
-    margin-bottom: 5px;
-  }
+.container_flex {
+  margin-bottom: 5px;
+}
 </style>
 
 <style lang="scss">
@@ -181,7 +192,7 @@ export default {
   margin-top: 20px;
 }
 
-#trac_datacard_progress{
+#trac_datacard_progress {
   width: 100%;
 }
 

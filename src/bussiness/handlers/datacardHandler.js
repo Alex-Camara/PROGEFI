@@ -7,6 +7,7 @@ import DatacardDao from "../../persistence/dao/DatacardDao";
 
 const path = require("path");
 const fs = require("fs");
+const log = require("electron-log");
 
 class DatacardHandler {
   constructor() {
@@ -20,14 +21,18 @@ class DatacardHandler {
   //Método usando durante la creación de la fotocolecta, se guarda la foto original el formato
   //original así como un duplicado en png para su manipulación.
   async savePhotoCollect(photoCollect) {
+    log.info("entró a save photocollect")
     const sharp = require("sharp");
     var datacardsFolderPath =
       path.resolve(".") + "/src/bussiness/photocollects/";
+
+    log.info("datacardsFolderPath: " + datacardsFolderPath)
     const buf = fs.readFileSync(photoCollect.filePath);
 
     const image = sharp(buf)
     let metadata = await image.metadata();
-    console.info(metadata)
+    log.info("metadata: ")
+    log.info(metadata)
     let imageFormat = metadata.format;
     this.imageFormat = imageFormat;
 
@@ -59,6 +64,7 @@ class DatacardHandler {
       }
     } catch (error) {
       console.info(error);
+      log.error(error)
       return "not-supported-format";
     }
   }
@@ -136,6 +142,11 @@ class DatacardHandler {
     datacardsFolderPath = this.createFolder(datacardsFolderPath);
     // console.log('saving datacard')
     // console.info(datacard)
+    log.info("fotocolecta path: ")
+    log.info(datacard.photocollectPath)
+
+    log.info("datacatd collect pfotocollect format: ")
+    log.info(datacard.collect.photocollectFormat)
     this.saveDuplicatedFile(
       datacard.photocollectPath,
       datacardsFolderPath + "/original." + datacard.collect.photocollectFormat
