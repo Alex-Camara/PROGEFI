@@ -47,25 +47,25 @@ class CollectionHandler {
     let createdCollection = await this.collectionDAO.save(collection);
     result(createdCollection);
 
-    // sharp(collection.instituteLogoPath)
-    //   .webp({
-    //     nearLossless: true,
-    //     quality: 80,
-    //     reductionEffort: 5
-    //   })
-    //   .toFile(destinationFolder)
-    //   .catch(err => {
-    //     log.error("error de sharp " + err);
-    //   })
-    //   .then(async () => {
-    //     log.info("finaliza sharp ");
-    //     collection.instituteLogoPath = destinationFolder;
-    //     let createdCollection = await this.collectionDAO.save(collection);
-    //     result(createdCollection);
-    //   })
-    //   .catch(err => {
-    //     log.error("error de sharp " + err);
-    //   });
+    sharp(collection.instituteLogoPath)
+      .webp({
+        nearLossless: true,
+        quality: 80,
+        reductionEffort: 5
+      })
+      .toFile(destinationFolder)
+      .catch(err => {
+        log.error("error de sharp " + err);
+      })
+      .then(async () => {
+        log.info("finaliza sharp ");
+        collection.instituteLogoPath = destinationFolder;
+        let createdCollection = await this.collectionDAO.save(collection);
+        result(createdCollection);
+      })
+      .catch(err => {
+        log.error("error de sharp " + err);
+      });
   }
   async update(collection, result) {
     var destinationFolder =
