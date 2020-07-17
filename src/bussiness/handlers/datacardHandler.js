@@ -24,13 +24,15 @@ class DatacardHandler {
     log.info("entró a save photocollect")
 
     log.info(path.resolve(__dirname, ".."))
-    const sharp = require("sharp");
+
     var datacardsFolderPath =
         path.resolve(__dirname, "..") + "/src/bussiness/photocollects/";
 
     log.info("datacardsFolderPath: " + datacardsFolderPath)
+    log.info("photoCollect filePath: " + photoCollect.filePath)
     const buf = fs.readFileSync(photoCollect.filePath);
 
+    const sharp = require("sharp");
     const image = sharp(buf)
     let metadata = await image.metadata();
     log.info("metadata: ")
