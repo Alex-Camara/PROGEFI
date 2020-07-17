@@ -2,8 +2,8 @@
 
 import BussinessProcess from "./bussiness/bussinessListener";
 const KnexConfig = require("./persistence/knexfile");
-const { ipcMain } = require("electron")
-const path = require('path');
+const { ipcMain } = require("electron");
+const fs = require("fs");
 const log = require("electron-log");
 
 const electron = require("electron");
@@ -110,29 +110,31 @@ app.on("ready", async () => {
   KnexConfig.developmentDarwin.connection.filename = databasePath;
   KnexConfig.developmentLinux.connection.filename = databasePath;
 
-  let knex = require("knex")(KnexConfig.developmentWindows);
+  if (!fs.existsSync(databasePath)) {
 
-  log.info("user data: ");
-  log.info(app.getPath("userData"));
-  log.info("nuevo camino: ");
-  log.info(KnexConfig.developmentWindows);
+    let knex = require("knex")(KnexConfig.developmentWindows);
 
-  //   console.info(path.resolve(KnexConfig.development.connection.filename))
-  await knex.migrate
-    .latest()
-    .then(() => {
-      return knex.seed.run().catch(err => {
+    log.info("user data: ");
+    log.info(app.getPath("userData"));
+    log.info("nuevo camino: ");
+    log.info(KnexConfig.developmentWindows);
+
+    await knex.migrate
+      .latest()
+      .then(() => {
+        return knex.seed.run().catch(err => {
+          log.info("error: ");
+          log.error(err);
+        });
+      })
+      .catch(err => {
         log.info("error: ");
         log.error(err);
       });
-    })
-    .catch(err => {
-      log.info("error: ");
-      log.error(err);
-    });
+  }
 
-  protocol.registerFileProtocol('file', (request, callback) => {
-    const pathname = decodeURI(request.url.replace('file:///', ''));
+  protocol.registerFileProtocol("file", (request, callback) => {
+    const pathname = decodeURI(request.url.replace("file:///", ""));
     callback(pathname);
   });
 
@@ -156,7 +158,6 @@ app.on("ready", async () => {
 //     callback(pathname);
 //   });
 // });
-
 
 if (isDevelopment) {
   if (process.platform === "win32") {

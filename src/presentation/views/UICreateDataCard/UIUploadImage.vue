@@ -40,8 +40,11 @@
       <div id="add_datacard_component_image">
         <img
           id="uploaded_image"
-          v-if="photoCollect.photoCollectPath != 'not-supported-format' && photoCollect.photoCollectPath"
-          :src="getImage()"
+          v-if="
+            photoCollect.photoCollectPath != 'not-supported-format' &&
+              photoCollect.photoCollectPath
+          "
+          :src="getImage(photoCollect.photoCollectPath)"
         />
       </div>
       <div v-if="photoCollect.loading">
@@ -55,6 +58,7 @@
 <script>
 import store from "../../store/store.js";
 import { mapState } from "vuex";
+const log = require("electron-log");
 import informationHelper from "../../helpers/informationHelper";
 
 export default {
@@ -104,9 +108,11 @@ export default {
     }
   },
   methods: {
-    getImage() {
-      if (this.photoCollect.photoCollectPath !== ""){
-        let src = "file:///" + this.photoCollect.photoCollectPath;
+    getImage(path) {
+      if (path !== ""){
+        log.info("path: " + path)
+        let src = "file://" + path;
+        log.info("src path: " + src)
         return src
       } else{
         return ""
