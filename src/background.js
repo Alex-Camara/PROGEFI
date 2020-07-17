@@ -132,9 +132,14 @@ app.on("ready", async () => {
     });
 
   protocol.registerFileProtocol('file', (request, callback) => {
-    const pathname = request.url.replace('file:///', '');
+    const pathname = decodeURI(request.url.replace('file:///', ''));
     callback(pathname);
   });
+
+  // protocol.registerFileProtocol('file', (request, callback) => {
+  //   const pathname = request.url.replace('file:///', '');
+  //   callback(pathname);
+  // });
 
   // protocol.interceptFileProtocol('file', function(req, callback) {
   //   var url = req.url.substr(7);
