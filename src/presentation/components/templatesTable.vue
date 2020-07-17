@@ -45,7 +45,7 @@ export default {
         let src = "file://" + relativePath;
         return src;
       } else{
-        let relativePath = path.join(__dirname, '..', '..') + '/src/persistence/resources/template_samples/' + this.templates[index].getSamplePath();
+        let relativePath = path.join(__dirname, '..') + '/src/persistence/resources/template_samples/' + this.templates[index].getSamplePath();
         let src = "file://" + relativePath;
         return src;
       }
