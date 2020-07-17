@@ -3,7 +3,7 @@
     <div id="show_image_container">
       <div id="show_image_box">
         <div id="show_image_content" class="gray_box">
-          <img :src="imagePath" />
+          <img :src="getImage()" />
         </div>
       </div>
     </div>
@@ -12,7 +12,17 @@
 
 <script>
 export default {
-  props: ["imagePath"]
+  props: ["imagePath"],
+  methods:{
+    getImage(path) {
+      if (path !== ""){
+        let src = "file://" + path;
+        return src
+      } else{
+        return ""
+      }
+    },
+  }
 };
 </script>
 
