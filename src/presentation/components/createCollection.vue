@@ -133,8 +133,8 @@
           :src="'file:///home/alex/Documentos/PROGEFI/src/presistence/resources/institute_logos/1594955842005.webp'"
           alt="jenjkdnjen"
         />
+        {{"directorio: " + dire}}
       </div>
-      {{__dirname}}
     </div>
 
     <div class="gray_box create_collection_content">
@@ -197,7 +197,8 @@ export default {
         "Este es el código inicial que tendrá el código de los catálogos.",
       helpTextDestinationDirectory:
         "Directorio donde se guardará el archivo csv generado por catálogo.",
-      notSupportedFormatMessage: "Formato no soportado"
+      notSupportedFormatMessage: "Formato no soportado",
+      dire: path.resolve(__dirname)
     };
   },
   watch: {
