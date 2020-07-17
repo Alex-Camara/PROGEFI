@@ -152,6 +152,7 @@ app.on("ready", async () => {
 //   });
 // });
 
+
 if (isDevelopment) {
   if (process.platform === "win32") {
     process.on("message", data => {
