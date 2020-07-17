@@ -38,11 +38,11 @@
           >
             <img
               id="preview_datacard_photocollect"
-              :src="photoCollect.photoCollectPath"
+              :src="getImage(photoCollect.photoCollectPath)"
               v-if="tag.i === 'photocollect'"
             />
             <img
-              :src="collection.getInstituteLogoPath()"
+              :src="getImage(collection.getInstituteLogoPath())"
               v-if="tag.i === 'instituteLogo'"
             />
             <p v-if="tag.i !== 'photocollect' && tag.i !== 'instituteLogo'">
@@ -158,6 +158,14 @@ export default {
     }
   },
   methods: {
+    getImage(path) {
+      if (path !== ""){
+        let src = "file://" + path;
+        return src
+      } else{
+        return ""
+      }
+    },
     visibilityChanged(isVisible) {
       if (isVisible) {
         this.setValues();

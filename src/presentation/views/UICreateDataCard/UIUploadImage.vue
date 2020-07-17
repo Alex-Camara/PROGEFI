@@ -41,7 +41,7 @@
         <img
           id="uploaded_image"
           v-if="photoCollect.photoCollectPath != 'not-supported-format' && photoCollect.photoCollectPath"
-          :src="photoCollect.photoCollectPath"
+          :src="getImage()"
         />
       </div>
       <div v-if="photoCollect.loading">
@@ -63,7 +63,6 @@ export default {
   },
   data() {
     return {
-      // file: null,
       title: "Sube el archivo de la fotocolecta",
       uploadButtonText: "Selecciona para subir un archivo",
       icon: require("../../assets/question.png"),
@@ -105,6 +104,14 @@ export default {
     }
   },
   methods: {
+    getImage() {
+      if (this.photoCollect.photoCollectPath !== ""){
+        let src = "file://" + this.photoCollect.photoCollectPath;
+        return src
+      } else{
+        return ""
+      }
+    },
     disableNextButton() {
       if (
         this.photoCollectPath != null &&

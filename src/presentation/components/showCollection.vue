@@ -56,7 +56,7 @@
       </div>
       <img
         id="show_collection_institute_logo"
-        :src="collection.getInstituteLogoPath()"
+        :src="getImage()"
       />
     </div>
 
@@ -101,6 +101,16 @@ export default {
       descriptionTitle: "Descripción: ",
       destinationDirectoryTitle: "Carpeta destino (archivo csv):"
     };
+  },
+  methods:{
+    getImage() {
+      if (this.instituteLogoPath !== ""){
+        let src = "file://" + this.collection.getInstituteLogoPath();
+        return src
+      } else{
+        return ""
+      }
+    },
   }
 };
 </script>
