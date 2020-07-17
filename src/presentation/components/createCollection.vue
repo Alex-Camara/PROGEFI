@@ -130,7 +130,7 @@
       <div v-if="collection.getInstituteLogoPath() !== null">
         <img
           id="create_collection_logo_image"
-          :src="collection.getInstituteLogoPath()"
+          :src="require(collection.getInstituteLogoPath())"
         />
       </div>
     </div>
