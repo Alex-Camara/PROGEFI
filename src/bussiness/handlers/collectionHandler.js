@@ -36,24 +36,43 @@ class CollectionHandler {
     log.info(destinationFolder)
     const sharp = require("sharp");
 
-    try {
-      await sharp(collection.instituteLogoPath)
+    // try {
+    //   await sharp(collection.instituteLogoPath)
+    //       .webp({
+    //         nearLossless: true,
+    //         quality: 80,
+    //         reductionEffort: 5
+    //       })
+    //       .toFile(destinationFolder).catch(e=>{
+    //         log.error("error de sharp " + e)
+    //       });
+    //
+    //   log.info("finaliza sharp ")
+    //   collection.instituteLogoPath = destinationFolder;
+    //   let createdCollection = await this.collectionDAO.save(collection);
+    //   result(createdCollection);
+    // } catch (e) {
+    //   log.error("error de sharp " + e)
+    // }
+      sharp(collection.instituteLogoPath)
           .webp({
             nearLossless: true,
             quality: 80,
             reductionEffort: 5
           })
-          .toFile(destinationFolder).catch(e=>{
-            log.error("error de sharp " + e)
-          });
+          .toFile(destinationFolder).catch(err=>{
+            log.error("error de sharp " + err)
+          })
+          .then(async res =>{
+            log.info("finaliza sharp ")
+            collection.instituteLogoPath = destinationFolder;
+            let createdCollection = await this.collectionDAO.save(collection);
+            result(createdCollection);
+          }).catch(err=>{
+        log.error("error de sharp " + err)
+      });
 
-      log.info("finaliza sharp ")
-      collection.instituteLogoPath = destinationFolder;
-      let createdCollection = await this.collectionDAO.save(collection);
-      result(createdCollection);
-    } catch (e) {
-      log.error("error de sharp " + e)
-    }
+
   }
   async update(collection, result) {
     var destinationFolder =
