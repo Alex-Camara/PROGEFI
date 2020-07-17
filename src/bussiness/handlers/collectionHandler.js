@@ -42,7 +42,7 @@ class CollectionHandler {
 
     log.info("directorio del logo: ");
     log.info(destinationFolder);
-    const sharp = require("sharp");
+    // const sharp = require("sharp");
 
     let createdCollection = await this.collectionDAO.save(collection);
     result(createdCollection);
