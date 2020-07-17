@@ -130,7 +130,7 @@
       <div v-if="collection.getInstituteLogoPath() !== null">
         <img
           id="create_collection_logo_image"
-          :src="'file:///home/alex/Documentos/PROGEFI/src/presistence/resources/institute_logos/1594955842005.webp'"
+          :src="get"
           alt="jenjkdnjen"
         />
         {{"directorio: " + dire}}
@@ -366,6 +366,14 @@ export default {
         properties: ["openDirectory"]
       });
       this.cataloguesFolderPath = path.filePaths[0];
+    },
+    getLogoImage(){
+      if (this.instituteLogoPath !== ""){
+        // 'file:///home/alex/Documentos/PROGEFI/src/presistence/resources/institute_logos/1594955842005.webp'"
+        return require('../../../../../../src/presistence/resources/institute_logos/1594955842005.webp')
+      } else{
+        return ""
+      }
     },
     checkFileExtension(file) {
       let fileName = file.name;
