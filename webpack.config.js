@@ -78,8 +78,10 @@
           /* config.module.rule('images').use('url-loader') */
           {
             loader: 'url-loader',
+            esModule: false,
             options: {
               limit: 4096,
+              esModule: false,
               fallback: {
                 loader: 'file-loader',
                 options: {
