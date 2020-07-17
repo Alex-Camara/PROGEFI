@@ -145,12 +145,12 @@ app.on("ready", async () => {
   // })
 });
 
-app.whenReady().then(() => {
-  protocol.registerFileProtocol('file', (request, callback) => {
-    const pathname = decodeURI(request.url.replace('file:///', ''));
-    callback(pathname);
-  });
-});
+// app.whenReady().then(() => {
+//   protocol.registerFileProtocol('file', (request, callback) => {
+//     const pathname = decodeURI(request.url.replace('file:///', ''));
+//     callback(pathname);
+//   });
+// });
 
 if (isDevelopment) {
   if (process.platform === "win32") {
