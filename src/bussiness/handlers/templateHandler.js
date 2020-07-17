@@ -3,6 +3,7 @@ import TemplateDAO from "../../persistence/dao/TemplateDao";
 import TagDao from "../../persistence/dao/TagDao";
 const path = require("path");
 const fs = require("fs");
+const log = require("electron-log");
 
 class TemplateHandler {
   constructor() {
@@ -10,9 +11,11 @@ class TemplateHandler {
     this.tagDAO = new TagDao();
   }
   async save(template, result) {
+
+    log.info("Guardando template...")
     var templatesFolderPath =
       path.resolve(".") + "/src/persistence/resources/template_samples/";
-
+    log.info("template folder path: " + templatesFolderPath)
     let base64String = template.base64; // Not a real image
     // Remove header
     let base64Image = base64String.split(";base64,").pop();
