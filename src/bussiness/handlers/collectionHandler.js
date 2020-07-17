@@ -3,6 +3,7 @@ const path = require("path");
 const electron = require("electron");
 const log = require("electron-log");
 var os = require("os");
+const fs = require("fs");
 import CollectionDAO from "../../persistence/dao/CollectionDao";
 
 class CollectionHandler {
@@ -14,7 +15,7 @@ class CollectionHandler {
     result(collection);
   }
   async save(collection, result) {
-    var destinationFolder;
+    // var destinationFolder;
 
     log.info("collection: ");
     log.info(collection);
@@ -22,22 +23,28 @@ class CollectionHandler {
     log.info("directorio actual: ");
     log.info(__dirname);
 
-    log.info("directorio nuevo: ");
-    log.info(path.resolve(__dirname, ".."));
+    // log.info("directorio nuevo: ");
+    // log.info(path.resolve(__dirname, ".."));
+    //
+    // if (os.platform() === "win32") {
+    //   destinationFolder =
+    //     path.resolve(__dirname, "..") +
+    //     "/src/persistence/resources/institute_logos/" +
+    //     new Date().getTime() +
+    //     ".webp";
+    // } else {
+    //   destinationFolder =
+    //     path.resolve(__dirname, "..") +
+    //     "/src/persistence/resources/institute_logos/" +
+    //     new Date().getTime() +
+    //     ".webp";
+    //   // destinationFolder = electron.app.getPath("userData")+ new Date().getTime() + ".webp";
+    // }
 
-    if (os.platform() === "win32") {
-      destinationFolder =
-        path.resolve(__dirname, "..") +
-        "/src/persistence/resources/institute_logos/" +
-        new Date().getTime() +
-        ".webp";
-    } else {
-      destinationFolder =
-        path.resolve(__dirname, "..") +
-        "/src/persistence/resources/institute_logos/" +
-        new Date().getTime() +
-        ".webp";
-      // destinationFolder = electron.app.getPath("userData")+ new Date().getTime() + ".webp";
+    let destinationFolder = electron.app.getPath("userData") + "/instituteLogo";
+
+    if (!fs.existsSync(destinationFolder)) {
+      fs.mkdirSync(destinationFolder)
     }
 
     log.info("directorio del logo: ");
