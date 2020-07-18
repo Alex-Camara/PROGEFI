@@ -43,6 +43,7 @@ class CollectionHandler {
     // }
 
     let destinationFolder = electron.app.getPath("userData") + "/instituteLogo";
+    let destinationFolderFile = destinationFolder + new Date().getTime() + ".webp";
 
     if (!fs.existsSync(destinationFolder)) {
       fs.mkdirSync(destinationFolder)
@@ -67,7 +68,7 @@ class CollectionHandler {
         quality: 80,
         reductionEffort: 5
       })
-      .toFile(destinationFolder)
+      .toFile(destinationFolderFile)
       .catch(err => {
         log.error("error de sharp " + err);
       })
