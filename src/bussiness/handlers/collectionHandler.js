@@ -3,6 +3,7 @@ const path = require("path");
 const electron = require("electron");
 const log = require("electron-log");
 var os = require("os");
+const sharp = require("sharp")
 const fs = require("fs");
 import CollectionDAO from "../../persistence/dao/CollectionDao";
 
@@ -49,7 +50,6 @@ class CollectionHandler {
 
     log.info("directorio del logo: ");
     log.info(destinationFolder);
-    const sharp = require("sharp");
 
     log.info("sharp required!");
 
