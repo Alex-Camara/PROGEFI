@@ -43,7 +43,7 @@ class CollectionHandler {
     // }
 
     let destinationFolder = electron.app.getPath("userData") + "/instituteLogo";
-    let destinationFolderFile = destinationFolder + new Date().getTime() + ".webp";
+    let destinationFolderFile = destinationFolder + "/" + new Date().getTime() + ".webp";
 
     if (!fs.existsSync(destinationFolder)) {
       fs.mkdirSync(destinationFolder)
@@ -74,7 +74,7 @@ class CollectionHandler {
       })
       .then(async () => {
         log.info("finaliza sharp ");
-        collection.instituteLogoPath = destinationFolder;
+        collection.instituteLogoPath = destinationFolderFile;
         let createdCollection = await this.collectionDAO.save(collection);
         result(createdCollection);
       })
