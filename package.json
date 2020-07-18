@@ -19,7 +19,7 @@
     "electron:build-mac": "vue-cli-service electron:build --mac",
     "electron:build-linux": "vue-cli-service electron:build --linux",
     "electron:serve": "vue-cli-service electron:serve",
-    "rebuild": "electron-rebuild -f -w sqlite3",
+    "rebuild": "electron-rebuild -f -w sharp",
     "test:unit": "vue-cli-service test:unit",
     "test:unit:debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --no-cache --runInBand",
     "postinstall": "electron-builder install-app-deps",
