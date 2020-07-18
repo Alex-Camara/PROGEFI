@@ -51,10 +51,15 @@ class CollectionHandler {
     log.info(destinationFolder);
     const sharp = require("sharp");
 
+    log.info("sharp required!");
+
     // let createdCollection = await this.collectionDAO.save(collection);
     // result(createdCollection);
 
     var data = fs.readFileSync(collection.instituteLogoPath);
+
+    log.info("buffer data: ");
+    log.info(data);
 
     sharp(data)
       .webp({
