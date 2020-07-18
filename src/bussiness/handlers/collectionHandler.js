@@ -54,7 +54,9 @@ class CollectionHandler {
     // let createdCollection = await this.collectionDAO.save(collection);
     // result(createdCollection);
 
-    sharp("file://" + collection.instituteLogoPath)
+    var data = fs.readFileSync(collection.instituteLogoPath);
+
+    sharp(data)
       .webp({
         nearLossless: true,
         quality: 80,
