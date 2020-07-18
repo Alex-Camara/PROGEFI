@@ -54,7 +54,7 @@ class CollectionHandler {
     // let createdCollection = await this.collectionDAO.save(collection);
     // result(createdCollection);
 
-    sharp(collection.instituteLogoPath)
+    sharp("file://" + collection.instituteLogoPath)
       .webp({
         nearLossless: true,
         quality: 80,
