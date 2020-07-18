@@ -8,6 +8,7 @@ import DatacardDao from "../../persistence/dao/DatacardDao";
 const path = require("path");
 const fs = require("fs");
 const log = require("electron-log");
+const electron = require("electron");
 
 class DatacardHandler {
   constructor() {
@@ -15,28 +16,17 @@ class DatacardHandler {
     this.datacardDao = new DatacardDao();
 
     this.imageFormat = null;
-    this.folderPathName = null;
     this.imageLoaded = false;
   }
   //Método usando durante la creación de la fotocolecta, se guarda la foto original el formato
   //original así como un duplicado en png para su manipulación.
   async savePhotoCollect(photoCollect) {
-    log.info("entró a save photocollect")
+    let destinationFolder = electron.app.getPath("userData") + "/photocollects/";
 
-    log.info(path.resolve(__dirname, ".."))
-
-    var datacardsFolderPath =
-        path.resolve(__dirname, "..") + "/src/bussiness/photocollects/";
-
-    log.info("datacardsFolderPath: " + datacardsFolderPath)
-    log.info("photoCollect filePath: " + photoCollect.filePath)
     const buf = fs.readFileSync(photoCollect.filePath);
-
     const sharp = require("sharp");
     const image = sharp(buf)
     let metadata = await image.metadata();
-    log.info("metadata: ")
-    log.info(metadata)
     let imageFormat = metadata.format;
     this.imageFormat = imageFormat;
 
@@ -51,17 +41,11 @@ class DatacardHandler {
           imageFormat === "webp"
       ) {
         //save original file
-        await this.deleteFolderContent(datacardsFolderPath);
+        await this.deleteFolderContent(destinationFolder);
         return this.saveDuplicatedFile(
           photoCollect.filePath,
-          datacardsFolderPath + "" + new Date().getTime() + "." + imageFormat
+            destinationFolder + "" + new Date().getTime() + "." + imageFormat
         );
-      // } else if (imageFormat === "DNG" || imageFormat === "tiff") {
-      //   await this.deleteFolderContent(datacardsFolderPath);
-      //   this.transformToWebpFormat(
-      //     photoCollect.filePath,
-      //     datacardsFolderPath + "" + new Date().getTime() + ".tiff"
-      //   );
       } else {
         console.log("formato no soportado");
         return "not-supported-format";
@@ -73,8 +57,6 @@ class DatacardHandler {
     }
   }
   createFolder(datacardsFolderPath) {
-    this.folderPathName =
-      "/resources/datacards/" + "datacard_" + new Date().getTime();
     let folderName = datacardsFolderPath + "datacard_" + new Date().getTime();
     if (!fs.existsSync(folderName)) {
       fs.mkdirSync(folderName);
@@ -139,38 +121,27 @@ class DatacardHandler {
     }
   }
   async createDatacard(datacard, result) {
-    var datacardsFolderPath =
-      path.resolve(".") + "/src/persistence/resources/datacards/";
-    var photocollectFolderPath =
-      path.resolve(".") + "/src/bussiness/photocollects/";
-    datacardsFolderPath = this.createFolder(datacardsFolderPath);
-    // console.log('saving datacard')
-    // console.info(datacard)
-    log.info("fotocolecta path: ")
-    log.info(datacard.photocollectPath)
+    let datacardsDestinationFolder = electron.app.getPath("userData") + "/datacards/";
+    let photocollectsDestinationFolder = electron.app.getPath("userData") + "/photocollects/";
 
-    log.info("datacatd collect pfotocollect format: ")
-    log.info(datacard.collect.photocollectFormat)
+    datacardsDestinationFolder = this.createFolder(datacardsDestinationFolder);
     this.saveDuplicatedFile(
       datacard.photocollectPath,
-      datacardsFolderPath + "/original." + datacard.collect.photocollectFormat
+        datacardsDestinationFolder + "/original." + datacard.collect.photocollectFormat
     );
-    // console.log(filePath)
 
     if (datacard.validated) {
       let base64String = datacard.base64; // Not a real image
       // Remove header
       let base64Image = base64String.split(";base64,").pop();
-
-      let datacardPath = datacardsFolderPath + "/datacard.webp";
-
+      let datacardPath = datacardsDestinationFolder + "/datacard.webp";
       this.base64Decode(base64Image, datacardPath);
     }
     this.updateCSVCatalogueFile(datacard)
       .then(async () => {
-        datacard.datacardPath = datacardsFolderPath;
+        datacard.datacardPath = datacardsDestinationFolder;
         let createdDatacard = await this.datacardDao.createDatacard(datacard);
-        await this.deleteFolderContent(photocollectFolderPath);
+        await this.deleteFolderContent(photocollectsDestinationFolder);
         result(createdDatacard);
       })
       .catch(() => {
@@ -179,8 +150,7 @@ class DatacardHandler {
       });
   }
   async updateDatacard(datacard, result) {
-    var photocollectFolderPath =
-      path.resolve(".") + "/src/bussiness/photocollects/";
+    let photocollectsDestinationFolder = electron.app.getPath("userData") + "/photocollects/";
     //Cuando la fotocolecta no haya cambiado, no tiene sentdio volver a guardarla
     if (datacard.photocollectPath !== "do-not-save") {
       this.saveDuplicatedFile(
@@ -205,7 +175,7 @@ class DatacardHandler {
     this.updateCSVCatalogueFile(datacard)
       .then(async () => {
         let updatedDatacard = await this.datacardDao.updateDatacard(datacard);
-        await this.deleteFolderContent(photocollectFolderPath);
+        await this.deleteFolderContent(photocollectsDestinationFolder);
         result(updatedDatacard);
       })
       .catch(() => {
@@ -532,7 +502,8 @@ class DatacardHandler {
       const steggy = require("steggy");
       base64 = base64.split(";base64,").pop();
       // var bitmap = new Buffer(base64, "base64");
-      var tempPath = path.resolve(".") + "/src/bussiness/temp.webp";
+      let tempPath = electron.app.getPath("userData") + "/temp/temp.webp";
+      // var tempPath = path.resolve(".") + "/src/bussiness/temp.webp";
       self.base64Decode(base64, tempPath);
       const image = fs.readFileSync(tempPath);
 
