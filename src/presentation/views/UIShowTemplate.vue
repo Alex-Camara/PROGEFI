@@ -139,23 +139,13 @@ export default {
     },
     getImage() {
       if (this.template) {
-        if (process.env.NODE_ENV !== "production") {
-          let relativePath = path.resolve(".") +
-            "/src/persistence/resources/template_samples/" +
-            this.template.getSamplePath();
-          let src = "file://" + relativePath;
-          return src;
-        } else {
-          let relativePath =
-            path.join(__dirname, "..", "..") +
-            "/src/persistence/resources/template_samples/" +
-            this.template.getSamplePath();
-          let src = "file://" + relativePath;
-          return src;
-        }
+        const remote = require('electron').remote;
+        const app = remote.app;
+        let storagePath = app.getPath("userData") + '/template_samples/' + this.template.getSamplePath();
+        let src = "file://" + storagePath;
+        return src;
       }
     },
-
     editTemplate() {
       if (this.editMode) {
         this.editMode = !this.editMode;

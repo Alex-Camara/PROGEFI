@@ -40,15 +40,11 @@ export default {
       this.$emit("showTemplate", template);
     },
     getImage(index){
-      if (process.env.NODE_ENV !== 'production'){
-        let relativePath = path.join(__dirname, '..', '..', '..', '..', '..', '..') + '/src/persistence/resources/template_samples/' + this.templates[index].getSamplePath();
-        let src = "file://" + relativePath;
-        return src;
-      } else{
-        let relativePath = path.join(__dirname, '..') + '/src/persistence/resources/template_samples/' + this.templates[index].getSamplePath();
-        let src = "file://" + relativePath;
-        return src;
-      }
+      const remote = require('electron').remote;
+      const app = remote.app;
+      let storagePath = app.getPath("userData") + '/template_samples/' + this.templates[index].getSamplePath();
+      let src = "file://" + storagePath;
+      return src;
     }
   }
 };

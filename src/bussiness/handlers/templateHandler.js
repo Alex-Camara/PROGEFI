@@ -1,9 +1,9 @@
 "use strict";
 import TemplateDAO from "../../persistence/dao/TemplateDao";
 import TagDao from "../../persistence/dao/TagDao";
-const path = require("path");
 const fs = require("fs");
 const log = require("electron-log");
+const electron = require("electron");
 
 class TemplateHandler {
   constructor() {
@@ -11,11 +11,8 @@ class TemplateHandler {
     this.tagDAO = new TagDao();
   }
   async save(template, result) {
-
-    log.info("Guardando template...")
-    var templatesFolderPath =
-        path.resolve(__dirname, "..") + "/src/persistence/resources/template_samples/";
-    log.info("template folder path: " + templatesFolderPath)
+    let destinationFolder = electron.app.getPath("userData") + "/template_samples/";
+    log.info("template folder path: " + destinationFolder)
     let base64String = template.base64; // Not a real image
     // Remove header
     let base64Image = base64String.split(";base64,").pop();
@@ -23,7 +20,7 @@ class TemplateHandler {
     let templateName = "template" + new Date().getTime() + ".png";
 
     let templatePath =
-      templatesFolderPath + templateName;
+        destinationFolder + templateName;
 
     this.base64Decode(base64Image, templatePath);
 
@@ -48,10 +45,9 @@ class TemplateHandler {
     result(updatedTemplate);
   }
   async delete(templateId, result){
-    var templatesFolderPath =
-        path.resolve(".") + "/src/persistence/resources/template_samples/";
+    let destinationFolder = electron.app.getPath("userData") + "/template_samples/";
     let directoryToDelete = await this.templateDAO.delete(templateId);
-    directoryToDelete = templatesFolderPath + directoryToDelete;
+    directoryToDelete = destinationFolder + directoryToDelete;
     fs.unlinkSync(directoryToDelete);
     result(directoryToDelete);
   }

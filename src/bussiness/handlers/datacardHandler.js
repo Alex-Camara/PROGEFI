@@ -5,7 +5,6 @@ import Jimp from "jimp";
 import Datacard from "../models/Datacard.js";
 import DatacardDao from "../../persistence/dao/DatacardDao";
 
-const path = require("path");
 const fs = require("fs");
 const log = require("electron-log");
 const electron = require("electron");
@@ -78,14 +77,18 @@ class DatacardHandler {
     return new Promise((resolve, reject) => {
       try {
         var directory = photocollectsFolderPath;
-        fs.readdir(directory, (err, files) => {
-          if (err) reject(err);
-          for (let i = 0; i < files.length; i++) {
-            const element = files[i];
-            fs.unlinkSync(directory + "/" + element);
-          }
+        if (!fs.existsSync(directory)) {
+          fs.readdir(directory, (err, files) => {
+            if (err) reject(err);
+            for (let i = 0; i < files.length; i++) {
+              const element = files[i];
+              fs.unlinkSync(directory + "/" + element);
+            }
+            resolve();
+          });
+        } else{
           resolve();
-        });
+        }
       } catch (err) {
         reject(err);
       }
