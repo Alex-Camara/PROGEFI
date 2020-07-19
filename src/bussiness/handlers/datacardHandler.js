@@ -8,6 +8,7 @@ import DatacardDao from "../../persistence/dao/DatacardDao";
 const fs = require("fs");
 const log = require("electron-log");
 const electron = require("electron");
+const sharp = require("sharp");
 
 class DatacardHandler {
   constructor() {
@@ -27,7 +28,6 @@ class DatacardHandler {
     }
 
     const buf = fs.readFileSync(photoCollect.filePath);
-    const sharp = require("sharp");
     const image = sharp(buf)
     let metadata = await image.metadata();
     let imageFormat = metadata.format;
@@ -195,7 +195,6 @@ class DatacardHandler {
   }
   getThumbnails(datacard) {
     return new Promise(async resolve => {
-      const sharp = require("sharp");
       sharp(
         datacard.datacardPath +
           "/original." +
@@ -574,8 +573,6 @@ class DatacardHandler {
     }
   }
   async export(datacards, format, destinationDirectory) {
-    const sharp = require("sharp");
-
     switch (format) {
       case "JPEG": {
         return new Promise(async function(resolve) {
@@ -609,7 +606,9 @@ class DatacardHandler {
                 quality: 100,
                 compression: "lzw"
               })
-              .toFile(destinationFileName + ".tiff");
+              .toFile(destinationFileName + ".tiff").catch(err =>{
+                log.error(err)
+                });
           }
           resolve();
         });
