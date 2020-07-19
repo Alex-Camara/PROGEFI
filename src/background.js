@@ -133,6 +133,7 @@ app.on("ready", async () => {
       });
   }
 
+
   protocol.registerFileProtocol("file", (request, callback) => {
     const pathname = decodeURI(request.url.replace("file:///", ""));
     callback(pathname);

@@ -46,7 +46,6 @@ import path from "path";
 <script>
 import { mapState } from "vuex";
 import Template from "../models/template";
-import path from "path";
 
 export default {
   data() {
@@ -82,19 +81,12 @@ export default {
   methods: {
     getImage(templatePathName) {
       if (templatePathName !== null) {
-        if (process.env.NODE_ENV !== "production") {
-          let relativePath =
-            path.join(__dirname, "..", "..", "..", "..", "..", "..") +
-            "/src/persistence/resources/template_samples/" +
-            templatePathName;
-          return "file://" + relativePath;
-        } else {
-          let relativePath =
-            path.join(__dirname, "..", "..") +
-            "/src/persistence/resources/template_samples/" +
-            templatePathName;
-          return "file://" + relativePath;
-        }
+        const remote = require('electron').remote;
+        const app = remote.app;
+        let storagePath = app.getPath("userData") + '/template_samples/' + templatePathName;
+        return storagePath;
+      } else {
+        return "";
       }
     }
   }

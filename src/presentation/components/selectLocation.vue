@@ -229,8 +229,8 @@ export default {
   },
   mounted() {
     //inicializar el marcador del mapa en el IIBUV
-    this.datacard.getCollect.setLongitude(-96.873879);
-    this.datacard.getCollect.setLatitude(19.516454);
+    this.datacard.getCollect().setLongitude(-96.873879);
+    this.datacard.getCollect().setLatitude(19.516454);
   },
   computed: {
     ...mapState("metadata", {
