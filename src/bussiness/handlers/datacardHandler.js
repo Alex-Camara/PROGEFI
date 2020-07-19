@@ -601,7 +601,8 @@ class DatacardHandler {
           for (let i = 0; i < datacards.length; i++) {
             let destinationFileName =
               destinationDirectory + "/" + datacards[i].code;
-            await sharp(datacards[i].datacardPath + "/datacard.webp")
+            var data = fs.readFileSync(datacards[i].datacardPath + "/datacard.webp");
+            await sharp(data)
               .tiff({
                 quality: 100,
                 compression: "lzw"
