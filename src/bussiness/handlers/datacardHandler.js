@@ -579,7 +579,7 @@ class DatacardHandler {
           for (let i = 0; i < datacards.length; i++) {
             let destinationFileName =
               destinationDirectory + "/" + datacards[i].code;
-            await sharp(datacards[i].datacardPath + "datacard.webp")
+            await sharp(datacards[i].datacardPath + "/datacard.webp")
               .jpeg({
                 quality: 100,
                 chromaSubsampling: "4:4:4"
@@ -601,12 +601,14 @@ class DatacardHandler {
           for (let i = 0; i < datacards.length; i++) {
             let destinationFileName =
               destinationDirectory + "/" + datacards[i].code;
-            await sharp(datacards[i].datacardPath + "datacard.webp")
+            await sharp(datacards[i].datacardPath + "/datacard.webp")
               .tiff({
                 quality: 100,
                 compression: "lzw"
               })
               .toFile(destinationFileName + ".tiff").catch(err =>{
+                  log.error(datacards[i].datacardPath)
+                  log.error(datacards[i].datacardPath + "/datacard.webp")
                 log.error(err)
                 });
           }
@@ -619,7 +621,7 @@ class DatacardHandler {
             let destinationFileName =
               destinationDirectory + "/" + datacards[i].code + ".bmp";
 
-            Jimp.read(datacards[i].datacardPath + "datacard.webp")
+            Jimp.read(datacards[i].datacardPath + "/datacard.webp")
               .then(datacard => {
                 return datacard.write(destinationFileName);
               })
@@ -641,7 +643,7 @@ class DatacardHandler {
               const doc = new PDFDocument({ layout: "landscape" });
               doc.pipe(fs.createWriteStream(destinationFileName)); // write to PDF
 
-              doc.image(datacards[i].datacardPath + "datacard.webp", 0, 15, {
+              doc.image(datacards[i].datacardPath + "/datacard.webp", 0, 15, {
                 width: 800,
                 align: "center",
                 valign: "center",
