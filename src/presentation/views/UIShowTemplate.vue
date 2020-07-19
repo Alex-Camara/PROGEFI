@@ -70,7 +70,6 @@
 import showTemplateInfo from "../components/showTemplateInfo";
 import showImage from "../components/showImage";
 import Template from "../models/template";
-import path from "path";
 
 export default {
   props: ["template"],
@@ -142,8 +141,7 @@ export default {
         const remote = require('electron').remote;
         const app = remote.app;
         let storagePath = app.getPath("userData") + '/template_samples/' + this.template.getSamplePath();
-        let src = "file://" + storagePath;
-        return src;
+        return storagePath;
       }
     },
     editTemplate() {

@@ -12,6 +12,10 @@ class TemplateHandler {
   }
   async save(template, result) {
     let destinationFolder = electron.app.getPath("userData") + "/template_samples/";
+
+    if (!fs.existsSync(destinationFolder)) {
+      fs.mkdirSync(destinationFolder)
+    }
     log.info("template folder path: " + destinationFolder)
     let base64String = template.base64; // Not a real image
     // Remove header

@@ -22,6 +22,10 @@ class DatacardHandler {
   async savePhotoCollect(photoCollect) {
     let destinationFolder = electron.app.getPath("userData") + "/photocollects/";
 
+    if (!fs.existsSync(destinationFolder)) {
+      fs.mkdirSync(destinationFolder)
+    }
+
     const buf = fs.readFileSync(photoCollect.filePath);
     const sharp = require("sharp");
     const image = sharp(buf)
@@ -125,6 +129,9 @@ class DatacardHandler {
   }
   async createDatacard(datacard, result) {
     let datacardsDestinationFolder = electron.app.getPath("userData") + "/datacards/";
+    if (!fs.existsSync(datacardsDestinationFolder)) {
+      fs.mkdirSync(datacardsDestinationFolder)
+    }
     let photocollectsDestinationFolder = electron.app.getPath("userData") + "/photocollects/";
 
     datacardsDestinationFolder = this.createFolder(datacardsDestinationFolder);
@@ -505,17 +512,22 @@ class DatacardHandler {
       const steggy = require("steggy");
       base64 = base64.split(";base64,").pop();
       // var bitmap = new Buffer(base64, "base64");
-      let tempPath = electron.app.getPath("userData") + "/temp/temp.webp";
-      // var tempPath = path.resolve(".") + "/src/bussiness/temp.webp";
-      self.base64Decode(base64, tempPath);
-      const image = fs.readFileSync(tempPath);
+      let tempPath = electron.app.getPath("userData") + "/temp/";
+
+      if (!fs.existsSync(tempPath)) {
+        fs.mkdirSync(tempPath)
+      }
+
+      let tempFilePath = tempPath + "temp.webp";
+      self.base64Decode(base64, tempFilePath);
+      const image = fs.readFileSync(tempFilePath);
 
       try {
         let revealed = steggy.reveal()(image, "utf8");
-        fs.unlinkSync(tempPath);
+        fs.unlinkSync(tempFilePath);
         resolve(revealed);
       } catch (e) {
-        fs.unlinkSync(tempPath);
+        fs.unlinkSync(tempFilePath);
         resolve("DECODE ERROR");
       }
     });
