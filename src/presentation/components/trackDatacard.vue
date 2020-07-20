@@ -90,10 +90,11 @@ export default {
   },
   methods: {
     getImage(path) {
-      if (path !== null) {
-        return path;
-      } else {
-        return "";
+      if (path !== ""){
+        let src = "file://" + path;
+        return src
+      } else{
+        return ""
       }
     },
     async loadFile() {
