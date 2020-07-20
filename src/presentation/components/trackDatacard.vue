@@ -90,7 +90,7 @@ export default {
   },
   methods: {
     getImage(path) {
-      if (path !== "") {
+      if (path !== null) {
         return path;
       } else {
         return "";
