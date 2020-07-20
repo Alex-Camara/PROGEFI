@@ -34,7 +34,7 @@ import path from "path";
             <b id="sample_image_text">Muestra:</b>
             <img
               id="sample_image"
-              :src="getImage(selectedTemplate.getSamplePath())"
+              :src="getImage()"
             />
           </div>
         </div>
@@ -79,11 +79,11 @@ export default {
     }
   },
   methods: {
-    getImage(templatePathName) {
-      if (templatePathName !== null) {
+    getImage() {
+      if (this.selectedTemplate) {
         const remote = require('electron').remote;
         const app = remote.app;
-        let storagePath = app.getPath("userData") + '/template_samples/' + templatePathName;
+        let storagePath = app.getPath("userData") + '/template_samples/' + this.selectedTemplate.getSamplePath();
         return storagePath;
       } else {
         return "";
