@@ -579,7 +579,8 @@ class DatacardHandler {
           for (let i = 0; i < datacards.length; i++) {
             let destinationFileName =
               destinationDirectory + "/" + datacards[i].code;
-            await sharp(datacards[i].datacardPath + "/datacard.webp")
+            var data = fs.readFileSync(datacards[i].datacardPath + "/datacard.webp");
+            await sharp(data)
               .jpeg({
                 quality: 100,
                 chromaSubsampling: "4:4:4"
@@ -639,12 +640,13 @@ class DatacardHandler {
             try {
               let destinationFileName =
                 destinationDirectory + "/" + datacards[i].code + ".pdf";
+              var data = fs.readFileSync(datacards[i].datacardPath + "/datacard.webp");
 
               const PDFDocument = require("pdfkit");
               const doc = new PDFDocument({ layout: "landscape" });
               doc.pipe(fs.createWriteStream(destinationFileName)); // write to PDF
 
-              doc.image(datacards[i].datacardPath + "/datacard.webp", 0, 15, {
+              doc.image(data, 0, 15, {
                 width: 800,
                 align: "center",
                 valign: "center",
