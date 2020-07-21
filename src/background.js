@@ -159,6 +159,7 @@ ipcMain.on("maximize", event => {
   let partialHeight = Math.round((90 * dimensions.height) / 100);
   win.setSize(partialWidth, partialHeight);
 
+
   if (os.platform !== "darwin") {
     win.maximize();
   }

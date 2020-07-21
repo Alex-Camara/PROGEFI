@@ -382,6 +382,12 @@ function listen() {
       event.reply("loggedOut", keepSession);
     });
   });
+
+  ipcMain.on("doesDatabaseExist", (event) => {
+    userHandler.get(async function(userGot) {
+      event.reply("databaseExists", true);
+    });
+  });
 }
 
 export default {
