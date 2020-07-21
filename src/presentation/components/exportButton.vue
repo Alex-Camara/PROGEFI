@@ -24,8 +24,7 @@
             :key="option.format"
             @click="setDirectory(option.format)"
           >
-            <label
-            >
+            <label>
               {{ option.format }}
             </label>
           </b-dropdown-item>
@@ -38,8 +37,7 @@
             :key="option.format"
             @click="setDirectory(option.format)"
           >
-            <label
-            >
+            <label>
               {{ option.format }}
             </label>
           </b-dropdown-item>
@@ -81,29 +79,31 @@ export default {
       var path = await dialog.showOpenDialog({
         properties: ["openDirectory"]
       });
-      let destinationDirectory = path.filePaths[0];
-      // let destinationDirectory = event.path[0].files[0].path;
-      try {
-        await this.$store.dispatch(
-          "loading/setActive",
-          { active: true, message: "Exportando..." },
-          { root: true }
-        );
-        await Datacard.export(
-          this.datacards,
-          this.selectedExportationFormat,
-          destinationDirectory
-        );
-        this.openToast(this.loadingExportationFinished);
-      } catch (e) {
-        this.openDialog(e);
-      } finally {
-        this.activeFileExplorer = false;
-        await this.$store.dispatch(
-          "loading/setActive",
-          { active: false, message: null },
-          { root: true }
-        );
+      if (!path.canceled) {
+        let destinationDirectory = path.filePaths[0];
+        // let destinationDirectory = event.path[0].files[0].path;
+        try {
+          await this.$store.dispatch(
+            "loading/setActive",
+            { active: true, message: "Exportando..." },
+            { root: true }
+          );
+          await Datacard.export(
+            this.datacards,
+            this.selectedExportationFormat,
+            destinationDirectory
+          );
+          this.openToast(this.loadingExportationFinished);
+        } catch (e) {
+          this.openDialog(e);
+        } finally {
+          this.activeFileExplorer = false;
+          await this.$store.dispatch(
+            "loading/setActive",
+            { active: false, message: null },
+            { root: true }
+          );
+        }
       }
     },
     openToast(message) {
