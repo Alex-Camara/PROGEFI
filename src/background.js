@@ -52,8 +52,6 @@ function createWindow() {
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
-    if (!process.env.IS_TEST)
-    win.webContents.openDevTools();
   } else {
     win.webContents.openDevTools();
     createProtocol("app");
@@ -87,18 +85,9 @@ app.on("activate", () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", async () => {
-  if (isDevelopment && !process.env.IS_TEST) {
-    // Install Vue Devtools
-    try {
-      // await installVueDevtools();
-    } catch (e) {
-      console.error("Vue Devtools failed to install:", e.toString());
-    }
-  }
   createWindow();
   win.setMenu(null);
   win.setResizable(false);
-  // process.setFdLimit(12000);
   app.commandLine.appendSwitch("disable-http-cache");
 
   let databasePath = app.getPath("userData") + "/progefiDB.db";
@@ -138,27 +127,7 @@ app.on("ready", async () => {
     const pathname = decodeURI(request.url.replace("file:///", ""));
     callback(pathname);
   });
-
-  // protocol.registerFileProtocol('file', (request, callback) => {
-  //   const pathname = request.url.replace('file:///', '');
-  //   callback(pathname);
-  // });
-
-  // protocol.interceptFileProtocol('file', function(req, callback) {
-  //   var url = req.url.substr(7);
-  //   callback({path: path.normalize(__dirname + url)})
-  // },function (error) {
-  //   if (error)
-  //     console.error('Failed to register protocol')
-  // })
 });
-
-// app.whenReady().then(() => {
-//   protocol.registerFileProtocol('file', (request, callback) => {
-//     const pathname = decodeURI(request.url.replace('file:///', ''));
-//     callback(pathname);
-//   });
-// });
 
 if (isDevelopment) {
   if (process.platform === "win32") {
@@ -181,9 +150,6 @@ ipcMain.on("minimize", () => {
 
 ipcMain.on("maximize", event => {
   var os = require("os");
-  // win.maximize();
-  // win.setResizable(false);
-  // win.setMovable(false)
   win.setResizable(true);
   var screenElectron = electron.screen;
   var mainScreen = screenElectron.getPrimaryDisplay();
