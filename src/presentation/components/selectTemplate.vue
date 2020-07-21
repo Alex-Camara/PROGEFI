@@ -83,7 +83,7 @@ export default {
       if (this.selectedTemplate) {
         const remote = require('electron').remote;
         const app = remote.app;
-        let storagePath = app.getPath("userData") + '/template_samples/' + this.selectedTemplate.getSamplePath();
+        let storagePath = "file://" + app.getPath("userData") + '/template_samples/' + this.selectedTemplate.getSamplePath();
         return storagePath;
       } else {
         return "";
