@@ -590,7 +590,7 @@ class DatacardHandler {
               datacards[i].datacardPath + "/datacard.webp"
             );
 
-            let fileName = await self.getCorrectPath(destinationFileName)
+            let fileName = await self.getCorrectPath(destinationFileName);
             await sharp(data)
               .jpeg({
                 quality: 100,
@@ -617,7 +617,7 @@ class DatacardHandler {
             var data = fs.readFileSync(
               datacards[i].datacardPath + "/datacard.webp"
             );
-            let fileName = await self.getCorrectPath(destinationFileName)
+            let fileName = await self.getCorrectPath(destinationFileName);
             await sharp(data)
               .tiff({
                 quality: 100,
@@ -639,7 +639,7 @@ class DatacardHandler {
           for (let i = 0; i < datacards.length; i++) {
             let destinationFileName =
               destinationDirectory + "/" + datacards[i].code + ".bmp";
-            let fileName = await self.getCorrectPath(destinationFileName)
+            let fileName = await self.getCorrectPath(destinationFileName);
             Jimp.read(datacards[i].datacardPath + "/datacard.webp")
               .then(datacard => {
                 return datacard.write(fileName);
@@ -654,30 +654,54 @@ class DatacardHandler {
       case "PDF": {
         let self = this;
         return new Promise(async function(resolve) {
+          let tempPath = electron.app.getPath("userData") + "/temp/";
+          if (!fs.existsSync(tempPath)) {
+            fs.mkdirSync(tempPath);
+          }
+
           for (let i = 0; i < datacards.length; i++) {
             try {
-              let destinationFileName =
-                destinationDirectory + "/" + datacards[i].code + ".pdf";
+              let tempDestinationFileName =
+                tempPath + "/" + datacards[i].code + ".png";
+
               var data = fs.readFileSync(
                 datacards[i].datacardPath + "/datacard.webp"
               );
 
-              var pngBuffer = await sharp(data).toBuffer();
+              let destinationFileName =
+                destinationDirectory + "/" + datacards[i].code + ".pdf";
+
+              await sharp(data)
+                .jpeg({
+                  quality: 100,
+                  chromaSubsampling: "4:4:4"
+                })
+                .toFile(tempDestinationFileName);
+
+              var tempData = fs.readFileSync(
+                  tempDestinationFileName
+              );
+
               let height = parseInt(datacards[i].template.height) + 40;
               let width = parseInt(datacards[i].template.width) + 40;
 
-              const PDFDocument = require("pdfkit");
-              const doc = new PDFDocument({ size: [width, height], margin: 20 });
+              const pdf = require("pdfjs");
+              const doc = new pdf.Document({
+                width,
+                height,
+                padding: 20
+              });
 
               let widthImage = datacards[i].template.width;
 
               let fileName = await self.getCorrectPath(destinationFileName)
-              console.info("filename" + fileName)
-              let writeStream = fs.createWriteStream(fileName)
+              console.info("filename" + fileName);
 
-              doc.pipe(writeStream);
+              doc.pipe(fs.createWriteStream(fileName));
 
-              doc.image(pngBuffer, {width: widthImage});
+              const img = new pdf.Image(tempData);
+
+              doc.image(img, { width: widthImage });
 
               doc.end();
             } catch (e) {
@@ -686,6 +710,7 @@ class DatacardHandler {
               return e;
             }
           }
+          await self.deleteFolderContent(tempPath);
           resolve();
         });
       }
@@ -694,26 +719,26 @@ class DatacardHandler {
         return new Promise(async function(resolve) {
           let destinationFileName =
             destinationDirectory + "/" + new Date().getTime() + ".csv";
-          let fileName = await self.getCorrectPath(destinationFileName)
+          let fileName = await self.getCorrectPath(destinationFileName);
           await self.generateCSVFile(datacards, fileName);
           resolve();
         });
       }
     }
   }
-  getCorrectPath(destinationFileName){
+  getCorrectPath(destinationFileName) {
     let self = this;
     return new Promise(async function(resolve) {
-      const increment = require('add-filename-increment');
-      let writeStream = fs.createWriteStream(destinationFileName)
+      const increment = require("add-filename-increment");
+      let writeStream = fs.createWriteStream(destinationFileName);
 
-      writeStream.on('error', function (err) {
-        writeStream.end()
-        resolve(self.getCorrectPath(increment(destinationFileName)))
+      writeStream.on("error", function(err) {
+        writeStream.end();
+        resolve(self.getCorrectPath(increment(destinationFileName)));
       });
-      writeStream.on('open', function (err) {
-        writeStream.end()
-        resolve(destinationFileName)
+      writeStream.on("open", function(err) {
+        writeStream.end();
+        resolve(destinationFileName);
       });
     });
   }

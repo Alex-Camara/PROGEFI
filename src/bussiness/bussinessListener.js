@@ -16,10 +16,7 @@ import path from "path";
 
 const { ipcMain } = require("electron");
 
-function listen(app2) {
-  console.log("Empecé a escuchar...");
-  console.info(app2);
-
+function listen() {
   var datacardHandler = new DatacardHandler();
   var catalogueHandler = new CatalogueHandler();
   var collectionHandler = new CollectionHandler();
@@ -383,25 +380,6 @@ function listen(app2) {
   ipcMain.on("logOut", (event, user) => {
     userHandler.updateKeepSession(user, function(keepSession) {
       event.reply("loggedOut", keepSession);
-    });
-  });
-  
-  ipcMain.on("doesDatabaseExist", (event) => {
-    userHandler.get(async function(userGot) {
-      // if (
-      //   userGot.hasOwnProperty("nativeError") &&
-      //   userGot.nativeError.code === "SQLITE_ERROR"
-      // ) {
-      //   let knex = require('knex')(KnexConfig.development)
-      //   console.info(path.resolve(__dirname))
-      //   console.info(path.resolve(KnexConfig.development.connection.filename))
-      //   await knex.migrate.latest().then(() => {
-      //     return knex.seed.run();
-      //   });
-      //   event.reply("databaseExists", true);
-      // } else{
-        event.reply("databaseExists", true);
-      // }
     });
   });
 }

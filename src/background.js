@@ -27,13 +27,11 @@ protocol.registerSchemesAsPrivileged([
       secure: true,
       standard: true
     }
-
   }
 ]);
 
 function createWindow() {
   // Create the browser window.
-  console.log("hola");
   var screenElectron = electron.screen;
   var mainScreen = screenElectron.getPrimaryDisplay();
   var dimensions = mainScreen.size;
@@ -53,8 +51,7 @@ function createWindow() {
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
-    if (!process.env.IS_TEST)
-      win.webContents.openDevTools();
+    if (!process.env.IS_TEST) win.webContents.openDevTools();
   } else {
     createProtocol("app");
     // Load the index.html when not in development
@@ -83,7 +80,6 @@ app.on("activate", () => {
   }
 });
 
-
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -111,13 +107,7 @@ app.on("ready", async () => {
   KnexConfig.developmentLinux.connection.filename = databasePath;
 
   if (!fs.existsSync(databasePath)) {
-
     let knex = require("knex")(KnexConfig.developmentWindows);
-
-    log.info("user data: ");
-    log.info(app.getPath("userData"));
-    log.info("nuevo camino: ");
-    log.info(KnexConfig.developmentWindows);
 
     await knex.migrate
       .latest()
@@ -132,7 +122,6 @@ app.on("ready", async () => {
         log.error(err);
       });
   }
-
 
   protocol.registerFileProtocol("file", (request, callback) => {
     const pathname = decodeURI(request.url.replace("file:///", ""));
@@ -168,7 +157,6 @@ ipcMain.on("maximize", event => {
   let partialWidth = Math.round((90 * dimensions.width) / 100);
 
   let partialHeight = Math.round((90 * dimensions.height) / 100);
-
   win.setSize(partialWidth, partialHeight);
 
   if (os.platform !== "darwin") {
@@ -178,7 +166,7 @@ ipcMain.on("maximize", event => {
 });
 
 function listenToProcesses() {
-  BussinessProcess.listen(storageRoute);
+  BussinessProcess.listen();
 }
 
 listenToProcesses();

@@ -22,7 +22,7 @@ module.exports = {
     electronBuilder: {
       mainProcessFile: 'src/background.js',
       nodeIntegration: true,
-      externals: ['sharp', 'pdfkit', 'objection', 'knex'],
+      externals: ['sharp', 'pdfjs', 'objection', 'knex'],
       builderOptions: {
         "productName": "PROGEFI",
         "appId": "PROGEFI",
