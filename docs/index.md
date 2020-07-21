@@ -51,7 +51,7 @@ box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);transition: 0.4s;cursor: pointer
 <div style="display: flex; border-radius: 50%; background-color: #ECEFF1; width: 100px; height: 100px;-webkit-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
 -moz-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
 box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);transition: 0.2s; cursor: pointer; align-items: center; justify-content: center;"
-onmouseover=" this.style.backgroundColor='#FAFAFA'" onmouseleave=" this.style.backgroundColor='#ECEFF1'">
+onmouseover=" this.style.backgroundColor='#FAFAFA'" onmouseleave=" this.style.backgroundColor='#ECEFF1'" onclick="window.open('https://github.com/Alex-Camara/PROGEFI/releases/download/v1.0.0/PROGEFI-1.0.0.dmg')">
 <img src="mac.png" alt="Mac OS" style="height: 40px ;margin: auto;align-self: center;  background-color: rgba(0, 0, 0, 0);" />
 </div>
 <b style="align-self: center">Mac OS</b>
@@ -61,7 +61,7 @@ onmouseover=" this.style.backgroundColor='#FAFAFA'" onmouseleave=" this.style.ba
 <div style="display: flex; border-radius: 50%; background-color: #FF6D00; width: 100px; height: 100px;-webkit-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
 -moz-box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);
 box-shadow: 9px 9px 12px -10px rgba(0,0,0,0.56);transition: .4s;cursor: pointer; align-items: center; justify-content: center;"
-onmouseover=" this.style.backgroundColor='#FFC107'" onmouseleave=" this.style.backgroundColor='#FF6D00'">
+onmouseover=" this.style.backgroundColor='#FFC107'" onmouseleave=" this.style.backgroundColor='#FF6D00'" onclick="window.open('https://github.com/Alex-Camara/PROGEFI/releases/download/deb_v1.0.0/progefi_1.0.0_amd64.deb')">
 <img src="ubuntu.png" alt="Ubuntu" style="height: 40px;; align-self: center;  background-color: rgba(0, 0, 0, 0);" />
 </div>
 <b style="align-self: center">Ubuntu</b>
