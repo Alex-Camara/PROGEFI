@@ -6,11 +6,7 @@ import VueObserveVisibility from "vue-observe-visibility";
 import { Store } from "vuex-mock-store";
 import Collect from "../../src/presentation/models/collect";
 import axios from "axios";
-import {loadModelValues, testModel1} from "./mocks/Model.spec";
 import {loadDatacardValues, testDatacard1} from "./mocks/Datacard.spec";
-import {testCatalogue1} from "./mocks/Catalogue.spec";
-import {testCollector1} from "./mocks/Collector.spec";
-import {testProject1} from "./mocks/Project.spec";
 
 jest.mock("axios");
 

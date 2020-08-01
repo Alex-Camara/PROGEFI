@@ -7,7 +7,7 @@ const flushPromises = require("flush-promises");
 const localVue = createLocalVue();
 localVue.use(Buefy);
 
-describe("generalDataForm component", () => {
+describe("datacards table component", () => {
   let wrapper;
   beforeEach(() => {
     Datacard.getSorted = mockGetSorted;

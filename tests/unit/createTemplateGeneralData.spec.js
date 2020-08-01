@@ -3,7 +3,7 @@ import createTemplateGeneralData from "@/presentation/components/createTemplateG
 import Buefy from "buefy";
 const flushPromises = require("flush-promises");
 
-import { Template, testTemplate1 } from "./mocks/Template.spec";
+import { Template } from "./mocks/Template.spec";
 
 const localVue = createLocalVue();
 localVue.use(Buefy);

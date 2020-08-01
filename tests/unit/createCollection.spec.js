@@ -1,7 +1,7 @@
 import { shallowMount, createLocalVue } from "@vue/test-utils";
 import createCollection from "@/presentation/components/createCollection.vue";
 import Buefy from "buefy";
-import { Collection, testCollection1 } from "./mocks/Collection.spec";
+import { testCollection1 } from "./mocks/Collection.spec";
 const flushPromises = require("flush-promises");
 
 const localVue = createLocalVue();
@@ -92,7 +92,7 @@ describe("ui showCollection view", () => {
   });
 
   it("sets correct collection's institute name", async () => {
-    wrapper.vm.name = "Colección biologica de animlaes vertebrados terrestres";
+    wrapper.vm.name = "Colección biologica de animales vertebrados terrestres";
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.collection.getInstituteNameValid()).toStrictEqual({
       isValid: true,
@@ -134,7 +134,7 @@ describe("ui showCollection view", () => {
   });
 
   it("sets correct collection's institute name acronym", async () => {
-    wrapper.vm.instituteAcronym = "UV";
+    wrapper.vm.instituteAcronym = "IIBUV";
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.collection.getInstituteAcronymValid()).toStrictEqual({
       isValid: true,
@@ -156,87 +156,87 @@ describe("ui showCollection view", () => {
 
   it("sets numbers in collection's institute name acronym", async () => {
     wrapper.vm.$forceUpdate();
-    wrapper.vm.instituteAcronym = "UV";
+    wrapper.vm.instituteAcronym = "IIBUV";
     await wrapper.vm.$nextTick();
     await flushPromises();
-    wrapper.vm.instituteAcronym = "UV2";
+    wrapper.vm.instituteAcronym = "IIBUV2";
     await wrapper.vm.$nextTick();
     await flushPromises();
-    expect(wrapper.vm.collection.instituteAcronym).toStrictEqual("UV");
+    expect(wrapper.vm.collection.instituteAcronym).toStrictEqual("IIBUV");
   });
 
   it("sets not allowed characters in collection's institute name acronym", async () => {
     wrapper.vm.$forceUpdate();
-    wrapper.vm.instituteAcronym = "UV";
+    wrapper.vm.instituteAcronym = "IIBUV";
     await wrapper.vm.$nextTick();
     await flushPromises();
-    wrapper.vm.instituteAcronym = "UV@";
+    wrapper.vm.instituteAcronym = "IIBUV@";
     await wrapper.vm.$nextTick();
     await flushPromises();
-    expect(wrapper.vm.collection.instituteAcronym).toStrictEqual("UV");
+    expect(wrapper.vm.collection.instituteAcronym).toStrictEqual("IIBUV");
   });
 
-  it("sets correct collection's research area", async () => {
-    wrapper.vm.researchArea = "Instituto de investigaciones biológicas";
+  it("sets correct collection's entity name", async () => {
+    wrapper.vm.entityName = "Universidad Veracruzana";
     await wrapper.vm.$nextTick();
-    expect(wrapper.vm.collection.getResearchAreaValid()).toStrictEqual({
+    expect(wrapper.vm.collection.getEntityNameValid()).toStrictEqual({
       isValid: true,
       message: null
     });
   });
 
-  it("sets minimal number of characters in collection's research area", async () => {
-    wrapper.vm.researchArea = "I";
+  it("sets minimal number of characters in collection's entity", async () => {
+    wrapper.vm.entityName = "U";
     await wrapper.vm.$nextTick();
     await wrapper.vm.$nextTick();
     await flushPromises();
-    expect(wrapper.vm.collection.getResearchArea()).toStrictEqual("I");
-    expect(wrapper.vm.collection.getResearchAreaValid()).toStrictEqual({
+    expect(wrapper.vm.collection.getEntityName()).toStrictEqual("U");
+    expect(wrapper.vm.collection.getEntityNameValid()).toStrictEqual({
       isValid: false,
       message: "Longitud mínima inválida"
     });
   });
 
-  it("sets not allowed characters in collection's research area", async () => {
+  it("sets not allowed characters in collection's entity", async () => {
     wrapper.vm.$forceUpdate();
-    wrapper.vm.researchArea = "Instituto";
+    wrapper.vm.entityName = "UV";
     await wrapper.vm.$nextTick();
     await flushPromises();
-    wrapper.vm.researchArea = "Instituto@";
+    wrapper.vm.entityName = "UV@";
     await wrapper.vm.$nextTick();
     await flushPromises();
-    expect(wrapper.vm.collection.researchArea).toStrictEqual("Instituto");
+    expect(wrapper.vm.collection.entityName).toStrictEqual("UV");
   });
 
-    it("sets correct collection's research area acronym", async () => {
-        wrapper.vm.researchAreaAcronym = "IIBUV";
-        await wrapper.vm.$nextTick();
-        expect(wrapper.vm.collection.getResearchAreaAcronymValid()).toStrictEqual({
-            isValid: true,
-            message: null
-        });
+  it("sets correct collection's entity acronym", async () => {
+    wrapper.vm.entityAcronym = "UV";
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.collection.getEntityAcronymValid()).toStrictEqual({
+      isValid: true,
+      message: null
     });
+  });
 
-    it("sets minimal number of characters in collection's research area acronym", async () => {
-        wrapper.vm.researchAreaAcronym = "I";
-        await wrapper.vm.$nextTick();
-        await wrapper.vm.$nextTick();
-        await flushPromises();
-        expect(wrapper.vm.collection.getResearchAreaAcronym()).toStrictEqual("I");
-        expect(wrapper.vm.collection.getResearchAreaAcronymValid()).toStrictEqual({
-            isValid: false,
-            message: "Longitud mínima inválida"
-        });
+  it("sets minimal number of characters in collection's entity acronym", async () => {
+    wrapper.vm.entityAcronym = "U";
+    await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick();
+    await flushPromises();
+    expect(wrapper.vm.collection.getEntityAcronym()).toStrictEqual("U");
+    expect(wrapper.vm.collection.getEntityAcronymValid()).toStrictEqual({
+      isValid: false,
+      message: "Longitud mínima inválida"
     });
+  });
 
-    it("sets not allowed characters in collection's research area acronym", async () => {
-        wrapper.vm.$forceUpdate();
-        wrapper.vm.researchAreaAcronym = "IIB";
-        await wrapper.vm.$nextTick();
-        await flushPromises();
-        wrapper.vm.researchAreaAcronym = "IIB@";
-        await wrapper.vm.$nextTick();
-        await flushPromises();
-        expect(wrapper.vm.collection.researchAreaAcronym).toStrictEqual("IIB");
-    });
+  it("sets not allowed characters in collection's entity acronym", async () => {
+    wrapper.vm.$forceUpdate();
+    wrapper.vm.entityAcronym = "IIB";
+    await wrapper.vm.$nextTick();
+    await flushPromises();
+    wrapper.vm.entityAcronym = "IIB@";
+    await wrapper.vm.$nextTick();
+    await flushPromises();
+    expect(wrapper.vm.collection.entityAcronym).toStrictEqual("IIB");
+  });
 });

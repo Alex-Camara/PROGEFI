@@ -1,7 +1,7 @@
 import { shallowMount, createLocalVue } from "@vue/test-utils";
 import UICreateCatalogue from "@/presentation/views/UICreateCatalogue.vue";
 import Buefy from "buefy";
-import {testCatalogue1, testCatalogue2} from "./mocks/Catalogue.spec";
+import {testCatalogue1} from "./mocks/Catalogue.spec";
 import { Store } from "vuex-mock-store";
 const flushPromises = require("flush-promises");
 

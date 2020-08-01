@@ -1,8 +1,6 @@
 import { shallowMount, createLocalVue } from "@vue/test-utils";
 import advancedSearch from "@/presentation/components/advancedSearch.vue";
 import Buefy from "buefy";
-import { Datacard, testDatacard1 } from "./mocks/Datacard.spec";
-const flushPromises = require("flush-promises");
 
 const localVue = createLocalVue();
 localVue.use(Buefy);

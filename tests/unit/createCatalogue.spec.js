@@ -1,8 +1,7 @@
 import { shallowMount, createLocalVue } from "@vue/test-utils";
 import createCatalogue from "@/presentation/components/createCatalogue.vue";
 import Buefy from "buefy";
-import { Catalogue, testCatalogue1 } from "./mocks/Catalogue.spec";
-import Collection from "./mocks/Collection.spec";
+import { testCatalogue1 } from "./mocks/Catalogue.spec";
 const flushPromises = require("flush-promises");
 
 const localVue = createLocalVue();
@@ -152,10 +151,10 @@ describe("create catalogue component", () => {
     wrapper.vm.$forceUpdate();
     await flushPromises();
     await wrapper.vm.$nextTick();
-    wrapper.vm.description = "des";
+    wrapper.vm.description = "d";
     await wrapper.vm.$nextTick();
     await flushPromises();
-    expect(wrapper.vm.catalogue.description).toStrictEqual("des");
+    expect(wrapper.vm.catalogue.description).toStrictEqual("d");
     expect(wrapper.vm.catalogue.getDescriptionValid()).toStrictEqual({
       isValid: false,
       message: "Longitud mínima inválida"

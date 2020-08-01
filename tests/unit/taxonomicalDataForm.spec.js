@@ -52,7 +52,7 @@ describe("selectLocation component", () => {
   });
 
   it("writes minimal numbers of characters in scientific", async () => {
-    wrapper.vm.scientificName = "Fel";
+    wrapper.vm.scientificName = "F";
     await wrapper.vm.$nextTick();
     await wrapper.vm.$nextTick();
     expect(

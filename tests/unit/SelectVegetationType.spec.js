@@ -2,7 +2,6 @@ import { shallowMount, createLocalVue } from "@vue/test-utils";
 import selectVegetationType from "@/presentation/components/selectVegetationType.vue";
 import Datacard from "@/presentation/models/datacard.js";
 import Buefy from "buefy";
-const flushPromises = require("flush-promises");
 import { Store } from "vuex-mock-store";
 import {
   VegetalFormation,

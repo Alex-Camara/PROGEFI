@@ -1,8 +1,7 @@
 import { mount, createLocalVue } from "@vue/test-utils";
 import showTemplateInfo from "@/presentation/components/showTemplateInfo.vue";
 import Buefy from "buefy";
-import { Template, testTemplate1, testTemplate2 } from "./mocks/Template.spec";
-import {testClimateType1, testClimateType2} from "./mocks/ClimateType.spec";
+import { testTemplate1 } from "./mocks/Template.spec";
 
 const localVue = createLocalVue();
 localVue.use(Buefy);

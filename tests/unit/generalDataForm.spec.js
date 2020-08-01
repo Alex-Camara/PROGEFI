@@ -2,47 +2,29 @@ import Vuex from "vuex";
 import { shallowMount, createLocalVue } from "@vue/test-utils";
 import generalDataForm from "@/presentation/components/generalDataForm.vue";
 import Datacard from "@/presentation/models/datacard.js";
-// import Collector from "@/presentation/models/collector.js";
 import Buefy from "buefy";
-import { Store } from "vuex-mock-store";
 import Collect from "../../src/presentation/models/collect";
 const flushPromises = require("flush-promises");
-import {Catalogue, testCatalogue1, testCatalogue2} from "./mocks/Catalogue.spec";
-import { Collection, testCollection1 } from "./mocks/Collection.spec";
+import { testCatalogue1, testCatalogue2} from "./mocks/Catalogue.spec";
+import { testCollection1 } from "./mocks/Collection.spec";
 import { Project, testProject1 } from "./mocks/Project.spec";
 import { testDatacard1, loadDatacardValues } from "./mocks/Datacard.spec";
 import {
-  Device,
   loadDeviceValues,
   testDevice1,
   testDevice2
 } from "./mocks/Device.spec";
 import {
-  Model,
   loadModelValues,
   testModel1,
   testModel2
 } from "./mocks/Model.spec";
 import {
   Collector,
-  testCollector1,
-  testCollector2
+  testCollector1
 } from "./mocks/Collector.spec";
-// const { ipcRenderer } = require("electron");
-//
-// jest.mock(
-//   "electron",
-//   () => {
-//     const mElectron = { ipcRenderer: { once: jest.fn(), send: jest.fn() } };
-//     return mElectron;
-//   },
-//   { virtual: true }
-// );
 
-// jest.mock("@/presentation/models/catalogue.js");
-// jest.mock("@/presentation/models/collection.js");
 jest.mock("@/presentation/models/project.js");
-// jest.mock("@/presentation/models/collector.js");
 
 let setCollector = jest.fn();
 setCollector.mockReturnValue(testCollector1);
@@ -86,10 +68,7 @@ describe("generalDataForm component", () => {
       localVue,
       mocks
     });
-    // Catalogue.mockClear();
-    // Collection.mockClear();
     Project.mockClear();
-    // Collector.mockClear();
   });
 
   it("loads initial values on component mount", async () => {
@@ -98,19 +77,6 @@ describe("generalDataForm component", () => {
     expect(wrapper.vm.catalogues).toStrictEqual([testCatalogue1, testCatalogue2]);
     expect(wrapper.vm.projects).toStrictEqual([testProject1]);
   });
-
-  // it("set collectors select visible after catalogue selection", async () => {
-  //   wrapper = shallowMount(generalDataForm, {
-  //     localVue,
-  //     mocks
-  //   });
-  //   await wrapper.vm.$nextTick();
-  //   wrapper.vm.selectedCatalogue = testCatalogue1;
-  //   await wrapper.vm.$nextTick();
-  //   expect(wrapper.find("#collector_select").attributes("disabled")).toBe(
-  //     "disabled"
-  //   );
-  // });
 
   it("sets datacard code on catalogue selection", async () => {
     await wrapper.vm.$nextTick();

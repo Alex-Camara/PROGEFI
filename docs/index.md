@@ -5,9 +5,18 @@
 
 <h2>Programa Generador de Fichas de Fotocolecta</h2>
 
+<div style="display: flex; justify-content: center;">
+ <img src="Mniotilta_varia.png" alt="ficha" style="height: 100px" />
+ <img src="polioptila_caerulea.png" alt="ficha" style="height: 100px" />
+</div>
+<div style="display: flex; justify-content: center;">
+ <img src="setophaga_citrina.png" alt="ficha" style="height: 100px" />
+ <img src="buteogallus_anthracinus.png" alt="ficha" style="height: 100px" />
+</div>
+
 <h3>¿Qué es?</h3>
 
-**PROGEFI** es una herramienta de software desarrollada por la [Universidad Veracruzana (UV)](https://www.uv.mx). Esta aplicación se realizó mendiante una colaboración entre la Facultad de Estadística e Informática a través de la Licenciatura en Ingeniería de Software y el Instituto de Investigaciones Biológicas de la UV.
+**PROGEFI** es una herramienta de software desarrollada por la [Universidad Veracruzana (UV)](https://www.uv.mx). Esta aplicación se realizó mediante una colaboración entre la Facultad de Estadística e Informática a través de la Licenciatura en Ingeniería de Software y el Instituto de Investigaciones Biológicas de la UV.
 
 ****
 <h3>¿Qué características te ofrece?</h3>
@@ -74,7 +83,32 @@ onmouseover=" this.style.backgroundColor='#FFC107'" onmouseleave=" this.style.ba
 
 <div style="display:flex; align-items: center;">
 <img src="gmail.png" alt="Gmail" style="height: 16px; margin-right: 7px;" />
-<a href="mailto:arcamsoft@gmail.com">arcamsoft@gmail.com</a>
+Gerardo Contreras Vega: <a href="mailto:puntog@gmail.com">puntog@gmail.com</a>
+</div>
+
+<div style="display:flex; align-items: center;">
+<img src="gmail.png" alt="Gmail" style="height: 16px; margin-right: 7px;" />
+Christian Alejandro Delfín Alfonso: <a href="mailto:cada7305@gmail.com"> cada7305@gmail.com </a>
+</div>
+
+<div style="display:flex; align-items: center;">
+<img src="mail.png" alt="Gmail" style="height: 16px; margin-right: 7px;" />
+Juan Carlos Pérez Arriaga: <a href="mailto:juaperez@uv.mx"> juaperez@uv.mx </a>
+</div>
+
+<div style="display:flex; align-items: center;">
+<img src="mail.png" alt="Gmail" style="height: 16px; margin-right: 7px;" />
+María Karen Cortes Verdín: <a href="mailto:kcortes@uv.mx"> kcortes@uv.mx </a>
+</div>
+
+<div style="display:flex; align-items: center;">
+<img src="gmail.png" alt="Gmail" style="height: 16px; margin-right: 7px;" />
+Miguel Alejandro Cámara Árciga <a href="mailto:arcamsoft@gmail.com">arcamsoft@gmail.com</a>
+</div>
+
+<div style="display:flex; margin-top: 10px; align-items: center;">
+<img src="uv.png" alt="UV" style="height: 16px; margin-right: 7px;" />
+<a href="https://www.uv.mx/iib/">Instituto de Investigaciones Biológicas de la Universidad Veracruzana</a>
 </div>
 
 <div style="display:flex; margin-top: 10px; align-items: center;">

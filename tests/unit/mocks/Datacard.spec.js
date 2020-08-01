@@ -3,7 +3,8 @@ import Species from "@/presentation/models/species.js";
 import {testCatalogue1} from "../mocks/Catalogue.spec"
 import {testTemplate1} from "../mocks/Template.spec"
 import {testCollect, loadCollectValues} from "../mocks/Collect.spec"
-import {testCurator1, testCurator2} from "../mocks/Curator.spec"
+import { testCurator1 } from "../mocks/Curator.spec"
+import {testUser1} from "../mocks/User.spec"
 
 const testDatacard1 = new Datacard();
 
@@ -18,7 +19,8 @@ async function loadDatacardValues() {
         catalogue: testCatalogue1,
         template: testTemplate1,
         collect: testCollect,
-        curators: [testCurator1, testCurator2]
+        curators: testCurator1,
+        user: testUser1
     });
 }
 

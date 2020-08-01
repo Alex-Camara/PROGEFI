@@ -5,9 +5,9 @@ testCollection1.setCollection({
   id: 1,
   code: "IIB-",
   name: "Colección Alvar Cristen",
-  institudeName: "Universidad Veracruzana",
+  entityName: "Universidad Veracruzana",
   acronym: "UV",
-  researchArea: "Intituto de Investigaciones Biológicas"
+  instituteName: "Intituto de Investigaciones Biológicas"
 });
 
 const mockGetAll = jest.fn();
