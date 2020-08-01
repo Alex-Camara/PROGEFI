@@ -6,7 +6,7 @@
 <h2>Programa Generador de Fichas de Fotocolecta</h2>
 
 <div style="display: flex; justify-content: center;">
- <img src="Mniotilta_varia.png" alt="ficha" style="height: 300px" />
+ <img src="mniotilta_varia.png" alt="ficha" style="height: 300px" />
  <img src="polioptila_caerulea.png" alt="ficha" style="height: 300px" />
 </div>
 <div style="display: flex; justify-content: center;">
@@ -83,22 +83,22 @@ onmouseover=" this.style.backgroundColor='#FFC107'" onmouseleave=" this.style.ba
 
 <div style="display:flex; align-items: center;">
 <img src="gmail.png" alt="Gmail" style="height: 16px; margin-right: 7px;" />
-Gerardo Contreras Vega: <a href="mailto:puntog@gmail.com">puntog@gmail.com</a>
+Gerardo Contreras Vega: <a style="margin-left: 17px;" href="mailto:puntog@gmail.com">puntog@gmail.com</a>
 </div>
 
 <div style="display:flex; align-items: center;">
 <img src="gmail.png" alt="Gmail" style="height: 16px; margin-right: 7px;" />
-Christian Alejandro Delfín Alfonso: <a href="mailto:cada7305@gmail.com"> cada7305@gmail.com </a>
+Christian Alejandro Delfín Alfonso: <a style="margin-left: 17px;" href="mailto:cada7305@gmail.com"> cada7305@gmail.com </a>
 </div>
 
 <div style="display:flex; align-items: center;">
 <img src="mail.png" alt="Gmail" style="height: 16px; margin-right: 7px;" />
-Juan Carlos Pérez Arriaga: <a href="mailto:juaperez@uv.mx"> juaperez@uv.mx </a>
+Juan Carlos Pérez Arriaga: <a style="margin-left: 17px;" href="mailto:juaperez@uv.mx"> juaperez@uv.mx </a>
 </div>
 
 <div style="display:flex; align-items: center;">
 <img src="mail.png" alt="Gmail" style="height: 16px; margin-right: 7px;" />
-María Karen Cortes Verdín: <a href="mailto:kcortes@uv.mx"> kcortes@uv.mx </a>
+María Karen Cortes Verdín: <a style="margin-left: 17px;" href="mailto:kcortes@uv.mx"> kcortes@uv.mx </a>
 </div>
 
 <div style="display:flex; align-items: center;">
