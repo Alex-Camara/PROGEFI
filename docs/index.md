@@ -5,13 +5,13 @@
 
 <h2>Programa Generador de Fichas de Fotocolecta</h2>
 
-<div style="display: flex; justify-content: center;">
- <img src="mniotilta_varia.png" alt="ficha" style="height: 300px; margin-right: 5px; margin-botton: 5px;" />
- <img src="polioptila_caerulea.png" alt="ficha" style="height: 300px; margin-left: 5px; margin-botton: 5px;" />
+<div style="display: flex; justify-content: center; margin-botton: 5px;">
+ <img src="mniotilta_varia.png" alt="ficha" style="height: 300px; margin-right: 5px;" />
+ <img src="polioptila_caerulea.png" alt="ficha" style="height: 300px; margin-left: 5px;" />
 </div>
-<div style="display: flex; justify-content: center;">
- <img src="setophaga_citrina.png" alt="ficha" style="height: 300px; margin-right: 5px; margin-top: 5px;" />
- <img src="buteogallus_anthracinus.png" alt="ficha" style="height: 300px; margin-left: 5px; margin-top: 5px;" />
+<div style="display: flex; justify-content: center; margin-top: 5px;">
+ <img src="setophaga_citrina.png" alt="ficha" style="height: 300px; margin-right: 5px;" />
+ <img src="buteogallus_anthracinus.png" alt="ficha" style="height: 300px; margin-left: 5px;" />
 </div>
 
 <h3>¿Qué es?</h3>
@@ -107,7 +107,7 @@ Miguel Alejandro Cámara Árciga: <a style="margin-left: 17px;" href="mailto:arc
 </div>
 
 <div style="display:flex; margin-top: 10px; align-items: center;">
-<img src="uv.png" alt="UV" style="height: 18px; margin-right: 7px;" />
+<img src="uv.png" alt="UV" style="height: 16px; margin-right: 7px;" />
 <a href="https://www.uv.mx/iib/">Instituto de Investigaciones Biológicas de la Universidad Veracruzana</a>
 </div>
 
