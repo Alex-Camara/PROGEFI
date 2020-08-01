@@ -6,12 +6,12 @@
 <h2>Programa Generador de Fichas de Fotocolecta</h2>
 
 <div style="display: flex; justify-content: center;">
- <img src="mniotilta_varia.png" alt="ficha" style="height: 300px" />
- <img src="polioptila_caerulea.png" alt="ficha" style="height: 300px" />
+ <img src="mniotilta_varia.png" alt="ficha" style="height: 300px; margin-right: 5px; margin-botton: 5px;" />
+ <img src="polioptila_caerulea.png" alt="ficha" style="height: 300px; margin-left: 5px; margin-botton: 5px;" />
 </div>
 <div style="display: flex; justify-content: center;">
- <img src="setophaga_citrina.png" alt="ficha" style="height: 300px" />
- <img src="buteogallus_anthracinus.png" alt="ficha" style="height: 300px" />
+ <img src="setophaga_citrina.png" alt="ficha" style="height: 300px; margin-right: 5px; margin-top: 5px;" />
+ <img src="buteogallus_anthracinus.png" alt="ficha" style="height: 300px; margin-left: 5px; margin-top: 5px;" />
 </div>
 
 <h3>¿Qué es?</h3>
