@@ -107,7 +107,7 @@ Miguel Alejandro Cámara Árciga: <a style="margin-left: 17px;" href="mailto:arc
 </div>
 
 <div style="display:flex; margin-top: 10px; align-items: center;">
-<img src="uv.png" alt="UV" style="height: 16px; margin-right: 7px;" />
+<img src="uv.png" alt="UV" style="height: 18px; margin-right: 7px;" />
 <a href="https://www.uv.mx/iib/">Instituto de Investigaciones Biológicas de la Universidad Veracruzana</a>
 </div>
 
