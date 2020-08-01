@@ -6,17 +6,17 @@
 <h2>Programa Generador de Fichas de Fotocolecta</h2>
 
 <div style="display: flex; justify-content: center;">
- <img src="Mniotilta_varia.png" alt="ficha" style="height: 100px" />
- <img src="polioptila_caerulea.png" alt="ficha" style="height: 100px" />
+ <img src="Mniotilta_varia.png" alt="ficha" style="height: 300px" />
+ <img src="polioptila_caerulea.png" alt="ficha" style="height: 300px" />
 </div>
 <div style="display: flex; justify-content: center;">
- <img src="setophaga_citrina.png" alt="ficha" style="height: 100px" />
- <img src="buteogallus_anthracinus.png" alt="ficha" style="height: 100px" />
+ <img src="setophaga_citrina.png" alt="ficha" style="height: 300px" />
+ <img src="buteogallus_anthracinus.png" alt="ficha" style="height: 300px" />
 </div>
 
 <h3>¿Qué es?</h3>
 
-**PROGEFI** es una herramienta de software desarrollada por la [Universidad Veracruzana (UV)](https://www.uv.mx). Esta aplicación se realizó mediante una colaboración entre la Facultad de Estadística e Informática a través de la Licenciatura en Ingeniería de Software y el Instituto de Investigaciones Biológicas de la UV.
+**PROGEFI** es una herramienta de software desarrollada por la [Universidad Veracruzana (UV)](https://www.uv.mx). Esta aplicación se realizó mediante una colaboración entre la [Facultad de Estadística e Informática](https://www.uv.mx/fei/) a través de la Licenciatura en Ingeniería de Software y el Instituto de Investigaciones Biológicas de la UV.
 
 ****
 <h3>¿Qué características te ofrece?</h3>
@@ -103,7 +103,7 @@ María Karen Cortes Verdín: <a href="mailto:kcortes@uv.mx"> kcortes@uv.mx </a>
 
 <div style="display:flex; align-items: center;">
 <img src="gmail.png" alt="Gmail" style="height: 16px; margin-right: 7px;" />
-Miguel Alejandro Cámara Árciga <a href="mailto:arcamsoft@gmail.com">arcamsoft@gmail.com</a>
+Miguel Alejandro Cámara Árciga: <a style="margin-left: 17px;" href="mailto:arcamsoft@gmail.com">arcamsoft@gmail.com</a>
 </div>
 
 <div style="display:flex; margin-top: 10px; align-items: center;">
