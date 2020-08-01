@@ -5,11 +5,11 @@
 
 <h2>Programa Generador de Fichas de Fotocolecta</h2>
 
-<div style="display: flex; justify-content: center; margin-botton: 5px;">
+<div style="display: flex; justify-content: center; margin-botton: 10px;">
  <img src="mniotilta_varia.png" alt="ficha" style="height: 300px; margin-right: 5px;" />
  <img src="polioptila_caerulea.png" alt="ficha" style="height: 300px; margin-left: 5px;" />
 </div>
-<div style="display: flex; justify-content: center; margin-top: 5px;">
+<div style="display: flex; justify-content: center; margin-top: 10px;">
  <img src="setophaga_citrina.png" alt="ficha" style="height: 300px; margin-right: 5px;" />
  <img src="buteogallus_anthracinus.png" alt="ficha" style="height: 300px; margin-left: 5px;" />
 </div>
@@ -86,22 +86,22 @@ onmouseover=" this.style.backgroundColor='#FFC107'" onmouseleave=" this.style.ba
 Gerardo Contreras Vega: <a style="margin-left: 17px;" href="mailto:puntog@gmail.com">puntog@gmail.com</a>
 </div>
 
-<div style="display:flex; align-items: center;">
+<div style="display:flex;margin-top: 10px; align-items: center;">
 <img src="gmail.png" alt="Gmail" style="height: 16px; margin-right: 7px;" />
 Christian Alejandro Delfín Alfonso: <a style="margin-left: 17px;" href="mailto:cada7305@gmail.com"> cada7305@gmail.com </a>
 </div>
 
-<div style="display:flex; align-items: center;">
+<div style="display:flex;margin-top: 10px; align-items: center;">
 <img src="mail.png" alt="Gmail" style="height: 16px; margin-right: 7px;" />
 Juan Carlos Pérez Arriaga: <a style="margin-left: 17px;" href="mailto:juaperez@uv.mx"> juaperez@uv.mx </a>
 </div>
 
-<div style="display:flex; align-items: center;">
+<div style="display:flex;margin-top: 10px; align-items: center;">
 <img src="mail.png" alt="Gmail" style="height: 16px; margin-right: 7px;" />
 María Karen Cortes Verdín: <a style="margin-left: 17px;" href="mailto:kcortes@uv.mx"> kcortes@uv.mx </a>
 </div>
 
-<div style="display:flex; align-items: center;">
+<div style="display:flex;margin-top: 10px; align-items: center;">
 <img src="gmail.png" alt="Gmail" style="height: 16px; margin-right: 7px;" />
 Miguel Alejandro Cámara Árciga: <a style="margin-left: 17px;" href="mailto:arcamsoft@gmail.com">arcamsoft@gmail.com</a>
 </div>
