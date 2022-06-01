@@ -61,7 +61,7 @@
     "raw-loader": "^3.1.0",
     "read-blob": "^1.1.0",
     "regenerator-runtime": "^0.13.3",
-    "sharp": "^0.23.4",
+    "sharp": "^0.30.5",
     "sqlite3": "^4.2.0",
     "steggy": "^2.0.1",
     "url-loader": "^2.1.0",
