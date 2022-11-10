@@ -91,7 +91,7 @@
     "babel-eslint": "^10.0.3",
     "babel-jest": "^24.9.0",
     "devtron": "^1.4.0",
-    "electron": "^8.3.1",
+    "electron": "^18.3.7",
     "electron-builder": "^22.7.0",
     "electron-mock-ipc": "^0.3.2",
     "electron-rebuild": "^1.8.8",
