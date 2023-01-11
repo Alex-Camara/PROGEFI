@@ -50,7 +50,7 @@
     "font-scanner": "^0.1.2",
     "jimp": "^0.8.5",
     "json2csv": "^5.0.0",
-    "knex": "^0.20.15",
+    "knex": "^2.4.0",
     "leaflet": "^1.5.1",
     "leaflet-geosearch": "^2.7.0",
     "leaflet-map": "^0.2.1",
